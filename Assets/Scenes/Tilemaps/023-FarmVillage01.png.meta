@@ -1,0 +1,1425 @@
+fileFormatVersion: 2
+guid: 08dc6e3b437034b4cb4a4dafdf80f76a
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: 023-FarmVillage01_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 992
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 469fc8eafda38704988c6eea4a86aaec
+      internalID: -296343510
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_1
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 887
+        width: 83
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 8, y: 33, z: 9, w: 34}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b967a21d2c3ca0a4e819965b19eda267
+      internalID: 1935775386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_2
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 903
+        width: 19
+        height: 113
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a689aad11226aef419f0cae59e037bc4
+      internalID: 511008791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_3
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 903
+        width: 13
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f58c3ac766905914684a30f0fa048461
+      internalID: 1134359396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_4
+      rect:
+        serializedVersion: 2
+        x: 229
+        y: 967
+        width: 27
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9bdac815d4211b942950dbe762861387
+      internalID: -1143623564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_5
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 936
+        width: 19
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 114b41db71c931d4b85427ea232f948a
+      internalID: -963693561
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_6
+      rect:
+        serializedVersion: 2
+        x: 229
+        y: 918
+        width: 27
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8249c1571b70820428168dfa18ad1730
+      internalID: 700211002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_7
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 901
+        width: 24
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 876b8ae97dd51824695fb28449ca463b
+      internalID: -575537531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_8
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 866
+        width: 28
+        height: 29
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9db8fb9fffd95604d8e820e36193a070
+      internalID: 1433097253
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_10
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 832
+        width: 60
+        height: 65
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5e2cab58f922f8744a2febf8c3941dde
+      internalID: -2079483098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_12
+      rect:
+        serializedVersion: 2
+        x: 202
+        y: 832
+        width: 9
+        height: 55
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9db5ecdd431ddc04796280b066d90e88
+      internalID: -279253628
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_13
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 832
+        width: 7
+        height: 55
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 13dfbf89e9aed20408e1fb4fb11e98b5
+      internalID: -1728248128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_17
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 837
+        width: 32
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a98b1be5f529e664aa3abbc4e3f6c7d0
+      internalID: 2031612569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_18
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 832
+        width: 24
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3e7d211ff5b635e4cbb25c950bfdc0be
+      internalID: 1737132356
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_19
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 832
+        width: 25
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c35de5dba684d54185b50bbbfeda906
+      internalID: 1473445190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 800
+        width: 33
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4ed261762c6a13e4ba56860763dcccef
+      internalID: -965827897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_21
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 450
+        width: 32
+        height: 55
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dc5c7892c0f4c4e4d93d7cfaa5657093
+      internalID: -1524126506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_22
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 352
+        width: 114
+        height: 156
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 88b06e306f958ce4b86491fced0d325d
+      internalID: 1367672055
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_23
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 449
+        width: 51
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7b75de33dacf3b54b80bd900f0ee7618
+      internalID: -1799048722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_24
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 460
+        width: 22
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f20010925bf1bc145bb54bcd67cc3b70
+      internalID: 709023513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_25
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 359
+        width: 32
+        height: 82
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a1dd3038ef397546836f09b2655ed37
+      internalID: -1852416418
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_26
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 11
+        width: 65
+        height: 173
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3aebf5003e343f243947d2a1e66f1e0b
+      internalID: 269387893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_9
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 966
+        width: 30
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc222f5353ed88a43a93f311894dadff
+      internalID: -2071489380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_11
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 918
+        width: 29
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 434532729e34cc74ebc0700f3b359dd2
+      internalID: 1455262999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_14
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 821
+        width: 18
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 15693124e7f47d341842080668bfe88a
+      internalID: -1879680436
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_15
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 821
+        width: 14
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cb60e71204047da4196c7fa7b256703c
+      internalID: -468530098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_16
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 800
+        width: 26
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c62fb967041d8794694dee60468a95ca
+      internalID: 25975964
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_27
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 770
+        width: 32
+        height: 29
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 22a68b63a61449b40ab31b957ca95205
+      internalID: 1011249847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_28
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 768
+        width: 30
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 46edd6789bf2d3b4f81ed61012a695a0
+      internalID: 1996410927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_29
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 773
+        width: 30
+        height: 56
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c0c3f8b70383d9148be7139c3379ce3a
+      internalID: -157531385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_30
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 783
+        width: 31
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b6fcdda7c34a3814a83ea70d8f4ec32b
+      internalID: -236469791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_31
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 768
+        width: 30
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a9ea5b43c9230d4e99df7d618f976ac
+      internalID: 64661956
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_32
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 705
+        width: 30
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2968c67281a8a9348bcd0cab16b856a1
+      internalID: 87661995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_33
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 704
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b33e7e8e2123e0446be3b9f6746cb8bb
+      internalID: -1132771980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_34
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 641
+        width: 95
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cb53755a9bcede3418f18f52f0645bd7
+      internalID: -933197825
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_35
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 672
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8f1e33c43032bed4f987ca8207221b7a
+      internalID: -1382281808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_36
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 672
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc769ea1a25777d499e7c5a6a35a954d
+      internalID: -841731230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_37
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 0
+        width: 160
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 30b2965cb43eb2e438ff400839ad3abf
+      internalID: 1976599648
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_38
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 36
+        width: 159
+        height: 241
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fc7f68a85e2a0ea4d80e055e58e1ac8a
+      internalID: 200087234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_39
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 190
+        width: 32
+        height: 130
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96d5e922d5aa23b42b0231bbc6913bf8
+      internalID: -1538820098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_40
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 190
+        width: 33
+        height: 130
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3735416e58fa86f42bb4b8aee74fdf4a
+      internalID: 387885382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_41
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 190
+        width: 31
+        height: 130
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3fa813df8754e174bbd32c015638175d
+      internalID: -1278524771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_42
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 287
+        width: 33
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dd87f76d4f9163b49b1ab5355efcbe0d
+      internalID: -1379154315
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_43
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 323
+        width: 30
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d9954a183e813314bb940aa6156bb194
+      internalID: -1441281148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_44
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 327
+        width: 29
+        height: 23
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ca9300c74f4069347b887caf04fe9250
+      internalID: 348905811
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_45
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 324
+        width: 28
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a72fc84f7774dd548b6b3ae6d70a8a69
+      internalID: -1224362088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_46
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 324
+        width: 30
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a2f21586a9777384d8e2b29cb87040cf
+      internalID: 305265626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_47
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 303
+        width: 30
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f46854ba0283fa8409f47cf1c4b50319
+      internalID: 346543783
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_48
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 287
+        width: 32
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ba4cd18010bac3b4190ccb0dc7902dd6
+      internalID: -403841817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_49
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 291
+        width: 29
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 033d3f222f821f64ab6d0ec708bc8943
+      internalID: 182014496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_50
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 335
+        width: 24
+        height: 17
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c7b6ace881ad07e41b39a738a1d71501
+      internalID: -435149077
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_51
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 496
+        width: 20
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d648b1c30280fba4f93bda0765cdf291
+      internalID: 1383402196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_52
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 517
+        width: 30
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ca659e955267ab144a6356b45cb99449
+      internalID: -1730623960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_53
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 515
+        width: 31
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a76de8cfccf904040ad70a58da51b0e1
+      internalID: -2013513437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_54
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 512
+        width: 33
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f771a7a3f6b7d8045b6e357ea6d39dbe
+      internalID: 662584431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_55
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 526
+        width: 62
+        height: 71
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 20c0251ab261cae42892d9e520251df6
+      internalID: -1147253775
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_56
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 526
+        width: 32
+        height: 70
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9bff8d8d17e550b4d8bcb2d86523646f
+      internalID: 59860643
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_57
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 608
+        width: 96
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 21d7bee7eda3d754393d8b6012fb8cc9
+      internalID: 1949849962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 023-FarmVillage01_58
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 353
+        width: 96
+        height: 91
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 88293032564d60347aebfedae2345a41
+      internalID: -2101362024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      023-FarmVillage01_0: -296343510
+      023-FarmVillage01_1: 1935775386
+      023-FarmVillage01_10: -2079483098
+      023-FarmVillage01_11: 1455262999
+      023-FarmVillage01_12: -279253628
+      023-FarmVillage01_13: -1728248128
+      023-FarmVillage01_14: -1879680436
+      023-FarmVillage01_15: -468530098
+      023-FarmVillage01_16: 25975964
+      023-FarmVillage01_17: 2031612569
+      023-FarmVillage01_18: 1737132356
+      023-FarmVillage01_19: 1473445190
+      023-FarmVillage01_2: 511008791
+      023-FarmVillage01_20: -965827897
+      023-FarmVillage01_21: -1524126506
+      023-FarmVillage01_22: 1367672055
+      023-FarmVillage01_23: -1799048722
+      023-FarmVillage01_24: 709023513
+      023-FarmVillage01_25: -1852416418
+      023-FarmVillage01_26: 269387893
+      023-FarmVillage01_27: 1011249847
+      023-FarmVillage01_28: 1996410927
+      023-FarmVillage01_29: -157531385
+      023-FarmVillage01_3: 1134359396
+      023-FarmVillage01_30: -236469791
+      023-FarmVillage01_31: 64661956
+      023-FarmVillage01_32: 87661995
+      023-FarmVillage01_33: -1132771980
+      023-FarmVillage01_34: -933197825
+      023-FarmVillage01_35: -1382281808
+      023-FarmVillage01_36: -841731230
+      023-FarmVillage01_37: 1976599648
+      023-FarmVillage01_38: 200087234
+      023-FarmVillage01_39: -1538820098
+      023-FarmVillage01_4: -1143623564
+      023-FarmVillage01_40: 387885382
+      023-FarmVillage01_41: -1278524771
+      023-FarmVillage01_42: -1379154315
+      023-FarmVillage01_43: -1441281148
+      023-FarmVillage01_44: 348905811
+      023-FarmVillage01_45: -1224362088
+      023-FarmVillage01_46: 305265626
+      023-FarmVillage01_47: 346543783
+      023-FarmVillage01_48: -403841817
+      023-FarmVillage01_49: 182014496
+      023-FarmVillage01_5: -963693561
+      023-FarmVillage01_50: -435149077
+      023-FarmVillage01_51: 1383402196
+      023-FarmVillage01_52: -1730623960
+      023-FarmVillage01_53: -2013513437
+      023-FarmVillage01_54: 662584431
+      023-FarmVillage01_55: -1147253775
+      023-FarmVillage01_56: 59860643
+      023-FarmVillage01_57: 1949849962
+      023-FarmVillage01_58: -2101362024
+      023-FarmVillage01_6: 700211002
+      023-FarmVillage01_7: -575537531
+      023-FarmVillage01_8: 1433097253
+      023-FarmVillage01_9: -2071489380
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
