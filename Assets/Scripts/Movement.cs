@@ -40,6 +40,8 @@ public class Movement : MonoBehaviour
     {
         isMoving = true;
         animator.SetBool("isMoving", true);
+        animator.SetBool("lastMoveX", 0);
+        animator.SetBool("lastMoveY", 0);
 
         float sqdRemainingDistance = (transform.position - end).sqrMagnitude;
 
@@ -60,7 +62,13 @@ public class Movement : MonoBehaviour
 
     private void Animate (float xDir, float yDir)
     {
-        animator.SetFloat("MovementX", xDir);
-        animator.SetFloat("MovementY", yDir);
+        animator.SetFloat("moveX", xDir);
+        animator.SetFloat("moveY", yDir);
+
+        if (Input.GetAxisRaw("Horizontal") == 1 || Input.GetAxisRaw("Horizontal") == -1 || Input.GetAxisRaw("Vertical") == 1 || Input.GetAxisRaw("Vertical") == -1)
+        {
+            animator.SetFloat("lastMoveX", Input.GetAxisRaw("Horizontal"));
+            animator.SetFloat("lastMoveY", Input.GetAxisRaw("Vertical"));
+        }
     }
 }

@@ -35,10 +35,10 @@ public class Player : Actor
     // Update is called once per frame
     private void Update()
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        float moveHorizontal = Input.GetAxisRaw("Horizontal");
+        float moveVertical = Input.GetAxisRaw("Vertical");
 
-        AttemptMove(horizontal, vertical);
+        AttemptMove(moveHorizontal, moveVertical);
     }
 
     public float LifeSkillSuccessRate()
