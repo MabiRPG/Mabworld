@@ -2,7 +2,7 @@ using System.Data;
 using UnityEngine;
 using Mono.Data.Sqlite;
 
-public class test : MonoBehaviour
+public class test
 {
     public string databaseName;
     public string tableName;
@@ -11,12 +11,6 @@ public class test : MonoBehaviour
     void Start()
     {
         IDbConnection dbConnection = CreateAndOpenDatabase();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     private IDbConnection CreateAndOpenDatabase() // 3

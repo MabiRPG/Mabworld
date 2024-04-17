@@ -38,7 +38,10 @@ public class Player : Actor
         float moveHorizontal = Input.GetAxisRaw("Horizontal");
         float moveVertical = Input.GetAxisRaw("Vertical");
 
-        AttemptMove(moveHorizontal, moveVertical);
+        if (moveHorizontal != 0 || moveVertical != 0) 
+        {
+            AttemptMove(moveHorizontal, moveVertical);
+        }
     }
 
     public float LifeSkillSuccessRate()
@@ -48,8 +51,8 @@ public class Player : Actor
 
     public int IsLucky() 
     {
-        float lucky = (float)actorLuck.current / (float)luckyFactor;
-        float hugeLucky = (float)actorLuck.current / (float)hugeLuckyFactor;
+        float lucky = actorLuck.current / luckyFactor;
+        float hugeLucky = actorLuck.current / hugeLuckyFactor;
         float roll = (float)rnd.NextDouble();
 
         if (roll <= hugeLucky) 

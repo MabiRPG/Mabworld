@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 public class Actor : Movement
 {
@@ -31,6 +32,8 @@ public class Actor : Movement
     public Stat actorProt = new(0);
     public Stat actorMDefense = new(0);
     public Stat actorMProt = new(0);
+
+    public Dictionary<string, Skill> skills = new Dictionary<string, Skill>();
 
     public Random rnd = new Random();
 }
