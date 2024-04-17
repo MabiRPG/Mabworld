@@ -1,9 +1,17 @@
-<<<<<<< HEAD
 using UnityEngine;
+using System;
 
-public class Player : Movement
+public class Player : Actor
 {
     public static Player instance = null;
+
+    public int lifeSkillDexFactor = 10;
+    public int lifeSkillSuccessCap = 18;
+
+    public int luckyFactor = 20;
+    public int luckyGain = 2;
+    public int hugeLuckyFactor = 50000;
+    public int hugeLuckyGain = 20;
 
     private void Awake()
     {
@@ -32,39 +40,27 @@ public class Player : Movement
 
         AttemptMove(horizontal, vertical);
     }
-=======
-using UnityEngine;
 
-public class Player : Movement
-{
-    public static Player instance = null;
-
-    private void Awake()
+    public float LifeSkillSuccessRate()
     {
-        if (instance == null)
+        return Math.Min(actorDex.current / lifeSkillDexFactor, lifeSkillSuccessCap);
+    }
+
+    public int IsLucky() 
+    {
+        float lucky = (float)actorLuck.current / (float)luckyFactor;
+        float hugeLucky = (float)actorLuck.current / (float)hugeLuckyFactor;
+        float roll = (float)rnd.NextDouble();
+
+        if (roll <= hugeLucky) 
         {
-            instance = this;
+            return hugeLuckyFactor;
         }
-        else
+        else if (roll <= lucky) 
         {
-            Destroy(gameObject);
+            return luckyFactor;
         }
 
-        DontDestroyOnLoad(gameObject);
+        return 1;
     }
-
-    protected override void Start()
-    {
-        base.Start();
-    }
-
-    // Update is called once per frame
-    private void Update()
-    {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-
-        AttemptMove(horizontal, vertical);
-    }
->>>>>>> b8fdae0 (Meta update)
 }

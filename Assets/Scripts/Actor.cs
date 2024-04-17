@@ -1,6 +1,7 @@
+using System;
+
 public class Actor : Movement
 {
-<<<<<<< HEAD
     public class Stat
     {
         public int current;
@@ -13,20 +14,6 @@ public class Actor : Movement
             maximum = value;
             baseMaximum = value;
         }
-=======
-    public class Stat
-    {
-        public int current;
-        public int maximum;
-        public int baseMaximum;
-
-        public Stat (int value)
-        {
-            current = value;
-            maximum = value;
-            baseMaximum = value;
-        }
->>>>>>> b8fdae0 (Meta update)
     }
 
     public string actorName;
@@ -44,4 +31,6 @@ public class Actor : Movement
     public Stat actorProt = new(0);
     public Stat actorMDefense = new(0);
     public Stat actorMProt = new(0);
+
+    public Random rnd = new Random();
 }
