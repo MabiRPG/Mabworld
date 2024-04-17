@@ -508,6 +508,14 @@ MonoBehaviour:
   blockingLayer:
     serializedVersion: 2
     m_Bits: 64
+  actorName: 
+  actorLevel: 1
+  lifeSkillDexFactor: 10
+  lifeSkillSuccessCap: 18
+  luckyFactor: 20
+  luckyGain: 2
+  hugeLuckyFactor: 50000
+  hugeLuckyGain: 20
 --- !u!4 &1879800220 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8746526010185726990, guid: 3a5a2387aaa97aa4b83abde1ebde4046, type: 3}

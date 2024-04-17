@@ -40,8 +40,8 @@ public class Movement : MonoBehaviour
     {
         isMoving = true;
         animator.SetBool("isMoving", true);
-        animator.SetBool("lastMoveX", 0);
-        animator.SetBool("lastMoveY", 0);
+        // animator.SetBool("lastMoveX", 0);
+        // animator.SetBool("lastMoveY", 0);
 
         float sqdRemainingDistance = (transform.position - end).sqrMagnitude;
 
