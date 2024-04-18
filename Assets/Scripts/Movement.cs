@@ -47,7 +47,6 @@ public class Movement : MonoBehaviour
         {
             Vector3 newPosition = Vector3.MoveTowards(rb2D.position, end, 0.1f);
             rb2D.MovePosition(newPosition);
-            // Debug.Log(sqdRemainingDistance);
             sqdRemainingDistance = (transform.position - end).sqrMagnitude;
 
             yield return null;
@@ -62,7 +61,5 @@ public class Movement : MonoBehaviour
     {
         animator.SetFloat("moveX", xDir);
         animator.SetFloat("moveY", yDir);
-
-        Debug.Log(string.Format("{0} {1}", xDir, yDir));
     }
 }

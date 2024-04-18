@@ -33,7 +33,7 @@ public class Actor : Movement
     public Stat actorMDefense = new(0);
     public Stat actorMProt = new(0);
 
-    public Dictionary<string, Skill> skills = new Dictionary<string, Skill>();
+    public Dictionary<int, Skill> skills = new Dictionary<int, Skill>();
 
     public Random rnd = new Random();
 }
