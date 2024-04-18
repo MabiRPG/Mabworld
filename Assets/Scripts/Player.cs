@@ -30,6 +30,8 @@ public class Player : Actor
     protected override void Start()
     {
         base.Start();
+
+        LearnSkill(1);
     }
 
     // Update is called once per frame
@@ -42,6 +44,16 @@ public class Player : Actor
         {
             AttemptMove(moveHorizontal, moveVertical);
         }
+    }
+
+    public void LearnSkill(int id)
+    {
+        if (skills.ContainsKey(id))
+        {
+            return;
+        }
+
+        skills.Add(id, new Skill(id));
     }
 
     public float LifeSkillSuccessRate()
