@@ -137,12 +137,8 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 353532804586731373, guid: f6e4cc61a456a1542a4967cd20d32ea2, type: 3}
-      propertyPath: m_SortingLayer
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 353532804586731373, guid: f6e4cc61a456a1542a4967cd20d32ea2, type: 3}
-      propertyPath: m_SortingLayerID
-      value: -310612829
+      propertyPath: m_SortingOrder
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5800020594450263162, guid: f6e4cc61a456a1542a4967cd20d32ea2, type: 3}
       propertyPath: m_Name
@@ -414,11 +410,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3421039812436629346, guid: 69caf7864192a4d489d5d1d39e96ddc9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.059
+      value: 1.6159
       objectReference: {fileID: 0}
     - target: {fileID: 3421039812436629346, guid: 69caf7864192a4d489d5d1d39e96ddc9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.1506
+      value: 1.2997
       objectReference: {fileID: 0}
     - target: {fileID: 3421039812436629346, guid: 69caf7864192a4d489d5d1d39e96ddc9, type: 3}
       propertyPath: m_LocalPosition.z
@@ -454,11 +450,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4242823622344840368, guid: 69caf7864192a4d489d5d1d39e96ddc9, type: 3}
       propertyPath: m_Size.x
-      value: 59.598835
+      value: 17.127056
       objectReference: {fileID: 0}
     - target: {fileID: 4242823622344840368, guid: 69caf7864192a4d489d5d1d39e96ddc9, type: 3}
       propertyPath: m_Size.y
-      value: 39.61235
+      value: 8.224297
       objectReference: {fileID: 0}
     - target: {fileID: 4242823622344840368, guid: 69caf7864192a4d489d5d1d39e96ddc9, type: 3}
       propertyPath: m_DrawMode
@@ -542,9 +538,9 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &1879800217
 MonoBehaviour:
