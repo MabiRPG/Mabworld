@@ -3,174 +3,193 @@ using System.Data;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-using Mono.Data.Sqlite;
+
+//==============================================================================
+// ** Skill
+//------------------------------------------------------------------------------
+//  This class handles all skill processing. Refer to Player.instance.skills for the
+//  class instances.
+//==============================================================================
 
 public class Skill 
 {
-    public int id;
-    public string name;
-    public string description;
-    public string iconName;
-    public string details;
-    public string startRank;
-    public string endRank;
-    public float baseUseTime;
-    public float baseCooldown;
+    // Dictionary of basic skill info and specific rank stats.
+    public Dictionary<string, object> info = new Dictionary<string, object>();
+    public Dictionary<string, float[]> stats = new Dictionary<string, float[]>();
 
+    // Current index and rank of skill.
     public int index = 0;
     public string rank;
 
+    // Current xp and maximum rank xp.
     private float xp;
     private float xpMax;
 
-    private TrainingMethod[] methods;
+    // List of training methods at current rank
+    private List<TrainingMethod> methods = new List<TrainingMethod>();
 
+    // All ranks in string format
     private string[] ranks = {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
+    
+    // Query strings to database.
+    private const string skillQuery = @"SELECT * FROM skills WHERE skill_id = @id LIMIT 1;";
+    private const string statsQuery = @"SELECT skill_stats.*, skill_stats_type.stat
+        FROM skills
+        JOIN skill_stats
+        ON skills.skill_id = skill_stats.skill_id
+        JOIN skill_stats_type
+        ON skill_stats.stat_id = skill_stats_type.stat_id
+        WHERE skills.skill_id = @id;";
+    private const string methodsQuery = @"SELECT training_methods_type.method, 
+            training_methods.method_id, training_methods.xp_gain_each, training_methods.count_max 
+        FROM training_methods
+        JOIN training_methods_type
+        ON training_methods.method_id = training_methods_type.method_id
+        JOIN skills
+        ON training_methods.skill_id = skills.skill_id
+        WHERE training_methods.skill_id = @id AND training_methods.rank = @rank;";
 
+    //--------------------------------------------------------------------------
+    // * Object Initialization
+    //       int id : database skill_id of the skill.
+    //--------------------------------------------------------------------------
     public Skill(int id)
     {
         LoadSkillInfo(id);
-
         rank = ranks[index];
+        CreateTrainingMethods();
     }
 
+    //--------------------------------------------------------------------------
+    // * Loads the skill info from the database.
+    //       int : database skill_id of the skill.
+    //--------------------------------------------------------------------------
     public void LoadSkillInfo(int id) 
-    {
-        // Creates the database uri location
-        string dbUri = string.Format("URI=file:Assets/Database/{0}", GameManager.instance.databaseName);
-        
-        // Opens a connection
-        IDbConnection dbConnection = new SqliteConnection(dbUri);
-        dbConnection.Open();
+    {   
+        // Creates an empty data table for our queries.
+        DataTable dt = new DataTable();
+        // Gets the basic skill info
+        dt = GameManager.instance.QueryDatabase(skillQuery, ("@id", id));   
 
-        // Creates a sql query command
-        IDbCommand dbCommand = dbConnection.CreateCommand();
-        dbCommand.CommandText = @"SELECT * FROM skills WHERE skill_id = @id";
-
-        // Adds a parameterized field of id
-        var parameter = dbCommand.CreateParameter();
-        parameter.ParameterName = "@id";
-        parameter.Value = id;
-
-        dbCommand.Parameters.Add(parameter);
-
-        // Executes the command, loads the table, and closes the reader.
-        IDataReader reader = dbCommand.ExecuteReader();
-
-        while (reader.Read()) 
+        // Iterate over all rows and columns, inserts into dictionary.
+        foreach (DataRow row in dt.Rows)
         {
-            id = reader.GetInt32(0);
-            name = reader.GetString(1);
-            description = reader.GetString(2);
-            iconName = reader.GetString(3);
-            details = reader.GetString(4);
-            startRank = reader.GetString(5);
-            endRank = reader.GetString(6);
-            baseUseTime = reader.GetFloat(7);
-            baseCooldown = reader.GetFloat(8);
+            foreach (DataColumn column in dt.Columns)
+            {
+                info.Add(column.ColumnName, row[column]);
+            }
         }
 
-        int startIndex = Array.IndexOf(ranks, startRank);
-        int endIndex = Array.IndexOf(ranks, endRank);
+        dt.Clear();
 
-        ranks = ranks.Skip(startIndex).Take(endIndex - startIndex).ToArray();
-
-        reader.Close();
+        // Gets the detailed skill info at every rank.
+        dt = GameManager.instance.QueryDatabase(statsQuery, ("@id", id));
+        
+        // Iterate over all rows and columns, inserts into dictionary.
+        foreach (DataRow row in dt.Rows)
+        {       
+            // Stat position field is the last column.
+            int statPos = row.ItemArray.Length - 1;
+            // Set the key to be the stat name, then slice the row by length of ranks
+            // converting to string then float and back to array for the value.
+            stats.Add(row.ItemArray[statPos].ToString(), 
+                row.ItemArray.Skip(2).Take(ranks.Length).Select(x => Single.Parse(x.ToString())).ToArray());
+        }
     }
 
+    //--------------------------------------------------------------------------
+    // * Ranks up the skill
+    //--------------------------------------------------------------------------
     public void RankUp() 
     {
         index++;
         rank = ranks[index];
     }
 
+    //--------------------------------------------------------------------------
+    // * Ranks down the skill
+    //--------------------------------------------------------------------------
     public void RankDown()
     {
         index--;
         rank = ranks[index];
     }
 
+    //--------------------------------------------------------------------------
+    // * Implements the rank-specific training methods.
+    //--------------------------------------------------------------------------
     public void CreateTrainingMethods()
     {
+        // Creates a new data table and queries the db.
+        DataTable dt = new DataTable();
+        dt = GameManager.instance.QueryDatabase(methodsQuery, ("@id", info["skill_id"]), ("@rank", rank));
+        // Clears the previous training methods.
+        methods.Clear();
+
+        // For every method, create a new method and insert into list.
+        foreach (DataRow row in dt.Rows)
+        {
+            TrainingMethod method = new TrainingMethod(info["skill_id"], rank, row["method_id"],
+                row["method"], row["xp_gain_each"], row["count_max"]);
+
+            methods.Add(method);
+        }
     }
 }
 
+//==============================================================================
+// ** TrainingMethod
+//------------------------------------------------------------------------------
+//  This class handles all training method processing. Refer to the main skill's
+//  TrainingMethod List for instances.
+//==============================================================================
+
 public class TrainingMethod
 {
-    public int id;
-    public string name;
-    public int count = 0;
-    public float xpGainEach;
-    public int countMax;
+    // Creates dictionary for the method information, and status update flag from player.
+    public Dictionary<string, object> method = new Dictionary<string, object>();
+    public Dictionary<string, object> status = new Dictionary<string, object>();
 
-    private Dictionary<string, object> status = new Dictionary<string, object>();
-
-    public TrainingMethod(int skill_id, string rank, int method_id)
+    //--------------------------------------------------------------------------
+    // * Object Initialization
+    //       int skill_id : database skill_id of the skill.
+    //       object rank : string of current rank.
+    //       object method_id : database method_id
+    //       object methodName : name of the method
+    //       object xp_gain_each : how much xp is gained every count of method
+    //       object count_max : how many maximum counts of method are allowed
+    //--------------------------------------------------------------------------
+    public TrainingMethod(object skill_id, object rank, object method_id, object methodName, 
+        object xp_gain_each, object count_max)
     {
-        LoadMethodInfo(skill_id, rank, method_id);
+        // Creates an empty counter for current method.
+        method.Add("count", 0);
+        // Inserts rest into dictionary
+        method.Add("skill_id", skill_id);
+        method.Add("rank", rank);
+        method.Add("method", methodName);
+        method.Add("method_id", method_id);
+        method.Add("xp_gain_each", xp_gain_each);
+        method.Add("count_max", count_max);
     }
 
-    public void LoadMethodInfo(int skill_id, string rank, int method_id)
+    //--------------------------------------------------------------------------
+    // * Checks if less than maximum counts, and checks training requirements.
+    //--------------------------------------------------------------------------
+    public void update()
     {
-        // Creates the database uri location
-        string dbUri = string.Format("URI=file:Assets/Database/{0}", GameManager.instance.databaseName);
-        
-        // Opens a connection
-        IDbConnection dbConnection = new SqliteConnection(dbUri);
-        dbConnection.Open();
-
-        // Creates a sql query command
-        IDbCommand dbCommand = dbConnection.CreateCommand();
-        dbCommand.CommandText = @"SELECT training_methods_type.method, training_methods.xp_gain_each, training_methods.count_max 
-            FROM training_methods
-            JOIN training_methods_type
-            ON training_methods.method_id = training_methods_type.method_id
-            JOIN skills
-            ON training_methods.skill_id = skills.skill_id
-            WHERE training_methods.skill_id = @skill_id AND training_methods.rank = @rank AND training_methods.method_id = @method_id";
-
-        // Adds a parameterized field of id
-        var parameter = dbCommand.CreateParameter();
-        parameter.ParameterName = "@skill_id";
-        parameter.Value = skill_id;
-
-        dbCommand.Parameters.Add(parameter);
-
-        parameter = dbCommand.CreateParameter();
-        parameter.ParameterName = "@rank";
-        parameter.Value = rank;
-
-        dbCommand.Parameters.Add(parameter);
-
-        parameter = dbCommand.CreateParameter();
-        parameter.ParameterName = "@method_id";
-        parameter.Value = method_id;
-
-        dbCommand.Parameters.Add(parameter);
-
-        // Executes the command, loads the table, and closes the reader.
-        IDataReader reader = dbCommand.ExecuteReader();
-
-        while (reader.Read()) 
+        if ((int)method["count"] < (int)method["count_max"] && checkTraining())
         {
-            name = reader.GetString(0);
-            xpGainEach = reader.GetFloat(1);
-            countMax = reader.GetInt32(2);
+            method["count"] = (int)method["count"] + 1;
         }
-
-        id = method_id;
-
-        reader.Close();
     }
 
-    public void update(Dictionary<string, object> statusIncoming)
-    {
-        status = statusIncoming;
-    }
-
+    //--------------------------------------------------------------------------
+    // * Checks training requirements against the status flag.
+    //--------------------------------------------------------------------------
     public bool checkTraining()
     {
-        switch(id)
+        switch((int)method["method_id"])
         {
             case 1:
                 return IsSuccess();
@@ -183,6 +202,9 @@ public class TrainingMethod
         return false;
     }
 
+    //--------------------------------------------------------------------------
+    // * Checks if the action was a success
+    //--------------------------------------------------------------------------
     public bool IsSuccess()
     {
         if ((bool)status["success"] == true)
@@ -193,11 +215,17 @@ public class TrainingMethod
         return false;
     }
 
+    //--------------------------------------------------------------------------
+    // * Checks if the action was a failure
+    //--------------------------------------------------------------------------
     public bool IsFail()
     {
         return !IsSuccess();
     }
 
+    //--------------------------------------------------------------------------
+    // * Checks if two or more resources were gathered at once.
+    //--------------------------------------------------------------------------
     public bool GatherTwoOrMore()
     {
         if (IsSuccess() && (string)status["action"] == "gather" && (int)status["resourceGain"] > 1)
@@ -207,5 +235,4 @@ public class TrainingMethod
 
         return false;
     }
-
 }
