@@ -35,6 +35,9 @@ public class Player : Actor
         LearnSkill(2);
         LearnSkill(3);
         RankUpSkill(1);
+        skills[1].AddXP(50);
+        skills[2].AddXP(100);
+        skills[3].AddXP(150);
     }
 
     // Update is called once per frame

@@ -43,8 +43,7 @@ public class Window_Skill : MonoBehaviour
         {
             // Instantiates the prefab in the window. Parent window has
             // a vertical layout group to control children components.
-            GameObject obj;
-            obj = Instantiate(skillPrefab, transform);
+            GameObject obj = Instantiate(skillPrefab, transform);
             
             // Finds the skill name field and reassigns it.
             TMP_Text name = obj.transform.Find("Name").GetComponent<TMP_Text>();
@@ -58,6 +57,26 @@ public class Window_Skill : MonoBehaviour
             // Finds the skill rank field and reassigns it.
             TMP_Text rank = obj.transform.Find("Rank").GetComponent<TMP_Text>();
             rank.text = "Rank " + skill.Value.rank;
+
+            // Finds the xp bar.
+            GameObject xpBar = obj.transform.Find("XP Bar").gameObject;
+            Progress_Bar xpBarScript = xpBar.GetComponent<Progress_Bar>();
+            GameObject overXpBar = obj.transform.Find("Overfill XP Bar").gameObject;
+            Progress_Bar overXpBarScript = overXpBar.GetComponent<Progress_Bar>();
+
+            // If <= 100, use normal bar, else use overfill bar.
+            if (skill.Value.xp <= 100) 
+            {
+                xpBarScript.current = skill.Value.xp;
+                xpBarScript.maximum = 100;
+                overXpBar.SetActive(false);
+            }
+            else 
+            {
+                xpBar.SetActive(false);
+                overXpBarScript.current = skill.Value.xp;
+                overXpBarScript.maximum = skill.Value.xpMax;
+            }
 
             // Adds it to the list.
             skillList.Add(obj);

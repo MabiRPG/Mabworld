@@ -22,8 +22,8 @@ public class Skill
     public string rank;
 
     // Current xp and maximum rank xp.
-    private float xp;
-    private float xpMax;
+    public float xp;
+    public float xpMax;
 
     // List of training methods at current rank
     private List<TrainingMethod> methods = new List<TrainingMethod>();
@@ -62,7 +62,7 @@ public class Skill
 
     //--------------------------------------------------------------------------
     // * Loads the skill info from the database.
-    //       int : database skill_id of the skill.
+    //       int id : database skill_id of the skill.
     //--------------------------------------------------------------------------
     public void LoadSkillInfo(int id) 
     {   
@@ -102,8 +102,11 @@ public class Skill
     //--------------------------------------------------------------------------
     public void RankUp() 
     {
-        index++;
-        rank = ranks[index];
+        if (index + 1 < ranks.Length)
+        {
+            index++;
+            rank = ranks[index];
+        }
     }
 
     //--------------------------------------------------------------------------
@@ -111,8 +114,20 @@ public class Skill
     //--------------------------------------------------------------------------
     public void RankDown()
     {
-        index--;
-        rank = ranks[index];
+        if (index - 1 >= 0)
+        {
+            index--;
+            rank = ranks[index];
+        }
+    }
+
+    //--------------------------------------------------------------------------
+    // * Adds xp to the skill
+    //       float x : new amount to add
+    //--------------------------------------------------------------------------
+    public void AddXP(float x)
+    {
+        xp += x;
     }
 
     //--------------------------------------------------------------------------
@@ -125,12 +140,16 @@ public class Skill
         dt = GameManager.instance.QueryDatabase(methodsQuery, ("@id", info["skill_id"]), ("@rank", rank));
         // Clears the previous training methods.
         methods.Clear();
+        // Resets the max xp gainable.
+        xpMax = 0;
 
         // For every method, create a new method and insert into list.
         foreach (DataRow row in dt.Rows)
         {
             TrainingMethod method = new TrainingMethod(info["skill_id"], rank, row["method_id"],
                 row["method"], row["xp_gain_each"], row["count_max"]);
+            // Adds the max xp from method to skill.
+            xpMax += Single.Parse(row["xp_gain_each"].ToString()) * Single.Parse(row["count_max"].ToString());
 
             methods.Add(method);
         }
