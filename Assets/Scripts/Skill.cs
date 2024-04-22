@@ -106,6 +106,8 @@ public class Skill
         {
             index++;
             rank = ranks[index];
+            xp = 0;
+            CreateTrainingMethods();
         }
     }
 

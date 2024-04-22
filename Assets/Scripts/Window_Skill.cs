@@ -29,15 +29,8 @@ public class Window_Skill : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void PopulateWindow()
     {
-        // Populates the skill list once.
-        if (skillList.Count > 0)
-        {
-            return;
-        }
-
         // For every skill, create a new prefab to display skill info in window.
         foreach (KeyValuePair<int, Skill> skill in Player.instance.skills)
         {
@@ -64,12 +57,21 @@ public class Window_Skill : MonoBehaviour
             GameObject overXpBar = obj.transform.Find("Overfill XP Bar").gameObject;
             Progress_Bar overXpBarScript = overXpBar.GetComponent<Progress_Bar>();
 
-            // If <= 100, use normal bar, else use overfill bar.
+            // Finds the advancement button.
+            Button rankUpButton = obj.transform.Find("Rank Up Button").GetComponent<Button>();
+            rankUpButton.onClick.AddListener(delegate {RankUpSkill(skill.Value);});
+
+            // If < 100, use normal bar, else use overfill bar.
             if (skill.Value.xp <= 100) 
             {
                 xpBarScript.current = skill.Value.xp;
                 xpBarScript.maximum = 100;
                 overXpBar.SetActive(false);
+
+                if (skill.Value.xp < 100) 
+                {
+                    rankUpButton.gameObject.SetActive(false);
+                }
             }
             else 
             {
@@ -83,11 +85,8 @@ public class Window_Skill : MonoBehaviour
         }
     }
 
-    public void ToggleVisible()
+    public void ClearWindow()
     {
-        // Changes visibilty of object.
-        gameObject.SetActive(!gameObject.activeSelf);
-        
         // Destroys all objects
         foreach (GameObject obj in skillList)
         {
@@ -96,5 +95,20 @@ public class Window_Skill : MonoBehaviour
 
         // Clears the list for update
         skillList.Clear();
+    }      
+
+    public void ToggleVisible()
+    {
+        // Changes visibilty of object.
+        gameObject.SetActive(!gameObject.activeSelf);
+        ClearWindow();
+        PopulateWindow();
+    }
+
+    public void RankUpSkill(Skill skill)
+    {
+        skill.RankUp();
+        ClearWindow();
+        PopulateWindow();
     }
 }
