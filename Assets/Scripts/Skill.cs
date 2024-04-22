@@ -176,9 +176,9 @@ public class TrainingMethod
     //--------------------------------------------------------------------------
     // * Checks if less than maximum counts, and checks training requirements.
     //--------------------------------------------------------------------------
-    public void update()
+    public void Update()
     {
-        if ((int)method["count"] < (int)method["count_max"] && checkTraining())
+        if ((int)method["count"] < (int)method["count_max"] && CheckTraining())
         {
             method["count"] = (int)method["count"] + 1;
         }
@@ -187,7 +187,7 @@ public class TrainingMethod
     //--------------------------------------------------------------------------
     // * Checks training requirements against the status flag.
     //--------------------------------------------------------------------------
-    public bool checkTraining()
+    public bool CheckTraining()
     {
         switch((int)method["method_id"])
         {

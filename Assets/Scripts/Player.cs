@@ -32,6 +32,9 @@ public class Player : Actor
         base.Start();
 
         LearnSkill(1);
+        LearnSkill(2);
+        LearnSkill(3);
+        RankUpSkill(1);
     }
 
     // Update is called once per frame
@@ -39,21 +42,41 @@ public class Player : Actor
     {
         float moveHorizontal = Input.GetAxisRaw("Horizontal");
         float moveVertical = Input.GetAxisRaw("Vertical");
+        bool callSkillWindow = Input.GetButtonDown("Skill Window");
 
         if (moveHorizontal != 0 || moveVertical != 0) 
         {
             AttemptMove(moveHorizontal, moveVertical);
         }
+
+        if (callSkillWindow)
+        {
+            Window_Skill.instance.ToggleVisible();
+        }
+    }
+
+    public bool IsSkillLearned(int id)
+    {
+        return skills.ContainsKey(id);
     }
 
     public void LearnSkill(int id)
     {
-        if (skills.ContainsKey(id))
+        if (IsSkillLearned(id))
         {
             return;
         }
 
         skills.Add(id, new Skill(id));
+    }
+
+    public void RankUpSkill(int id)
+    {
+        if (!IsSkillLearned(id)) {
+            return;
+        }
+
+        skills[id].RankUp();
     }
 
     public float LifeSkillSuccessRate()
