@@ -4,14 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class Window_Skill : MonoBehaviour
+public class Window_Skill : Window
 {
     public static Window_Skill instance = null;
     
     public GameObject skillPrefab;
-    private List<GameObject> skillList = new List<GameObject>(); 
+    public GameObject windowSkillDetailedPrefab;
+    private List<GameObject> skillList = new List<GameObject>();
+    private List<GameObject> windowSkillDetailedList = new List<GameObject>(); 
     
-    void Awake() 
+    public void Awake() 
     {
         // Singleton pattern
         if (instance == null)
@@ -29,7 +31,7 @@ public class Window_Skill : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void PopulateWindow()
+    private void PopulateWindow()
     {
         // For every skill, create a new prefab to display skill info in window.
         foreach (KeyValuePair<int, Skill> skill in Player.instance.skills)
@@ -39,8 +41,11 @@ public class Window_Skill : MonoBehaviour
             GameObject obj = Instantiate(skillPrefab, transform);
             
             // Finds the skill name field and reassigns it.
-            TMP_Text name = obj.transform.Find("Name").GetComponent<TMP_Text>();
+            GameObject nameObj = obj.transform.Find("Name Button").gameObject;
+            TMP_Text name = nameObj.GetComponentInChildren<TMP_Text>();
             name.text = skill.Value.info["name"].ToString();
+            Button nameButton = nameObj.GetComponent<Button>();
+            nameButton.onClick.AddListener(delegate {CreateDetailedSkillWindow(skill.Value);});
 
             // Finds the skill icon sprite and reassigns it.
             Image img = obj.GetComponentInChildren<Image>();
@@ -68,6 +73,7 @@ public class Window_Skill : MonoBehaviour
                 xpBarScript.maximum = 100;
                 overXpBar.SetActive(false);
 
+                // Remove the rank up button if cannot rank up.
                 if (skill.Value.xp < 100) 
                 {
                     rankUpButton.gameObject.SetActive(false);
@@ -85,30 +91,30 @@ public class Window_Skill : MonoBehaviour
         }
     }
 
-    public void ClearWindow()
-    {
-        // Destroys all objects
-        foreach (GameObject obj in skillList)
-        {
-            Destroy(obj);
-        }
-
-        // Clears the list for update
-        skillList.Clear();
-    }      
-
     public void ToggleVisible()
     {
         // Changes visibilty of object.
         gameObject.SetActive(!gameObject.activeSelf);
-        ClearWindow();
+        ClearPrefabs(skillList);
+
+        if (gameObject.activeSelf) 
+        {
+            PopulateWindow();
+        }
+    }
+
+    private void RankUpSkill(Skill skill)
+    {
+        skill.RankUp();
+        ClearPrefabs(skillList);
         PopulateWindow();
     }
 
-    public void RankUpSkill(Skill skill)
+    private void CreateDetailedSkillWindow(Skill skill)
     {
-        skill.RankUp();
-        ClearWindow();
-        PopulateWindow();
+        GameObject obj = Instantiate(windowSkillDetailedPrefab, transform.parent);
+        Window_Skill_Detailed window = obj.GetComponent<Window_Skill_Detailed>();
+        window.Init(skill);
+        windowSkillDetailedList.Add(obj);
     }
 }

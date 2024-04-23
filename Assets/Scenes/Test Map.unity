@@ -175,6 +175,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skillPrefab: {fileID: 7447567352734069478, guid: 006017668bb6a1a468ef81b61700f049, type: 3}
+  windowSkillDetailedPrefab: {fileID: 6075408412853474913, guid: aeeb36ff9de422747bc08814aa3f62fe, type: 3}
 --- !u!114 &19404850
 MonoBehaviour:
   m_ObjectHideFlags: 0
