@@ -1,4 +1,3 @@
-using System;
 using System.Data;
 using System.Linq;
 using System.Collections.Generic;
@@ -26,7 +25,7 @@ public class Skill
     public float xpMax;
 
     // List of training methods at current rank
-    private List<TrainingMethod> methods = new List<TrainingMethod>();
+    public List<TrainingMethod> methods = new List<TrainingMethod>();
 
     // All ranks in string format
     private string[] ranks = {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
@@ -93,7 +92,7 @@ public class Skill
             // Set the key to be the stat name, then slice the row by length of ranks
             // converting to string then float and back to array for the value.
             stats.Add(row.ItemArray[statPos].ToString(), 
-                row.ItemArray.Skip(2).Take(ranks.Length).Select(x => Single.Parse(x.ToString())).ToArray());
+                row.ItemArray.Skip(2).Take(ranks.Length).Select(x => float.Parse(x.ToString())).ToArray());
         }
     }
 
@@ -151,7 +150,7 @@ public class Skill
             TrainingMethod method = new TrainingMethod(info["skill_id"], rank, row["method_id"],
                 row["method"], row["xp_gain_each"], row["count_max"]);
             // Adds the max xp from method to skill.
-            xpMax += Single.Parse(row["xp_gain_each"].ToString()) * Single.Parse(row["count_max"].ToString());
+            xpMax += float.Parse(row["xp_gain_each"].ToString()) * float.Parse(row["count_max"].ToString());
 
             methods.Add(method);
         }
@@ -188,7 +187,7 @@ public class TrainingMethod
         // Inserts rest into dictionary
         method.Add("skill_id", skill_id);
         method.Add("rank", rank);
-        method.Add("method", methodName);
+        method.Add("name", methodName);
         method.Add("method_id", method_id);
         method.Add("xp_gain_each", xp_gain_each);
         method.Add("count_max", count_max);
