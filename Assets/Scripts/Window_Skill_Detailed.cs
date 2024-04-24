@@ -13,6 +13,12 @@ public class Window_Skill_Detailed : Window
     private List<GameObject> statList = new List<GameObject>();
     private List<GameObject> trainingMethodList = new List<GameObject>();
 
+    protected override void Awake()
+    {
+        base.Awake();
+        ChangeTitle("Skill Info");
+    }
+
     public void Init(Skill newSkill)
     {
         skill = newSkill;
@@ -22,16 +28,16 @@ public class Window_Skill_Detailed : Window
     private void PopulateWindow()
     {
         // Finds the skill name and reassigns it.
-        TMP_Text name = gameObject.transform.Find("Name").GetComponent<TMP_Text>();
+        TMP_Text name = body.transform.Find("Name").GetComponent<TMP_Text>();
         name.text = "Rank " + skill.rank + " " + skill.info["name"];
 
         // Finds the skill icon sprite and reassigns it.
-        Image img = gameObject.transform.Find("Icon Parent").GetComponentInChildren<Image>();
+        Image img = body.transform.Find("Icon Parent").GetComponentInChildren<Image>();
         string dir = "Sprites/Skill Icons/" + skill.info["icon_name"].ToString();
         img.sprite = Resources.Load<Sprite>(dir);
 
         int index = skill.index;
-        Transform statTransform = transform.Find("Stats");
+        Transform statTransform = body.transform.Find("Stats");
 
         // For every stat, create a new stat field prefab and populate it.
         foreach (KeyValuePair<string, float[]> stat in skill.stats)
@@ -64,7 +70,7 @@ public class Window_Skill_Detailed : Window
             statList.Add(obj);
         }
 
-        Transform trainingMethodsTransform = transform.Find("Training Methods");
+        Transform trainingMethodsTransform = body.transform.Find("Training Methods");
 
         // For every training method, create a new training method prefab and populate it.
         foreach (TrainingMethod method in skill.methods)
@@ -83,5 +89,34 @@ public class Window_Skill_Detailed : Window
 
             trainingMethodList.Add(obj);
         }
+
+        // Finds the xp bar.
+        GameObject xpBar = body.transform.Find("Bars Parent").Find("Bars").Find("XP Bar").gameObject;
+        Progress_Bar xpBarScript = xpBar.GetComponent<Progress_Bar>();
+        GameObject overXpBar = body.transform.Find("Bars Parent").Find("Bars").Find("Overfill XP Bar").gameObject;
+        Progress_Bar overXpBarScript = overXpBar.GetComponent<Progress_Bar>();
+
+        // If < 100, use normal bar, else use overfill bar.
+        if (skill.xp <= 100) 
+        {
+            xpBarScript.current = skill.xp;
+            xpBarScript.maximum = 100;
+            overXpBar.SetActive(false);
+
+            // Remove the rank up button if cannot rank up.
+            // if (skill.xp < 100) 
+            // {
+            //     rankUpButton.gameObject.SetActive(false);
+            // }
+        }
+        else 
+        {
+            xpBar.SetActive(false);
+            overXpBarScript.current = skill.xp;
+            overXpBarScript.maximum = skill.xpMax;
+        }
+
+        Button closeButton = body.transform.Find("Close Button").GetComponent<Button>();
+        closeButton.onClick.AddListener(CloseWindow);
     }
 }

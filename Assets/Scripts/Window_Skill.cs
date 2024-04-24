@@ -13,8 +13,11 @@ public class Window_Skill : Window
     private List<GameObject> skillList = new List<GameObject>();
     private List<GameObject> windowSkillDetailedList = new List<GameObject>(); 
     
-    public void Awake() 
+    protected override void Awake() 
     {
+        base.Awake();
+        ChangeTitle("Skills");
+
         // Singleton pattern
         if (instance == null)
         {
@@ -38,7 +41,7 @@ public class Window_Skill : Window
         {
             // Instantiates the prefab in the window. Parent window has
             // a vertical layout group to control children components.
-            GameObject obj = Instantiate(skillPrefab, transform);
+            GameObject obj = Instantiate(skillPrefab, body.transform);
             
             // Finds the skill name field and reassigns it.
             GameObject nameObj = obj.transform.Find("Name Button").gameObject;
