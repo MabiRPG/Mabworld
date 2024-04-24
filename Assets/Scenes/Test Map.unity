@@ -1565,6 +1565,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: Skill Window
       objectReference: {fileID: 0}
+    - target: {fileID: 1984671245576331001, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1984671245576331001, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1984671245576331001, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1984671245576331001, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -33.000008
+      objectReference: {fileID: 0}
+    - target: {fileID: 1984671245576331001, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2847518994728358767, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1645,6 +1665,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3449853942297827052, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3449853942297827052, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
+      propertyPath: m_BlocksRaycasts
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3506785204982072086, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1664,6 +1692,10 @@ PrefabInstance:
     - target: {fileID: 3506785204982072086, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5387509734459370819, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
+      propertyPath: m_CullTransparentMesh
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7024755805341306002, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
       propertyPath: m_HorizontalFit
@@ -1716,6 +1748,18 @@ PrefabInstance:
     - target: {fileID: 8327379423472962842, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8352459591188940689, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8352459591188940689, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
+      propertyPath: m_Interactable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8352459591188940689, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
+      propertyPath: m_BlocksRaycasts
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
