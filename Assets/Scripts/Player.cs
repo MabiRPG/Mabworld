@@ -1,20 +1,36 @@
 using UnityEngine;
 using System;
 
+//==============================================================================
+// ** Player
+//------------------------------------------------------------------------------
+//  This class handles all player & input processing. Refer to Player.instance
+//  for the global instance.
+//==============================================================================
+
 public class Player : Actor
 {
+    // Global instance of player
     public static Player instance = null;
 
+    // How much our life skill success rates scale with dex.
     public int lifeSkillDexFactor = 10;
+    // What the maximize success rate increase is.
     public int lifeSkillSuccessCap = 18;
 
+    // How much our lucky gathers scale with luck stat
     public int luckyFactor = 20;
+    // How much resource multiplier is applied on trigger lucky
     public int luckyGain = 2;
     public int hugeLuckyFactor = 50000;
     public int hugeLuckyGain = 20;
 
+    //--------------------------------------------------------------------------
+    // * Initializes the object
+    //--------------------------------------------------------------------------
     private void Awake()
     {
+        // Singleton recipe
         if (instance == null)
         {
             instance = this;
@@ -27,10 +43,14 @@ public class Player : Actor
         DontDestroyOnLoad(gameObject);
     }
 
+    //--------------------------------------------------------------------------
+    // * Called before any frame updates.
+    //--------------------------------------------------------------------------
     protected override void Start()
     {
         base.Start();
 
+        // Debug purposes...
         LearnSkill(1);
         LearnSkill(2);
         LearnSkill(3);
@@ -40,7 +60,9 @@ public class Player : Actor
         skills[3].AddXP(150);
     }
 
-    // Update is called once per frame
+    //--------------------------------------------------------------------------
+    // * Called every frame
+    //--------------------------------------------------------------------------
     private void Update()
     {
         float moveHorizontal = Input.GetAxisRaw("Horizontal");
@@ -58,11 +80,19 @@ public class Player : Actor
         }
     }
 
+    //--------------------------------------------------------------------------
+    // * Checks if the skill has been learned
+    //      int id : id of the skill
+    //--------------------------------------------------------------------------
     public bool IsSkillLearned(int id)
     {
         return skills.ContainsKey(id);
     }
 
+    //--------------------------------------------------------------------------
+    // * Learns the skill
+    //      int id : id of the skill
+    //--------------------------------------------------------------------------
     public void LearnSkill(int id)
     {
         if (IsSkillLearned(id))
@@ -73,6 +103,10 @@ public class Player : Actor
         skills.Add(id, new Skill(id));
     }
 
+    //--------------------------------------------------------------------------
+    // * Ranks up the skill
+    //      int id : id of the skill
+    //--------------------------------------------------------------------------
     public void RankUpSkill(int id)
     {
         if (!IsSkillLearned(id)) {
@@ -82,11 +116,17 @@ public class Player : Actor
         skills[id].RankUp();
     }
 
+    //--------------------------------------------------------------------------
+    // * Returns the player's life skill success rate bonus
+    //--------------------------------------------------------------------------
     public float LifeSkillSuccessRate()
     {
         return Math.Min(actorDex.current / lifeSkillDexFactor, lifeSkillSuccessCap);
     }
 
+    //--------------------------------------------------------------------------
+    // * Returns the lucky resource gain multiplier
+    //--------------------------------------------------------------------------
     public int IsLucky() 
     {
         float lucky = actorLuck.current / luckyFactor;

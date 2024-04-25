@@ -2,23 +2,24 @@ using UnityEngine;
 using System.Data;
 using Mono.Data.Sqlite;
 
-//==============================================================================
-// ** GameManager
-//------------------------------------------------------------------------------
-//  This class handles all game-wide processing. Refer to Game.instance for the
-//  specific instance.
-//==============================================================================
-
+/// <summary>
+///     This class handles all game-wide processing. Refer to Game.instance for the 
+///     specific instance.
+/// </summary>
 public class GameManager : MonoBehaviour 
 {
+    // Global instance of GameManager
     public static GameManager instance = null;
 
     // Name of the game database in Assets/Database folder.
     public string databaseName;
 
-    // Singleton recipe so only one instance is active at a time.
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
     private void Awake()
     {
+        // Singleton recipe so only one instance is active at a time.
         if (instance == null)
         {
             instance = this;
@@ -31,11 +32,12 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    //--------------------------------------------------------------------------
-    // * Queries the database and returns a data table of results.
-    //      string query : SQL query string to be executed
-    //      (string Key, object Value) args : variable argument list for sql parameters.
-    //--------------------------------------------------------------------------
+    /// <summary>
+    ///     Queries the database.
+    /// </summary>
+    /// <param name="query">SQL query string to be executed.</param>
+    /// <param name="args">Variable argument list for SQL parameters.</param>
+    /// <returns>DataTable result of SQL query.</returns>
     public DataTable QueryDatabase(string query, params (string Key, object Value)[] args)
     {
         // Creates the database uri location

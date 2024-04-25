@@ -1,22 +1,31 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+///     This class handles the skill window processing.
+/// </summary>
 public class Window_Skill : Window
 {
+    // Global reference.
     public static Window_Skill instance = null;
     
+    // Prefab for every skill row in window.
     public GameObject skillPrefab;
+    // Prefab for extra skill detail window.
     public GameObject windowSkillDetailedPrefab;
+    // Lists of prefabs.
     private List<GameObject> skillList = new List<GameObject>();
     private List<GameObject> windowSkillDetailedList = new List<GameObject>(); 
-    
+
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
     protected override void Awake() 
     {
         base.Awake();
-        ChangeTitle("Skills");
+        SetTitle("Skills");
 
         // Singleton pattern
         if (instance == null)
@@ -34,7 +43,10 @@ public class Window_Skill : Window
         gameObject.SetActive(false);
     }
 
-    private void PopulateWindow()
+    /// <summary>
+    ///     Draws the window.
+    /// </summary>
+    private void Draw()
     {
         // For every skill, create a new prefab to display skill info in window.
         foreach (KeyValuePair<int, Skill> skill in Player.instance.skills)
@@ -72,8 +84,8 @@ public class Window_Skill : Window
             // If < 100, use normal bar, else use overfill bar.
             if (skill.Value.xp <= 100) 
             {
-                xpBarScript.current = skill.Value.xp;
-                xpBarScript.maximum = 100;
+                xpBarScript.SetCurrent(skill.Value.xp);
+                xpBarScript.SetMaximum(100);
                 overXpBar.SetActive(false);
 
                 // Remove the rank up button if cannot rank up.
@@ -85,8 +97,8 @@ public class Window_Skill : Window
             else 
             {
                 xpBar.SetActive(false);
-                overXpBarScript.current = skill.Value.xp;
-                overXpBarScript.maximum = skill.Value.xpMax;
+                overXpBarScript.SetCurrent(skill.Value.xp);
+                overXpBarScript.SetMaximum(skill.Value.xpMax);
             }
 
             // Adds it to the list.
@@ -94,6 +106,9 @@ public class Window_Skill : Window
         }
     }
 
+    /// <summary>
+    ///     Toggles visibility of the object.
+    /// </summary>
     public void ToggleVisible()
     {
         // Changes visibilty of object.
@@ -102,17 +117,25 @@ public class Window_Skill : Window
 
         if (gameObject.activeSelf) 
         {
-            PopulateWindow();
+            Draw();
         }
     }
 
+    /// <summary>
+    ///     Ranks up the skill.
+    /// </summary>
+    /// <param name="skill">Skill instance to rank up.</param>
     private void RankUpSkill(Skill skill)
     {
         skill.RankUp();
         ClearPrefabs(skillList);
-        PopulateWindow();
+        Draw();
     }
 
+    /// <summary>
+    ///     Creates a new detailed skill window for the skill.
+    /// </summary>
+    /// <param name="skill">Skill to populate window.</param>
     private void CreateDetailedSkillWindow(Skill skill)
     {
         GameObject obj = Instantiate(windowSkillDetailedPrefab, transform.parent);

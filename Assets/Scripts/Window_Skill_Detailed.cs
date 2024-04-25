@@ -1,31 +1,47 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+///     This class handles the detailed skill window processing.
+/// </summary>
 public class Window_Skill_Detailed : Window
 {
+    // Prefab for every skill stat rendering
     public GameObject statPrefab;
+    // Prefab for every training method rendering.
     public GameObject trainingMethodPrefab;
 
+    // Skill of window
     private Skill skill;
+    // List of prefab objects.
     private List<GameObject> statList = new List<GameObject>();
     private List<GameObject> trainingMethodList = new List<GameObject>();
 
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
     protected override void Awake()
     {
         base.Awake();
-        ChangeTitle("Skill Info");
+        SetTitle("Skill Info");
     }
 
+    /// <summary>
+    ///     Initializes the object manually with parameters.
+    /// </summary>
+    /// <param name="newSkill">Skill instance for window.</param>
     public void Init(Skill newSkill)
     {
         skill = newSkill;
-        PopulateWindow();
+        Draw();
     }
 
-    private void PopulateWindow()
+    /// <summary>
+    ///     Draws the window.
+    /// </summary>
+    private void Draw()
     {
         // Finds the skill name and reassigns it.
         TMP_Text name = body.transform.Find("Name").GetComponent<TMP_Text>();
@@ -99,8 +115,8 @@ public class Window_Skill_Detailed : Window
         // If < 100, use normal bar, else use overfill bar.
         if (skill.xp <= 100) 
         {
-            xpBarScript.current = skill.xp;
-            xpBarScript.maximum = 100;
+            xpBarScript.SetCurrent(skill.xp);
+            xpBarScript.SetMaximum(100);
             overXpBar.SetActive(false);
 
             // Remove the rank up button if cannot rank up.
@@ -112,8 +128,8 @@ public class Window_Skill_Detailed : Window
         else 
         {
             xpBar.SetActive(false);
-            overXpBarScript.current = skill.xp;
-            overXpBarScript.maximum = skill.xpMax;
+            overXpBarScript.SetCurrent(skill.xp);
+            overXpBarScript.SetMaximum(skill.xpMax);
         }
 
         Button closeButton = body.transform.Find("Close Button").GetComponent<Button>();

@@ -1,19 +1,29 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 
-public class Window : MonoBehaviour {
+/// <summary>
+///     This super class handles all basic window UI processing. Uses the Window prefab
+///     in unity.
+/// </summary>
+public class Window : MonoBehaviour, IDragHandler
+{
+    // GameObject references to header and body content in window prefab.
     protected GameObject header;
     protected GameObject body;
 
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
     protected virtual void Awake()
     {
         header = transform.Find("Header").gameObject;
         body = transform.Find("Body").gameObject;
 
+        // Sets up on click listeners for header buttons.
         Button minimizeButton = header.transform.Find("Minimize Button").GetComponent<Button>();
         minimizeButton.onClick.AddListener(MinimizeWindow);
 
@@ -24,12 +34,10 @@ public class Window : MonoBehaviour {
         closeButton.onClick.AddListener(CloseWindow);
     }
 
-    protected void ChangeTitle(string name)
-    {
-        TMP_Text windowName = header.transform.Find("Title").GetComponent<TMP_Text>();
-        windowName.text = name;      
-    } 
-
+    /// <summary>
+    ///     Destroys and clears supplied prefab list.
+    /// </summary>
+    /// <param name="lst">List of prefab GameObjects.</param>
     protected void ClearPrefabs(List<GameObject> lst)
     {
         // Destroys all objects
@@ -42,37 +50,68 @@ public class Window : MonoBehaviour {
         lst.Clear();
     }
 
+    /// <summary>
+    ///     Capitalizes every word in string for formatting.
+    /// </summary>
+    /// <param name="x">String to be formatted.</param>
+    /// <returns>Formatted string.</returns>
     protected string ToCapitalize(string x)
     {
         return Regex.Replace(x, @"\b([a-z])", m => m.Value.ToUpper());
     }
 
+    public void OnDrag(PointerEventData pointerData)
+    {
+        transform.position = Input.mousePosition;
+    }
+
+    /// <summary>
+    ///     Sets the title of the window.
+    /// </summary>
+    /// <param name="name">New window name.</param>
+    protected void SetTitle(string name)
+    {
+        TMP_Text windowName = header.transform.Find("Title").GetComponent<TMP_Text>();
+        windowName.text = name;      
+    } 
+
+    /// <summary>
+    ///     Minimizes the window.
+    /// </summary>
     protected void MinimizeWindow()
     {
+        // Hides the body
         body.SetActive(false);
+        // Hides the minimize button and disables clicking.
         CanvasGroup minimizeCanvas = header.transform.Find("Minimize Button").GetComponent<CanvasGroup>();
         minimizeCanvas.alpha = 0;
-        minimizeCanvas.interactable = false;
         minimizeCanvas.blocksRaycasts = false;
+        // Shows the maximize button and allows clicking.
         CanvasGroup maximizeCanvas = header.transform.Find("Maximize Button").GetComponent<CanvasGroup>();
         maximizeCanvas.alpha = 1;
-        maximizeCanvas.interactable = true;
         maximizeCanvas.blocksRaycasts = true;
     }
 
+    /// <summary>
+    ///     Maximizes the window.
+    /// </summary>
     protected void MaximizeWindow()
     {
+        // Shows the body
         body.SetActive(true);
+        // Shows the minimize button
         CanvasGroup minimizeCanvas = header.transform.Find("Minimize Button").GetComponent<CanvasGroup>();
         minimizeCanvas.alpha = 1;
-        minimizeCanvas.interactable = true;
         minimizeCanvas.blocksRaycasts = true;
+        // Hides the maximize button
         CanvasGroup maximizeCanvas = header.transform.Find("Maximize Button").GetComponent<CanvasGroup>();
         maximizeCanvas.alpha = 0;
-        maximizeCanvas.interactable = false;
         maximizeCanvas.blocksRaycasts = false;
     }
 
+    /// <summary>
+    ///     Closes (hides) the window.
+    /// </summary>
     protected void CloseWindow()
     {
         gameObject.SetActive(false);
