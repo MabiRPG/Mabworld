@@ -6,14 +6,15 @@ using UnityEngine.EventSystems;
 using TMPro;
 
 /// <summary>
-///     This super class handles all basic window UI processing. Uses the Window prefab
-///     in unity.
+///     This super class handles all basic window UI processing. Uses the Window prefab in unity.
 /// </summary>
 public class Window : MonoBehaviour, IDragHandler
 {
     // GameObject references to header and body content in window prefab.
     protected GameObject header;
     protected GameObject body;
+
+    private RectTransform rectTransform;
 
     /// <summary>
     ///     Initializes the object.
@@ -22,6 +23,7 @@ public class Window : MonoBehaviour, IDragHandler
     {
         header = transform.Find("Header").gameObject;
         body = transform.Find("Body").gameObject;
+        rectTransform = GetComponent<RectTransform>();
 
         // Sets up on click listeners for header buttons.
         Button minimizeButton = header.transform.Find("Minimize Button").GetComponent<Button>();
@@ -60,9 +62,13 @@ public class Window : MonoBehaviour, IDragHandler
         return Regex.Replace(x, @"\b([a-z])", m => m.Value.ToUpper());
     }
 
+    /// <summary>
+    ///     OnDrag interface implementation to move window.
+    /// </summary>
+    /// <param name="pointerData">Event payload associated with pointer (mouse / touch) events.</param>
     public void OnDrag(PointerEventData pointerData)
     {
-        transform.position = Input.mousePosition;
+        rectTransform.anchoredPosition += pointerData.delta;
     }
 
     /// <summary>
