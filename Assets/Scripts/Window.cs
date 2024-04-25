@@ -4,16 +4,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using Unity.VisualScripting;
 
 /// <summary>
 ///     This super class handles all basic window UI processing. Uses the Window prefab in unity.
 /// </summary>
-public class Window : MonoBehaviour, IDragHandler
+public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
 {
+
     // GameObject references to header and body content in window prefab.
     protected GameObject header;
     protected GameObject body;
 
+    private Canvas canvas;
     private RectTransform rectTransform;
 
     /// <summary>
@@ -23,6 +26,7 @@ public class Window : MonoBehaviour, IDragHandler
     {
         header = transform.Find("Header").gameObject;
         body = transform.Find("Body").gameObject;
+        canvas = transform.parent.GetComponent<Canvas>();
         rectTransform = GetComponent<RectTransform>();
 
         // Sets up on click listeners for header buttons.
@@ -68,7 +72,16 @@ public class Window : MonoBehaviour, IDragHandler
     /// <param name="pointerData">Event payload associated with pointer (mouse / touch) events.</param>
     public void OnDrag(PointerEventData pointerData)
     {
-        rectTransform.anchoredPosition += pointerData.delta;
+        rectTransform.anchoredPosition += pointerData.delta / canvas.scaleFactor;
+    }
+
+    /// <summary>
+    ///     OnPointerDown interface implementation to set as focus when clicked.
+    /// </summary>
+    /// <param name="pointerData">Event payload associated with pointer (mouse / touch) events.</param>
+    public void OnPointerDown(PointerEventData pointerData)
+    {
+        rectTransform.SetAsLastSibling();
     }
 
     /// <summary>
