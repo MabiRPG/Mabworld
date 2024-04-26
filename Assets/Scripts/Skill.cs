@@ -1,7 +1,7 @@
 using System.Data;
 using System.Linq;
 using System.Collections.Generic;
-using UnityEngine;
+using UnityEngine.Events;
 
 //==============================================================================
 // ** Skill
@@ -26,10 +26,12 @@ public class Skill
 
     // List of training methods at current rank
     public List<TrainingMethod> methods = new List<TrainingMethod>();
+    // Unity Event for advancement
+    public UnityEvent rankUpEvent = new UnityEvent();
 
     // All ranks in string format
     private string[] ranks = {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
-    
+
     // Query strings to database.
     private const string skillQuery = @"SELECT * FROM skills WHERE skill_id = @id LIMIT 1;";
     private const string statsQuery = @"SELECT skill_stats.*, skill_stats_type.stat
@@ -96,18 +98,21 @@ public class Skill
         }
     }
 
+    public bool CanRankUp()
+    {
+        return index + 1 < ranks.Length;
+    }
+
     //--------------------------------------------------------------------------
     // * Ranks up the skill
     //--------------------------------------------------------------------------
     public void RankUp() 
     {
-        if (index + 1 < ranks.Length)
-        {
-            index++;
-            rank = ranks[index];
-            xp = 0;
-            CreateTrainingMethods();
-        }
+        index++;
+        rank = ranks[index];
+        xp = 0;
+        CreateTrainingMethods();
+        rankUpEvent.Invoke();
     }
 
     //--------------------------------------------------------------------------

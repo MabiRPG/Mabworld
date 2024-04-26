@@ -6,7 +6,7 @@ using TMPro;
 /// <summary>
 ///     This class handles the detailed skill window processing.
 /// </summary>
-public class Window_Skill_Detailed : Window
+public class WindowSkillDetailed : Window
 {
     // Prefab for every skill stat rendering
     public GameObject statPrefab;
@@ -16,17 +16,8 @@ public class Window_Skill_Detailed : Window
     // Skill of window
     private Skill skill;
     // List of prefab objects.
-    private List<GameObject> statList = new List<GameObject>();
-    private List<GameObject> trainingMethodList = new List<GameObject>();
-
-    /// <summary>
-    ///     Initializes the object.
-    /// </summary>
-    protected override void Awake()
-    {
-        base.Awake();
-        SetTitle("Skill Info");
-    }
+    private Dictionary<string, GameObject> statPrefabs = new Dictionary<string, GameObject>();
+    private Dictionary<string, GameObject> trainingMethodPrefabs = new Dictionary<string, GameObject>();
 
     /// <summary>
     ///     Initializes the object manually with parameters.
@@ -35,6 +26,7 @@ public class Window_Skill_Detailed : Window
     public void Init(Skill newSkill)
     {
         skill = newSkill;
+        skill.rankUpEvent.AddListener(Draw);
         Draw();
     }
 
@@ -76,14 +68,21 @@ public class Window_Skill_Detailed : Window
             }
 
             statName = ToCapitalize(statName.Replace("_", " "));
+            GameObject obj;
 
-            GameObject obj = Instantiate(statPrefab, statTransform);
+            if (!statPrefabs.ContainsKey(statName))
+            {
+                obj = Instantiate(statPrefab, statTransform);
+                statPrefabs.Add(statName, obj);
+            }
+            else
+            {
+                obj = statPrefabs[statName];
+            }
 
             // Generates the stat field for every skill stat.
             TMP_Text field = obj.GetComponent<TMP_Text>();
             field.text = statName + ": " + statValue;
-
-            statList.Add(obj);
         }
 
         Transform trainingMethodsTransform = body.transform.Find("Training Methods");
@@ -96,14 +95,22 @@ public class Window_Skill_Detailed : Window
                 float.Parse(method.method["xp_gain_each"].ToString()), method.method["count"],
                 method.method["count_max"].ToString());
 
-            GameObject obj = Instantiate(trainingMethodPrefab, trainingMethodsTransform);
+            GameObject obj;
+
+            if (!trainingMethodPrefabs.ContainsKey(methodName))
+            {
+                obj = Instantiate(trainingMethodPrefab, trainingMethodsTransform);
+                trainingMethodPrefabs.Add(methodName, obj);
+            }
+            else
+            {
+                obj = trainingMethodPrefabs[methodName];
+            }
 
             name = obj.transform.Find("Method Name").GetComponent<TMP_Text>();
             TMP_Text field = obj.transform.Find("Method Values").GetComponent<TMP_Text>();
             name.text = methodName;
             field.text = methodValue;
-
-            trainingMethodList.Add(obj);
         }
 
         // Finds the xp bar.

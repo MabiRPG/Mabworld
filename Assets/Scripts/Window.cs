@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
-using Unity.VisualScripting;
 
 /// <summary>
 ///     This super class handles all basic window UI processing. Uses the Window prefab in unity.
@@ -128,10 +127,15 @@ public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
         maximizeCanvas.blocksRaycasts = false;
     }
 
+    public void ShowWindow()
+    {
+        gameObject.SetActive(true);
+    }
+
     /// <summary>
     ///     Closes (hides) the window.
     /// </summary>
-    protected void CloseWindow()
+    public void CloseWindow()
     {
         gameObject.SetActive(false);
     }

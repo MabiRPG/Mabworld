@@ -6,18 +6,20 @@ using TMPro;
 /// <summary>
 ///     This class handles the skill window processing.
 /// </summary>
-public class Window_Skill : Window
+public class WindowSkill : Window
 {
     // Global reference.
-    public static Window_Skill instance = null;
+    public static WindowSkill instance = null;
     
     // Prefab for every skill row in window.
     public GameObject skillPrefab;
     // Prefab for extra skill detail window.
     public GameObject windowSkillDetailedPrefab;
-    // Lists of prefabs.
-    private List<GameObject> skillList = new List<GameObject>();
-    private List<GameObject> windowSkillDetailedList = new List<GameObject>(); 
+    // Prefab for skill advancement.
+    public GameObject windowSkillAdvancePrefab;
+    // Dict of prefabs.
+    private Dictionary<Skill, GameObject> skillPrefabs = new Dictionary<Skill, GameObject>();
+    private Dictionary<Skill, GameObject> windowSkillDetailedPrefabs = new Dictionary<Skill, GameObject>();
 
     /// <summary>
     ///     Initializes the object.
@@ -25,7 +27,6 @@ public class Window_Skill : Window
     protected override void Awake() 
     {
         base.Awake();
-        SetTitle("Skills");
 
         // Singleton pattern
         if (instance == null)
@@ -53,7 +54,17 @@ public class Window_Skill : Window
         {
             // Instantiates the prefab in the window. Parent window has
             // a vertical layout group to control children components.
-            GameObject obj = Instantiate(skillPrefab, body.transform);
+            GameObject obj;
+            
+            if (!skillPrefabs.ContainsKey(skill.Value))
+            {
+                obj = Instantiate(skillPrefab, body.transform);
+                skillPrefabs.Add(skill.Value, obj);
+            }
+            else
+            {
+                obj = skillPrefabs[skill.Value];
+            }
             
             // Finds the skill name field and reassigns it.
             GameObject nameObj = obj.transform.Find("Name Button").gameObject;
@@ -78,8 +89,9 @@ public class Window_Skill : Window
             Progress_Bar overXpBarScript = overXpBar.GetComponent<Progress_Bar>();
 
             // Finds the advancement button.
-            Button rankUpButton = obj.transform.Find("Rank Up Button").GetComponent<Button>();
-            rankUpButton.onClick.AddListener(delegate {RankUpSkill(skill.Value);});
+            Button advanceButton = obj.transform.Find("Advance Button").GetComponent<Button>();
+            //rankUpButton.onClick.AddListener(delegate {RankUpSkill(skill.Value);});
+            advanceButton.onClick.AddListener(delegate {CreateAdvanceSkillWindow(skill.Value);});
 
             // If < 100, use normal bar, else use overfill bar.
             if (skill.Value.xp <= 100) 
@@ -91,7 +103,7 @@ public class Window_Skill : Window
                 // Remove the rank up button if cannot rank up.
                 if (skill.Value.xp < 100) 
                 {
-                    rankUpButton.gameObject.SetActive(false);
+                    advanceButton.gameObject.SetActive(false);
                 }
             }
             else 
@@ -101,8 +113,7 @@ public class Window_Skill : Window
                 overXpBarScript.SetMaximum(skill.Value.xpMax);
             }
 
-            // Adds it to the list.
-            skillList.Add(obj);
+            skill.Value.rankUpEvent.AddListener(Draw);
         }
     }
 
@@ -113,7 +124,7 @@ public class Window_Skill : Window
     {
         // Changes visibilty of object.
         gameObject.SetActive(!gameObject.activeSelf);
-        ClearPrefabs(skillList);
+        //ClearPrefabs(skillPrefabs);
 
         if (gameObject.activeSelf) 
         {
@@ -121,15 +132,11 @@ public class Window_Skill : Window
         }
     }
 
-    /// <summary>
-    ///     Ranks up the skill.
-    /// </summary>
-    /// <param name="skill">Skill instance to rank up.</param>
-    private void RankUpSkill(Skill skill)
+    private void CreateAdvanceSkillWindow(Skill skill)
     {
-        skill.RankUp();
-        ClearPrefabs(skillList);
-        Draw();
+        GameObject obj = Instantiate(windowSkillAdvancePrefab, transform.parent);
+        WindowSkillAdvance window = obj.GetComponent<WindowSkillAdvance>();
+        window.Init(skill);
     }
 
     /// <summary>
@@ -138,9 +145,20 @@ public class Window_Skill : Window
     /// <param name="skill">Skill to populate window.</param>
     private void CreateDetailedSkillWindow(Skill skill)
     {
-        GameObject obj = Instantiate(windowSkillDetailedPrefab, transform.parent);
-        Window_Skill_Detailed window = obj.GetComponent<Window_Skill_Detailed>();
-        window.Init(skill);
-        windowSkillDetailedList.Add(obj);
+        GameObject obj;
+
+        if (!windowSkillDetailedPrefabs.ContainsKey(skill))
+        {
+            obj = Instantiate(windowSkillDetailedPrefab, transform.parent);
+            windowSkillDetailedPrefabs.Add(skill, obj);
+            WindowSkillDetailed window = obj.GetComponent<WindowSkillDetailed>();
+            window.Init(skill);
+        }
+        else
+        {
+            obj = windowSkillDetailedPrefabs[skill];
+            WindowSkillDetailed window = obj.GetComponent<WindowSkillDetailed>();
+            window.ShowWindow();
+        }
     }
 }

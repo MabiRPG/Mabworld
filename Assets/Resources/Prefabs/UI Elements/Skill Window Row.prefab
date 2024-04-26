@@ -281,7 +281,7 @@ GameObject:
   - component: {fileID: 2074582553204537645}
   - component: {fileID: 6204336725658424633}
   m_Layer: 5
-  m_Name: Rank Up Button
+  m_Name: Advance Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

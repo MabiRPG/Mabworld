@@ -14,6 +14,9 @@ public class GameManager : MonoBehaviour
     // Name of the game database in Assets/Database folder.
     public string databaseName;
 
+    public Canvas canvas;
+    public GameObject windowSkillPrefab;
+
     /// <summary>
     ///     Initializes the object.
     /// </summary>
@@ -30,6 +33,8 @@ public class GameManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
+
+        Instantiate(windowSkillPrefab, canvas.transform);
     }
 
     /// <summary>

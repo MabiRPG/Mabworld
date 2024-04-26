@@ -13,6 +13,8 @@ public class Player : Actor
     // Global instance of player
     public static Player instance = null;
 
+    public int actorAP = 1000;
+
     // How much our life skill success rates scale with dex.
     public int lifeSkillDexFactor = 10;
     // What the maximize success rate increase is.
@@ -76,7 +78,7 @@ public class Player : Actor
 
         if (callSkillWindow)
         {
-            Window_Skill.instance.ToggleVisible();
+            WindowSkill.instance.ToggleVisible();
         }
     }
 
@@ -87,6 +89,11 @@ public class Player : Actor
     public bool IsSkillLearned(int id)
     {
         return skills.ContainsKey(id);
+    }
+
+    public bool IsSkillLearned(Skill skill)
+    {
+        return skills.ContainsValue(skill);
     }
 
     //--------------------------------------------------------------------------
@@ -109,11 +116,22 @@ public class Player : Actor
     //--------------------------------------------------------------------------
     public void RankUpSkill(int id)
     {
-        if (!IsSkillLearned(id)) {
-            return;
-        }
+        int apCost = (int)skills[id].stats["ap_cost"][skills[id].index];
 
-        skills[id].RankUp();
+        if (IsSkillLearned(id) && skills[id].CanRankUp() && actorAP >= apCost)
+        {
+            skills[id].RankUp();
+        }
+    }
+
+    public void RankUpSkill(Skill skill)
+    {
+        int apCost = (int)skill.stats["ap_cost"][skill.index];
+
+        if (IsSkillLearned(skill) && skill.CanRankUp() && actorAP >= apCost)
+        {
+            skill.RankUp();
+        }        
     }
 
     //--------------------------------------------------------------------------
