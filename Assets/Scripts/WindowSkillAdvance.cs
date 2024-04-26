@@ -21,6 +21,8 @@ public class WindowSkillAdvance : Window
 
     private void Draw() 
     {
+        int index = skill.index + 1;
+
         // Finds the skill name and reassigns it.
         TMP_Text name = body.transform.Find("Name").GetComponent<TMP_Text>();
         name.text = "Rank " + skill.rank + " " + skill.info["name"];
@@ -31,9 +33,8 @@ public class WindowSkillAdvance : Window
         img.sprite = Resources.Load<Sprite>(dir);
 
         TMP_Text advance = body.transform.Find("Advance Text").GetComponent<TMP_Text>();
-        advance.text = advance.text.Replace("{Rank}", "Rank " + skill.rank);
+        advance.text = advance.text.Replace("{Rank}", "Rank " + skill.ranks[index]);
 
-        int index = skill.index;
         Transform statTransform = body.transform.Find("Stats");
 
         // For every stat, create a new stat field prefab and populate it.

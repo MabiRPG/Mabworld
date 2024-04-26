@@ -30,7 +30,7 @@ public class Skill
     public UnityEvent rankUpEvent = new UnityEvent();
 
     // All ranks in string format
-    private string[] ranks = {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
+    public string[] ranks = {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
 
     // Query strings to database.
     private const string skillQuery = @"SELECT * FROM skills WHERE skill_id = @id LIMIT 1;";
