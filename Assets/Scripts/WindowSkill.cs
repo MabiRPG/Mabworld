@@ -18,8 +18,11 @@ public class WindowSkill : Window
     // Prefab for skill advancement.
     public GameObject windowSkillAdvancePrefab;
     // Dict of prefabs.
-    private Dictionary<Skill, GameObject> skillPrefabs = new Dictionary<Skill, GameObject>();
-    private Dictionary<Skill, GameObject> windowSkillDetailedPrefabs = new Dictionary<Skill, GameObject>();
+    //private Dictionary<Skill, GameObject> skillPrefabs = new Dictionary<Skill, GameObject>();
+    //private Dictionary<Skill, GameObject> windowSkillDetailedPrefabs = new Dictionary<Skill, GameObject>();
+    private PrefabManager skillPrefabs;
+    private PrefabManager detailedPrefabs;
+    private PrefabManager advancePrefabs;
 
     /// <summary>
     ///     Initializes the object.
@@ -42,6 +45,13 @@ public class WindowSkill : Window
 
         // Hides the object at start
         gameObject.SetActive(false);
+
+        skillPrefabs = ScriptableObject.CreateInstance<PrefabManager>();
+        skillPrefabs.SetPrefab(skillPrefab);
+        detailedPrefabs = ScriptableObject.CreateInstance<PrefabManager>();
+        detailedPrefabs.SetPrefab(windowSkillDetailedPrefab);
+        advancePrefabs = ScriptableObject.CreateInstance<PrefabManager>();
+        advancePrefabs.SetPrefab(windowSkillAdvancePrefab);
     }
 
     /// <summary>
@@ -54,18 +64,8 @@ public class WindowSkill : Window
         {
             // Instantiates the prefab in the window. Parent window has
             // a vertical layout group to control children components.
-            GameObject obj;
-            
-            if (!skillPrefabs.ContainsKey(skill.Value))
-            {
-                obj = Instantiate(skillPrefab, body.transform);
-                skillPrefabs.Add(skill.Value, obj);
-            }
-            else
-            {
-                obj = skillPrefabs[skill.Value];
-            }
-            
+            GameObject obj = skillPrefabs.GetFree(skill.Value, body.transform);
+
             // Finds the skill name field and reassigns it.
             GameObject nameObj = obj.transform.Find("Name Button").gameObject;
             TMP_Text name = nameObj.GetComponentInChildren<TMP_Text>();
@@ -134,7 +134,7 @@ public class WindowSkill : Window
 
     private void CreateAdvanceSkillWindow(Skill skill)
     {
-        GameObject obj = Instantiate(windowSkillAdvancePrefab, transform.parent);
+        GameObject obj = advancePrefabs.GetFree(skill, transform.parent);
         WindowSkillAdvance window = obj.GetComponent<WindowSkillAdvance>();
         window.Init(skill);
     }
@@ -145,20 +145,9 @@ public class WindowSkill : Window
     /// <param name="skill">Skill to populate window.</param>
     private void CreateDetailedSkillWindow(Skill skill)
     {
-        GameObject obj;
-
-        if (!windowSkillDetailedPrefabs.ContainsKey(skill))
-        {
-            obj = Instantiate(windowSkillDetailedPrefab, transform.parent);
-            windowSkillDetailedPrefabs.Add(skill, obj);
-            WindowSkillDetailed window = obj.GetComponent<WindowSkillDetailed>();
-            window.Init(skill);
-        }
-        else
-        {
-            obj = windowSkillDetailedPrefabs[skill];
-            WindowSkillDetailed window = obj.GetComponent<WindowSkillDetailed>();
-            window.ShowWindow();
-        }
+        GameObject obj = detailedPrefabs.GetFree(skill, transform.parent);
+        WindowSkillDetailed window = obj.GetComponent<WindowSkillDetailed>();
+        window.Init(skill);
+        window.ShowWindow();
     }
 }

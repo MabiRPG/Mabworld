@@ -19,8 +19,18 @@ public class WindowSkillDetailed : Window
     //private Dictionary<string, GameObject> statPrefabs = new Dictionary<string, GameObject>();
     //private Dictionary<string, GameObject> trainingMethodPrefabs = new Dictionary<string, GameObject>();
 
-    private PrefabAlloc statPrefabs;
-    private PrefabAlloc trainingMethodPrefabs;
+    private PrefabManager statPrefabs;
+    private PrefabManager trainingMethodPrefabs;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        statPrefabs = ScriptableObject.CreateInstance<PrefabManager>();
+        statPrefabs.SetPrefab(statPrefab);
+        trainingMethodPrefabs = ScriptableObject.CreateInstance<PrefabManager>();
+        trainingMethodPrefabs.SetPrefab(trainingMethodPrefab);
+    }
 
     /// <summary>
     ///     Initializes the object manually with parameters.
@@ -29,12 +39,6 @@ public class WindowSkillDetailed : Window
     public void Init(Skill newSkill)
     {
         skill = newSkill;
-
-        statPrefabs = ScriptableObject.CreateInstance<PrefabAlloc>();
-        statPrefabs.SetPrefab(statPrefab);
-        trainingMethodPrefabs = ScriptableObject.CreateInstance<PrefabAlloc>();
-        trainingMethodPrefabs.SetPrefab(trainingMethodPrefab);
-
         skill.rankUpEvent.AddListener(Draw);
         Draw();
     }
@@ -77,8 +81,7 @@ public class WindowSkillDetailed : Window
             }
 
             statName = ToCapitalize(statName.Replace("_", " "));
-            GameObject obj = statPrefabs.GetFree(statName);
-            obj.transform.SetParent(statTransform, false);
+            GameObject obj = statPrefabs.GetFree(statName, statTransform);
 
             // Generates the stat field for every skill stat.
             TMP_Text field = obj.GetComponent<TMP_Text>();
@@ -95,8 +98,7 @@ public class WindowSkillDetailed : Window
                 float.Parse(method.method["xp_gain_each"].ToString()), method.method["count"],
                 method.method["count_max"].ToString());
 
-            GameObject obj = trainingMethodPrefabs.GetFree(methodName);
-            obj.transform.SetParent(trainingMethodsTransform, false);
+            GameObject obj = trainingMethodPrefabs.GetFree(methodName, trainingMethodsTransform);
 
             name = obj.transform.Find("Method Name").GetComponent<TMP_Text>();
             TMP_Text field = obj.transform.Find("Method Values").GetComponent<TMP_Text>();

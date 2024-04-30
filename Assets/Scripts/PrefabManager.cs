@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PrefabAlloc : ScriptableObject
+public class PrefabManager : ScriptableObject
 {
     private GameObject prefab;
     private Dictionary<object, GameObject> prefabs = new Dictionary<object, GameObject>();
@@ -11,7 +11,7 @@ public class PrefabAlloc : ScriptableObject
         prefab = newPrefab;
     }
 
-    public GameObject GetFree(object key)
+    public GameObject GetFree(object key, Transform transform)
     {
         if (prefabs.ContainsKey(key))
         {
@@ -25,14 +25,23 @@ public class PrefabAlloc : ScriptableObject
             if (x.Value.activeSelf == false)
             {
                 obj = x.Value;
+                obj.SetActive(true);
                 prefabs.Remove(x.Key);
                 prefabs.Add(key, obj);
                 return obj;
             }
         }
 
-        obj = Instantiate(prefab);
+        obj = Instantiate(prefab, transform);
         prefabs.Add(key, obj);
         return obj;
+    }
+
+    public void SetActiveAll(bool state)
+    {
+        foreach (KeyValuePair<object, GameObject> x in prefabs)
+        {
+            x.Value.SetActive(state);
+        }
     }
 }
