@@ -14,6 +14,7 @@ public class Player : Actor
     public static Player instance = null;
 
     public int actorAP = 1000;
+    public ValueEventManager actorAPEvent = new ValueEventManager();
 
     // How much our life skill success rates scale with dex.
     public int lifeSkillDexFactor = 10;
@@ -116,20 +117,22 @@ public class Player : Actor
     //--------------------------------------------------------------------------
     public void RankUpSkill(int id)
     {
-        int apCost = (int)skills[id].stats["ap_cost"][skills[id].index];
+        int apCost = (int)skills[id].stats["ap_cost"][skills[id].index + 1];
 
         if (IsSkillLearned(id) && skills[id].CanRankUp() && actorAP >= apCost)
         {
+            actorAP -= apCost;
             skills[id].RankUp();
         }
     }
 
     public void RankUpSkill(Skill skill)
     {
-        int apCost = (int)skill.stats["ap_cost"][skill.index];
+        int apCost = (int)skill.stats["ap_cost"][skill.index + 1];
 
         if (IsSkillLearned(skill) && skill.CanRankUp() && actorAP >= apCost)
         {
+            actorAP -= apCost;
             skill.RankUp();
         }        
     }

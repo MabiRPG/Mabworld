@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 ///     This class handles progress bar rendering.
 /// </summary>
-public class Progress_Bar : MonoBehaviour
+public class ProgressBar : MonoBehaviour
 {
     public float current;
     public float maximum;

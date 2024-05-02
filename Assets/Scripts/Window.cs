@@ -40,22 +40,6 @@ public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
     }
 
     /// <summary>
-    ///     Destroys and clears supplied prefab list.
-    /// </summary>
-    /// <param name="lst">List of prefab GameObjects.</param>
-    protected void ClearPrefabs(List<GameObject> lst)
-    {
-        // Destroys all objects
-        foreach (GameObject obj in lst)
-        {
-            Destroy(obj);
-        }
-
-        // Clears the list for update
-        lst.Clear();
-    }
-
-    /// <summary>
     ///     Capitalizes every word in string for formatting.
     /// </summary>
     /// <param name="x">String to be formatted.</param>

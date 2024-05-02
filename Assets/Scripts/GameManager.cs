@@ -9,7 +9,7 @@ using Mono.Data.Sqlite;
 public class GameManager : MonoBehaviour 
 {
     // Global instance of GameManager
-    public static GameManager instance = null;
+    public static GameManager Instance {get; private set;}
 
     // Name of the game database in Assets/Database folder.
     public string databaseName;
@@ -23,9 +23,9 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         // Singleton recipe so only one instance is active at a time.
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
         }
         else
         {

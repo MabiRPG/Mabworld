@@ -12,14 +12,16 @@ public class WindowSkill : Window
     public static WindowSkill instance = null;
     
     // Prefab for every skill row in window.
-    public GameObject skillPrefab;
+    [SerializeField]
+    private GameObject skillPrefab;
     // Prefab for extra skill detail window.
-    public GameObject windowSkillDetailedPrefab;
+    [SerializeField]
+    private GameObject windowSkillDetailedPrefab;
     // Prefab for skill advancement.
-    public GameObject windowSkillAdvancePrefab;
-    // Dict of prefabs.
-    //private Dictionary<Skill, GameObject> skillPrefabs = new Dictionary<Skill, GameObject>();
-    //private Dictionary<Skill, GameObject> windowSkillDetailedPrefabs = new Dictionary<Skill, GameObject>();
+    [SerializeField]
+    private GameObject windowSkillAdvancePrefab;
+    
+    // Prefab manager instances.
     private PrefabManager skillPrefabs;
     private PrefabManager detailedPrefabs;
     private PrefabManager advancePrefabs;
@@ -40,8 +42,6 @@ public class WindowSkill : Window
         {
             Destroy(gameObject);
         }
-
-        DontDestroyOnLoad(gameObject);
 
         // Hides the object at start
         gameObject.SetActive(false);
@@ -84,13 +84,12 @@ public class WindowSkill : Window
 
             // Finds the xp bar.
             GameObject xpBar = obj.transform.Find("XP Bar").gameObject;
-            Progress_Bar xpBarScript = xpBar.GetComponent<Progress_Bar>();
+            ProgressBar xpBarScript = xpBar.GetComponent<ProgressBar>();
             GameObject overXpBar = obj.transform.Find("Overfill XP Bar").gameObject;
-            Progress_Bar overXpBarScript = overXpBar.GetComponent<Progress_Bar>();
+            ProgressBar overXpBarScript = overXpBar.GetComponent<ProgressBar>();
 
             // Finds the advancement button.
             Button advanceButton = obj.transform.Find("Advance Button").GetComponent<Button>();
-            //rankUpButton.onClick.AddListener(delegate {RankUpSkill(skill.Value);});
             advanceButton.onClick.AddListener(delegate {CreateAdvanceSkillWindow(skill.Value);});
 
             // If < 100, use normal bar, else use overfill bar.
@@ -113,7 +112,7 @@ public class WindowSkill : Window
                 overXpBarScript.SetMaximum(skill.Value.xpMax);
             }
 
-            skill.Value.rankUpEvent.AddListener(Draw);
+            //skill.Value.rankUpEvent.AddListener(Draw);
         }
     }
 
@@ -124,10 +123,10 @@ public class WindowSkill : Window
     {
         // Changes visibilty of object.
         gameObject.SetActive(!gameObject.activeSelf);
-        //ClearPrefabs(skillPrefabs);
 
         if (gameObject.activeSelf) 
         {
+            Clear();
             Draw();
         }
     }
@@ -136,7 +135,7 @@ public class WindowSkill : Window
     {
         GameObject obj = advancePrefabs.GetFree(skill, transform.parent);
         WindowSkillAdvance window = obj.GetComponent<WindowSkillAdvance>();
-        window.Init(skill);
+        window.Setup(skill);
     }
 
     /// <summary>
@@ -147,7 +146,11 @@ public class WindowSkill : Window
     {
         GameObject obj = detailedPrefabs.GetFree(skill, transform.parent);
         WindowSkillDetailed window = obj.GetComponent<WindowSkillDetailed>();
-        window.Init(skill);
-        window.ShowWindow();
+        window.Setup(skill);
+    }
+
+    private void Clear()
+    {
+        skillPrefabs.SetActiveAll(false);
     }
 }

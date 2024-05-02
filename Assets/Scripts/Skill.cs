@@ -1,7 +1,6 @@
 using System.Data;
 using System.Linq;
 using System.Collections.Generic;
-using UnityEngine.Events;
 
 //==============================================================================
 // ** Skill
@@ -18,16 +17,17 @@ public class Skill
 
     // Current index and rank of skill.
     public int index = 0;
+    public ValueEventManager indexEvent = new ValueEventManager();
     public string rank;
 
     // Current xp and maximum rank xp.
     public float xp;
     public float xpMax;
+    public ValueEventManager xpEvent = new ValueEventManager();
+    public ValueEventManager xpMaxEvent = new ValueEventManager();
 
     // List of training methods at current rank
     public List<TrainingMethod> methods = new List<TrainingMethod>();
-    // Unity Event for advancement
-    public UnityEvent rankUpEvent = new UnityEvent();
 
     // All ranks in string format
     public string[] ranks = {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
@@ -70,7 +70,7 @@ public class Skill
         // Creates an empty data table for our queries.
         DataTable dt = new DataTable();
         // Gets the basic skill info
-        dt = GameManager.instance.QueryDatabase(skillQuery, ("@id", id));   
+        dt = GameManager.Instance.QueryDatabase(skillQuery, ("@id", id));   
 
         // Iterate over all rows and columns, inserts into dictionary.
         foreach (DataRow row in dt.Rows)
@@ -84,7 +84,7 @@ public class Skill
         dt.Clear();
 
         // Gets the detailed skill info at every rank.
-        dt = GameManager.instance.QueryDatabase(statsQuery, ("@id", id));
+        dt = GameManager.Instance.QueryDatabase(statsQuery, ("@id", id));
         
         // Iterate over all rows and columns, inserts into dictionary.
         foreach (DataRow row in dt.Rows)
@@ -112,7 +112,7 @@ public class Skill
         rank = ranks[index];
         xp = 0;
         CreateTrainingMethods();
-        rankUpEvent.Invoke();
+        indexEvent.RaiseOnValueChange();
     }
 
     //--------------------------------------------------------------------------
@@ -143,7 +143,7 @@ public class Skill
     {
         // Creates a new data table and queries the db.
         DataTable dt = new DataTable();
-        dt = GameManager.instance.QueryDatabase(methodsQuery, ("@id", info["skill_id"]), ("@rank", rank));
+        dt = GameManager.Instance.QueryDatabase(methodsQuery, ("@id", info["skill_id"]), ("@rank", rank));
         // Clears the previous training methods.
         methods.Clear();
         // Resets the max xp gainable.

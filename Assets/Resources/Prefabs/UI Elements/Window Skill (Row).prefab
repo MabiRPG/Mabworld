@@ -776,7 +776,7 @@ GameObject:
   - component: {fileID: 4247327637081452632}
   - component: {fileID: -1905248787714470876}
   m_Layer: 5
-  m_Name: Skill Window Row
+  m_Name: Window Skill (Row)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
