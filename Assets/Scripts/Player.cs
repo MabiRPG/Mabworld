@@ -28,6 +28,8 @@ public class Player : Actor
     public int hugeLuckyFactor = 50000;
     public int hugeLuckyGain = 20;
 
+    public GameObject Map;
+
     //--------------------------------------------------------------------------
     // * Initializes the object
     //--------------------------------------------------------------------------
@@ -71,6 +73,7 @@ public class Player : Actor
         float moveHorizontal = Input.GetAxisRaw("Horizontal");
         float moveVertical = Input.GetAxisRaw("Vertical");
         bool callSkillWindow = Input.GetButtonDown("Skill Window");
+        bool callMap = Input.GetButtonDown("Map");
 
         if (moveHorizontal != 0 || moveVertical != 0) 
         {
@@ -80,6 +83,10 @@ public class Player : Actor
         if (callSkillWindow)
         {
             WindowSkill.instance.ToggleVisible();
+        }
+        if (callMap)
+        {
+            Map.SetActive(!Map.activeSelf);
         }
     }
 
