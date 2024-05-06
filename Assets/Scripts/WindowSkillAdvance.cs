@@ -128,7 +128,7 @@ public class WindowSkillAdvance : Window
                 continue;
             }
 
-            GameObject obj = statPrefabs.GetFree(stat, statTransform);
+            GameObject obj = statPrefabs.GetFree(stat.Key, statTransform);
             WindowSkillStat script = obj.GetComponent<WindowSkillStat>();
             script.SetText(stat.Key, stat.Value[index]);
         }        

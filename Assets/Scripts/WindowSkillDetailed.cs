@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 /// <summary>
 ///     This class handles the detailed skill window processing.
@@ -30,7 +31,11 @@ public class WindowSkillDetailed : Window
     private ProgressBar xpBarScript;
     private GameObject overXpBar;
     private ProgressBar overXpBarScript;
+    private Button advanceButton;
     private Button closeButton;
+
+    // Event handlers
+    public EventManager advanceButtonEvent = new EventManager();
 
     /// <summary>
     ///     Initializes the object.
@@ -47,6 +52,7 @@ public class WindowSkillDetailed : Window
         xpBarScript = xpBar.GetComponent<ProgressBar>();
         overXpBar = body.transform.Find("Bars Parent").Find("Bars").Find("Overfill XP Bar").gameObject;
         overXpBarScript = overXpBar.GetComponent<ProgressBar>();
+        advanceButton = body.transform.Find("Advance Parent").Find("Advance Button").GetComponent<Button>();
         closeButton = body.transform.Find("Close Button").GetComponent<Button>();
 
         statPrefabs = ScriptableObject.CreateInstance<PrefabManager>();
@@ -60,6 +66,7 @@ public class WindowSkillDetailed : Window
     /// </summary>
     private void OnEnable()
     {
+        advanceButton.onClick.AddListener(delegate {advanceButtonEvent.RaiseOnChange();});
         closeButton.onClick.AddListener(CloseWindow);
     }
 
@@ -70,6 +77,7 @@ public class WindowSkillDetailed : Window
     {
         Clear();
 
+        advanceButtonEvent.Clear();
         closeButton.onClick.RemoveListener(CloseWindow);
     }
 
@@ -77,7 +85,7 @@ public class WindowSkillDetailed : Window
     ///     Sets the skill instance.
     /// </summary>
     /// <param name="newSkill">Skill instance for window.</param>
-    public void SetSkill(Skill newSkill)
+    public void SetSkill(Skill newSkill, Action advanceButtonAction)
     {
         Clear();
         skill = newSkill;
@@ -91,6 +99,7 @@ public class WindowSkillDetailed : Window
         skill.indexEvent.OnChange += UpdateRank;
         skill.xpEvent.OnChange += UpdateXp;
         skill.xpMaxEvent.OnChange += UpdateXp;
+        advanceButtonEvent.OnChange += advanceButtonAction;
 
         ShowWindow();
     }
@@ -130,7 +139,7 @@ public class WindowSkillDetailed : Window
                 continue;
             }
 
-            GameObject obj = statPrefabs.GetFree(stat, statTransform);
+            GameObject obj = statPrefabs.GetFree(stat.Key, statTransform);
             WindowSkillStat script = obj.GetComponent<WindowSkillStat>();
             script.SetText(stat.Key, stat.Value[index]);
         }
@@ -138,7 +147,7 @@ public class WindowSkillDetailed : Window
         // For every training method, create a new training method prefab and populate it.
         foreach (TrainingMethod method in skill.methods)
         {
-            GameObject obj = trainingMethodPrefabs.GetFree(method, trainingMethodsTransform);
+            GameObject obj = trainingMethodPrefabs.GetFree(method.method["name"], trainingMethodsTransform);
             WindowSkillTrainingMethod script = obj.GetComponent<WindowSkillTrainingMethod>();
             script.SetText(method);
         }
@@ -149,6 +158,8 @@ public class WindowSkillDetailed : Window
     /// </summary>
     private void UpdateXp()
     {
+        advanceButton.gameObject.transform.parent.gameObject.SetActive(false);
+
         // If < 100, use normal bar, else use overfill bar.
         if (skill.xp <= 100) 
         {
@@ -157,11 +168,10 @@ public class WindowSkillDetailed : Window
             xpBarScript.SetMaximum(100);
             overXpBar.SetActive(false);
 
-            // Remove the rank up button if cannot rank up.
-            // if (skill.xp < 100) 
-            // {
-            //     rankUpButton.gameObject.SetActive(false);
-            // }
+            if (skill.xp == 100)
+            {
+                advanceButton.gameObject.transform.parent.gameObject.SetActive(true);
+            }
         }
         else 
         {
@@ -169,7 +179,7 @@ public class WindowSkillDetailed : Window
             overXpBarScript.SetCurrent(skill.xp);
             overXpBarScript.SetMaximum(skill.xpMax);
             overXpBar.SetActive(true);
-            //advanceButton.gameObject.SetActive(true);
+            advanceButton.gameObject.transform.parent.gameObject.SetActive(true);
         }       
     }
 }

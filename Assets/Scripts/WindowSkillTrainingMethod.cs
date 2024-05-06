@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public class WindowSkillTrainingMethod : MonoBehaviour 
 {
-    private TMP_Text name;
+    private TMP_Text methodName;
     private TMP_Text field;
 
     /// <summary>
@@ -14,7 +14,7 @@ public class WindowSkillTrainingMethod : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        name = gameObject.transform.Find("Method Name").GetComponent<TMP_Text>();
+        methodName = gameObject.transform.Find("Method Name").GetComponent<TMP_Text>();
         field = gameObject.transform.Find("Method Values").GetComponent<TMP_Text>();
     }
 
@@ -31,7 +31,7 @@ public class WindowSkillTrainingMethod : MonoBehaviour
         string sValue = string.Format("+{0:0.00} (<color=\"yellow\">{1}<color=\"white\">/{2})",
             xpGainEach, count, countMax);
 
-        name.text = sName;
+        methodName.text = sName;
         field.text = sValue;
     }
 }

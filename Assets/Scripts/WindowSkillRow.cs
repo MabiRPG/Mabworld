@@ -12,7 +12,7 @@ public class WindowSkillRow : MonoBehaviour
     private Skill skill;
 
     // List of prefab object references
-    private TMP_Text name;
+    private TMP_Text skillName;
     private Button nameButton;
     private Image icon;
     private TMP_Text rank;
@@ -31,7 +31,7 @@ public class WindowSkillRow : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        name = gameObject.transform.Find("Name Button").GetComponentInChildren<TMP_Text>();
+        skillName = gameObject.transform.Find("Name Button").GetComponentInChildren<TMP_Text>();
         nameButton = gameObject.transform.Find("Name Button").GetComponent<Button>();
         icon = gameObject.GetComponentInChildren<Image>();
         rank = gameObject.transform.Find("Rank").GetComponent<TMP_Text>();
@@ -77,7 +77,7 @@ public class WindowSkillRow : MonoBehaviour
         Clear();
         skill = newSkill;
 
-        name.text = skill.info["name"].ToString();
+        skillName.text = skill.info["name"].ToString();
         string dir = "Sprites/Skill Icons/" + skill.info["icon_name"].ToString();
         icon.sprite = Resources.Load<Sprite>(dir);     
         UpdateRank();
@@ -117,6 +117,8 @@ public class WindowSkillRow : MonoBehaviour
     /// </summary>
     private void UpdateXp()
     {
+        advanceButton.gameObject.SetActive(false);
+
         // If < 100, use normal bar, else use overfill bar.
         if (skill.xp <= 100) 
         {
@@ -125,10 +127,9 @@ public class WindowSkillRow : MonoBehaviour
             xpBarScript.SetMaximum(100);
             overXpBar.SetActive(false);
 
-            // Remove the rank up button if cannot rank up.
-            if (skill.xp < 100) 
+            if (skill.xp == 100) 
             {
-                advanceButton.gameObject.SetActive(false);
+                advanceButton.gameObject.SetActive(true);
             }
         }
         else 

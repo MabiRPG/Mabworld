@@ -65,7 +65,7 @@ public class WindowSkill : Window
         {
             // Instantiates the prefab in the window. Parent window has
             // a vertical layout group to control children components.
-            GameObject obj = skillPrefabs.GetFree(skill.Value, body.transform);
+            GameObject obj = skillPrefabs.GetFree(skill.Key, body.transform);
             // Gets the script, sets the skill and button call functions.
             WindowSkillRow row = obj.GetComponent<WindowSkillRow>();
             row.SetSkill(
@@ -106,7 +106,7 @@ public class WindowSkill : Window
     {
         GameObject obj = detailedPrefabs.GetFree(skill, transform.parent);
         WindowSkillDetailed window = obj.GetComponent<WindowSkillDetailed>();
-        window.SetSkill(skill);
+        window.SetSkill(skill, () => CreateAdvanceSkillWindow(skill));
     }
 
     private void Clear()
