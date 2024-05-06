@@ -24,9 +24,7 @@ public class WindowSkillRow : MonoBehaviour
 
     // Event handlers
     public EventManager nameButtonEvent = new EventManager();
-    public bool nameButtonSubscribed;
     public EventManager advanceButtonEvent = new EventManager();
-    public bool advanceButtonSubscribed;
 
     /// <summary>
     ///     Initializes the object.
@@ -63,11 +61,9 @@ public class WindowSkillRow : MonoBehaviour
 
         nameButton.onClick.RemoveAllListeners();
         nameButtonEvent.Clear();
-        nameButtonSubscribed = false;
 
         advanceButton.onClick.RemoveAllListeners();
         advanceButtonEvent.Clear();
-        advanceButtonSubscribed = false;
     }
 
     /// <summary>
@@ -121,6 +117,7 @@ public class WindowSkillRow : MonoBehaviour
     /// </summary>
     private void UpdateXp()
     {
+        // If < 100, use normal bar, else use overfill bar.
         if (skill.xp <= 100) 
         {
             xpBar.SetActive(true);

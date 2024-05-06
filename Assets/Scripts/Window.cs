@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -37,16 +35,6 @@ public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
 
         Button closeButton = header.transform.Find("Close Button").GetComponent<Button>();
         closeButton.onClick.AddListener(CloseWindow);
-    }
-
-    /// <summary>
-    ///     Capitalizes every word in string for formatting.
-    /// </summary>
-    /// <param name="x">String to be formatted.</param>
-    /// <returns>Formatted string.</returns>
-    protected string ToCapitalize(string x)
-    {
-        return Regex.Replace(x, @"\b([a-z])", m => m.Value.ToUpper());
     }
 
     /// <summary>

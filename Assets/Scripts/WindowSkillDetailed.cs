@@ -80,13 +80,18 @@ public class WindowSkillDetailed : Window
     public void SetSkill(Skill newSkill)
     {
         Clear();
-        
         skill = newSkill;
-        skill.indexEvent.OnChange += Draw;
+
+        // Finds the skill icon sprite and reassigns it.
+        string dir = "Sprites/Skill Icons/" + skill.info["icon_name"].ToString();
+        icon.sprite = Resources.Load<Sprite>(dir);
+        UpdateRank();
+        UpdateXp();
+
+        skill.indexEvent.OnChange += UpdateRank;
         skill.xpEvent.OnChange += UpdateXp;
         skill.xpMaxEvent.OnChange += UpdateXp;
 
-        Draw();
         ShowWindow();
     }
 
@@ -100,7 +105,7 @@ public class WindowSkillDetailed : Window
 
         if (skill != null)
         {
-            skill.indexEvent.OnChange -= Draw;
+            skill.indexEvent.OnChange -= UpdateRank;
             skill.xpEvent.OnChange -= UpdateXp;
             skill.xpMaxEvent.OnChange -= UpdateXp;
             skill = null;
@@ -108,76 +113,46 @@ public class WindowSkillDetailed : Window
     }
 
     /// <summary>
-    ///     Draws the window.
+    ///     Updates the rank.
     /// </summary>
-    private void Draw()
+    private void UpdateRank()
     {
         // Finds the skill name and reassigns it.
         skillName.text = "Rank " + skill.rank + " " + skill.info["name"];
-
-        // Finds the skill icon sprite and reassigns it.
-        string dir = "Sprites/Skill Icons/" + skill.info["icon_name"].ToString();
-        icon.sprite = Resources.Load<Sprite>(dir);
 
         int index = skill.index;
 
         // For every stat, create a new stat field prefab and populate it.
         foreach (KeyValuePair<string, float[]> stat in skill.stats)
         {
-            string statName = stat.Key.ToString();
-            string statValue = stat.Value[index].ToString();
-
-            if (statName.Equals("ap_cost") || float.Parse(statValue).Equals(0))
+            if (stat.Key == "ap_cost" || stat.Value[index] == 0)
             {
                 continue;
             }
-            else if (statName.Contains("rate"))
-            {
-                statValue = "+" + statValue;
-                statValue += "%";
-            }
-            else if (statName.Contains("time"))
-            {
-                statValue += "s";
-            }
 
-            statName = ToCapitalize(statName.Replace("_", " "));
-            GameObject obj = statPrefabs.GetFree(statName, statTransform);
-            obj.SetActive(true);
-
-            // Generates the stat field for every skill stat.
-            TMP_Text field = obj.GetComponent<TMP_Text>();
-            field.text = statName + ": " + statValue;
+            GameObject obj = statPrefabs.GetFree(stat, statTransform);
+            WindowSkillStat script = obj.GetComponent<WindowSkillStat>();
+            script.SetText(stat.Key, stat.Value[index]);
         }
 
         // For every training method, create a new training method prefab and populate it.
         foreach (TrainingMethod method in skill.methods)
         {
-            string methodName = method.method["name"].ToString();
-            string methodValue = string.Format("+{0:0.00} (<color=\"yellow\">{1}<color=\"white\">/{2})",
-                float.Parse(method.method["xp_gain_each"].ToString()), method.method["count"],
-                method.method["count_max"].ToString());
-
-            GameObject obj = trainingMethodPrefabs.GetFree(methodName, trainingMethodsTransform);
-            obj.SetActive(true);
-            
-            TMP_Text name = obj.transform.Find("Method Name").GetComponent<TMP_Text>();
-            TMP_Text field = obj.transform.Find("Method Values").GetComponent<TMP_Text>();
-            name.text = methodName;
-            field.text = methodValue;
+            GameObject obj = trainingMethodPrefabs.GetFree(method, trainingMethodsTransform);
+            WindowSkillTrainingMethod script = obj.GetComponent<WindowSkillTrainingMethod>();
+            script.SetText(method);
         }
-
-        UpdateXp();
     }
     
     /// <summary>
-    ///  Draws the xp bars for the skill.
+    ///     Updates the xp bar progress.
     /// </summary>
     private void UpdateXp()
     {
         // If < 100, use normal bar, else use overfill bar.
         if (skill.xp <= 100) 
         {
+            xpBar.SetActive(true);
             xpBarScript.SetCurrent(skill.xp);
             xpBarScript.SetMaximum(100);
             overXpBar.SetActive(false);
@@ -193,6 +168,8 @@ public class WindowSkillDetailed : Window
             xpBar.SetActive(false);
             overXpBarScript.SetCurrent(skill.xp);
             overXpBarScript.SetMaximum(skill.xpMax);
+            overXpBar.SetActive(true);
+            //advanceButton.gameObject.SetActive(true);
         }       
     }
 }

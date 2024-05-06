@@ -123,31 +123,14 @@ public class WindowSkillAdvance : Window
         // For every stat, create a new stat field prefab and populate it.
         foreach (KeyValuePair<string, float[]> stat in skill.stats)
         {
-            string statName = stat.Key.ToString();
-            string statValue = stat.Value[index].ToString();
-
-            if (statName.Equals("ap_cost") || float.Parse(statValue).Equals(0))
+            if (stat.Key == "ap_cost" || stat.Value[index] == 0)
             {
                 continue;
             }
-            else if (statName.Contains("rate"))
-            {
-                statValue = "+" + statValue;
-                statValue += "%";
-            }
-            else if (statName.Contains("time"))
-            {
-                statValue += "s";
-            }
 
-            statName = ToCapitalize(statName.Replace("_", " "));
-
-            GameObject obj = statPrefabs.GetFree(statName, statTransform);
-            obj.SetActive(true);
-
-            // Generates the stat field for every skill stat.
-            TMP_Text field = obj.GetComponent<TMP_Text>();
-            field.text = statName + ": " + statValue;
+            GameObject obj = statPrefabs.GetFree(stat, statTransform);
+            WindowSkillStat script = obj.GetComponent<WindowSkillStat>();
+            script.SetText(stat.Key, stat.Value[index]);
         }        
 
         ap.text = string.Format("{0} AP required.\n({1} AP remaining)",
