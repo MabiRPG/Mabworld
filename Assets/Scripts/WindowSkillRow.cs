@@ -1,15 +1,17 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
 ///     Handles rendering the skill rows in the skill window.
 /// </summary>
-public class WindowSkillRow : MonoBehaviour
+public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     // Skill instance
     private Skill skill;
+    private string iconDir;
 
     // List of prefab object references
     private TMP_Text skillName;
@@ -25,6 +27,7 @@ public class WindowSkillRow : MonoBehaviour
     // Event handlers
     public EventManager nameButtonEvent = new EventManager();
     public EventManager advanceButtonEvent = new EventManager();
+    public bool draggingIcon = false;
 
     /// <summary>
     ///     Initializes the object.
@@ -33,13 +36,13 @@ public class WindowSkillRow : MonoBehaviour
     {
         skillName = gameObject.transform.Find("Name Button").GetComponentInChildren<TMP_Text>();
         nameButton = gameObject.transform.Find("Name Button").GetComponent<Button>();
-        icon = gameObject.GetComponentInChildren<Image>();
+        icon = gameObject.transform.Find("Icon").GetComponent<Image>();
         rank = gameObject.transform.Find("Rank").GetComponent<TMP_Text>();
         xpBar = gameObject.transform.Find("XP Bar").gameObject;
         xpBarScript = xpBar.GetComponent<ProgressBar>();
         overXpBar = gameObject.transform.Find("Overfill XP Bar").gameObject;
         overXpBarScript = overXpBar.GetComponent<ProgressBar>();     
-        advanceButton = gameObject.transform.Find("Advance Button").GetComponent<Button>();  
+        advanceButton = gameObject.transform.Find("Advance Button").GetComponent<Button>(); 
     }
 
     /// <summary>
@@ -66,6 +69,30 @@ public class WindowSkillRow : MonoBehaviour
         advanceButtonEvent.Clear();
     }
 
+    public void OnBeginDrag(PointerEventData pointerData)
+    {
+        GameObject iconObj = icon.gameObject;
+
+        if (pointerData.pointerEnter == iconObj)
+        {
+            Cursor.SetCursor(Resources.Load<Sprite>(iconDir).texture, Vector2.zero, CursorMode.Auto);
+            draggingIcon = true;
+        }       
+    }
+
+    public void OnDrag(PointerEventData pointerData)
+    {
+    }
+
+    public void OnEndDrag(PointerEventData pointerData)
+    {
+        if (draggingIcon)
+        {
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+            draggingIcon = false;
+        }
+    }
+
     /// <summary>
     ///     Sets the skill instance.
     /// </summary>
@@ -78,8 +105,8 @@ public class WindowSkillRow : MonoBehaviour
         skill = newSkill;
 
         skillName.text = skill.info["name"].ToString();
-        string dir = "Sprites/Skill Icons/" + skill.info["icon_name"].ToString();
-        icon.sprite = Resources.Load<Sprite>(dir);     
+        iconDir = "Sprites/Skill Icons/" + skill.info["icon_name"].ToString();
+        icon.sprite = Resources.Load<Sprite>(iconDir);     
         UpdateRank();
         UpdateXp();
 

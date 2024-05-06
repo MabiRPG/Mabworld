@@ -1,8 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using System;
 
 /// <summary>
 ///     This class handles the skill window processing.

@@ -6,8 +6,6 @@ public class PrefabManager : ScriptableObject
     private GameObject prefab;
     public Dictionary<object, GameObject> prefabs = new Dictionary<object, GameObject>();
 
-    
-
     public void SetPrefab(GameObject newPrefab)
     {
         prefab = newPrefab;

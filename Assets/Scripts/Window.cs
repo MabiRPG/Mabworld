@@ -8,12 +8,10 @@ using TMPro;
 /// </summary>
 public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
 {
-
     // GameObject references to header and body content in window prefab.
     protected GameObject header;
     protected GameObject body;
 
-    private Canvas canvas;
     private RectTransform rectTransform;
 
     /// <summary>
@@ -23,7 +21,6 @@ public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
     {
         header = transform.Find("Header").gameObject;
         body = transform.Find("Body").gameObject;
-        canvas = transform.parent.GetComponent<Canvas>();
         rectTransform = GetComponent<RectTransform>();
 
         // Sets up on click listeners for header buttons.
@@ -41,16 +38,16 @@ public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
     ///     OnDrag interface implementation to move window.
     /// </summary>
     /// <param name="pointerData">Event payload associated with pointer (mouse / touch) events.</param>
-    public void OnDrag(PointerEventData pointerData)
+    public virtual void OnDrag(PointerEventData pointerData)
     {
-        rectTransform.anchoredPosition += pointerData.delta / canvas.scaleFactor;
+        rectTransform.anchoredPosition += pointerData.delta / GameManager.Instance.canvas.scaleFactor;
     }
 
     /// <summary>
     ///     OnPointerDown interface implementation to set as focus when clicked.
     /// </summary>
     /// <param name="pointerData">Event payload associated with pointer (mouse / touch) events.</param>
-    public void OnPointerDown(PointerEventData pointerData)
+    public virtual void OnPointerDown(PointerEventData pointerData)
     {
         rectTransform.SetAsLastSibling();
     }
