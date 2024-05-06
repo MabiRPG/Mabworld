@@ -14,7 +14,7 @@ public class Player : Actor
     public static Player instance = null;
 
     public int actorAP = 1000;
-    public ValueEventManager actorAPEvent = new ValueEventManager();
+    public EventManager actorAPEvent = new EventManager();
 
     // How much our life skill success rates scale with dex.
     public int lifeSkillDexFactor = 10;

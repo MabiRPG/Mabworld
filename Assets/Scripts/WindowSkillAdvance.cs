@@ -63,7 +63,7 @@ public class WindowSkillAdvance : Window
 
         if (skill != null)
         {
-            skill.indexEvent.OnValueChange -= CloseWindow;
+            skill.indexEvent.OnChange -= CloseWindow;
         }
 
         advanceButton.onClick.RemoveAllListeners();
@@ -79,7 +79,7 @@ public class WindowSkillAdvance : Window
         ShowWindow();
         
         skill = newSkill;
-        skill.indexEvent.OnValueChange += CloseWindow;
+        skill.indexEvent.OnChange += CloseWindow;
 
         Clear();
         Draw();

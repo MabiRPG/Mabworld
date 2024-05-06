@@ -775,6 +775,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4247327637081452632}
   - component: {fileID: -1905248787714470876}
+  - component: {fileID: 7957340756078767591}
   m_Layer: 5
   m_Name: Window Skill (Row)
   m_TagString: Untagged
@@ -850,6 +851,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7957340756078767591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7447567352734069478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9f171c49973fa74182f8dcd437987f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameButtonSubscribed: 0
+  advanceButtonSubscribed: 0
 --- !u!1 &7801497238192899065
 GameObject:
   m_ObjectHideFlags: 0

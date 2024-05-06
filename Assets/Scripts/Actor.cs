@@ -33,8 +33,8 @@ public class Actor : Movement
     public Stat actorMDefense = new(0);
     public Stat actorMProt = new(0);
 
-    public ValueEventManager actorNameEvent = new ValueEventManager();
-    public ValueEventManager actorLevelEvent = new ValueEventManager();
+    public EventManager actorNameEvent = new EventManager();
+    public EventManager actorLevelEvent = new EventManager();
 
     public StatEventManager actorHPEvent = new StatEventManager();
     public StatEventManager actorMPEvent = new StatEventManager();

@@ -65,54 +65,20 @@ public class WindowSkill : Window
             // Instantiates the prefab in the window. Parent window has
             // a vertical layout group to control children components.
             GameObject obj = skillPrefabs.GetFree(skill.Value, body.transform);
+            WindowSkillRow row = obj.GetComponent<WindowSkillRow>();
+            row.SetSkill(skill.Value);
 
-            // Finds the skill name field and reassigns it.
-            GameObject nameObj = obj.transform.Find("Name Button").gameObject;
-            TMP_Text name = nameObj.GetComponentInChildren<TMP_Text>();
-            name.text = skill.Value.info["name"].ToString();
-            Button nameButton = nameObj.GetComponent<Button>();
-            nameButton.onClick.AddListener(delegate {CreateDetailedSkillWindow(skill.Value);});
-
-            // Finds the skill icon sprite and reassigns it.
-            Image img = obj.GetComponentInChildren<Image>();
-            string dir = "Sprites/Skill Icons/" + skill.Value.info["icon_name"].ToString();
-            img.sprite = Resources.Load<Sprite>(dir);
-
-            // Finds the skill rank field and reassigns it.
-            TMP_Text rank = obj.transform.Find("Rank").GetComponent<TMP_Text>();
-            rank.text = "Rank " + skill.Value.rank;
-
-            // Finds the xp bar.
-            GameObject xpBar = obj.transform.Find("XP Bar").gameObject;
-            ProgressBar xpBarScript = xpBar.GetComponent<ProgressBar>();
-            GameObject overXpBar = obj.transform.Find("Overfill XP Bar").gameObject;
-            ProgressBar overXpBarScript = overXpBar.GetComponent<ProgressBar>();
-
-            // Finds the advancement button.
-            Button advanceButton = obj.transform.Find("Advance Button").GetComponent<Button>();
-            advanceButton.onClick.AddListener(delegate {CreateAdvanceSkillWindow(skill.Value);});
-
-            // If < 100, use normal bar, else use overfill bar.
-            if (skill.Value.xp <= 100) 
+            if (!row.nameButtonSubscribed)
             {
-                xpBarScript.SetCurrent(skill.Value.xp);
-                xpBarScript.SetMaximum(100);
-                overXpBar.SetActive(false);
-
-                // Remove the rank up button if cannot rank up.
-                if (skill.Value.xp < 100) 
-                {
-                    advanceButton.gameObject.SetActive(false);
-                }
-            }
-            else 
-            {
-                xpBar.SetActive(false);
-                overXpBarScript.SetCurrent(skill.Value.xp);
-                overXpBarScript.SetMaximum(skill.Value.xpMax);
+                row.nameButtonEvent.OnChange += () => CreateDetailedSkillWindow(skill.Value);
+                row.nameButtonSubscribed = true;
             }
 
-            //skill.Value.rankUpEvent.AddListener(Draw);
+            if (!row.advanceButtonSubscribed)
+            {
+                row.advanceButtonEvent.OnChange += () => CreateAdvanceSkillWindow(skill.Value);
+                row.advanceButtonSubscribed = true;
+            }
         }
     }
 

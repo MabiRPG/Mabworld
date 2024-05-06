@@ -29,6 +29,7 @@ public class PrefabManager : ScriptableObject
             if (x.Value.activeSelf == false)
             {
                 obj = x.Value;
+                obj.SetActive(true);
                 prefabs.Remove(x.Key);
                 prefabs.Add(key, obj);
                 return obj;

@@ -17,14 +17,14 @@ public class Skill
 
     // Current index and rank of skill.
     public int index = 0;
-    public ValueEventManager indexEvent = new ValueEventManager();
+    public EventManager indexEvent = new EventManager();
     public string rank;
 
     // Current xp and maximum rank xp.
     public float xp;
     public float xpMax;
-    public ValueEventManager xpEvent = new ValueEventManager();
-    public ValueEventManager xpMaxEvent = new ValueEventManager();
+    public EventManager xpEvent = new EventManager();
+    public EventManager xpMaxEvent = new EventManager();
 
     // List of training methods at current rank
     public List<TrainingMethod> methods = new List<TrainingMethod>();
@@ -112,7 +112,8 @@ public class Skill
         rank = ranks[index];
         xp = 0;
         CreateTrainingMethods();
-        indexEvent.RaiseOnValueChange();
+        indexEvent.RaiseOnChange();
+        xpEvent.RaiseOnChange();
     }
 
     //--------------------------------------------------------------------------
@@ -134,6 +135,7 @@ public class Skill
     public void AddXP(float x)
     {
         xp += x;
+        xpEvent.RaiseOnChange();
     }
 
     //--------------------------------------------------------------------------
@@ -159,6 +161,8 @@ public class Skill
 
             methods.Add(method);
         }
+
+        xpMaxEvent.RaiseOnChange();
     }
 }
 

@@ -72,9 +72,9 @@ public class WindowSkillDetailed : Window
 
         if (skill != null)
         {
-            skill.indexEvent.OnValueChange -= Draw;
-            skill.xpEvent.OnValueChange -= DrawBars;
-            skill.xpMaxEvent.OnValueChange -= DrawBars;
+            skill.indexEvent.OnChange -= Draw;
+            skill.xpEvent.OnChange -= DrawBars;
+            skill.xpMaxEvent.OnChange -= DrawBars;
         }
 
         closeButton.onClick.RemoveListener(CloseWindow);
@@ -89,9 +89,9 @@ public class WindowSkillDetailed : Window
         ShowWindow();
         
         skill = newSkill;
-        skill.indexEvent.OnValueChange += Draw;
-        skill.xpEvent.OnValueChange += DrawBars;
-        skill.xpMaxEvent.OnValueChange += DrawBars;
+        skill.indexEvent.OnChange += Draw;
+        skill.xpEvent.OnChange += DrawBars;
+        skill.xpMaxEvent.OnChange += DrawBars;
 
         Clear();
         Draw();

@@ -1,16 +1,16 @@
 using System;
 
-public class ValueEventManager
+public class EventManager
 {
-    public event Action OnValueChange;
+    public event Action OnChange;
 
-    public void RaiseOnValueChange()
+    public void RaiseOnChange()
     {
-        OnValueChange?.Invoke();
+        OnChange?.Invoke();
     }
 }
 
-public class StatEventManager : ValueEventManager
+public class StatEventManager : EventManager
 {
     public event Action OnMaximumValueChange;
     public event Action OnBaseMaximumValueChange;
