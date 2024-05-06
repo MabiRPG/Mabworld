@@ -1,11 +1,17 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+///     Handles rendering the skill rows in the skill window.
+/// </summary>
 public class WindowSkillRow : MonoBehaviour
 {
+    // Skill instance
     private Skill skill;
 
+    // List of prefab object references
     private TMP_Text name;
     private Button nameButton;
     private Image icon;
@@ -16,11 +22,15 @@ public class WindowSkillRow : MonoBehaviour
     private ProgressBar overXpBarScript;
     private Button advanceButton;
 
+    // Event handlers
     public EventManager nameButtonEvent = new EventManager();
     public bool nameButtonSubscribed;
     public EventManager advanceButtonEvent = new EventManager();
     public bool advanceButtonSubscribed;
 
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
     private void Awake()
     {
         name = gameObject.transform.Find("Name Button").GetComponentInChildren<TMP_Text>();
@@ -34,26 +44,41 @@ public class WindowSkillRow : MonoBehaviour
         advanceButton = gameObject.transform.Find("Advance Button").GetComponent<Button>();  
     }
 
+    /// <summary>
+    ///     Called when the object becomes enabled and active.
+    /// </summary>
     private void OnEnable()
     {
         nameButton.onClick.AddListener(delegate {nameButtonEvent.RaiseOnChange();});
         advanceButton.onClick.AddListener(delegate {advanceButtonEvent.RaiseOnChange();});
     }
 
+    /// <summary>
+    ///     Called when the object becomes disabled and inactive.
+    /// </summary>
     private void OnDisable()
     {
-        nameButton.onClick.RemoveAllListeners();
-        advanceButton.onClick.RemoveAllListeners();
+        // Removes all event listeners
+        Clear();
 
-        if (skill != null)
-        {
-            skill.indexEvent.OnChange -= UpdateRank;
-            skill.xpEvent.OnChange -= UpdateXp;
-        }
+        nameButton.onClick.RemoveAllListeners();
+        nameButtonEvent.Clear();
+        nameButtonSubscribed = false;
+
+        advanceButton.onClick.RemoveAllListeners();
+        advanceButtonEvent.Clear();
+        advanceButtonSubscribed = false;
     }
 
-    public void SetSkill(Skill newSkill)
+    /// <summary>
+    ///     Sets the skill instance.
+    /// </summary>
+    /// <param name="newSkill">Skill instance for window.</param>
+    /// <param name="nameButtonAction">Function to call when name button is triggered.</param>
+    /// <param name="advanceButtonAction">Function to call when advance button is triggered.</param>
+    public void SetSkill(Skill newSkill, Action nameButtonAction, Action advanceButtonAction)
     {
+        Clear();
         skill = newSkill;
 
         name.text = skill.info["name"].ToString();
@@ -64,13 +89,36 @@ public class WindowSkillRow : MonoBehaviour
 
         skill.indexEvent.OnChange += UpdateRank;
         skill.xpEvent.OnChange += UpdateXp;
+        skill.xpMaxEvent.OnChange += UpdateXp;
+        nameButtonEvent.OnChange += nameButtonAction;
+        advanceButtonEvent.OnChange += advanceButtonAction;
     }
 
+    /// <summary>
+    ///     Clears the window.
+    /// </summary>
+    private void Clear()
+    {
+        if (skill != null)
+        {
+            skill.indexEvent.OnChange -= UpdateRank;
+            skill.xpEvent.OnChange -= UpdateXp;
+            skill.xpMaxEvent.OnChange -= UpdateXp;
+            skill = null;
+        }
+    }
+
+    /// <summary>
+    ///     Updates the rank text.
+    /// </summary>
     private void UpdateRank()
     {
         rank.text = "Rank " + skill.rank;
     }
 
+    /// <summary>
+    ///     Updates the xp bar progress.
+    /// </summary>
     private void UpdateXp()
     {
         if (skill.xp <= 100) 

@@ -70,31 +70,24 @@ public class WindowSkillDetailed : Window
     {
         Clear();
 
-        if (skill != null)
-        {
-            skill.indexEvent.OnChange -= Draw;
-            skill.xpEvent.OnChange -= DrawBars;
-            skill.xpMaxEvent.OnChange -= DrawBars;
-        }
-
         closeButton.onClick.RemoveListener(CloseWindow);
     }
 
     /// <summary>
-    ///     Initializes the object manually with parameters.
+    ///     Sets the skill instance.
     /// </summary>
     /// <param name="newSkill">Skill instance for window.</param>
-    public void Setup(Skill newSkill)
+    public void SetSkill(Skill newSkill)
     {
-        ShowWindow();
+        Clear();
         
         skill = newSkill;
         skill.indexEvent.OnChange += Draw;
-        skill.xpEvent.OnChange += DrawBars;
-        skill.xpMaxEvent.OnChange += DrawBars;
+        skill.xpEvent.OnChange += UpdateXp;
+        skill.xpMaxEvent.OnChange += UpdateXp;
 
-        Clear();
         Draw();
+        ShowWindow();
     }
 
     /// <summary>
@@ -104,6 +97,14 @@ public class WindowSkillDetailed : Window
     {
         statPrefabs.SetActiveAll(false);
         trainingMethodPrefabs.SetActiveAll(false);
+
+        if (skill != null)
+        {
+            skill.indexEvent.OnChange -= Draw;
+            skill.xpEvent.OnChange -= UpdateXp;
+            skill.xpMaxEvent.OnChange -= UpdateXp;
+            skill = null;
+        }
     }
 
     /// <summary>
@@ -166,13 +167,13 @@ public class WindowSkillDetailed : Window
             field.text = methodValue;
         }
 
-        DrawBars();
+        UpdateXp();
     }
     
     /// <summary>
     ///  Draws the xp bars for the skill.
     /// </summary>
-    private void DrawBars()
+    private void UpdateXp()
     {
         // If < 100, use normal bar, else use overfill bar.
         if (skill.xp <= 100) 

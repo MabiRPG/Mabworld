@@ -8,6 +8,11 @@ public class EventManager
     {
         OnChange?.Invoke();
     }
+
+    public void Clear()
+    {
+        OnChange = null;
+    }
 }
 
 public class StatEventManager : EventManager

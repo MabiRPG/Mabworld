@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 /// <summary>
 ///     This class handles the skill window processing.
@@ -65,20 +66,13 @@ public class WindowSkill : Window
             // Instantiates the prefab in the window. Parent window has
             // a vertical layout group to control children components.
             GameObject obj = skillPrefabs.GetFree(skill.Value, body.transform);
+            // Gets the script, sets the skill and button call functions.
             WindowSkillRow row = obj.GetComponent<WindowSkillRow>();
-            row.SetSkill(skill.Value);
-
-            if (!row.nameButtonSubscribed)
-            {
-                row.nameButtonEvent.OnChange += () => CreateDetailedSkillWindow(skill.Value);
-                row.nameButtonSubscribed = true;
-            }
-
-            if (!row.advanceButtonSubscribed)
-            {
-                row.advanceButtonEvent.OnChange += () => CreateAdvanceSkillWindow(skill.Value);
-                row.advanceButtonSubscribed = true;
-            }
+            row.SetSkill(
+                skill.Value, 
+                () => CreateDetailedSkillWindow(skill.Value), 
+                () => CreateAdvanceSkillWindow(skill.Value)
+            );
         }
     }
 
@@ -101,7 +95,7 @@ public class WindowSkill : Window
     {
         GameObject obj = advancePrefabs.GetFree(skill, transform.parent);
         WindowSkillAdvance window = obj.GetComponent<WindowSkillAdvance>();
-        window.Setup(skill);
+        window.SetSkill(skill);
     }
 
     /// <summary>
@@ -112,7 +106,7 @@ public class WindowSkill : Window
     {
         GameObject obj = detailedPrefabs.GetFree(skill, transform.parent);
         WindowSkillDetailed window = obj.GetComponent<WindowSkillDetailed>();
-        window.Setup(skill);
+        window.SetSkill(skill);
     }
 
     private void Clear()

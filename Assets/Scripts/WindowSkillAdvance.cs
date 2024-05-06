@@ -61,29 +61,23 @@ public class WindowSkillAdvance : Window
     {
         Clear();
 
-        if (skill != null)
-        {
-            skill.indexEvent.OnChange -= CloseWindow;
-        }
-
         advanceButton.onClick.RemoveAllListeners();
         cancelButton.onClick.RemoveListener(CloseWindow);
     }
 
     /// <summary>
-    ///     Initializes the object manually with parameters.
+    ///     Sets the skill instance.
     /// </summary>
     /// <param name="newSkill">Skill instance for window.</param>
-    public void Setup(Skill newSkill)
+    public void SetSkill(Skill newSkill)
     {
-        ShowWindow();
+        Clear();
         
         skill = newSkill;
         skill.indexEvent.OnChange += CloseWindow;
 
-        Clear();
         Draw();
-        
+        ShowWindow();
     }
 
     /// <summary>
@@ -92,6 +86,12 @@ public class WindowSkillAdvance : Window
     private void Clear()
     {
         statPrefabs.SetActiveAll(false);
+
+        if (skill != null)
+        {
+            skill.indexEvent.OnChange -= CloseWindow;
+            skill = null;
+        }
     }
 
     /// <summary>
