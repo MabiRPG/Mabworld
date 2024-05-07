@@ -12,8 +12,9 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance {get; private set;}
 
     // Name of the game database in Assets/Database folder.
-    public string databaseName;
-
+    [SerializeField]
+    private string databaseName;
+    
     public Canvas canvas;
     public GameObject windowSkillPrefab;
 

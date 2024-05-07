@@ -22,7 +22,7 @@ public class WindowSkillTrainingMethod : MonoBehaviour
     ///     Sets the text.
     /// </summary>
     /// <param name="method">Training method of skill.</param>
-    public void SetText(TrainingMethod method)
+    public void SetText(SkillTrainingMethod method)
     {
         string sName = method.method["name"].ToString();
         float xpGainEach = float.Parse(method.method["xp_gain_each"].ToString());

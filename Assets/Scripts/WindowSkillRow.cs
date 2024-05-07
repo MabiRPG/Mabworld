@@ -26,7 +26,9 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
     // Event handlers
     public EventManager nameButtonEvent = new EventManager();
+    private Action nameButtonAction;
     public EventManager advanceButtonEvent = new EventManager();
+    private Action advanceButtonAction;
     public bool draggingIcon = false;
 
     /// <summary>
@@ -90,6 +92,18 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         {
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
             draggingIcon = false;
+
+            if (pointerData.pointerEnter == null)
+            {
+                return;
+            }
+
+            SkillSlot slot = pointerData.pointerEnter.transform.parent.GetComponent<SkillSlot>();
+
+            if (slot != null)
+            {
+                slot.SetSkill(skill, null, nameButtonAction);
+            }
         }
     }
 
@@ -99,7 +113,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     /// <param name="newSkill">Skill instance for window.</param>
     /// <param name="nameButtonAction">Function to call when name button is triggered.</param>
     /// <param name="advanceButtonAction">Function to call when advance button is triggered.</param>
-    public void SetSkill(Skill newSkill, Action nameButtonAction, Action advanceButtonAction)
+    public void SetSkill(Skill newSkill, Action newNameButtonAction, Action newAdvanceButtonAction)
     {
         Clear();
         skill = newSkill;
@@ -113,6 +127,9 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         skill.indexEvent.OnChange += UpdateRank;
         skill.xpEvent.OnChange += UpdateXp;
         skill.xpMaxEvent.OnChange += UpdateXp;
+
+        nameButtonAction = newNameButtonAction;
+        advanceButtonAction = newAdvanceButtonAction;
         nameButtonEvent.OnChange += nameButtonAction;
         advanceButtonEvent.OnChange += advanceButtonAction;
     }

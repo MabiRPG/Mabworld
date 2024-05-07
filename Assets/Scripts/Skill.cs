@@ -2,13 +2,9 @@ using System.Data;
 using System.Linq;
 using System.Collections.Generic;
 
-//==============================================================================
-// ** Skill
-//------------------------------------------------------------------------------
-//  This class handles all skill processing. Refer to Player.instance.skills for the
-//  class instances.
-//==============================================================================
-
+/// <summary>
+///     Handles all skill processing.
+/// </summary>
 public class Skill 
 {
     // Dictionary of basic skill info and specific rank stats.
@@ -27,7 +23,7 @@ public class Skill
     public EventManager xpMaxEvent = new EventManager();
 
     // List of training methods at current rank
-    public List<TrainingMethod> methods = new List<TrainingMethod>();
+    public List<SkillTrainingMethod> methods = new List<SkillTrainingMethod>();
 
     // All ranks in string format
     public string[] ranks = {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
@@ -50,10 +46,10 @@ public class Skill
         ON training_methods.skill_id = skills.skill_id
         WHERE training_methods.skill_id = @id AND training_methods.rank = @rank;";
 
-    //--------------------------------------------------------------------------
-    // * Object Initialization
-    //       int id : database skill_id of the skill.
-    //--------------------------------------------------------------------------
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
+    /// <param name="id">Skill ID in database.</param>
     public Skill(int id)
     {
         LoadSkillInfo(id);
@@ -61,10 +57,10 @@ public class Skill
         CreateTrainingMethods();
     }
 
-    //--------------------------------------------------------------------------
-    // * Loads the skill info from the database.
-    //       int id : database skill_id of the skill.
-    //--------------------------------------------------------------------------
+    /// <summary>
+    ///     Loads the skill info from the database.
+    /// </summary>
+    /// <param name="id">Skill ID in database.</param>
     public void LoadSkillInfo(int id) 
     {   
         // Creates an empty data table for our queries.
@@ -98,14 +94,18 @@ public class Skill
         }
     }
 
+    /// <summary>
+    ///     Checks if has available ranks to rank up.
+    /// </summary>
+    /// <returns>True if can rank up.</returns>
     public bool CanRankUp()
     {
         return index + 1 < ranks.Length;
     }
 
-    //--------------------------------------------------------------------------
-    // * Ranks up the skill
-    //--------------------------------------------------------------------------
+    /// <summary>
+    ///     Ranks up the skill.
+    /// </summary>
     public void RankUp() 
     {
         index++;
@@ -116,9 +116,9 @@ public class Skill
         xpEvent.RaiseOnChange();
     }
 
-    //--------------------------------------------------------------------------
-    // * Ranks down the skill
-    //--------------------------------------------------------------------------
+    /// <summary>
+    ///     Ranks down the skill.
+    /// </summary>
     public void RankDown()
     {
         if (index - 1 >= 0)
@@ -128,19 +128,19 @@ public class Skill
         }
     }
 
-    //--------------------------------------------------------------------------
-    // * Adds xp to the skill
-    //       float x : new amount to add
-    //--------------------------------------------------------------------------
+    /// <summary>
+    ///     Adds xp to the skill.
+    /// </summary>
+    /// <param name="x">Amount of xp to add.</param>
     public void AddXP(float x)
     {
         xp += x;
         xpEvent.RaiseOnChange();
     }
 
-    //--------------------------------------------------------------------------
-    // * Implements the rank-specific training methods.
-    //--------------------------------------------------------------------------
+    /// <summary>
+    ///     Implements the rank-specific training methods.
+    /// </summary>
     public void CreateTrainingMethods()
     {
         // Creates a new data table and queries the db.
@@ -154,7 +154,7 @@ public class Skill
         // For every method, create a new method and insert into list.
         foreach (DataRow row in dt.Rows)
         {
-            TrainingMethod method = new TrainingMethod(info["skill_id"], rank, row["method_id"],
+            SkillTrainingMethod method = new SkillTrainingMethod(info["skill_id"], rank, row["method_id"],
                 row["method"], row["xp_gain_each"], row["count_max"]);
             // Adds the max xp from method to skill.
             xpMax += float.Parse(row["xp_gain_each"].ToString()) * float.Parse(row["count_max"].ToString());
@@ -163,105 +163,5 @@ public class Skill
         }
 
         xpMaxEvent.RaiseOnChange();
-    }
-}
-
-//==============================================================================
-// ** TrainingMethod
-//------------------------------------------------------------------------------
-//  This class handles all training method processing. Refer to the main skill's
-//  TrainingMethod List for instances.
-//==============================================================================
-
-public class TrainingMethod
-{
-    // Creates dictionary for the method information, and status update flag from player.
-    public Dictionary<string, object> method = new Dictionary<string, object>();
-    public Dictionary<string, object> status = new Dictionary<string, object>();
-
-    //--------------------------------------------------------------------------
-    // * Object Initialization
-    //       int skill_id : database skill_id of the skill.
-    //       object rank : string of current rank.
-    //       object method_id : database method_id
-    //       object methodName : name of the method
-    //       object xp_gain_each : how much xp is gained every count of method
-    //       object count_max : how many maximum counts of method are allowed
-    //--------------------------------------------------------------------------
-    public TrainingMethod(object skill_id, object rank, object method_id, object methodName, 
-        object xp_gain_each, object count_max)
-    {
-        // Creates an empty counter for current method.
-        method.Add("count", 0);
-        // Inserts rest into dictionary
-        method.Add("skill_id", skill_id);
-        method.Add("rank", rank);
-        method.Add("name", methodName);
-        method.Add("method_id", method_id);
-        method.Add("xp_gain_each", xp_gain_each);
-        method.Add("count_max", count_max);
-    }
-
-    //--------------------------------------------------------------------------
-    // * Checks if less than maximum counts, and checks training requirements.
-    //--------------------------------------------------------------------------
-    public void Update()
-    {
-        if ((int)method["count"] < (int)method["count_max"] && CheckTraining())
-        {
-            method["count"] = (int)method["count"] + 1;
-        }
-    }
-
-    //--------------------------------------------------------------------------
-    // * Checks training requirements against the status flag.
-    //--------------------------------------------------------------------------
-    public bool CheckTraining()
-    {
-        switch((int)method["method_id"])
-        {
-            case 1:
-                return IsSuccess();
-            case 2:
-                return IsFail();
-            case 3:
-                return GatherTwoOrMore();
-        }
-
-        return false;
-    }
-
-    //--------------------------------------------------------------------------
-    // * Checks if the action was a success
-    //--------------------------------------------------------------------------
-    public bool IsSuccess()
-    {
-        if ((bool)status["success"] == true)
-        {
-            return true;
-        }
-        
-        return false;
-    }
-
-    //--------------------------------------------------------------------------
-    // * Checks if the action was a failure
-    //--------------------------------------------------------------------------
-    public bool IsFail()
-    {
-        return !IsSuccess();
-    }
-
-    //--------------------------------------------------------------------------
-    // * Checks if two or more resources were gathered at once.
-    //--------------------------------------------------------------------------
-    public bool GatherTwoOrMore()
-    {
-        if (IsSuccess() && (string)status["action"] == "gather" && (int)status["resourceGain"] > 1)
-        {
-            return true;
-        }
-
-        return false;
     }
 }
