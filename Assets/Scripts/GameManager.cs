@@ -1,6 +1,8 @@
 using UnityEngine;
+using System;
 using System.Data;
 using Mono.Data.Sqlite;
+using System.Collections.Generic;
 
 /// <summary>
 ///     This class handles all game-wide processing. Refer to Game.instance for the 
@@ -14,9 +16,16 @@ public class GameManager : MonoBehaviour
     // Name of the game database in Assets/Database folder.
     [SerializeField]
     private string databaseName;
+    public float lifeSkillBaseSuccessRate;
     
     public Canvas canvas;
     public GameObject windowSkillPrefab;
+
+    // Cache of database results.
+    private Dictionary<IDbCommand, DataTable> cache = new Dictionary<IDbCommand, DataTable>();
+
+    // RNG obj
+    public System.Random rnd = new System.Random();
 
     /// <summary>
     ///     Initializes the object.
@@ -48,10 +57,9 @@ public class GameManager : MonoBehaviour
     {
         // Creates the database uri location
         string dbUri = string.Format("URI=file:Assets/Database/{0}", databaseName);
-        
+
         // Opens a connection
         IDbConnection dbConnection = new SqliteConnection(dbUri);
-        dbConnection.Open();
 
         // Creates a sql query command
         IDbCommand dbCommand = dbConnection.CreateCommand();
@@ -66,6 +74,14 @@ public class GameManager : MonoBehaviour
             dbCommand.Parameters.Add(parameter);
         }
 
+        // Find in cache if available.
+        if (cache.ContainsKey(dbCommand))
+        {
+            return cache[dbCommand];
+        }
+
+        dbConnection.Open();
+
         // Executes the command, loads the table, and closes the reader.
         IDataReader reader = dbCommand.ExecuteReader();
 
@@ -73,6 +89,9 @@ public class GameManager : MonoBehaviour
         DataTable dt = new DataTable();
         dt.Load(reader);
         reader.Close();
+
+        // Saves it to cache.
+        cache[dbCommand] = dt;
 
         return dt;
     }

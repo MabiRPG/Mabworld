@@ -100,7 +100,7 @@ public class WindowSkillAdvance : Window
     /// <param name="skill">Skill to be advanced.</param>
     private void AdvanceSkill(Skill skill)
     {
-        Player.instance.RankUpSkill(skill);
+        Player.Instance.RankUpSkill(skill);
         CloseWindow();
     }
 
@@ -135,6 +135,6 @@ public class WindowSkillAdvance : Window
 
         ap.text = string.Format("{0} AP required.\n({1} AP remaining)",
             skill.stats["ap_cost"][index].ToString(), 
-            Player.instance.actorAP.ToString());
+            Player.Instance.actorAP.ToString());
     }
 }

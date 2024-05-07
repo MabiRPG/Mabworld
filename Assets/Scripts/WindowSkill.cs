@@ -7,7 +7,7 @@ using UnityEngine;
 public class WindowSkill : Window
 {
     // Global reference.
-    public static WindowSkill instance = null;
+    public static WindowSkill Instance = null;
     
     // Prefab for every skill row in window.
     [SerializeField]
@@ -32,9 +32,9 @@ public class WindowSkill : Window
         base.Awake();
 
         // Singleton pattern
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
         }
         else
         {
@@ -58,7 +58,7 @@ public class WindowSkill : Window
     private void Draw()
     {
         // For every skill, create a new prefab to display skill info in window.
-        foreach (KeyValuePair<int, Skill> skill in Player.instance.skills)
+        foreach (KeyValuePair<int, Skill> skill in Player.Instance.skills)
         {
             // Instantiates the prefab in the window. Parent window has
             // a vertical layout group to control children components.

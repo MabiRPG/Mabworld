@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 public class Actor : Movement
@@ -50,6 +49,4 @@ public class Actor : Movement
     public StatEventManager actorMProtEvent = new StatEventManager();
 
     public Dictionary<int, Skill> skills = new Dictionary<int, Skill>();
-
-    public Random rnd = new Random();
 }

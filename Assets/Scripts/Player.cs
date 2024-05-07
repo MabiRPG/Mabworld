@@ -11,22 +11,22 @@ using System;
 public class Player : Actor
 {
     // Global instance of player
-    public static Player instance = null;
+    public static Player Instance = null;
 
     public int actorAP = 1000;
     public EventManager actorAPEvent = new EventManager();
 
     // How much our life skill success rates scale with dex.
-    public int lifeSkillDexFactor = 10;
+    private int lifeSkillDexFactor = 10;
     // What the maximize success rate increase is.
-    public int lifeSkillSuccessCap = 18;
+    private int lifeSkillSuccessCap = 18;
 
     // How much our lucky gathers scale with luck stat
-    public int luckyFactor = 20;
+    private int luckyFactor = 20;
     // How much resource multiplier is applied on trigger lucky
-    public int luckyGain = 2;
-    public int hugeLuckyFactor = 50000;
-    public int hugeLuckyGain = 20;
+    private int luckyGain = 2;
+    private int hugeLuckyFactor = 50000;
+    private int hugeLuckyGain = 20;
 
     public GameObject Map;
 
@@ -36,9 +36,9 @@ public class Player : Actor
     private void Awake()
     {
         // Singleton recipe
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
         }
         else
         {
@@ -65,6 +65,17 @@ public class Player : Actor
         skills[3].AddXP(150);
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        InteractableObject target = other.gameObject.GetComponent<InteractableObject>();
+
+        if (target != null)
+        {
+            int ID = int.Parse(target.info["skill_id"].ToString());
+            UseSkill(ID);
+        }
+    }
+
     //--------------------------------------------------------------------------
     // * Called every frame
     //--------------------------------------------------------------------------
@@ -82,7 +93,7 @@ public class Player : Actor
 
         if (callSkillWindow)
         {
-            WindowSkill.instance.ToggleVisible();
+            WindowSkill.Instance.ToggleVisible();
         }
         if (callMap)
         {
@@ -94,9 +105,9 @@ public class Player : Actor
     // * Checks if the skill has been learned
     //      int id : id of the skill
     //--------------------------------------------------------------------------
-    public bool IsSkillLearned(int id)
+    public bool IsSkillLearned(int ID)
     {
-        return skills.ContainsKey(id);
+        return skills.ContainsKey(ID);
     }
 
     public bool IsSkillLearned(Skill skill)
@@ -108,28 +119,28 @@ public class Player : Actor
     // * Learns the skill
     //      int id : id of the skill
     //--------------------------------------------------------------------------
-    public void LearnSkill(int id)
+    public void LearnSkill(int ID)
     {
-        if (IsSkillLearned(id))
+        if (IsSkillLearned(ID))
         {
             return;
         }
 
-        skills.Add(id, new Skill(id));
+        skills.Add(ID, new Skill(ID));
     }
 
     //--------------------------------------------------------------------------
     // * Ranks up the skill
     //      int id : id of the skill
     //--------------------------------------------------------------------------
-    public void RankUpSkill(int id)
+    public void RankUpSkill(int ID)
     {
-        int apCost = (int)skills[id].stats["ap_cost"][skills[id].index + 1];
+        int apCost = (int)skills[ID].stats["ap_cost"][skills[ID].index + 1];
 
-        if (IsSkillLearned(id) && skills[id].CanRankUp() && actorAP >= apCost)
+        if (IsSkillLearned(ID) && skills[ID].CanRankUp() && actorAP >= apCost)
         {
             actorAP -= apCost;
-            skills[id].RankUp();
+            skills[ID].RankUp();
         }
     }
 
@@ -142,6 +153,14 @@ public class Player : Actor
             actorAP -= apCost;
             skill.RankUp();
         }        
+    }
+
+    public void UseSkill(int ID)
+    {
+        if (IsSkillLearned(ID))
+        {
+            skills[ID].Use();
+        }
     }
 
     //--------------------------------------------------------------------------
@@ -159,15 +178,15 @@ public class Player : Actor
     {
         float lucky = actorLuck.current / luckyFactor;
         float hugeLucky = actorLuck.current / hugeLuckyFactor;
-        float roll = (float)rnd.NextDouble();
+        float roll = (float)GameManager.Instance.rnd.NextDouble();
 
         if (roll <= hugeLucky) 
         {
-            return hugeLuckyFactor;
+            return hugeLuckyGain;
         }
         else if (roll <= lucky) 
         {
-            return luckyFactor;
+            return luckyGain;
         }
 
         return 1;

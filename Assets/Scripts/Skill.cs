@@ -1,6 +1,7 @@
 using System.Data;
 using System.Linq;
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 ///     Handles all skill processing.
@@ -49,10 +50,10 @@ public class Skill
     /// <summary>
     ///     Initializes the object.
     /// </summary>
-    /// <param name="id">Skill ID in database.</param>
-    public Skill(int id)
+    /// <param name="ID">Skill ID in database.</param>
+    public Skill(int ID)
     {
-        LoadSkillInfo(id);
+        LoadSkillInfo(ID);
         rank = ranks[index];
         CreateTrainingMethods();
     }
@@ -60,13 +61,11 @@ public class Skill
     /// <summary>
     ///     Loads the skill info from the database.
     /// </summary>
-    /// <param name="id">Skill ID in database.</param>
-    public void LoadSkillInfo(int id) 
+    /// <param name="ID">Skill ID in database.</param>
+    public void LoadSkillInfo(int ID) 
     {   
-        // Creates an empty data table for our queries.
-        DataTable dt = new DataTable();
         // Gets the basic skill info
-        dt = GameManager.Instance.QueryDatabase(skillQuery, ("@id", id));   
+        DataTable dt = GameManager.Instance.QueryDatabase(skillQuery, ("@id", ID));   
 
         // Iterate over all rows and columns, inserts into dictionary.
         foreach (DataRow row in dt.Rows)
@@ -80,7 +79,7 @@ public class Skill
         dt.Clear();
 
         // Gets the detailed skill info at every rank.
-        dt = GameManager.Instance.QueryDatabase(statsQuery, ("@id", id));
+        dt = GameManager.Instance.QueryDatabase(statsQuery, ("@id", ID));
         
         // Iterate over all rows and columns, inserts into dictionary.
         foreach (DataRow row in dt.Rows)
@@ -163,5 +162,27 @@ public class Skill
         }
 
         xpMaxEvent.RaiseOnChange();
+    }
+
+    public void Use()
+    {
+        float chance = GameManager.Instance.lifeSkillBaseSuccessRate + Player.Instance.LifeSkillSuccessRate();
+
+        if (stats.ContainsKey("success_rate_increase"))
+        {
+            chance += stats["success_rate_increase"][index];
+        }
+
+        chance /= 100;
+        float roll = (float)GameManager.Instance.rnd.NextDouble();
+
+        if (chance <= roll)
+        {
+            Debug.Log("success");
+        }
+        else
+        {
+            Debug.Log("fail");
+        }
     }
 }
