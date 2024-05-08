@@ -108,4 +108,12 @@ public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
     {
         gameObject.SetActive(false);
     }
+
+    /// <summary>
+    ///     Toggles visibility of the object.
+    /// </summary>
+    public void ToggleVisible()
+    {
+        gameObject.SetActive(!gameObject.activeSelf);
+    }
 }

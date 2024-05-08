@@ -66,11 +66,11 @@ public class InputManager : MonoBehaviour
 
     public void Reset()
     {
-        keybinds.Add(KeyCode.W, () => Player.Instance.MoveUp());
-        keybinds.Add(KeyCode.A, () => Player.Instance.MoveLeft());
-        keybinds.Add(KeyCode.S, () => Player.Instance.MoveDown());
-        keybinds.Add(KeyCode.D, () => Player.Instance.MoveRight());
-        keybinds.Add(KeyCode.Z, () => WindowSkill.Instance.ToggleVisible());
-        keybinds.Add(KeyCode.M, () => Player.Instance.Map.SetActive(!Player.Instance.Map.activeSelf));
+        // keybinds.Add(KeyCode.W, () => Player.Instance.MoveUp());
+        // keybinds.Add(KeyCode.A, () => Player.Instance.MoveLeft());
+        // keybinds.Add(KeyCode.S, () => Player.Instance.MoveDown());
+        // keybinds.Add(KeyCode.D, () => Player.Instance.MoveRight());
+        // keybinds.Add(KeyCode.Z, () => WindowSkill.Instance.ToggleVisible());
+        // keybinds.Add(KeyCode.M, () => Player.Instance.Map.SetActive(!Player.Instance.Map.activeSelf));
     }
 }

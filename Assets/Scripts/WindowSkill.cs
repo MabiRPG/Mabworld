@@ -52,6 +52,11 @@ public class WindowSkill : Window
         advancePrefabs.SetPrefab(windowSkillAdvancePrefab);
     }
 
+    private void Start()
+    {
+        Draw();
+    }
+
     /// <summary>
     ///     Draws the window.
     /// </summary>
@@ -76,17 +81,17 @@ public class WindowSkill : Window
     /// <summary>
     ///     Toggles visibility of the object.
     /// </summary>
-    public void ToggleVisible()
-    {
-        // Changes visibilty of object.
-        gameObject.SetActive(!gameObject.activeSelf);
+    // public void ToggleVisible()
+    // {
+    //     // Changes visibilty of object.
+    //     gameObject.SetActive(!gameObject.activeSelf);
 
-        if (gameObject.activeSelf) 
-        {
-            Clear();
-            Draw();
-        }
-    }
+    //     if (gameObject.activeSelf) 
+    //     {
+    //         Clear();
+    //         Draw();
+    //     }
+    // }
 
     private void CreateAdvanceSkillWindow(Skill skill)
     {

@@ -79,27 +79,34 @@ public class Player : Actor
     //--------------------------------------------------------------------------
     // * Called every frame
     //--------------------------------------------------------------------------
-    // private void Update()
-    // {
-    //     float moveHorizontal = Input.GetAxisRaw("Horizontal");
-    //     float moveVertical = Input.GetAxisRaw("Vertical");
-    //     bool callSkillWindow = Input.GetButtonDown("Skill Window");
-    //     bool callMap = Input.GetButtonDown("Map");
+    private void Update()
+    {
+        float moveHorizontal = Input.GetAxisRaw("Horizontal");
+        float moveVertical = Input.GetAxisRaw("Vertical");
+        bool callSkillWindow = Input.GetButtonDown("Skill Window");
+        bool callCharacterWindow = Input.GetButtonDown("Character Window");
+        bool callMap = Input.GetButtonDown("Map");
 
-    //     // if (moveHorizontal != 0 || moveVertical != 0) 
-    //     // {
-    //     //     AttemptMove(moveHorizontal, moveVertical);
-    //     // }
+        if (moveHorizontal != 0 || moveVertical != 0) 
+        {
+            AttemptMove(moveHorizontal, moveVertical);
+        }
 
-    //     if (callSkillWindow)
-    //     {
-    //         WindowSkill.Instance.ToggleVisible();
-    //     }
-    //     if (callMap)
-    //     {
-    //         Map.SetActive(!Map.activeSelf);
-    //     }
-    // }
+        if (callSkillWindow)
+        {
+            WindowSkill.Instance.ToggleVisible();
+        }
+
+        if (callCharacterWindow)
+        {
+            WindowCharacter.Instance.ToggleVisible();
+        }
+
+        if (callMap)
+        {
+            Map.SetActive(!Map.activeSelf);
+        }
+    }
 
     public void MoveUp()
     {
