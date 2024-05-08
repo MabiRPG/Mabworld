@@ -23,6 +23,11 @@ public class SkillSlot : MonoBehaviour
         button = GetComponentInChildren<Button>();
     }
 
+    private void Start()
+    {
+        
+    }
+
     private void OnDisable()
     {
         button.onClick.RemoveAllListeners();

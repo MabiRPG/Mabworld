@@ -77,7 +77,7 @@ public class WindowSkillDetailed : Window
     {
         Clear();
 
-        advanceButtonEvent.Clear();
+        advanceButton.onClick.RemoveAllListeners();
         closeButton.onClick.RemoveListener(CloseWindow);
     }
 
