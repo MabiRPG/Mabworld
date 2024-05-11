@@ -157,6 +157,11 @@ public class Skill
         DataTable dt = new DataTable();
         dt = GameManager.Instance.QueryDatabase(methodsQuery, ("@id", info["skill_id"]), ("@rank", rank));
         // Clears the previous training methods.
+        foreach (SkillTrainingMethod method in methods)
+        {
+            method.Clear();
+        }
+
         methods.Clear();
         // Resets the max xp gainable.
         xpMax = 0;
@@ -164,10 +169,15 @@ public class Skill
         // For every method, create a new method and insert into list.
         foreach (DataRow row in dt.Rows)
         {
-            SkillTrainingMethod method = new SkillTrainingMethod(info["skill_id"], rank, row["method_id"],
-                row["method"], row["xp_gain_each"], row["count_max"]);
+            int methodID = int.Parse(row["method_id"].ToString());
+            string methodName = row["method"].ToString();
+            float xpGainEach = float.Parse(row["xp_gain_each"].ToString());
+            float countMax = float.Parse(row["count_max"].ToString());
+
+            SkillTrainingMethod method = new SkillTrainingMethod(this, methodID, methodName,
+                xpGainEach, countMax);
             // Adds the max xp from method to skill.
-            xpMax += float.Parse(row["xp_gain_each"].ToString()) * float.Parse(row["count_max"].ToString());
+            xpMax += xpGainEach * countMax;
 
             methods.Add(method);
         }
@@ -187,6 +197,11 @@ public class Skill
         {
             useTime += stats["use_time"][index];
         }
+
+        useTime = Math.Max(0, useTime);
+
+        // Debug purposes...
+        useTime = 0.5f;
 
         float currTime = 0;
         // Interval for which audio should play
@@ -209,8 +224,6 @@ public class Skill
             currTime += interval;
         }
 
-        Debug.Log("Completed! Now calculating skill usage...");
-
         // Calculate base success rate of skill
         float chance = GameManager.Instance.lifeSkillBaseSuccessRate + Player.Instance.LifeSkillSuccessRate();
 
@@ -225,18 +238,21 @@ public class Skill
         float roll = (float)GameManager.Instance.rnd.NextDouble();
 
         // Handle success or fail here
-        Player.Instance.status.Clear();
+        Result result = Player.Instance.result;
+
+        result.Clear();
+        result.skill = this;
 
         if (chance >= roll)
         {
-            Player.Instance.status.isSuccess = true;
+            result.isSuccess = true;
         }
         else
         {
-            Player.Instance.status.isSuccess = false;
+            result.isSuccess = false;
         }       
 
-        Player.Instance.status.statusEvent.RaiseOnChange();
+        result.statusEvent.RaiseOnChange();
 
         // Makes the player available again.
         Player.Instance.isBusy = false;

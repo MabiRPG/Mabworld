@@ -3,6 +3,7 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour
 {
     private AudioSource playerAudio;
+    [Header("SFX")]
     [SerializeField]
     private AudioClip levelUpSFX;
     [SerializeField]
@@ -17,17 +18,17 @@ public class AudioManager : MonoBehaviour
 
     private void OnEnable()
     {
-        Player.Instance.status.statusEvent.OnChange += StartPlayerSFX;
+        Player.Instance.result.statusEvent.OnChange += StartPlayerSFX;
     }
 
     private void OnDisable()
     {
-        Player.Instance.status.statusEvent.OnChange -= StartPlayerSFX;
+        Player.Instance.result.statusEvent.OnChange -= StartPlayerSFX;
     }
 
     private void StartPlayerSFX()
     {
-        if (Player.Instance.status.isSuccess)
+        if (Player.Instance.result.isSuccess)
         {
             playerAudio.clip = emotionSuccessSFX;
         }

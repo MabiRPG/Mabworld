@@ -146,9 +146,9 @@ public class WindowSkillDetailed : Window
         // For every training method, create a new training method prefab and populate it.
         foreach (SkillTrainingMethod method in skill.methods)
         {
-            GameObject obj = trainingMethodPrefabs.GetFree(method.method["name"], trainingMethodsTransform);
+            GameObject obj = trainingMethodPrefabs.GetFree(method.name, trainingMethodsTransform);
             WindowSkillTrainingMethod script = obj.GetComponent<WindowSkillTrainingMethod>();
-            script.SetText(method);
+            script.SetMethod(method);
         }
     }
     

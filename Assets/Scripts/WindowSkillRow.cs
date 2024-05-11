@@ -24,10 +24,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     private Button advanceButton;
 
     // Event handlers
-    public EventManager nameButtonEvent = new EventManager();
-    private Action nameButtonAction;
-    public EventManager advanceButtonEvent = new EventManager();
-    private Action advanceButtonAction;
+    public Action nameButtonAction;
     public bool draggingIcon = false;
 
     /// <summary>
@@ -47,27 +44,12 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     }
 
     /// <summary>
-    ///     Called when the object becomes enabled and active.
-    /// </summary>
-    private void OnEnable()
-    {
-        nameButton.onClick.AddListener(delegate {nameButtonEvent.RaiseOnChange();});
-        advanceButton.onClick.AddListener(delegate {advanceButtonEvent.RaiseOnChange();});
-    }
-
-    /// <summary>
     ///     Called when the object becomes disabled and inactive.
     /// </summary>
     private void OnDisable()
     {
         // Removes all event listeners
         Clear();
-
-        nameButton.onClick.RemoveAllListeners();
-        nameButtonEvent.Clear();
-
-        advanceButton.onClick.RemoveAllListeners();
-        advanceButtonEvent.Clear();
     }
 
     /// <summary>
@@ -127,7 +109,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     /// <param name="newSkill">Skill instance for window.</param>
     /// <param name="nameButtonAction">Function to call when name button is triggered.</param>
     /// <param name="advanceButtonAction">Function to call when advance button is triggered.</param>
-    public void SetSkill(Skill newSkill, Action newNameButtonAction, Action newAdvanceButtonAction)
+    public void SetSkill(Skill newSkill, Action nameButtonAction, Action advanceButtonAction)
     {
         Clear();
         skill = newSkill;
@@ -141,10 +123,9 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         skill.xpEvent.OnChange += UpdateXp;
         skill.xpMaxEvent.OnChange += UpdateXp;
 
-        nameButtonAction = newNameButtonAction;
-        advanceButtonAction = newAdvanceButtonAction;
-        nameButtonEvent.OnChange += nameButtonAction;
-        advanceButtonEvent.OnChange += advanceButtonAction;
+        this.nameButtonAction = nameButtonAction;
+        nameButton.onClick.AddListener(delegate {nameButtonAction();});
+        advanceButton.onClick.AddListener(delegate {advanceButtonAction();});
     }
 
     /// <summary>
@@ -159,6 +140,9 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             skill.xpMaxEvent.OnChange -= UpdateXp;
             skill = null;
         }
+        
+        nameButton.onClick.RemoveAllListeners();
+        advanceButton.onClick.RemoveAllListeners();
     }
 
     /// <summary>

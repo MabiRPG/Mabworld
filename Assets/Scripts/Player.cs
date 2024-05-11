@@ -7,38 +7,6 @@ using System.Collections;
 /// </summary>
 public class Player : Actor
 {
-    /// <summary>
-    ///     Handles all player states and information.
-    /// </summary>
-    public class Status
-    {
-        // If action was success
-        public bool isSuccess;
-        // Type of action
-        public enum ActionType
-        {
-            None,
-            Gather
-        }
-        public ActionType type;
-        // Resource ID and gain if gather action
-        public int resourceID;
-        public int resourceGain;
-        // Event handler for status
-        public EventManager statusEvent = new EventManager();
-
-        /// <summary>
-        ///     Clears the status.
-        /// </summary>
-        public void Clear()
-        {
-            isSuccess = false;
-            type = ActionType.None;
-            resourceID = -1;
-            resourceGain = 0;
-        }
-    }
-
     // Global instance of player
     public static Player Instance = null;
 
@@ -61,8 +29,8 @@ public class Player : Actor
     public bool isBusy = false;
     private IEnumerator playerCoroutine;
 
-    // Status instance of player
-    public Status status = new Status();
+    // Result instance of player
+    public Result result = new Result();
 
     public GameObject Map;
 

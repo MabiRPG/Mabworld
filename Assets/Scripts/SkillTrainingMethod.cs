@@ -1,35 +1,46 @@
-using System.Collections.Generic;
-
 /// <summary>
 ///     Handles all training method processing.
 /// </summary>
 public class SkillTrainingMethod
 {
-    // Creates dictionary for the method information, and status update flag from player.
-    public Dictionary<string, object> method = new Dictionary<string, object>();
-    public Dictionary<string, object> status = new Dictionary<string, object>();
+    // ID of method
+    public int ID;
+    // Name of method
+    public string name;
+    // XP gain for each count of method
+    public float xpGainEach;
+    // Current method counter
+    public int count;
+    // Maximum counts of method
+    public float countMax;
+    
+    // Skill instance
+    private Skill skill;
+    // Player result
+    public Result result = null;
+    // Event handlers
+    public EventManager countEvent = new EventManager();
 
     /// <summary>
     ///     Initializes the object.
     /// </summary>
-    /// <param name="skill_id">Skill ID in database.</param>
-    /// <param name="rank">Current rank string representation.</param>
-    /// <param name="method_id">Method ID in database.</param>
-    /// <param name="methodName">Method name.</param>
-    /// <param name="xp_gain_each">XP gain every count of method.</param>
-    /// <param name="count_max">Maximum count of method.</param>
-    public SkillTrainingMethod(object skill_id, object rank, object method_id, object methodName, 
-        object xp_gain_each, object count_max)
+    /// <param name="newID">Method ID in database.</param>
+    /// <param name="newName">Method name.</param>
+    /// <param name="newXpGainEach">XP gain every count of method.</param>
+    /// <param name="newCountMax">Maximum count of method.</param>
+    public SkillTrainingMethod(Skill newSkill, int newID, string newName, 
+        float newXpGainEach, float newCountMax)
     {
+        ID = newID;
+        name = newName;
+        xpGainEach = newXpGainEach;
+        countMax = newCountMax;
         // Creates an empty counter for current method.
-        method.Add("count", 0);
-        // Inserts rest into dictionary
-        method.Add("skill_id", skill_id);
-        method.Add("rank", rank);
-        method.Add("name", methodName);
-        method.Add("method_id", method_id);
-        method.Add("xp_gain_each", xp_gain_each);
-        method.Add("count_max", count_max);
+        count = 0;
+
+        skill = newSkill;
+
+        Player.Instance.result.statusEvent.OnChange += Update;
     }
 
     /// <summary>
@@ -37,10 +48,35 @@ public class SkillTrainingMethod
     /// </summary>
     public void Update()
     {
-        if ((int)method["count"] < (int)method["count_max"] && CheckTraining())
+        result = Player.Instance.result;
+
+        if (skill != result.skill)
         {
-            method["count"] = (int)method["count"] + 1;
+            return;
         }
+
+        if (CheckTraining())
+        {
+            count += 1;
+            skill.AddXP(xpGainEach);
+            countEvent.RaiseOnChange();
+
+            if (IsComplete())
+            {
+                Clear();
+            }
+        }
+    }
+
+    public bool IsComplete()
+    {
+        return count == countMax;
+    }
+
+    public void Clear()
+    {
+        Player.Instance.result.statusEvent.OnChange -= Update;
+        countEvent.Clear();
     }
 
     //--------------------------------------------------------------------------
@@ -48,7 +84,7 @@ public class SkillTrainingMethod
     //--------------------------------------------------------------------------
     public bool CheckTraining()
     {
-        switch((int)method["method_id"])
+        switch(ID)
         {
             case 1:
                 return IsSuccess();
@@ -66,12 +102,7 @@ public class SkillTrainingMethod
     //--------------------------------------------------------------------------
     public bool IsSuccess()
     {
-        if ((bool)status["success"] == true)
-        {
-            return true;
-        }
-        
-        return false;
+        return result.isSuccess;
     }
 
     //--------------------------------------------------------------------------
@@ -87,7 +118,7 @@ public class SkillTrainingMethod
     //--------------------------------------------------------------------------
     public bool GatherTwoOrMore()
     {
-        if (IsSuccess() && (string)status["action"] == "gather" && (int)status["resourceGain"] > 1)
+        if (IsSuccess() && result.type == Result.Type.Gather && result.resourceGain > 1)
         {
             return true;
         }
