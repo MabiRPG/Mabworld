@@ -11,6 +11,8 @@ using UnityEngine.AddressableAssets;
 /// </summary>
 public class Skill 
 {
+    public int ID;
+
     // Dictionary of basic skill info and specific rank stats.
     public Dictionary<string, object> info = new Dictionary<string, object>();
     public Dictionary<string, float[]> stats = new Dictionary<string, float[]>();
@@ -55,9 +57,10 @@ public class Skill
     /// <summary>
     ///     Initializes the object.
     /// </summary>
-    /// <param name="ID">Skill ID in database.</param>
-    public Skill(int ID)
+    /// <param name="newID">Skill ID in database.</param>
+    public Skill(int newID)
     {
+        ID = newID;
         LoadSkillInfo(ID);
 
         sprite = Addressables.LoadAssetAsync<Sprite>(info["icon_name"].ToString()).WaitForCompletion();
@@ -174,6 +177,8 @@ public class Skill
 
     public IEnumerator Use()
     {
+        // Makes the player busy.
+        Player.Instance.isBusy = true;
         // Calculates the base use time for the skill.
         float useTime = float.Parse(info["base_use_time"].ToString());
 
@@ -199,7 +204,6 @@ public class Skill
             {
                 audio.clip = Addressables.LoadAssetAsync<AudioClip>("pickaxe").WaitForCompletion();
                 audio.Play();
-                Debug.Log("Played sound");
             }
 
             currTime += interval;
@@ -221,17 +225,20 @@ public class Skill
         float roll = (float)GameManager.Instance.rnd.NextDouble();
 
         // Handle success or fail here
+        Player.Instance.status.Clear();
+
         if (chance >= roll)
         {
-            audio.clip = Addressables.LoadAssetAsync<AudioClip>("emotion_success").WaitForCompletion();
-            audio.Play();
-            Debug.Log("success");
+            Player.Instance.status.isSuccess = true;
         }
         else
         {
-            audio.clip = Addressables.LoadAssetAsync<AudioClip>("emotion_fail").WaitForCompletion();
-            audio.Play();
-            Debug.Log("fail");
+            Player.Instance.status.isSuccess = false;
         }       
+
+        Player.Instance.status.statusEvent.RaiseOnChange();
+
+        // Makes the player available again.
+        Player.Instance.isBusy = false;
     }
 }

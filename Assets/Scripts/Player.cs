@@ -1,16 +1,44 @@
 using UnityEngine;
 using System;
-using UnityEngine.UIElements;
+using System.Collections;
 
-//==============================================================================
-// ** Player
-//------------------------------------------------------------------------------
-//  This class handles all player & input processing. Refer to Player.instance
-//  for the global instance.
-//==============================================================================
-
+/// <summary>
+///     Handles all player & input processing.
+/// </summary>
 public class Player : Actor
 {
+    /// <summary>
+    ///     Handles all player states and information.
+    /// </summary>
+    public class Status
+    {
+        // If action was success
+        public bool isSuccess;
+        // Type of action
+        public enum ActionType
+        {
+            None,
+            Gather
+        }
+        public ActionType type;
+        // Resource ID and gain if gather action
+        public int resourceID;
+        public int resourceGain;
+        // Event handler for status
+        public EventManager statusEvent = new EventManager();
+
+        /// <summary>
+        ///     Clears the status.
+        /// </summary>
+        public void Clear()
+        {
+            isSuccess = false;
+            type = ActionType.None;
+            resourceID = -1;
+            resourceGain = 0;
+        }
+    }
+
     // Global instance of player
     public static Player Instance = null;
 
@@ -29,11 +57,18 @@ public class Player : Actor
     private int hugeLuckyFactor = 50000;
     private int hugeLuckyGain = 20;
 
+    // Flag for player if busy
+    public bool isBusy = false;
+    private IEnumerator playerCoroutine;
+
+    // Status instance of player
+    public Status status = new Status();
+
     public GameObject Map;
 
-    //--------------------------------------------------------------------------
-    // * Initializes the object
-    //--------------------------------------------------------------------------
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
     private void Awake()
     {
         // Singleton recipe
@@ -49,9 +84,9 @@ public class Player : Actor
         DontDestroyOnLoad(gameObject);
     }
 
-    //--------------------------------------------------------------------------
-    // * Called before any frame updates.
-    //--------------------------------------------------------------------------
+    /// <summary>
+    ///     Called after all Awakes.
+    /// </summary>
     protected override void Start()
     {
         base.Start();
@@ -66,6 +101,10 @@ public class Player : Actor
         skills[3].AddXP(150);
     }
 
+    /// <summary>
+    ///     Triggered whenever colliding with another collider 2D.
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerEnter2D(Collider2D other)
     {
         InteractableObject target = other.gameObject.GetComponent<InteractableObject>();
@@ -115,49 +154,70 @@ public class Player : Actor
     //     // }
     // }
 
+    /// <summary>
+    ///     Moves the player up.
+    /// </summary>
     public void MoveUp()
     {
         AttemptMove(0, 1);
     }
 
+    /// <summary>
+    ///     Moves the player left.
+    /// </summary>
     public void MoveLeft()
     {
         AttemptMove(-1, 0);
     }
 
+    /// <summary>
+    ///     Moves the player down.
+    /// </summary>
     public void MoveDown()
     {
         AttemptMove(0, -1);
     }
 
+    /// <summary>
+    ///     Moves the player right.
+    /// </summary>
     public void MoveRight()
     {
         AttemptMove(1, 0);
     }
 
+    /// <summary>
+    ///     Toggles the minimap.
+    /// </summary>
     public void ToggleMap()
     {
         Map.SetActive(!Map.activeSelf);
     }
 
-    //--------------------------------------------------------------------------
-    // * Checks if the skill has been learned
-    //      int id : id of the skill
-    //--------------------------------------------------------------------------
+    /// <summary>
+    ///     Checks if the skill has been learned
+    /// </summary>
+    /// <param name="ID">Skill ID in database</param>
+    /// <returns>True if learned, False otherwise</returns>
     public bool IsSkillLearned(int ID)
     {
         return skills.ContainsKey(ID);
     }
 
+    /// <summary>
+    ///     Checks if the skill has been learned
+    /// </summary>
+    /// <param name="skill">Skill instance to check</param>
+    /// <returns>True if learned, False otherwise</returns>
     public bool IsSkillLearned(Skill skill)
     {
         return skills.ContainsValue(skill);
     }
 
-    //--------------------------------------------------------------------------
-    // * Learns the skill
-    //      int id : id of the skill
-    //--------------------------------------------------------------------------
+    /// <summary>
+    ///     Learns the skill
+    /// </summary>
+    /// <param name="ID">Skill ID in database</param>
     public void LearnSkill(int ID)
     {
         if (IsSkillLearned(ID))
@@ -168,10 +228,10 @@ public class Player : Actor
         skills.Add(ID, new Skill(ID));
     }
 
-    //--------------------------------------------------------------------------
-    // * Ranks up the skill
-    //      int id : id of the skill
-    //--------------------------------------------------------------------------
+    /// <summary>
+    ///     Ranks up the skill
+    /// </summary>
+    /// <param name="ID">Skill ID in database</param>
     public void RankUpSkill(int ID)
     {
         int apCost = (int)skills[ID].stats["ap_cost"][skills[ID].index + 1];
@@ -183,6 +243,10 @@ public class Player : Actor
         }
     }
 
+    /// <summary>
+    ///     Ranks up the skill
+    /// </summary>
+    /// <param name="skill">Skill instance</param>
     public void RankUpSkill(Skill skill)
     {
         int apCost = (int)skill.stats["ap_cost"][skill.index + 1];
@@ -194,25 +258,32 @@ public class Player : Actor
         }        
     }
 
+    /// <summary>
+    ///     Uses the skill
+    /// </summary>
+    /// <param name="ID"></param>
     public void UseSkill(int ID)
     {
-        if (IsSkillLearned(ID))
+        if (IsSkillLearned(ID) && !isBusy)
         {
-            skills[ID].Use();
+            playerCoroutine = skills[ID].Use();
+            StartCoroutine(skills[ID].Use());
         }
     }
 
-    //--------------------------------------------------------------------------
-    // * Returns the player's life skill success rate bonus
-    //--------------------------------------------------------------------------
+    /// <summary>
+    ///     Calculates the player's life skill success rate bonus
+    /// </summary>
+    /// <returns>Bonus rate as percentage</returns>
     public float LifeSkillSuccessRate()
     {
         return Math.Min(actorDex.current / lifeSkillDexFactor, lifeSkillSuccessCap);
     }
 
-    //--------------------------------------------------------------------------
-    // * Returns the lucky resource gain multiplier
-    //--------------------------------------------------------------------------
+    /// <summary>
+    ///     Calculates the lucky resource gain factor
+    /// </summary>
+    /// <returns>Resource gain multiplier</returns>
     public int IsLucky() 
     {
         float lucky = actorLuck.current / luckyFactor;
@@ -229,5 +300,24 @@ public class Player : Actor
         }
 
         return 1;
+    }
+
+    public void StartAction(Skill skill)
+    {
+        if (IsSkillLearned(skill) && !isBusy)
+        {
+            playerCoroutine = skill.Use();
+            StartCoroutine(playerCoroutine);
+        }
+    }
+
+    public void InterruptAction()
+    {
+        if (playerCoroutine != null)
+        {
+            StopCoroutine(playerCoroutine);
+            playerCoroutine = null;
+            isBusy = false;
+        }
     }
 }

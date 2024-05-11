@@ -8,8 +8,8 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager Instance {get; private set;}
 
-    public Dictionary<KeyCode, Action> keyBinds = new Dictionary<KeyCode, Action>();
-    public Dictionary<KeyCode, Action> buttonBinds = new Dictionary<KeyCode, Action>();
+    public Dictionary<KeyCode, Action> movementKeybinds = new Dictionary<KeyCode, Action>();
+    public Dictionary<KeyCode, Action> buttonKeybinds = new Dictionary<KeyCode, Action>();
 
     private void Awake()
     {
@@ -26,14 +26,14 @@ public class InputManager : MonoBehaviour
         Reset();
     }
 
-    public void AddKey(KeyCode key, Action action, bool forceReplace = true)
+    public void AddMovementBind(KeyCode key, Action action, bool forceReplace = true)
     {
-        Add(key, action, forceReplace, keyBinds);
+        Add(key, action, forceReplace, movementKeybinds);
     }
 
-    public void AddButton(KeyCode key, Action action, bool forceReplace = true)
+    public void AddButtonBind(KeyCode key, Action action, bool forceReplace = true)
     {
-        Add(key, action, forceReplace, buttonBinds);
+        Add(key, action, forceReplace, buttonKeybinds);
     }
 
     public void Add(KeyCode key, Action action, bool forceReplace, Dictionary<KeyCode, Action> dict)
@@ -60,7 +60,16 @@ public class InputManager : MonoBehaviour
             return;
         }
 
-        foreach (KeyValuePair<KeyCode, Action> pair in buttonBinds)
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Player.Instance.InterruptAction();
+        }
+        else if (Player.Instance.isBusy)
+        {
+            return;
+        }
+
+        foreach (KeyValuePair<KeyCode, Action> pair in buttonKeybinds)
         {
             if (Input.GetKeyDown(pair.Key))
             {
@@ -69,7 +78,7 @@ public class InputManager : MonoBehaviour
             }
         }
 
-        foreach (KeyValuePair<KeyCode, Action> pair in keyBinds)
+        foreach (KeyValuePair<KeyCode, Action> pair in movementKeybinds)
         {
             if (Input.GetKey(pair.Key))
             {
@@ -81,13 +90,13 @@ public class InputManager : MonoBehaviour
 
     public void Reset()
     {
-        AddKey(KeyCode.W, () => Player.Instance.MoveUp());
-        AddKey(KeyCode.A, () => Player.Instance.MoveLeft());
-        AddKey(KeyCode.S, () => Player.Instance.MoveDown());
-        AddKey(KeyCode.D, () => Player.Instance.MoveRight());
+        AddMovementBind(KeyCode.W, () => Player.Instance.MoveUp());
+        AddMovementBind(KeyCode.A, () => Player.Instance.MoveLeft());
+        AddMovementBind(KeyCode.S, () => Player.Instance.MoveDown());
+        AddMovementBind(KeyCode.D, () => Player.Instance.MoveRight());
 
-        AddButton(KeyCode.Z, () => WindowSkill.Instance.ToggleVisible());
-        AddButton(KeyCode.C, () => WindowCharacter.Instance.ToggleVisible());
-        AddButton(KeyCode.M, () => Player.Instance.ToggleMap());
+        AddButtonBind(KeyCode.Z, () => WindowSkill.Instance.ToggleVisible());
+        AddButtonBind(KeyCode.C, () => WindowCharacter.Instance.ToggleVisible());
+        AddButtonBind(KeyCode.M, () => Player.Instance.ToggleMap());
     }
 }

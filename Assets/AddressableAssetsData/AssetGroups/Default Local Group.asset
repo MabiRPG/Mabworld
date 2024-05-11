@@ -16,12 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 5f0c457da11acdf4d953a39b05767b39
-  m_SerializeEntries:
-  - m_GUID: 6ac3131e3d868524283d1f7d206eab57
-    m_Address: Sounds/SFX/levelup
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1e04f432b98b4f94099995e59e4681f1, type: 2}
   m_SchemaSet:

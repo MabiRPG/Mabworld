@@ -12,11 +12,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
   m_Name: Player Sounds
   m_EditorClassIdentifier: 
-  m_GroupName: Packed Assets
+  m_GroupName: Player Sounds
   m_Data:
     m_SerializedData: []
   m_GUID: 6ef19d47613d84048be01f825f252b8f
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 8c9e8137544f6bc4caf63083ccce5751
+    m_Address: emotion_fail
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8389175cd84fe6b46b0fdbfdef37bb50
+    m_Address: emotion_success
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ac3131e3d868524283d1f7d206eab57
+    m_Address: levelup
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1e04f432b98b4f94099995e59e4681f1, type: 2}
   m_SchemaSet:

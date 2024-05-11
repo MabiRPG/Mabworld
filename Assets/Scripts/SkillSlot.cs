@@ -3,18 +3,27 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+///     Skill slot for player skill hotkeys
+/// </summary>
 public class SkillSlot : MonoBehaviour 
 {
+    // Keycode for slot
     public KeyCode key = KeyCode.F1;
 
     private Skill skill;
+    // References to prefab objects
     private Image icon;
     private TMP_Text text;
     private Button button;
 
+    // Actions to invoke when triggered
     private Action useAction;
     private Action openWindowAction;
 
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
     private void Awake()
     {
         icon = GetComponentInChildren<Image>();
@@ -23,18 +32,26 @@ public class SkillSlot : MonoBehaviour
         button = GetComponentInChildren<Button>();
     }
 
+    /// <summary>
+    ///     Called when the object becomes disabled and inactive.
+    /// </summary>
     private void OnDisable()
     {
         button.onClick.RemoveAllListeners();
     }
 
+    /// <summary>
+    ///     Sets the skill slot
+    /// </summary>
+    /// <param name="newSkill">Skill instance</param>
+    /// <param name="newUseAction">Action triggered when skill is used</param>
+    /// <param name="newOpenWindowAction">Action triggered when skill details is pressed</param>
     public void SetSkill(Skill newSkill, Action newUseAction, Action newOpenWindowAction)
     {
         skill = newSkill;
-        string iconDir = skill.info["icon_name"].ToString();
         icon.sprite = skill.sprite;
 
-        InputManager.Instance.AddButton(key, () => StartCoroutine(skill.Use()));
+        InputManager.Instance.AddButtonBind(key, () => Player.Instance.StartAction(skill));
         openWindowAction = newOpenWindowAction;
         button.onClick.AddListener(UseSkill);
     }
