@@ -24,21 +24,21 @@ public class SkillTrainingMethod
     /// <summary>
     ///     Initializes the object.
     /// </summary>
-    /// <param name="newID">Method ID in database.</param>
-    /// <param name="newName">Method name.</param>
-    /// <param name="newXpGainEach">XP gain every count of method.</param>
-    /// <param name="newCountMax">Maximum count of method.</param>
-    public SkillTrainingMethod(Skill newSkill, int newID, string newName, 
-        float newXpGainEach, float newCountMax)
+    /// <param name="ID">Method ID in database.</param>
+    /// <param name="name">Method name.</param>
+    /// <param name="xpGainEach">XP gain every count of method.</param>
+    /// <param name="countMax">Maximum count of method.</param>
+    public SkillTrainingMethod(Skill skill, int ID, string name, 
+        float xpGainEach, float countMax)
     {
-        ID = newID;
-        name = newName;
-        xpGainEach = newXpGainEach;
-        countMax = newCountMax;
+        this.ID = ID;
+        this.name = name;
+        this.xpGainEach = xpGainEach;
+        this.countMax = countMax;
         // Creates an empty counter for current method.
         count = 0;
 
-        skill = newSkill;
+        this.skill = skill;
 
         Player.Instance.result.statusEvent.OnChange += Update;
     }

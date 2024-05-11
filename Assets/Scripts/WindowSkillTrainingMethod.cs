@@ -27,12 +27,12 @@ public class WindowSkillTrainingMethod : MonoBehaviour
     /// <summary>
     ///     Sets the text.
     /// </summary>
-    /// <param name="newMethod">Training method of skill.</param>
-    public void SetMethod(SkillTrainingMethod newMethod)
+    /// <param name="method">Training method of skill.</param>
+    public void SetMethod(SkillTrainingMethod method)
     {
         Clear();
-        method = newMethod;
-        method.countEvent.OnChange += Draw;
+        this.method = method;
+        this.method.countEvent.OnChange += Draw;
         Draw();
     }
 

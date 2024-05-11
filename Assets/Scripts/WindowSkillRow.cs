@@ -106,22 +106,22 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     /// <summary>
     ///     Sets the skill instance.
     /// </summary>
-    /// <param name="newSkill">Skill instance for window.</param>
+    /// <param name="skill">Skill instance for window.</param>
     /// <param name="nameButtonAction">Function to call when name button is triggered.</param>
     /// <param name="advanceButtonAction">Function to call when advance button is triggered.</param>
-    public void SetSkill(Skill newSkill, Action nameButtonAction, Action advanceButtonAction)
+    public void SetSkill(Skill skill, Action nameButtonAction, Action advanceButtonAction)
     {
         Clear();
-        skill = newSkill;
+        this.skill = skill;
 
-        skillName.text = skill.info["name"].ToString();
-        icon.sprite = skill.sprite;
+        skillName.text = this.skill.info["name"].ToString();
+        icon.sprite = this.skill.sprite;
         UpdateRank();
         UpdateXp();
 
-        skill.indexEvent.OnChange += UpdateRank;
-        skill.xpEvent.OnChange += UpdateXp;
-        skill.xpMaxEvent.OnChange += UpdateXp;
+        this.skill.indexEvent.OnChange += UpdateRank;
+        this.skill.xpEvent.OnChange += UpdateXp;
+        this.skill.xpMaxEvent.OnChange += UpdateXp;
 
         this.nameButtonAction = nameButtonAction;
         nameButton.onClick.AddListener(delegate {nameButtonAction();});

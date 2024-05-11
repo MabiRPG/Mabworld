@@ -252,17 +252,18 @@ public class Player : Actor
     ///     Calculates the lucky resource gain factor
     /// </summary>
     /// <returns>Resource gain multiplier</returns>
-    public int IsLucky() 
+    public int LuckyGainMultiplier() 
     {
-        float lucky = actorLuck.current / luckyFactor;
-        float hugeLucky = actorLuck.current / hugeLuckyFactor;
+        float lucky = (float)actorLuck.current / luckyFactor;
+        float hugeLucky = (float)actorLuck.current / hugeLuckyFactor;
         float roll = (float)GameManager.Instance.rnd.NextDouble();
+        Debug.Log(string.Format("{0} {1} {2}",lucky, hugeLucky, roll));
 
-        if (roll <= hugeLucky) 
+        if (hugeLucky >= roll) 
         {
             return hugeLuckyGain;
         }
-        else if (roll <= lucky) 
+        else if (lucky >= roll) 
         {
             return luckyGain;
         }

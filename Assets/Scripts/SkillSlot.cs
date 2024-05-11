@@ -43,16 +43,16 @@ public class SkillSlot : MonoBehaviour
     /// <summary>
     ///     Sets the skill slot
     /// </summary>
-    /// <param name="newSkill">Skill instance</param>
+    /// <param name="skill">Skill instance</param>
     /// <param name="newUseAction">Action triggered when skill is used</param>
-    /// <param name="newOpenWindowAction">Action triggered when skill details is pressed</param>
-    public void SetSkill(Skill newSkill, Action newUseAction, Action newOpenWindowAction)
+    /// <param name="openWindowAction">Action triggered when skill details is pressed</param>
+    public void SetSkill(Skill skill, Action newUseAction, Action openWindowAction)
     {
-        skill = newSkill;
-        icon.sprite = skill.sprite;
+        this.skill = skill;
+        icon.sprite = this.skill.sprite;
 
-        InputManager.Instance.AddButtonBind(key, () => Player.Instance.StartAction(skill));
-        openWindowAction = newOpenWindowAction;
+        InputManager.Instance.AddButtonBind(key, () => Player.Instance.StartAction(this.skill));
+        this.openWindowAction = openWindowAction;
         button.onClick.AddListener(UseSkill);
     }
 

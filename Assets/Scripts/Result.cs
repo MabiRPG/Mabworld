@@ -28,6 +28,6 @@ public class Result
         type = Type.None;
         skill = null;
         resourceID = -1;
-        resourceGain = 0;
+        resourceGain = 1;
     }
 }

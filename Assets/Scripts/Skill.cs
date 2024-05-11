@@ -201,7 +201,7 @@ public class Skill
         useTime = Math.Max(0, useTime);
 
         // Debug purposes...
-        useTime = 0.5f;
+        useTime = 0.1f;
 
         float currTime = 0;
         // Interval for which audio should play
@@ -242,10 +242,12 @@ public class Skill
 
         result.Clear();
         result.skill = this;
+        result.type = Result.Type.Gather;
 
         if (chance >= roll)
         {
             result.isSuccess = true;
+            result.resourceGain = Player.Instance.LuckyGainMultiplier();
         }
         else
         {

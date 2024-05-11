@@ -84,20 +84,21 @@ public class WindowSkillDetailed : Window
     /// <summary>
     ///     Sets the skill instance.
     /// </summary>
-    /// <param name="newSkill">Skill instance for window.</param>
-    public void SetSkill(Skill newSkill, Action advanceButtonAction)
+    /// <param name="skill">Skill instance for window.</param>
+    /// <param name="advanceButtonAction">Function to call when advance button is triggered.</param>
+    public void SetSkill(Skill skill, Action advanceButtonAction)
     {
         Clear();
-        skill = newSkill;
+        this.skill = skill;
 
         // Finds the skill icon sprite and reassigns it.
-        icon.sprite = skill.sprite;
+        icon.sprite = this.skill.sprite;
         UpdateRank();
         UpdateXp();
 
-        skill.indexEvent.OnChange += UpdateRank;
-        skill.xpEvent.OnChange += UpdateXp;
-        skill.xpMaxEvent.OnChange += UpdateXp;
+        this.skill.indexEvent.OnChange += UpdateRank;
+        this.skill.xpEvent.OnChange += UpdateXp;
+        this.skill.xpMaxEvent.OnChange += UpdateXp;
         advanceButtonEvent.OnChange += advanceButtonAction;
 
         ShowWindow();
@@ -131,6 +132,8 @@ public class WindowSkillDetailed : Window
         int index = skill.index;
 
         // For every stat, create a new stat field prefab and populate it.
+        statPrefabs.SetActiveAll(false);
+
         foreach (KeyValuePair<string, float[]> stat in skill.stats)
         {
             if (stat.Key == "ap_cost" || stat.Value[index] == 0)
@@ -144,6 +147,8 @@ public class WindowSkillDetailed : Window
         }
 
         // For every training method, create a new training method prefab and populate it.
+        trainingMethodPrefabs.SetActiveAll(false);
+        
         foreach (SkillTrainingMethod method in skill.methods)
         {
             GameObject obj = trainingMethodPrefabs.GetFree(method.name, trainingMethodsTransform);

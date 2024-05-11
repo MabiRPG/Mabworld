@@ -68,13 +68,13 @@ public class WindowSkillAdvance : Window
     /// <summary>
     ///     Sets the skill instance.
     /// </summary>
-    /// <param name="newSkill">Skill instance for window.</param>
-    public void SetSkill(Skill newSkill)
+    /// <param name="skill">Skill instance for window.</param>
+    public void SetSkill(Skill skill)
     {
         Clear();
         
-        skill = newSkill;
-        skill.indexEvent.OnChange += CloseWindow;
+        this.skill = skill;
+        this.skill.indexEvent.OnChange += CloseWindow;
 
         Draw();
         ShowWindow();

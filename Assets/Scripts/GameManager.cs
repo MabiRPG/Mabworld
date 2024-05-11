@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 using System.Data;
 using Mono.Data.Sqlite;
 using System.Collections.Generic;
