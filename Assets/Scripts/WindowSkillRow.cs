@@ -181,5 +181,10 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             overXpBar.SetActive(true);
             advanceButton.gameObject.SetActive(true);
         }
+
+        if (!skill.CanRankUp())
+        {
+            advanceButton.gameObject.SetActive(false);
+        }
     }
 }

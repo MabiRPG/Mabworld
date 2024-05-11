@@ -57,16 +57,18 @@ public class Skill
     /// <summary>
     ///     Initializes the object.
     /// </summary>
-    /// <param name="newID">Skill ID in database.</param>
-    public Skill(int newID)
+    /// <param name="ID">Skill ID in database.</param>
+    public Skill(int ID)
     {
-        ID = newID;
-        LoadSkillInfo(ID);
+        this.ID = ID;
+        LoadSkillInfo(this.ID);
 
         sprite = Addressables.LoadAssetAsync<Sprite>(info["icon_name"].ToString()).WaitForCompletion();
         rank = ranks[index];
 
         CreateTrainingMethods();
+
+        indexEvent.OnChange += AudioManager.Instance.PlayLevelUpSFX;
     }
 
     /// <summary>
@@ -124,6 +126,11 @@ public class Skill
         CreateTrainingMethods();
         indexEvent.RaiseOnChange();
         xpEvent.RaiseOnChange();
+
+        if (!CanRankUp())
+        {
+            indexEvent.Clear();
+        }
     }
 
     /// <summary>
@@ -146,6 +153,11 @@ public class Skill
     {
         xp += x;
         xpEvent.RaiseOnChange();
+
+        if (!CanRankUp() && xp == xpMax)
+        {
+            xpEvent.Clear();
+        }
     }
 
     /// <summary>
@@ -154,8 +166,7 @@ public class Skill
     public void CreateTrainingMethods()
     {
         // Creates a new data table and queries the db.
-        DataTable dt = new DataTable();
-        dt = GameManager.Instance.QueryDatabase(methodsQuery, ("@id", info["skill_id"]), ("@rank", rank));
+        DataTable dt = GameManager.Instance.QueryDatabase(methodsQuery, ("@id", info["skill_id"]), ("@rank", rank));
         // Clears the previous training methods.
         foreach (SkillTrainingMethod method in methods)
         {
@@ -183,6 +194,11 @@ public class Skill
         }
 
         xpMaxEvent.RaiseOnChange();
+
+        if (!CanRankUp())
+        {
+            xpMaxEvent.Clear();
+        }
     }
 
     public IEnumerator Use()

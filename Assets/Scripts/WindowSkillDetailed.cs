@@ -148,7 +148,7 @@ public class WindowSkillDetailed : Window
 
         // For every training method, create a new training method prefab and populate it.
         trainingMethodPrefabs.SetActiveAll(false);
-        
+
         foreach (SkillTrainingMethod method in skill.methods)
         {
             GameObject obj = trainingMethodPrefabs.GetFree(method.name, trainingMethodsTransform);
@@ -162,7 +162,7 @@ public class WindowSkillDetailed : Window
     /// </summary>
     private void UpdateXp()
     {
-        advanceButton.gameObject.transform.parent.gameObject.SetActive(false);
+        advanceButton.transform.parent.gameObject.SetActive(false);
 
         // If < 100, use normal bar, else use overfill bar.
         if (skill.xp <= 100) 
@@ -174,7 +174,7 @@ public class WindowSkillDetailed : Window
 
             if (skill.xp == 100)
             {
-                advanceButton.gameObject.transform.parent.gameObject.SetActive(true);
+                advanceButton.transform.parent.gameObject.SetActive(true);
             }
         }
         else 
@@ -183,7 +183,12 @@ public class WindowSkillDetailed : Window
             overXpBarScript.SetCurrent(skill.xp);
             overXpBarScript.SetMaximum(skill.xpMax);
             overXpBar.SetActive(true);
-            advanceButton.gameObject.transform.parent.gameObject.SetActive(true);
+            advanceButton.transform.parent.gameObject.SetActive(true);
         }       
+
+        if (!skill.CanRankUp())
+        {
+            advanceButton.transform.parent.gameObject.SetActive(false);
+        }
     }
 }

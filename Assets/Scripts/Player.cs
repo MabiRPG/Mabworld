@@ -63,10 +63,6 @@ public class Player : Actor
         LearnSkill(1);
         LearnSkill(2);
         LearnSkill(3);
-        RankUpSkill(1);
-        skills[1].AddXP(50);
-        skills[2].AddXP(100);
-        skills[3].AddXP(150);
     }
 
     /// <summary>
@@ -257,7 +253,6 @@ public class Player : Actor
         float lucky = (float)actorLuck.current / luckyFactor;
         float hugeLucky = (float)actorLuck.current / hugeLuckyFactor;
         float roll = (float)GameManager.Instance.rnd.NextDouble();
-        Debug.Log(string.Format("{0} {1} {2}",lucky, hugeLucky, roll));
 
         if (hugeLucky >= roll) 
         {
