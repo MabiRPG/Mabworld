@@ -23,11 +23,6 @@ public class SkillSlot : MonoBehaviour
         button = GetComponentInChildren<Button>();
     }
 
-    private void Start()
-    {
-        
-    }
-
     private void OnDisable()
     {
         button.onClick.RemoveAllListeners();
@@ -36,20 +31,12 @@ public class SkillSlot : MonoBehaviour
     public void SetSkill(Skill newSkill, Action newUseAction, Action newOpenWindowAction)
     {
         skill = newSkill;
-        string iconDir = "Sprites/Skill Icons/" + skill.info["icon_name"].ToString();
-        icon.sprite = Resources.Load<Sprite>(iconDir);     
+        string iconDir = skill.info["icon_name"].ToString();
+        icon.sprite = skill.sprite;
 
-        useAction = newUseAction;
+        InputManager.Instance.AddButton(key, () => StartCoroutine(skill.Use()));
         openWindowAction = newOpenWindowAction;
         button.onClick.AddListener(UseSkill);
-    }
-
-    public void Update()
-    {
-        if (Input.GetKey(key))
-        {
-            //Debug.Log("pressed");
-        }
     }
 
     private void UseSkill()

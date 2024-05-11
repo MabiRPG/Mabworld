@@ -52,8 +52,20 @@ public class WindowSkill : Window
         advancePrefabs.SetPrefab(windowSkillAdvancePrefab);
     }
 
+    /// <summary>
+    ///     Called after all Awakes.
+    /// </summary>
     private void Start()
     {
+        Draw();
+    }
+
+    /// <summary>
+    ///     Called when the object becomes enabled and active.
+    /// </summary>
+    private void OnEnable()
+    {
+        skillPrefabs.SetActiveAll(false);
         Draw();
     }
 
@@ -79,29 +91,19 @@ public class WindowSkill : Window
     }
 
     /// <summary>
-    ///     Toggles visibility of the object.
+    ///     Creates a new advance skill window.
     /// </summary>
-    // public void ToggleVisible()
-    // {
-    //     // Changes visibilty of object.
-    //     gameObject.SetActive(!gameObject.activeSelf);
-
-    //     if (gameObject.activeSelf) 
-    //     {
-    //         Clear();
-    //         Draw();
-    //     }
-    // }
-
+    /// <param name="skill"></param>
     private void CreateAdvanceSkillWindow(Skill skill)
     {
         GameObject obj = advancePrefabs.GetFree(skill, transform.parent);
         WindowSkillAdvance window = obj.GetComponent<WindowSkillAdvance>();
         window.SetSkill(skill);
+        window.Focus();
     }
 
     /// <summary>
-    ///     Creates a new detailed skill window for the skill.
+    ///     Creates a new detailed skill window.
     /// </summary>
     /// <param name="skill">Skill to populate window.</param>
     private void CreateDetailedSkillWindow(Skill skill)
@@ -109,10 +111,6 @@ public class WindowSkill : Window
         GameObject obj = detailedPrefabs.GetFree(skill, transform.parent);
         WindowSkillDetailed window = obj.GetComponent<WindowSkillDetailed>();
         window.SetSkill(skill, () => CreateAdvanceSkillWindow(skill));
-    }
-
-    private void Clear()
-    {
-        skillPrefabs.SetActiveAll(false);
+        window.Focus();
     }
 }

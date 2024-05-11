@@ -80,40 +80,40 @@ public class Player : Actor
     //--------------------------------------------------------------------------
     // * Called every frame
     //--------------------------------------------------------------------------
-    private void Update()
-    {
-        float moveHorizontal = Input.GetAxisRaw("Horizontal");
-        float moveVertical = Input.GetAxisRaw("Vertical");
-        bool callSkillWindow = Input.GetButtonDown("Skill Window");
-        bool callCharacterWindow = Input.GetButtonDown("Character Window");
-        bool callMap = Input.GetButtonDown("Map");
+    // private void Update()
+    // {
+    //     float moveHorizontal = Input.GetAxisRaw("Horizontal");
+    //     float moveVertical = Input.GetAxisRaw("Vertical");
+    //     bool callSkillWindow = Input.GetButtonDown("Skill Window");
+    //     bool callCharacterWindow = Input.GetButtonDown("Character Window");
+    //     bool callMap = Input.GetButtonDown("Map");
 
-        if (moveHorizontal != 0 || moveVertical != 0) 
-        {
-            AttemptMove(moveHorizontal, moveVertical);
-        }
+    //     if (moveHorizontal != 0 || moveVertical != 0) 
+    //     {
+    //         AttemptMove(moveHorizontal, moveVertical);
+    //     }
 
-        if (callSkillWindow)
-        {
-            WindowSkill.Instance.ToggleVisible();
-        }
+    //     if (callSkillWindow)
+    //     {
+    //         WindowSkill.Instance.ToggleVisible();
+    //     }
 
-        if (callCharacterWindow)
-        {
-            WindowCharacter.Instance.ToggleVisible();
-        }
+    //     if (callCharacterWindow)
+    //     {
+    //         WindowCharacter.Instance.ToggleVisible();
+    //     }
 
-        if (callMap)
-        {
-            Map.SetActive(!Map.activeSelf);
-        }
+    //     if (callMap)
+    //     {
+    //         Map.SetActive(!Map.activeSelf);
+    //     }
 
-        // if (Input.GetKeyDown(KeyCode.F))
-        // {
-        //     actorMP.current--;
-        //     actorMPEvent.RaiseOnChange();
-        // }
-    }
+    //     // if (Input.GetKeyDown(KeyCode.F))
+    //     // {
+    //     //     actorMP.current--;
+    //     //     actorMPEvent.RaiseOnChange();
+    //     // }
+    // }
 
     public void MoveUp()
     {
@@ -133,6 +133,11 @@ public class Player : Actor
     public void MoveRight()
     {
         AttemptMove(1, 0);
+    }
+
+    public void ToggleMap()
+    {
+        Map.SetActive(!Map.activeSelf);
     }
 
     //--------------------------------------------------------------------------

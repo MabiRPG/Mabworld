@@ -115,8 +115,7 @@ public class WindowSkillAdvance : Window
         skillName.text = "Rank " + skill.rank + " " + skill.info["name"];
 
         // Finds the skill icon sprite and reassigns it.
-        string dir = "Sprites/Skill Icons/" + skill.info["icon_name"].ToString();
-        icon.sprite = Resources.Load<Sprite>(dir);
+        icon.sprite = skill.sprite;
 
         rank.text = string.Format("Advance to Rank {0} available", skill.ranks[index]);
 

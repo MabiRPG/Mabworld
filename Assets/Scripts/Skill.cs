@@ -2,6 +2,9 @@ using System.Data;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Collections;
+using UnityEngine.AddressableAssets;
 
 /// <summary>
 ///     Handles all skill processing.
@@ -16,6 +19,8 @@ public class Skill
     public int index = 0;
     public EventManager indexEvent = new EventManager();
     public string rank;
+    // Icon sprite
+    public Sprite sprite;
 
     // Current xp and maximum rank xp.
     public float xp;
@@ -54,7 +59,10 @@ public class Skill
     public Skill(int ID)
     {
         LoadSkillInfo(ID);
+
+        sprite = Addressables.LoadAssetAsync<Sprite>(info["icon_name"].ToString()).WaitForCompletion();
         rank = ranks[index];
+
         CreateTrainingMethods();
     }
 
@@ -164,25 +172,66 @@ public class Skill
         xpMaxEvent.RaiseOnChange();
     }
 
-    public void Use()
+    public IEnumerator Use()
     {
+        // Calculates the base use time for the skill.
+        float useTime = float.Parse(info["base_use_time"].ToString());
+
+        // Adds skill specific time modifiers
+        if (stats.ContainsKey("use_time"))
+        {
+            useTime += stats["use_time"][index];
+        }
+
+        float currTime = 0;
+        // Interval for which audio should play
+        float audioInterval = 1f;
+        AudioSource audio = Player.Instance.gameObject.GetComponent<AudioSource>();
+
+        while (useTime - currTime > Time.deltaTime)
+        {
+            // Find the remaining interval time and yield
+            float interval = Math.Min(useTime - currTime, audioInterval);
+            yield return new WaitForSeconds(interval);
+
+            // Play a sound if audio interval is reached
+            if (interval % audioInterval == 0)
+            {
+                audio.clip = Addressables.LoadAssetAsync<AudioClip>("pickaxe").WaitForCompletion();
+                audio.Play();
+                Debug.Log("Played sound");
+            }
+
+            currTime += interval;
+        }
+
+        Debug.Log("Completed! Now calculating skill usage...");
+
+        // Calculate base success rate of skill
         float chance = GameManager.Instance.lifeSkillBaseSuccessRate + Player.Instance.LifeSkillSuccessRate();
 
+        // Add skill specific modifiers
         if (stats.ContainsKey("success_rate_increase"))
         {
             chance += stats["success_rate_increase"][index];
         }
 
+        // Change to percentage and roll die
         chance /= 100;
         float roll = (float)GameManager.Instance.rnd.NextDouble();
 
-        if (chance <= roll)
+        // Handle success or fail here
+        if (chance >= roll)
         {
+            audio.clip = Addressables.LoadAssetAsync<AudioClip>("emotion_success").WaitForCompletion();
+            audio.Play();
             Debug.Log("success");
         }
         else
         {
+            audio.clip = Addressables.LoadAssetAsync<AudioClip>("emotion_fail").WaitForCompletion();
+            audio.Play();
             Debug.Log("fail");
-        }
+        }       
     }
 }

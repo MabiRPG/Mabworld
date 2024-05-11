@@ -49,7 +49,7 @@ public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
     /// <param name="pointerData">Event payload associated with pointer (mouse / touch) events.</param>
     public virtual void OnPointerDown(PointerEventData pointerData)
     {
-        rectTransform.SetAsLastSibling();
+        Focus();
     }
 
     /// <summary>
@@ -96,9 +96,18 @@ public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
         maximizeCanvas.blocksRaycasts = false;
     }
 
+    /// <summary>
+    ///     Brings the window to focus.
+    /// </summary>
+    public void Focus()
+    {
+        rectTransform.SetAsLastSibling();
+    }
+
     public void ShowWindow()
     {
         gameObject.SetActive(true);
+        Focus();
     }
 
     /// <summary>
@@ -112,8 +121,9 @@ public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
     /// <summary>
     ///     Toggles visibility of the object.
     /// </summary>
-    public void ToggleVisible()
+    public virtual void ToggleVisible()
     {
         gameObject.SetActive(!gameObject.activeSelf);
+        Focus();
     }
 }

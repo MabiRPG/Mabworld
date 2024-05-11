@@ -91,8 +91,7 @@ public class WindowSkillDetailed : Window
         skill = newSkill;
 
         // Finds the skill icon sprite and reassigns it.
-        string dir = "Sprites/Skill Icons/" + skill.info["icon_name"].ToString();
-        icon.sprite = Resources.Load<Sprite>(dir);
+        icon.sprite = skill.sprite;
         UpdateRank();
         UpdateXp();
 

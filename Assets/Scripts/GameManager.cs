@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     // Name of the game database in Assets/Database folder.
     [SerializeField]
     private string databaseName;
+    // Base success rate of life skills
     public float lifeSkillBaseSuccessRate;
     
     public Canvas canvas;
@@ -46,7 +47,7 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         Instantiate(windowSkillPrefab, canvas.transform);
-        Instantiate(windowCharacterPrefab, canvas.transform);
+        //Instantiate(windowCharacterPrefab, canvas.transform);
     }
 
     /// <summary>

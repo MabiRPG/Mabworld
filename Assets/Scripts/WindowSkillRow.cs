@@ -11,7 +11,6 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 {
     // Skill instance
     private Skill skill;
-    private string iconDir;
 
     // List of prefab object references
     private TMP_Text skillName;
@@ -71,28 +70,43 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         advanceButtonEvent.Clear();
     }
 
+    /// <summary>
+    ///     Called at the start of a mouse drag.
+    /// </summary>
+    /// <param name="pointerData"></param>
     public void OnBeginDrag(PointerEventData pointerData)
     {
         GameObject iconObj = icon.gameObject;
 
+        // If object selected was icon, change cursor and allow dragging
         if (pointerData.pointerEnter == iconObj)
         {
-            Cursor.SetCursor(Resources.Load<Sprite>(iconDir).texture, Vector2.zero, CursorMode.Auto);
+            Cursor.SetCursor(skill.sprite.texture, Vector2.zero, CursorMode.Auto);
             draggingIcon = true;
         }       
     }
 
+    /// <summary>
+    ///     Called during a mouse drag.
+    /// </summary>
+    /// <param name="pointerData"></param>
     public void OnDrag(PointerEventData pointerData)
     {
     }
 
+    /// <summary>
+    ///     Called at the end of a mouse drag.
+    /// </summary>
+    /// <param name="pointerData"></param>
     public void OnEndDrag(PointerEventData pointerData)
     {
         if (draggingIcon)
         {
+            // Reset cursor to default
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
             draggingIcon = false;
 
+            // Check if valid skill slot destination, if so, set skill info.
             if (pointerData.pointerEnter == null)
             {
                 return;
@@ -119,8 +133,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         skill = newSkill;
 
         skillName.text = skill.info["name"].ToString();
-        iconDir = "Sprites/Skill Icons/" + skill.info["icon_name"].ToString();
-        icon.sprite = Resources.Load<Sprite>(iconDir);     
+        icon.sprite = skill.sprite;
         UpdateRank();
         UpdateXp();
 
