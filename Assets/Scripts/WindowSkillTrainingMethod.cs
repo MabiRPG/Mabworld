@@ -19,6 +19,9 @@ public class WindowSkillTrainingMethod : MonoBehaviour
         field = gameObject.transform.Find("Method Values").GetComponent<TMP_Text>();
     }
 
+    /// <summary>
+    ///     Called when the object becomes disabled and inactive.
+    /// </summary>
     private void OnDisable()
     {
         Clear();
@@ -36,6 +39,9 @@ public class WindowSkillTrainingMethod : MonoBehaviour
         Draw();
     }
 
+    /// <summary>
+    ///     Clears event handlers.
+    /// </summary>
     private void Clear()
     {
         if (method != null)
@@ -45,17 +51,20 @@ public class WindowSkillTrainingMethod : MonoBehaviour
         }
     }
 
+    /// <summary>
+    ///     Draws the window.
+    /// </summary>
     private void Draw()
     {
         string sName = method.name;
         string sValue = string.Format("+{0:0.00} (<color=\"yellow\">{1}<color=\"white\">/{2})",
-            method.xpGainEach.Value, method.count.Value, method.countMax.Value);
+            method.xpGainEach, method.count.Value, method.countMax);
 
         if (method.IsComplete())
         {
             sName = "<color=\"grey\">" + sName;
             sValue = string.Format("<color=\"grey\">+{0:0.00} ({1}/{2})",
-                method.xpGainEach.Value, method.count.Value, method.countMax.Value);
+                method.xpGainEach, method.count.Value, method.countMax);
         }
 
         methodName.text = sName;

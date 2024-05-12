@@ -173,7 +173,7 @@ public class Skill
             int methodID = int.Parse(row["method_id"].ToString());
             string methodName = row["method"].ToString();
             float xpGainEach = float.Parse(row["xp_gain_each"].ToString());
-            float countMax = float.Parse(row["count_max"].ToString());
+            int countMax = int.Parse(row["count_max"].ToString());
 
             SkillTrainingMethod method = new SkillTrainingMethod(this, methodID, methodName,
                 xpGainEach, countMax);
@@ -229,7 +229,7 @@ public class Skill
         }
 
         // Calculate base success rate of skill
-        float chance = GameManager.Instance.lifeSkillBaseSuccessRate + Player.Instance.LifeSkillSuccessRate();
+        float chance = GameManager.Instance.lifeSkillBaseSuccessRate + Player.Instance.CalculateLifeSkillSuccessRate();
 
         // Add skill specific modifiers
         if (stats.ContainsKey("success_rate_increase"))
@@ -251,7 +251,7 @@ public class Skill
         if (chance >= roll)
         {
             result.isSuccess = true;
-            result.resourceGain = Player.Instance.LuckyGainMultiplier();
+            result.resourceGain = Player.Instance.CalculateLuckyGainMultiplier();
         }
         else
         {

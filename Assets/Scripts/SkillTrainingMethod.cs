@@ -8,11 +8,11 @@ public class SkillTrainingMethod
     // Name of method
     public string name;
     // XP gain for each count of method
-    public ValueManager xpGainEach = new ValueManager();
+    public float xpGainEach;
     // Current method counter
     public ValueManager count = new ValueManager();
     // Maximum counts of method
-    public ValueManager countMax = new ValueManager();
+    public int countMax;
     
     // Skill instance
     private Skill skill;
@@ -27,12 +27,12 @@ public class SkillTrainingMethod
     /// <param name="xpGainEach">XP gain every count of method.</param>
     /// <param name="countMax">Maximum count of method.</param>
     public SkillTrainingMethod(Skill skill, int ID, string name, 
-        float xpGainEach, float countMax)
+        float xpGainEach, int countMax)
     {
         this.ID = ID;
         this.name = name;
-        this.xpGainEach.Value = xpGainEach;
-        this.countMax.Value = countMax;
+        this.xpGainEach = xpGainEach;
+        this.countMax = countMax;
         // Creates an empty counter for current method.
         count.Value = 0;
 
@@ -56,8 +56,9 @@ public class SkillTrainingMethod
         if (CheckTraining())
         {
             count.Value += 1;
-            skill.AddXP(xpGainEach.Value);
+            skill.AddXP(xpGainEach);
 
+            // Clears the event handler when done
             if (IsComplete())
             {
                 Clear();
@@ -65,9 +66,13 @@ public class SkillTrainingMethod
         }
     }
 
+    /// <summary>
+    ///     Checks if the training method has been complete
+    /// </summary>
+    /// <returns>True if complete, False otherwise</returns>
     public bool IsComplete()
     {
-        return count.Value == countMax.Value;
+        return count.Value == countMax;
     }
 
     public void Clear()

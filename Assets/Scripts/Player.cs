@@ -1,7 +1,6 @@
 using UnityEngine;
 using System;
 using System.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 using System.Collections.Generic;
 
 /// <summary>
@@ -82,44 +81,6 @@ public class Player : Actor
             //UseSkill(ID);
         }
     }
-
-    //--------------------------------------------------------------------------
-    // * Called every frame
-    //--------------------------------------------------------------------------
-    // private void Update()
-    // {
-    //     float moveHorizontal = Input.GetAxisRaw("Horizontal");
-    //     float moveVertical = Input.GetAxisRaw("Vertical");
-    //     bool callSkillWindow = Input.GetButtonDown("Skill Window");
-    //     bool callCharacterWindow = Input.GetButtonDown("Character Window");
-    //     bool callMap = Input.GetButtonDown("Map");
-
-    //     if (moveHorizontal != 0 || moveVertical != 0) 
-    //     {
-    //         AttemptMove(moveHorizontal, moveVertical);
-    //     }
-
-    //     if (callSkillWindow)
-    //     {
-    //         WindowSkill.Instance.ToggleVisible();
-    //     }
-
-    //     if (callCharacterWindow)
-    //     {
-    //         WindowCharacter.Instance.ToggleVisible();
-    //     }
-
-    //     if (callMap)
-    //     {
-    //         Map.SetActive(!Map.activeSelf);
-    //     }
-
-    //     // if (Input.GetKeyDown(KeyCode.F))
-    //     // {
-    //     //     actorMP.current--;
-    //     //     actorMPEvent.RaiseOnChange();
-    //     // }
-    // }
 
     /// <summary>
     ///     Moves the player up.
@@ -220,7 +181,7 @@ public class Player : Actor
             actorAP.Value -= apCost;
             skill.RankUp();
 
-            foreach(KeyValuePair<string, Stat> stat in primaryStats)
+            foreach(KeyValuePair<string, StatManager> stat in primaryStats)
             {
                 if (skill.stats.ContainsKey(stat.Key))
                 {
@@ -237,7 +198,7 @@ public class Player : Actor
     ///     Calculates the player's life skill success rate bonus
     /// </summary>
     /// <returns>Bonus rate as percentage</returns>
-    public float LifeSkillSuccessRate()
+    public float CalculateLifeSkillSuccessRate()
     {
         return Math.Min(actorDex.Value / lifeSkillDexFactor, lifeSkillSuccessCap);
     }
@@ -246,7 +207,7 @@ public class Player : Actor
     ///     Calculates the lucky resource gain factor
     /// </summary>
     /// <returns>Resource gain multiplier</returns>
-    public int LuckyGainMultiplier() 
+    public int CalculateLuckyGainMultiplier() 
     {
         float lucky = (float)actorLuck.Value / luckyFactor;
         float hugeLucky = (float)actorLuck.Value / hugeLuckyFactor;
@@ -264,6 +225,10 @@ public class Player : Actor
         return 1;
     }
 
+    /// <summary>
+    ///     Uses the skill by starting a coroutine.
+    /// </summary>
+    /// <param name="skill">Skill instance to use.</param>
     public void StartAction(Skill skill)
     {
         if (IsSkillLearned(skill) && !isBusy)
@@ -273,6 +238,9 @@ public class Player : Actor
         }
     }
 
+    /// <summary>
+    ///     Interrupts the current coroutine and returns control to player.
+    /// </summary>
     public void InterruptAction()
     {
         if (playerCoroutine != null)
