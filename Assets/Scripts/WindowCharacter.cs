@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Timeline;
 
 public class WindowCharacter : Window
 {
@@ -38,23 +39,24 @@ public class WindowCharacter : Window
         // Hides the object at start
         gameObject.SetActive(false);
 
-        GameObject character = body.transform.Find("Character").gameObject;
+        // Basic Information View
+        GameObject character = body.transform.Find("Character Information").gameObject;
 
         // HP and MP
-        actorHPBar = character.transform.Find("HP & MP Bar Parent").Find("HP Bar Parent").Find("HP Bar").GetComponent<ProgressBar>();
-        actorMPBar = character.transform.Find("HP & MP Bar Parent").Find("MP Bar Parent").Find("MP Bar").GetComponent<ProgressBar>();
+        actorHPBar = character.transform.Find("Basic Information (L)").Find("HP & MP Bar Parent").Find("HP Bar Parent").Find("HP Bar").GetComponent<ProgressBar>();
+        actorMPBar = character.transform.Find("Basic Information (L)").Find("HP & MP Bar Parent").Find("MP Bar Parent").Find("MP Bar").GetComponent<ProgressBar>();
 
         // Regular Stats
-        actorStrText = character.transform.Find("Stats Parent").Find("Str Parent").Find("Value").GetComponent<TMP_Text>();
-        actorIntText = character.transform.Find("Stats Parent").Find("Int Parent").Find("Value").GetComponent<TMP_Text>();
-        actorDexText = character.transform.Find("Stats Parent").Find("Dex Parent").Find("Value").GetComponent<TMP_Text>();
-        actorLuckText = character.transform.Find("Stats Parent").Find("Luck Parent").Find("Value").GetComponent<TMP_Text>();
+        actorStrText = character.transform.Find("Basic Information (L)").Find("Regular Stats Parent").Find("Str Parent").Find("Value").GetComponent<TMP_Text>();
+        actorIntText = character.transform.Find("Basic Information (L)").Find("Regular Stats Parent").Find("Int Parent").Find("Value").GetComponent<TMP_Text>();
+        actorDexText = character.transform.Find("Basic Information (L)").Find("Regular Stats Parent").Find("Dex Parent").Find("Value").GetComponent<TMP_Text>();
+        actorLuckText = character.transform.Find("Basic Information (L)").Find("Regular Stats Parent").Find("Luck Parent").Find("Value").GetComponent<TMP_Text>();
 
         // Defensive Stats
-        actorDefenseText = character.transform.Find("Defensive Stats Parent").Find("Defense Parent").Find("Value").GetComponent<TMP_Text>();
-        actorProtectionText = character.transform.Find("Defensive Stats Parent").Find("Protection Parent").Find("Value").GetComponent<TMP_Text>();
-        actorMagicDefenseText = character.transform.Find("Defensive Stats Parent").Find("Magic Defense Parent").Find("Value").GetComponent<TMP_Text>();
-        actorMagicProtectionText = character.transform.Find("Defensive Stats Parent").Find("Magic Protection Parent").Find("Value").GetComponent<TMP_Text>();
+        actorDefenseText = character.transform.Find("Basic Information (L)").Find("Defensive Stats Parent").Find("Defense Parent").Find("Value").GetComponent<TMP_Text>();
+        actorProtectionText = character.transform.Find("Basic Information (L)").Find("Defensive Stats Parent").Find("Protection Parent").Find("Value").GetComponent<TMP_Text>();
+        actorMagicDefenseText = character.transform.Find("Basic Information (L)").Find("Defensive Stats Parent").Find("Magic Defense Parent").Find("Value").GetComponent<TMP_Text>();
+        actorMagicProtectionText = character.transform.Find("Basic Information (L)").Find("Defensive Stats Parent").Find("Magic Protection Parent").Find("Value").GetComponent<TMP_Text>();
     }
 
     private void Start()
@@ -64,6 +66,9 @@ public class WindowCharacter : Window
 
     private void OnEnable()
     {
+        // Basic Details
+        Player.Instance.actorNameEvent.OnChange+=Draw;
+
         // HP and MP
         Player.Instance.actorHPEvent.OnChange+=Draw;
         Player.Instance.actorMPEvent.OnChange+=Draw;

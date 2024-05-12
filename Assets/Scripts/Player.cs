@@ -108,11 +108,11 @@ public class Player : Actor
             Map.SetActive(!Map.activeSelf);
         }
 
-        // if (Input.GetKeyDown(KeyCode.F))
-        // {
-        //     actorMP.current--;
-        //     actorMPEvent.RaiseOnChange();
-        // }
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            actorMP.current--;
+            actorMPEvent.RaiseOnChange();
+        }
     }
 
     public void MoveUp()
