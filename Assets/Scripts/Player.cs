@@ -1,6 +1,8 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using Unity.Collections.LowLevel.Unsafe;
+using System.Collections.Generic;
 
 /// <summary>
 ///     Handles all player & input processing.
@@ -10,8 +12,7 @@ public class Player : Actor
     // Global instance of player
     public static Player Instance = null;
 
-    public int actorAP = 1000;
-    public EventManager actorAPEvent = new EventManager();
+    public ValueManager actorAP = new ValueManager(1000);
 
     // How much our life skill success rates scale with dex.
     private int lifeSkillDexFactor = 10;
@@ -37,8 +38,10 @@ public class Player : Actor
     /// <summary>
     ///     Initializes the object.
     /// </summary>
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         // Singleton recipe
         if (Instance == null)
         {
@@ -76,7 +79,7 @@ public class Player : Actor
         if (target != null)
         {
             int ID = int.Parse(target.info["skill_id"].ToString());
-            UseSkill(ID);
+            //UseSkill(ID);
         }
     }
 
@@ -198,12 +201,9 @@ public class Player : Actor
     /// <param name="ID">Skill ID in database</param>
     public void RankUpSkill(int ID)
     {
-        int apCost = (int)skills[ID].stats["ap_cost"][skills[ID].index + 1];
-
-        if (IsSkillLearned(ID) && skills[ID].CanRankUp() && actorAP >= apCost)
+        if (IsSkillLearned(ID))
         {
-            actorAP -= apCost;
-            skills[ID].RankUp();
+            RankUpSkill(skills[ID]);
         }
     }
 
@@ -213,26 +213,24 @@ public class Player : Actor
     /// <param name="skill">Skill instance</param>
     public void RankUpSkill(Skill skill)
     {
-        int apCost = (int)skill.stats["ap_cost"][skill.index + 1];
+        int apCost = (int)skill.stats["ap_cost"][skill.index.ValueInt + 1];
 
-        if (IsSkillLearned(skill) && skill.CanRankUp() && actorAP >= apCost)
+        if (IsSkillLearned(skill) && skill.CanRankUp() && actorAP.Value >= apCost)
         {
-            actorAP -= apCost;
+            actorAP.Value -= apCost;
             skill.RankUp();
-        }        
-    }
 
-    /// <summary>
-    ///     Uses the skill
-    /// </summary>
-    /// <param name="ID"></param>
-    public void UseSkill(int ID)
-    {
-        if (IsSkillLearned(ID) && !isBusy)
-        {
-            playerCoroutine = skills[ID].Use();
-            StartCoroutine(skills[ID].Use());
-        }
+            foreach(KeyValuePair<string, Stat> stat in primaryStats)
+            {
+                if (skill.stats.ContainsKey(stat.Key))
+                {
+                    int currRank = (int)skill.stats[stat.Key][skill.index.ValueInt];
+                    int prevRank = (int)skill.stats[stat.Key][skill.index.ValueInt - 1];
+                    int statDiff = Math.Max(0, currRank - prevRank);
+                    stat.Value.Value += statDiff;
+                }
+            }
+        }        
     }
 
     /// <summary>
@@ -241,7 +239,7 @@ public class Player : Actor
     /// <returns>Bonus rate as percentage</returns>
     public float LifeSkillSuccessRate()
     {
-        return Math.Min(actorDex.current / lifeSkillDexFactor, lifeSkillSuccessCap);
+        return Math.Min(actorDex.Value / lifeSkillDexFactor, lifeSkillSuccessCap);
     }
 
     /// <summary>
@@ -250,8 +248,8 @@ public class Player : Actor
     /// <returns>Resource gain multiplier</returns>
     public int LuckyGainMultiplier() 
     {
-        float lucky = (float)actorLuck.current / luckyFactor;
-        float hugeLucky = (float)actorLuck.current / hugeLuckyFactor;
+        float lucky = (float)actorLuck.Value / luckyFactor;
+        float hugeLucky = (float)actorLuck.Value / hugeLuckyFactor;
         float roll = (float)GameManager.Instance.rnd.NextDouble();
 
         if (hugeLucky >= roll) 

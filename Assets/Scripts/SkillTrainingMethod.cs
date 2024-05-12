@@ -8,18 +8,16 @@ public class SkillTrainingMethod
     // Name of method
     public string name;
     // XP gain for each count of method
-    public float xpGainEach;
+    public ValueManager xpGainEach = new ValueManager();
     // Current method counter
-    public int count;
+    public ValueManager count = new ValueManager();
     // Maximum counts of method
-    public float countMax;
+    public ValueManager countMax = new ValueManager();
     
     // Skill instance
     private Skill skill;
     // Player result
     public Result result = null;
-    // Event handlers
-    public EventManager countEvent = new EventManager();
 
     /// <summary>
     ///     Initializes the object.
@@ -33,10 +31,10 @@ public class SkillTrainingMethod
     {
         this.ID = ID;
         this.name = name;
-        this.xpGainEach = xpGainEach;
-        this.countMax = countMax;
+        this.xpGainEach.Value = xpGainEach;
+        this.countMax.Value = countMax;
         // Creates an empty counter for current method.
-        count = 0;
+        count.Value = 0;
 
         this.skill = skill;
 
@@ -57,9 +55,8 @@ public class SkillTrainingMethod
 
         if (CheckTraining())
         {
-            count += 1;
-            skill.AddXP(xpGainEach);
-            countEvent.RaiseOnChange();
+            count.Value += 1;
+            skill.AddXP(xpGainEach.Value);
 
             if (IsComplete())
             {
@@ -70,13 +67,13 @@ public class SkillTrainingMethod
 
     public bool IsComplete()
     {
-        return count == countMax;
+        return count.Value == countMax.Value;
     }
 
     public void Clear()
     {
         Player.Instance.result.statusEvent.OnChange -= Update;
-        countEvent.Clear();
+        count.Clear();
     }
 
     //--------------------------------------------------------------------------

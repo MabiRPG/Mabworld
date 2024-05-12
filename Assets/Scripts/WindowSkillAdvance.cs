@@ -74,7 +74,7 @@ public class WindowSkillAdvance : Window
         Clear();
         
         this.skill = skill;
-        this.skill.indexEvent.OnChange += CloseWindow;
+        this.skill.index.OnChange += CloseWindow;
 
         Draw();
         ShowWindow();
@@ -89,7 +89,7 @@ public class WindowSkillAdvance : Window
 
         if (skill != null)
         {
-            skill.indexEvent.OnChange -= CloseWindow;
+            skill.index.OnChange -= CloseWindow;
             skill = null;
         }
     }
@@ -109,10 +109,10 @@ public class WindowSkillAdvance : Window
     /// </summary>
     private void Draw() 
     {
-        int index = skill.index + 1;
+        int index = skill.index.ValueInt + 1;
 
         // Finds the skill name and reassigns it.
-        skillName.text = "Rank " + skill.rank + " " + skill.info["name"];
+        skillName.text = "Rank " + skill.ranks[skill.index.ValueInt] + " " + skill.info["name"];
 
         // Finds the skill icon sprite and reassigns it.
         icon.sprite = skill.sprite;
@@ -134,6 +134,6 @@ public class WindowSkillAdvance : Window
 
         ap.text = string.Format("{0} AP required.\n({1} AP remaining)",
             skill.stats["ap_cost"][index].ToString(), 
-            Player.Instance.actorAP.ToString());
+            Player.Instance.actorAP.Value.ToString());
     }
 }

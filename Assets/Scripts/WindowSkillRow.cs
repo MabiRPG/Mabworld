@@ -119,9 +119,9 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         UpdateRank();
         UpdateXp();
 
-        this.skill.indexEvent.OnChange += UpdateRank;
-        this.skill.xpEvent.OnChange += UpdateXp;
-        this.skill.xpMaxEvent.OnChange += UpdateXp;
+        this.skill.index.OnChange += UpdateRank;
+        this.skill.xp.OnChange += UpdateXp;
+        this.skill.xpMax.OnChange += UpdateXp;
 
         this.nameButtonAction = nameButtonAction;
         nameButton.onClick.AddListener(delegate {nameButtonAction();});
@@ -135,9 +135,9 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     {
         if (skill != null)
         {
-            skill.indexEvent.OnChange -= UpdateRank;
-            skill.xpEvent.OnChange -= UpdateXp;
-            skill.xpMaxEvent.OnChange -= UpdateXp;
+            skill.index.OnChange -= UpdateRank;
+            skill.xp.OnChange -= UpdateXp;
+            skill.xpMax.OnChange -= UpdateXp;
             skill = null;
         }
         
@@ -150,7 +150,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     /// </summary>
     private void UpdateRank()
     {
-        rank.text = "Rank " + skill.rank;
+        rank.text = "Rank " + skill.ranks[skill.index.ValueInt];
     }
 
     /// <summary>
@@ -161,14 +161,14 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         advanceButton.gameObject.SetActive(false);
 
         // If < 100, use normal bar, else use overfill bar.
-        if (skill.xp <= 100) 
+        if (skill.xp.Value <= 100) 
         {
             xpBar.SetActive(true);
-            xpBarScript.SetCurrent(skill.xp);
+            xpBarScript.SetCurrent(skill.xp.Value);
             xpBarScript.SetMaximum(100);
             overXpBar.SetActive(false);
 
-            if (skill.xp == 100) 
+            if (skill.xp.Value == 100) 
             {
                 advanceButton.gameObject.SetActive(true);
             }
@@ -176,8 +176,8 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         else 
         {
             xpBar.SetActive(false);
-            overXpBarScript.SetCurrent(skill.xp);
-            overXpBarScript.SetMaximum(skill.xpMax);
+            overXpBarScript.SetCurrent(skill.xp.Value);
+            overXpBarScript.SetMaximum(skill.xpMax.Value);
             overXpBar.SetActive(true);
             advanceButton.gameObject.SetActive(true);
         }

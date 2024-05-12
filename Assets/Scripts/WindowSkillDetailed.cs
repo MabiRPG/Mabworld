@@ -35,7 +35,7 @@ public class WindowSkillDetailed : Window
     private Button closeButton;
 
     // Event handlers
-    public EventManager advanceButtonEvent = new EventManager();
+    public ValueManager advanceButtonEvent = new ValueManager();
 
     /// <summary>
     ///     Initializes the object.
@@ -96,9 +96,9 @@ public class WindowSkillDetailed : Window
         UpdateRank();
         UpdateXp();
 
-        this.skill.indexEvent.OnChange += UpdateRank;
-        this.skill.xpEvent.OnChange += UpdateXp;
-        this.skill.xpMaxEvent.OnChange += UpdateXp;
+        this.skill.index.OnChange += UpdateRank;
+        this.skill.xp.OnChange += UpdateXp;
+        this.skill.xp.OnChange += UpdateXp;
         advanceButtonEvent.OnChange += advanceButtonAction;
 
         ShowWindow();
@@ -114,9 +114,9 @@ public class WindowSkillDetailed : Window
 
         if (skill != null)
         {
-            skill.indexEvent.OnChange -= UpdateRank;
-            skill.xpEvent.OnChange -= UpdateXp;
-            skill.xpMaxEvent.OnChange -= UpdateXp;
+            skill.index.OnChange -= UpdateRank;
+            skill.xp.OnChange -= UpdateXp;
+            skill.xpMax.OnChange -= UpdateXp;
             skill = null;
         }
     }
@@ -127,9 +127,9 @@ public class WindowSkillDetailed : Window
     private void UpdateRank()
     {
         // Finds the skill name and reassigns it.
-        skillName.text = "Rank " + skill.rank + " " + skill.info["name"];
+        skillName.text = "Rank " + skill.ranks[skill.index.ValueInt] + " " + skill.info["name"];
 
-        int index = skill.index;
+        int index = skill.index.ValueInt;
 
         // For every stat, create a new stat field prefab and populate it.
         statPrefabs.SetActiveAll(false);
@@ -165,14 +165,14 @@ public class WindowSkillDetailed : Window
         advanceButton.transform.parent.gameObject.SetActive(false);
 
         // If < 100, use normal bar, else use overfill bar.
-        if (skill.xp <= 100) 
+        if (skill.xp.Value <= 100) 
         {
             xpBar.SetActive(true);
-            xpBarScript.SetCurrent(skill.xp);
+            xpBarScript.SetCurrent(skill.xp.Value);
             xpBarScript.SetMaximum(100);
             overXpBar.SetActive(false);
 
-            if (skill.xp == 100)
+            if (skill.xp.Value == 100)
             {
                 advanceButton.transform.parent.gameObject.SetActive(true);
             }
@@ -180,8 +180,8 @@ public class WindowSkillDetailed : Window
         else 
         {
             xpBar.SetActive(false);
-            overXpBarScript.SetCurrent(skill.xp);
-            overXpBarScript.SetMaximum(skill.xpMax);
+            overXpBarScript.SetCurrent(skill.xp.Value);
+            overXpBarScript.SetMaximum(skill.xpMax.Value);
             overXpBar.SetActive(true);
             advanceButton.transform.parent.gameObject.SetActive(true);
         }       

@@ -18,17 +18,13 @@ public class Skill
     public Dictionary<string, float[]> stats = new Dictionary<string, float[]>();
 
     // Current index and rank of skill.
-    public int index = 0;
-    public EventManager indexEvent = new EventManager();
-    public string rank;
+    public ValueManager index = new ValueManager();
     // Icon sprite
     public Sprite sprite;
 
     // Current xp and maximum rank xp.
-    public float xp;
-    public float xpMax;
-    public EventManager xpEvent = new EventManager();
-    public EventManager xpMaxEvent = new EventManager();
+    public ValueManager xp = new ValueManager();
+    public ValueManager xpMax = new ValueManager();
 
     // List of training methods at current rank
     public List<SkillTrainingMethod> methods = new List<SkillTrainingMethod>();
@@ -64,11 +60,11 @@ public class Skill
         LoadSkillInfo(this.ID);
 
         sprite = Addressables.LoadAssetAsync<Sprite>(info["icon_name"].ToString()).WaitForCompletion();
-        rank = ranks[index];
 
         CreateTrainingMethods();
 
-        indexEvent.OnChange += AudioManager.Instance.PlayLevelUpSFX;
+        index.OnChange += AudioManager.Instance.PlayLevelUpSFX;
+        index.OnChange += CreateTrainingMethods;
     }
 
     /// <summary>
@@ -112,7 +108,7 @@ public class Skill
     /// <returns>True if can rank up.</returns>
     public bool CanRankUp()
     {
-        return index + 1 < ranks.Length;
+        return index.ValueInt + 1 < ranks.Length;
     }
 
     /// <summary>
@@ -120,16 +116,12 @@ public class Skill
     /// </summary>
     public void RankUp() 
     {
-        index++;
-        rank = ranks[index];
-        xp = 0;
-        CreateTrainingMethods();
-        indexEvent.RaiseOnChange();
-        xpEvent.RaiseOnChange();
-
+        index.Value++;
+        xp.Value = 0;
+        
         if (!CanRankUp())
         {
-            indexEvent.Clear();
+            index.Clear();
         }
     }
 
@@ -138,10 +130,9 @@ public class Skill
     /// </summary>
     public void RankDown()
     {
-        if (index - 1 >= 0)
+        if (index.ValueInt - 1 >= 0)
         {
-            index--;
-            rank = ranks[index];
+            index.Value--;
         }
     }
 
@@ -151,12 +142,11 @@ public class Skill
     /// <param name="x">Amount of xp to add.</param>
     public void AddXP(float x)
     {
-        xp += x;
-        xpEvent.RaiseOnChange();
+        xp.Value += x;
 
-        if (!CanRankUp() && xp == xpMax)
+        if (!CanRankUp() && xp.Value == xpMax.Value)
         {
-            xpEvent.Clear();
+            xp.Clear();
         }
     }
 
@@ -166,7 +156,7 @@ public class Skill
     public void CreateTrainingMethods()
     {
         // Creates a new data table and queries the db.
-        DataTable dt = GameManager.Instance.QueryDatabase(methodsQuery, ("@id", info["skill_id"]), ("@rank", rank));
+        DataTable dt = GameManager.Instance.QueryDatabase(methodsQuery, ("@id", info["skill_id"]), ("@rank", ranks[index.ValueInt]));
         // Clears the previous training methods.
         foreach (SkillTrainingMethod method in methods)
         {
@@ -175,7 +165,7 @@ public class Skill
 
         methods.Clear();
         // Resets the max xp gainable.
-        xpMax = 0;
+        xpMax.Value = 0;
 
         // For every method, create a new method and insert into list.
         foreach (DataRow row in dt.Rows)
@@ -188,16 +178,14 @@ public class Skill
             SkillTrainingMethod method = new SkillTrainingMethod(this, methodID, methodName,
                 xpGainEach, countMax);
             // Adds the max xp from method to skill.
-            xpMax += xpGainEach * countMax;
+            xpMax.Value += xpGainEach * countMax;
 
             methods.Add(method);
         }
 
-        xpMaxEvent.RaiseOnChange();
-
         if (!CanRankUp())
         {
-            xpMaxEvent.Clear();
+            xpMax.Clear();
         }
     }
 
@@ -211,7 +199,7 @@ public class Skill
         // Adds skill specific time modifiers
         if (stats.ContainsKey("use_time"))
         {
-            useTime += stats["use_time"][index];
+            useTime += stats["use_time"][index.ValueInt];
         }
 
         useTime = Math.Max(0, useTime);
@@ -246,7 +234,7 @@ public class Skill
         // Add skill specific modifiers
         if (stats.ContainsKey("success_rate_increase"))
         {
-            chance += stats["success_rate_increase"][index];
+            chance += stats["success_rate_increase"][index.ValueInt];
         }
 
         // Change to percentage and roll die

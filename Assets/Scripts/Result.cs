@@ -17,7 +17,7 @@ public class Result
     public int resourceID;
     public int resourceGain;
     // Event handler for status
-    public EventManager statusEvent = new EventManager();
+    public ValueManager statusEvent = new ValueManager();
 
     /// <summary>
     ///     Clears the status.

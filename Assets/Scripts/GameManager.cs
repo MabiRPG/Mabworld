@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
         Instantiate(inputManager);
         Instantiate(audioManager);
         Instantiate(windowSkillPrefab, canvas.transform);
-        //Instantiate(windowCharacterPrefab, canvas.transform);
+        Instantiate(windowCharacterPrefab, canvas.transform);
     }
 
     /// <summary>

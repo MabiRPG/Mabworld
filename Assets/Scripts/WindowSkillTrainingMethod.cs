@@ -32,7 +32,7 @@ public class WindowSkillTrainingMethod : MonoBehaviour
     {
         Clear();
         this.method = method;
-        this.method.countEvent.OnChange += Draw;
+        this.method.count.OnChange += Draw;
         Draw();
     }
 
@@ -40,7 +40,7 @@ public class WindowSkillTrainingMethod : MonoBehaviour
     {
         if (method != null)
         {
-            method.countEvent.OnChange -= Draw;
+            method.count.OnChange -= Draw;
             method = null;
         }
     }
@@ -49,13 +49,13 @@ public class WindowSkillTrainingMethod : MonoBehaviour
     {
         string sName = method.name;
         string sValue = string.Format("+{0:0.00} (<color=\"yellow\">{1}<color=\"white\">/{2})",
-            method.xpGainEach, method.count, method.countMax);
+            method.xpGainEach.Value, method.count.Value, method.countMax.Value);
 
         if (method.IsComplete())
         {
             sName = "<color=\"grey\">" + sName;
             sValue = string.Format("<color=\"grey\">+{0:0.00} ({1}/{2})",
-                method.xpGainEach, method.count, method.countMax);
+                method.xpGainEach.Value, method.count.Value, method.countMax.Value);
         }
 
         methodName.text = sName;
