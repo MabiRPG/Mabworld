@@ -98,7 +98,7 @@ public class WindowSkillDetailed : Window
 
         this.skill.index.OnChange += UpdateRank;
         this.skill.xp.OnChange += UpdateXp;
-        this.skill.xp.OnChange += UpdateXp;
+        this.skill.xpMax.OnChange += UpdateXp;
         advanceButtonEvent.OnChange += advanceButtonAction;
 
         ShowWindow();

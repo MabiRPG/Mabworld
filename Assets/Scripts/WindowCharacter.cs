@@ -84,6 +84,8 @@ public class WindowCharacter : Window
         Player.Instance.actorProt.OnChange += Draw;
         Player.Instance.actorMDefense.OnChange += Draw;
         Player.Instance.actorMProt.OnChange += Draw;
+
+        Draw();
     }
 
     private void OnDisable()
