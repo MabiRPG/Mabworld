@@ -68,13 +68,13 @@ public class WindowSkillAdvance : Window
     /// <summary>
     ///     Sets the skill instance.
     /// </summary>
-    /// <param name="newSkill">Skill instance for window.</param>
-    public void SetSkill(Skill newSkill)
+    /// <param name="skill">Skill instance for window.</param>
+    public void SetSkill(Skill skill)
     {
         Clear();
         
-        skill = newSkill;
-        skill.indexEvent.OnChange += CloseWindow;
+        this.skill = skill;
+        this.skill.index.OnChange += CloseWindow;
 
         Draw();
         ShowWindow();
@@ -89,7 +89,7 @@ public class WindowSkillAdvance : Window
 
         if (skill != null)
         {
-            skill.indexEvent.OnChange -= CloseWindow;
+            skill.index.OnChange -= CloseWindow;
             skill = null;
         }
     }
@@ -109,14 +109,13 @@ public class WindowSkillAdvance : Window
     /// </summary>
     private void Draw() 
     {
-        int index = skill.index + 1;
+        int index = skill.index.ValueInt + 1;
 
         // Finds the skill name and reassigns it.
-        skillName.text = "Rank " + skill.rank + " " + skill.info["name"];
+        skillName.text = "Rank " + skill.ranks[skill.index.ValueInt] + " " + skill.info["name"];
 
         // Finds the skill icon sprite and reassigns it.
-        string dir = "Sprites/Skill Icons/" + skill.info["icon_name"].ToString();
-        icon.sprite = Resources.Load<Sprite>(dir);
+        icon.sprite = skill.sprite;
 
         rank.text = string.Format("Advance to Rank {0} available", skill.ranks[index]);
 
@@ -135,6 +134,6 @@ public class WindowSkillAdvance : Window
 
         ap.text = string.Format("{0} AP required.\n({1} AP remaining)",
             skill.stats["ap_cost"][index].ToString(), 
-            Player.Instance.actorAP.ToString());
+            Player.Instance.actorAP.Value.ToString());
     }
 }

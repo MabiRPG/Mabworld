@@ -70,59 +70,59 @@ public class WindowCharacter : Window
         Player.Instance.actorNameEvent.OnChange+=Draw;
 
         // HP and MP
-        Player.Instance.actorHPEvent.OnChange+=Draw;
-        Player.Instance.actorMPEvent.OnChange+=Draw;
+        Player.Instance.actorHP.OnChange += Draw;
+        Player.Instance.actorMP.OnChange += Draw;
 
         // Regular Stats
-        Player.Instance.actorStrEvent.OnChange+=Draw;
-        Player.Instance.actorIntEvent.OnChange+=Draw;
-        Player.Instance.actorDexEvent.OnChange+=Draw;
-        Player.Instance.actorLuckEvent.OnChange+=Draw;
+        Player.Instance.actorStr.OnChange += Draw;
+        Player.Instance.actorInt.OnChange += Draw;
+        Player.Instance.actorDex.OnChange += Draw;
+        Player.Instance.actorLuck.OnChange += Draw;
 
         // Defensive Stats
-        Player.Instance.actorDefenseEvent.OnChange+=Draw;
-        Player.Instance.actorProtEvent.OnChange+=Draw;
-        Player.Instance.actorMDefenseEvent.OnChange+=Draw;
-        Player.Instance.actorMProtEvent.OnChange+=Draw;
+        Player.Instance.actorDefense.OnChange += Draw;
+        Player.Instance.actorProt.OnChange += Draw;
+        Player.Instance.actorMDefense.OnChange += Draw;
+        Player.Instance.actorMProt.OnChange += Draw;
     }
 
     private void OnDisable()
     {
         // HP and MP
-        Player.Instance.actorHPEvent.OnChange-=Draw;
-        Player.Instance.actorMPEvent.OnChange-=Draw;
+        Player.Instance.actorHP.OnChange -= Draw;
+        Player.Instance.actorMP.OnChange -= Draw;
 
         // Regular Stats
-        Player.Instance.actorStrEvent.OnChange-=Draw;
-        Player.Instance.actorIntEvent.OnChange-=Draw;
-        Player.Instance.actorDexEvent.OnChange-=Draw;
-        Player.Instance.actorLuckEvent.OnChange-=Draw;
+        Player.Instance.actorStr.OnChange -= Draw;
+        Player.Instance.actorInt.OnChange -= Draw;
+        Player.Instance.actorDex.OnChange -= Draw;
+        Player.Instance.actorLuck.OnChange -= Draw;
 
         // Defensive Stats
-        Player.Instance.actorDefenseEvent.OnChange-=Draw;
-        Player.Instance.actorProtEvent.OnChange-=Draw;
-        Player.Instance.actorMDefenseEvent.OnChange-=Draw;
-        Player.Instance.actorMProtEvent.OnChange-=Draw;
+        Player.Instance.actorDefense.OnChange -= Draw;
+        Player.Instance.actorProt.OnChange -= Draw;
+        Player.Instance.actorMDefense.OnChange -= Draw;
+        Player.Instance.actorMProt.OnChange -= Draw;
     }
 
     private void Draw()
     {
         // HP and MP
-        actorHPBar.SetCurrent(Player.Instance.actorHP.current);
-        actorHPBar.SetMaximum(Player.Instance.actorHP.maximum);
-        actorMPBar.SetCurrent(Player.Instance.actorMP.current);
-        actorMPBar.SetMaximum(Player.Instance.actorMP.maximum);
+        actorHPBar.SetCurrent(Player.Instance.actorHP.Value);
+        actorHPBar.SetMaximum(Player.Instance.actorHP.Maximum);
+        actorMPBar.SetCurrent(Player.Instance.actorMP.Value);
+        actorMPBar.SetMaximum(Player.Instance.actorMP.Maximum);
 
         // Regular Stats
-        actorStrText.text = Player.Instance.actorStr.current.ToString();
-        actorIntText.text = Player.Instance.actorInt.current.ToString();
-        actorDexText.text = Player.Instance.actorDex.current.ToString();
-        actorLuckText.text = Player.Instance.actorLuck.current.ToString();
+        actorStrText.text = Player.Instance.actorStr.Value.ToString();
+        actorIntText.text = Player.Instance.actorInt.Value.ToString();
+        actorDexText.text = Player.Instance.actorDex.Value.ToString();
+        actorLuckText.text = Player.Instance.actorLuck.Value.ToString();
 
         // Defensive Stats
-        actorDefenseText.text = Player.Instance.actorDefense.current.ToString();
-        actorProtectionText.text = Player.Instance.actorProt.current.ToString();
-        actorMagicDefenseText.text = Player.Instance.actorMDefense.current.ToString();
-        actorMagicProtectionText.text = Player.Instance.actorMProt.current.ToString();
+        actorDefenseText.text = Player.Instance.actorDefense.Value.ToString();
+        actorProtectionText.text = Player.Instance.actorProt.Value.ToString();
+        actorMagicDefenseText.text = Player.Instance.actorMDefense.Value.ToString();
+        actorMagicProtectionText.text = Player.Instance.actorMProt.Value.ToString();
     }
 }

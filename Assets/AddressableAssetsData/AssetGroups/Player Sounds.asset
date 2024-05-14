@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Player Sounds
+  m_EditorClassIdentifier: 
+  m_GroupName: Player Sounds
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 6ef19d47613d84048be01f825f252b8f
+  m_SerializeEntries:
+  - m_GUID: 8c9e8137544f6bc4caf63083ccce5751
+    m_Address: emotion_fail
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8389175cd84fe6b46b0fdbfdef37bb50
+    m_Address: emotion_success
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ac3131e3d868524283d1f7d206eab57
+    m_Address: levelup
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 1e04f432b98b4f94099995e59e4681f1, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: fee0c60414352d048917ca90182f67c2, type: 2}
+    - {fileID: 11400000, guid: 83a2dfa1a27c6a04a9867b7c8e36b687, type: 2}

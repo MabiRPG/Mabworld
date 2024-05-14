@@ -1,14 +1,13 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
     public static InputManager Instance {get; private set;}
 
-    public Dictionary<KeyCode, Action> keybinds = new Dictionary<KeyCode, Action>();
+    public Dictionary<KeyCode, Action> movementKeybinds = new Dictionary<KeyCode, Action>();
+    public Dictionary<KeyCode, Action> buttonKeybinds = new Dictionary<KeyCode, Action>();
 
     private void Awake()
     {
@@ -25,13 +24,23 @@ public class InputManager : MonoBehaviour
         Reset();
     }
 
-    public void AddKey(KeyCode key, Action action, bool replace)
+    public void AddMovementBind(KeyCode key, Action action, bool forceReplace = true)
     {
-        if (keybinds.ContainsKey(key))
+        Add(key, action, forceReplace, movementKeybinds);
+    }
+
+    public void AddButtonBind(KeyCode key, Action action, bool forceReplace = true)
+    {
+        Add(key, action, forceReplace, buttonKeybinds);
+    }
+
+    public void Add(KeyCode key, Action action, bool forceReplace, Dictionary<KeyCode, Action> dict)
+    {
+        if (dict.ContainsKey(key))
         {
             Debug.Log(string.Format("Identical keybind found for {0}", key));
 
-            if (!replace)
+            if (!forceReplace)
             {
                 return;
             }
@@ -39,22 +48,35 @@ public class InputManager : MonoBehaviour
             Debug.Log("Replacing old keybind with new.");
         }
         
-        keybinds[key] = action;
-    }
-
-    public void AddSkillSlot(KeyCode key)
-    {
-
+        dict[key] = action;
     }
 
     private void Update()
     {
-        if (!Input.anyKey)
+        if (!Input.anyKey && !Input.anyKeyDown)
         {
             return;
         }
 
-        foreach (KeyValuePair<KeyCode, Action> pair in keybinds)
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Player.Instance.InterruptAction();
+        }
+        else if (Player.Instance.isBusy)
+        {
+            return;
+        }
+
+        foreach (KeyValuePair<KeyCode, Action> pair in buttonKeybinds)
+        {
+            if (Input.GetKeyDown(pair.Key))
+            {
+                pair.Value.Invoke();
+                break;
+            }
+        }
+
+        foreach (KeyValuePair<KeyCode, Action> pair in movementKeybinds)
         {
             if (Input.GetKey(pair.Key))
             {
@@ -66,11 +88,13 @@ public class InputManager : MonoBehaviour
 
     public void Reset()
     {
-        // keybinds.Add(KeyCode.W, () => Player.Instance.MoveUp());
-        // keybinds.Add(KeyCode.A, () => Player.Instance.MoveLeft());
-        // keybinds.Add(KeyCode.S, () => Player.Instance.MoveDown());
-        // keybinds.Add(KeyCode.D, () => Player.Instance.MoveRight());
-        // keybinds.Add(KeyCode.Z, () => WindowSkill.Instance.ToggleVisible());
-        // keybinds.Add(KeyCode.M, () => Player.Instance.Map.SetActive(!Player.Instance.Map.activeSelf));
+        AddMovementBind(KeyCode.W, () => Player.Instance.MoveUp());
+        AddMovementBind(KeyCode.A, () => Player.Instance.MoveLeft());
+        AddMovementBind(KeyCode.S, () => Player.Instance.MoveDown());
+        AddMovementBind(KeyCode.D, () => Player.Instance.MoveRight());
+
+        AddButtonBind(KeyCode.Z, () => WindowSkill.Instance.ToggleVisible());
+        AddButtonBind(KeyCode.C, () => WindowCharacter.Instance.ToggleVisible());
+        AddButtonBind(KeyCode.M, () => Player.Instance.ToggleMap());
     }
 }

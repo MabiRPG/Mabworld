@@ -3,18 +3,27 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+///     Skill slot for player skill hotkeys
+/// </summary>
 public class SkillSlot : MonoBehaviour 
 {
+    // Keycode for slot
     public KeyCode key = KeyCode.F1;
 
     private Skill skill;
+    // References to prefab objects
     private Image icon;
     private TMP_Text text;
     private Button button;
 
+    // Actions to invoke when triggered
     private Action useAction;
     private Action openWindowAction;
 
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
     private void Awake()
     {
         icon = GetComponentInChildren<Image>();
@@ -23,33 +32,28 @@ public class SkillSlot : MonoBehaviour
         button = GetComponentInChildren<Button>();
     }
 
-    private void Start()
-    {
-        
-    }
-
+    /// <summary>
+    ///     Called when the object becomes disabled and inactive.
+    /// </summary>
     private void OnDisable()
     {
         button.onClick.RemoveAllListeners();
     }
 
-    public void SetSkill(Skill newSkill, Action newUseAction, Action newOpenWindowAction)
+    /// <summary>
+    ///     Sets the skill slot
+    /// </summary>
+    /// <param name="skill">Skill instance</param>
+    /// <param name="newUseAction">Action triggered when skill is used</param>
+    /// <param name="openWindowAction">Action triggered when skill details is pressed</param>
+    public void SetSkill(Skill skill, Action newUseAction, Action openWindowAction)
     {
-        skill = newSkill;
-        string iconDir = "Sprites/Skill Icons/" + skill.info["icon_name"].ToString();
-        icon.sprite = Resources.Load<Sprite>(iconDir);     
+        this.skill = skill;
+        icon.sprite = this.skill.sprite;
 
-        useAction = newUseAction;
-        openWindowAction = newOpenWindowAction;
+        InputManager.Instance.AddButtonBind(key, () => Player.Instance.StartAction(this.skill));
+        this.openWindowAction = openWindowAction;
         button.onClick.AddListener(UseSkill);
-    }
-
-    public void Update()
-    {
-        if (Input.GetKey(key))
-        {
-            //Debug.Log("pressed");
-        }
     }
 
     private void UseSkill()

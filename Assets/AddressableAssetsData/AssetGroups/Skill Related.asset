@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Skill Related
+  m_EditorClassIdentifier: 
+  m_GroupName: Skill Related
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 1bb77648dbfef6245a947fedaa49767b
+  m_SerializeEntries:
+  - m_GUID: 02d087ced2e56a14a9f3c58af6bab96c
+    m_Address: pickaxe
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7bf2d81bfee1e8489846d348ed0d280
+    m_Address: Egg_Gathering
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d955a36f48366b448dd87e88eba450c
+    m_Address: Harvesting
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 01ebe76718160374e8053730b30a7d81
+    m_Address: Herbalism
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee6e52ea2f788f44ca106bd6f631b86b
+    m_Address: Hoeing
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b056a0222d7213439cc9c41c5a62cf9
+    m_Address: Metallurgy
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f102b1c7a1dd4174cb1e57f8eb60d1aa
+    m_Address: Mining
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d6538b2c8433ba447b004411dd4cb67f
+    m_Address: Mushroom_Gathering
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0ec1b02c182cae42bc24491d918743c
+    m_Address: Sheep_Shearing
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 1e04f432b98b4f94099995e59e4681f1, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: ee92472a337b7234d9f23db19f40cb10, type: 2}
+    - {fileID: 11400000, guid: 7493a18849d1b4d4abc4e2a9682794d3, type: 2}

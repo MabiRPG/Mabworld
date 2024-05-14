@@ -35,7 +35,7 @@ public class WindowSkillDetailed : Window
     private Button closeButton;
 
     // Event handlers
-    public EventManager advanceButtonEvent = new EventManager();
+    public ValueManager advanceButtonEvent = new ValueManager();
 
     /// <summary>
     ///     Initializes the object.
@@ -84,21 +84,21 @@ public class WindowSkillDetailed : Window
     /// <summary>
     ///     Sets the skill instance.
     /// </summary>
-    /// <param name="newSkill">Skill instance for window.</param>
-    public void SetSkill(Skill newSkill, Action advanceButtonAction)
+    /// <param name="skill">Skill instance for window.</param>
+    /// <param name="advanceButtonAction">Function to call when advance button is triggered.</param>
+    public void SetSkill(Skill skill, Action advanceButtonAction)
     {
         Clear();
-        skill = newSkill;
+        this.skill = skill;
 
         // Finds the skill icon sprite and reassigns it.
-        string dir = "Sprites/Skill Icons/" + skill.info["icon_name"].ToString();
-        icon.sprite = Resources.Load<Sprite>(dir);
+        icon.sprite = this.skill.sprite;
         UpdateRank();
         UpdateXp();
 
-        skill.indexEvent.OnChange += UpdateRank;
-        skill.xpEvent.OnChange += UpdateXp;
-        skill.xpMaxEvent.OnChange += UpdateXp;
+        this.skill.index.OnChange += UpdateRank;
+        this.skill.xp.OnChange += UpdateXp;
+        this.skill.xp.OnChange += UpdateXp;
         advanceButtonEvent.OnChange += advanceButtonAction;
 
         ShowWindow();
@@ -114,9 +114,9 @@ public class WindowSkillDetailed : Window
 
         if (skill != null)
         {
-            skill.indexEvent.OnChange -= UpdateRank;
-            skill.xpEvent.OnChange -= UpdateXp;
-            skill.xpMaxEvent.OnChange -= UpdateXp;
+            skill.index.OnChange -= UpdateRank;
+            skill.xp.OnChange -= UpdateXp;
+            skill.xpMax.OnChange -= UpdateXp;
             skill = null;
         }
     }
@@ -127,11 +127,13 @@ public class WindowSkillDetailed : Window
     private void UpdateRank()
     {
         // Finds the skill name and reassigns it.
-        skillName.text = "Rank " + skill.rank + " " + skill.info["name"];
+        skillName.text = "Rank " + skill.ranks[skill.index.ValueInt] + " " + skill.info["name"];
 
-        int index = skill.index;
+        int index = skill.index.ValueInt;
 
         // For every stat, create a new stat field prefab and populate it.
+        statPrefabs.SetActiveAll(false);
+
         foreach (KeyValuePair<string, float[]> stat in skill.stats)
         {
             if (stat.Key == "ap_cost" || stat.Value[index] == 0)
@@ -145,11 +147,13 @@ public class WindowSkillDetailed : Window
         }
 
         // For every training method, create a new training method prefab and populate it.
+        trainingMethodPrefabs.SetActiveAll(false);
+
         foreach (SkillTrainingMethod method in skill.methods)
         {
-            GameObject obj = trainingMethodPrefabs.GetFree(method.method["name"], trainingMethodsTransform);
+            GameObject obj = trainingMethodPrefabs.GetFree(method.name, trainingMethodsTransform);
             WindowSkillTrainingMethod script = obj.GetComponent<WindowSkillTrainingMethod>();
-            script.SetText(method);
+            script.SetMethod(method);
         }
     }
     
@@ -158,28 +162,33 @@ public class WindowSkillDetailed : Window
     /// </summary>
     private void UpdateXp()
     {
-        advanceButton.gameObject.transform.parent.gameObject.SetActive(false);
+        advanceButton.transform.parent.gameObject.SetActive(false);
 
         // If < 100, use normal bar, else use overfill bar.
-        if (skill.xp <= 100) 
+        if (skill.xp.Value <= 100) 
         {
             xpBar.SetActive(true);
-            xpBarScript.SetCurrent(skill.xp);
+            xpBarScript.SetCurrent(skill.xp.Value);
             xpBarScript.SetMaximum(100);
             overXpBar.SetActive(false);
 
-            if (skill.xp == 100)
+            if (skill.xp.Value == 100)
             {
-                advanceButton.gameObject.transform.parent.gameObject.SetActive(true);
+                advanceButton.transform.parent.gameObject.SetActive(true);
             }
         }
         else 
         {
             xpBar.SetActive(false);
-            overXpBarScript.SetCurrent(skill.xp);
-            overXpBarScript.SetMaximum(skill.xpMax);
+            overXpBarScript.SetCurrent(skill.xp.Value);
+            overXpBarScript.SetMaximum(skill.xpMax.Value);
             overXpBar.SetActive(true);
-            advanceButton.gameObject.transform.parent.gameObject.SetActive(true);
+            advanceButton.transform.parent.gameObject.SetActive(true);
         }       
+
+        if (!skill.CanRankUp())
+        {
+            advanceButton.transform.parent.gameObject.SetActive(false);
+        }
     }
 }

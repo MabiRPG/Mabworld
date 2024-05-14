@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 using System.Data;
 using Mono.Data.Sqlite;
 using System.Collections.Generic;
@@ -13,11 +12,20 @@ public class GameManager : MonoBehaviour
     // Global instance of GameManager
     public static GameManager Instance {get; private set;}
 
+    [Header("Managers")]
+    [SerializeField]
+    private GameObject inputManager;
+    [SerializeField]
+    private GameObject audioManager;
+
+    [Header("Global Variables")]
     // Name of the game database in Assets/Database folder.
     [SerializeField]
     private string databaseName;
+    // Base success rate of life skills
     public float lifeSkillBaseSuccessRate;
     
+    [Header("Window Prefabs")]
     public Canvas canvas;
     public GameObject windowSkillPrefab;
     public GameObject windowCharacterPrefab;
@@ -45,6 +53,8 @@ public class GameManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
+        Instantiate(inputManager);
+        Instantiate(audioManager);
         Instantiate(windowSkillPrefab, canvas.transform);
         Instantiate(windowCharacterPrefab, canvas.transform);
     }
