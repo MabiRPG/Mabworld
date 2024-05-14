@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
     public GameObject windowCharacterPrefab;
 
     // Cache of database results.
-    private Dictionary<IDbCommand, DataTable> cache = new Dictionary<IDbCommand, DataTable>();
+    private Dictionary<string, DataTable> cache = new Dictionary<string, DataTable>();
 
     // RNG obj
     public System.Random rnd = new System.Random();
@@ -67,6 +67,20 @@ public class GameManager : MonoBehaviour
     /// <returns>DataTable result of SQL query.</returns>
     public DataTable QueryDatabase(string query, params (string Key, object Value)[] args)
     {
+        // Construct a cache key from parameters and sql string.
+        string cacheKey = query;
+
+        foreach (var (Key, Value) in args)
+        {
+            cacheKey += string.Format("({0},{1})", Key, Value);
+        }
+
+        // Find in cache if available.
+        if (cache.ContainsKey(cacheKey))
+        {
+            return cache[cacheKey];
+        }
+
         // Creates the database uri location
         string dbUri = string.Format("URI=file:Assets/Database/{0}", databaseName);
 
@@ -75,21 +89,16 @@ public class GameManager : MonoBehaviour
 
         // Creates a sql query command
         IDbCommand dbCommand = dbConnection.CreateCommand();
+
         dbCommand.CommandText = query;
 
         // Adds a parameterized field for each in args.
-        foreach (var pair in args)
+        foreach (var (Key, Value) in args)
         {
             var parameter = dbCommand.CreateParameter();
-            parameter.ParameterName = pair.Key;
-            parameter.Value = pair.Value;
+            parameter.ParameterName = Key;
+            parameter.Value = Value;
             dbCommand.Parameters.Add(parameter);
-        }
-
-        // Find in cache if available.
-        if (cache.ContainsKey(dbCommand))
-        {
-            return cache[dbCommand];
         }
 
         dbConnection.Open();
@@ -100,10 +109,12 @@ public class GameManager : MonoBehaviour
         // Creates a new datatable.
         DataTable dt = new DataTable();
         dt.Load(reader);
+
         reader.Close();
+        dbConnection.Close();
 
         // Saves it to cache.
-        cache[dbCommand] = dt;
+        cache[cacheKey] = dt;
 
         return dt;
     }

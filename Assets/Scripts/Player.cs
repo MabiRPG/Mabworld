@@ -63,6 +63,7 @@ public class Player : Actor
 
         // Debug purposes...
         LearnSkill(1);
+        LearnSkill(1);
         LearnSkill(2);
         LearnSkill(3);
     }
@@ -77,55 +78,14 @@ public class Player : Actor
 
         if (target != null)
         {
-            int ID = int.Parse(target.info["skill_id"].ToString());
+            //int ID = int.Parse(target.info["skill_id"].ToString());
             //UseSkill(ID);
         }
     }
 
-<<<<<<< HEAD
-    //--------------------------------------------------------------------------
-    // * Called every frame
-    //--------------------------------------------------------------------------
-    private void Update()
-    {
-        float moveHorizontal = Input.GetAxisRaw("Horizontal");
-        float moveVertical = Input.GetAxisRaw("Vertical");
-        bool callSkillWindow = Input.GetButtonDown("Skill Window");
-        bool callCharacterWindow = Input.GetButtonDown("Character Window");
-        bool callMap = Input.GetButtonDown("Map");
-
-        if (moveHorizontal != 0 || moveVertical != 0) 
-        {
-            AttemptMove(moveHorizontal, moveVertical);
-        }
-
-        if (callSkillWindow)
-        {
-            WindowSkill.Instance.ToggleVisible();
-        }
-
-        if (callCharacterWindow)
-        {
-            WindowCharacter.Instance.ToggleVisible();
-        }
-
-        if (callMap)
-        {
-            Map.SetActive(!Map.activeSelf);
-        }
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            actorMP.current--;
-            actorMPEvent.RaiseOnChange();
-        }
-    }
-
-=======
     /// <summary>
     ///     Moves the player up.
     /// </summary>
->>>>>>> 214ff391e1ebffd9498f47639a78e29146661040
     public void MoveUp()
     {
         AttemptMove(0, 1);
@@ -189,12 +149,12 @@ public class Player : Actor
     /// <param name="ID">Skill ID in database</param>
     public void LearnSkill(int ID)
     {
-        if (IsSkillLearned(ID))
-        {
-            return;
-        }
+        // if (IsSkillLearned(ID))
+        // {
+        //     return;
+        // }
 
-        skills.Add(ID, new Skill(ID));
+        new Skill(ID);
     }
 
     /// <summary>
