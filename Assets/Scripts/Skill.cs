@@ -11,33 +11,7 @@ using UnityEngine.AddressableAssets;
 /// </summary>
 public class Skill 
 {
-    // Primary key of skill
     public int ID;
-    // Name of skill and category
-    public string name;
-    public int categoryID;
-    // Skill description, details, skill icon, and sound effect when using
-    public string description;
-    public string details;
-    public Sprite icon;
-    public AudioClip sfx;
-    public AnimationClip animationClip;
-    // Starting, first and last ranks that can be reached
-    public char startingRank;
-    public char firstAvailableRank;
-    public char lastAvailableRank;
-    // Base loading time, use time, and cooldown
-    public float baseLoadTime;
-    public float baseUseTime;
-    public float baseCooldown;
-    public float baseSuccessRate;
-    // Does player start with skill?
-    public bool isStartingWith;
-    // Learnable? and learn condition
-    public bool isLearnable;
-    public int learnConditionID;
-    // Passive or active
-    public bool isPassive;
 
     // Dictionary of basic skill info and specific rank stats.
     public Dictionary<string, object> info = new Dictionary<string, object>();
@@ -101,25 +75,31 @@ public class Skill
     {   
         // Gets the basic skill info
         DataTable dt = GameManager.Instance.QueryDatabase(skillQuery, ("@id", ID));   
-        DataRow row = dt.Rows[0];
 
-        // Inserts into dictionary.
-        foreach (DataColumn column in dt.Columns)
+        // Iterate over all rows and columns, inserts into dictionary.
+        foreach (DataRow row in dt.Rows)
         {
-            info.Add(column.ColumnName, row[column]);
+            foreach (DataColumn column in dt.Columns)
+            {
+                info.Add(column.ColumnName, row[column]);
+            }
         }
+
+        dt.Clear();
 
         // Gets the detailed skill info at every rank.
         dt = GameManager.Instance.QueryDatabase(statsQuery, ("@id", ID));
-        row = dt.Rows[0];
         
-        // Inserts into dictionary.
-        // Stat position field is the last column.
-        int statPos = row.ItemArray.Length - 1;
-        // Set the key to be the stat name, then slice the row by length of ranks
-        // converting to string then float and back to array for the value.
-        stats.Add(row.ItemArray[statPos].ToString(), 
-            row.ItemArray.Skip(2).Take(ranks.Length).Select(x => float.Parse(x.ToString())).ToArray());
+        // Iterate over all rows and columns, inserts into dictionary.
+        foreach (DataRow row in dt.Rows)
+        {       
+            // Stat position field is the last column.
+            int statPos = row.ItemArray.Length - 1;
+            // Set the key to be the stat name, then slice the row by length of ranks
+            // converting to string then float and back to array for the value.
+            stats.Add(row.ItemArray[statPos].ToString(), 
+                row.ItemArray.Skip(2).Take(ranks.Length).Select(x => float.Parse(x.ToString())).ToArray());
+        }
     }
 
     /// <summary>
