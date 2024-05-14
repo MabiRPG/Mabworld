@@ -63,7 +63,6 @@ public class Player : Actor
 
         // Debug purposes...
         LearnSkill(1);
-        LearnSkill(1);
         LearnSkill(2);
         LearnSkill(3);
     }
@@ -149,12 +148,12 @@ public class Player : Actor
     /// <param name="ID">Skill ID in database</param>
     public void LearnSkill(int ID)
     {
-        // if (IsSkillLearned(ID))
-        // {
-        //     return;
-        // }
+        if (IsSkillLearned(ID))
+        {
+            return;
+        }
 
-        new Skill(ID);
+        skills.Add(ID, new Skill(ID));
     }
 
     /// <summary>

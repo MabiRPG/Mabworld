@@ -59,22 +59,22 @@ public class Skill
     public string[] ranks = {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
 
     // Query strings to database.
-    private const string skillQuery = @"SELECT * FROM skills WHERE skill_id = @id LIMIT 1;";
-    private const string statsQuery = @"SELECT skill_stats.*, skill_stats_type.stat
-        FROM skills
-        JOIN skill_stats
-        ON skills.skill_id = skill_stats.skill_id
-        JOIN skill_stats_type
-        ON skill_stats.stat_id = skill_stats_type.stat_id
-        WHERE skills.skill_id = @id;";
-    private const string methodsQuery = @"SELECT training_methods_type.method, 
-            training_methods.method_id, training_methods.xp_gain_each, training_methods.count_max 
-        FROM training_methods
-        JOIN training_methods_type
-        ON training_methods.method_id = training_methods_type.method_id
-        JOIN skills
-        ON training_methods.skill_id = skills.skill_id
-        WHERE training_methods.skill_id = @id AND training_methods.rank = @rank;";
+    private const string skillQuery = @"SELECT * FROM skill WHERE id = @id LIMIT 1;";
+    private const string statsQuery = @"SELECT skill_stat.*, skill_stat_type.stat
+        FROM skill
+        JOIN skill_stat
+        ON skill.id = skill_stat.skill_id
+        JOIN skill_stat_type
+        ON skill_stat.stat_id = skill_stat_type.stat_id
+        WHERE skill.id = @id;";
+    private const string methodsQuery = @"SELECT training_method_type.method, 
+            training_method.method_id, training_method.xp_gain_each, training_method.count_max 
+        FROM training_method
+        JOIN training_method_type
+        ON training_method.method_id = training_method_type.method_id
+        JOIN skill
+        ON training_method.skill_id = skill.id
+        WHERE training_method.skill_id = @id AND training_method.rank = @rank;";
 
     /// <summary>
     ///     Initializes the object.
@@ -85,7 +85,7 @@ public class Skill
         this.ID = ID;
         LoadSkillInfo(this.ID);
 
-        sprite = Addressables.LoadAssetAsync<Sprite>(info["icon_name"].ToString()).WaitForCompletion();
+        sprite = Addressables.LoadAssetAsync<Sprite>(info["icon"].ToString()).WaitForCompletion();
 
         CreateTrainingMethods();
 
@@ -101,25 +101,31 @@ public class Skill
     {   
         // Gets the basic skill info
         DataTable dt = GameManager.Instance.QueryDatabase(skillQuery, ("@id", ID));   
-        DataRow row = dt.Rows[0];
 
-        // Inserts into dictionary.
-        foreach (DataColumn column in dt.Columns)
+        // Iterate over all rows and columns, inserts into dictionary.
+        foreach (DataRow row in dt.Rows)
         {
-            info.Add(column.ColumnName, row[column]);
+            foreach (DataColumn column in dt.Columns)
+            {
+                info.Add(column.ColumnName, row[column]);
+            }
         }
+
+        dt.Clear();
 
         // Gets the detailed skill info at every rank.
         dt = GameManager.Instance.QueryDatabase(statsQuery, ("@id", ID));
-        row = dt.Rows[0];
         
-        // Inserts into dictionary.
-        // Stat position field is the last column.
-        int statPos = row.ItemArray.Length - 1;
-        // Set the key to be the stat name, then slice the row by length of ranks
-        // converting to string then float and back to array for the value.
-        stats.Add(row.ItemArray[statPos].ToString(), 
-            row.ItemArray.Skip(2).Take(ranks.Length).Select(x => float.Parse(x.ToString())).ToArray());
+        // Iterate over all rows and columns, inserts into dictionary.
+        foreach (DataRow row in dt.Rows)
+        {       
+            // Stat position field is the last column.
+            int statPos = row.ItemArray.Length - 1;
+            // Set the key to be the stat name, then slice the row by length of ranks
+            // converting to string then float and back to array for the value.
+            stats.Add(row.ItemArray[statPos].ToString(), 
+                row.ItemArray.Skip(2).Take(ranks.Length).Select(x => float.Parse(x.ToString())).ToArray());
+        }
     }
 
     /// <summary>
@@ -176,7 +182,7 @@ public class Skill
     public void CreateTrainingMethods()
     {
         // Creates a new data table and queries the db.
-        DataTable dt = GameManager.Instance.QueryDatabase(methodsQuery, ("@id", info["skill_id"]), ("@rank", ranks[index.ValueInt]));
+        DataTable dt = GameManager.Instance.QueryDatabase(methodsQuery, ("@id", info["id"]), ("@rank", ranks[index.ValueInt]));
         // Clears the previous training methods.
         foreach (SkillTrainingMethod method in methods)
         {

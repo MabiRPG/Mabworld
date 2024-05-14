@@ -67,7 +67,7 @@ public class WindowCharacter : Window
     private void OnEnable()
     {
         // Basic Details
-        Player.Instance.actorNameEvent.OnChange+=Draw;
+        //Player.Instance.actorNameEvent.OnChange+=Draw;
 
         // HP and MP
         Player.Instance.actorHP.OnChange += Draw;
