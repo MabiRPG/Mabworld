@@ -35,7 +35,7 @@ public class WindowSkillDetailed : Window
     private Button closeButton;
 
     // Event handlers
-    public ValueManager advanceButtonEvent = new ValueManager();
+    public EventManager advanceButtonEvent = new EventManager();
 
     /// <summary>
     ///     Initializes the object.
@@ -92,7 +92,7 @@ public class WindowSkillDetailed : Window
         this.skill = skill;
 
         // Finds the skill icon sprite and reassigns it.
-        icon.sprite = this.skill.sprite;
+        icon.sprite = this.skill.icon;
         UpdateRank();
         UpdateXp();
 
@@ -127,9 +127,9 @@ public class WindowSkillDetailed : Window
     private void UpdateRank()
     {
         // Finds the skill name and reassigns it.
-        skillName.text = "Rank " + skill.ranks[skill.index.ValueInt] + " " + skill.info["name"];
+        skillName.text = "Rank " + skill.ranks[skill.index.Value] + " " + skill.name;
 
-        int index = skill.index.ValueInt;
+        int index = skill.index.Value;
 
         // For every stat, create a new stat field prefab and populate it.
         statPrefabs.SetActiveAll(false);

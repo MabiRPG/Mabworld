@@ -1,5 +1,80 @@
 using System;
 
+public class EventManager
+{
+    public event Action OnChange;
+
+    public void RaiseOnChange()
+    {
+        OnChange?.Invoke();
+    }
+
+    public virtual void Clear()
+    {
+        OnChange = null;
+    }
+}
+
+public class IntManager : EventManager
+{
+    private int _value;
+    public int Value
+    {
+        get {return _value;}
+        set {_value = value; RaiseOnChange();}
+    }
+
+    public IntManager(int Value = 0)
+    {
+        this.Value = Value;
+    }
+}
+
+public class FloatManager : EventManager
+{
+    private float _value;
+    public float Value
+    {
+        get {return _value;}
+        set {_value = value; RaiseOnChange();}
+    }
+
+    public FloatManager(float Value = 0f)
+    {
+        this.Value = Value;
+    }
+}
+
+public class StringManager : EventManager
+{
+    private string _value;
+    public string Value
+    {
+        get {return _value;}
+        set {_value = value; RaiseOnChange();}
+    }
+
+    public StringManager(string Value = "")
+    {
+        this.Value = Value;
+    }
+}
+
+public class BoolManager : EventManager
+{
+    private bool _value;
+    public bool Value
+    {
+        get {return _value;}
+        set {_value = value; RaiseOnChange();}
+    }
+
+    public BoolManager(bool Value = false)
+    {
+        this.Value = Value;
+    }
+}
+
 /// <summary>
 ///     Handles a single float value and event management.
 /// </summary>
@@ -55,13 +130,13 @@ public class ValueManager
 /// <summary>
 ///     Handles all triple float (actor Stats) and event management.
 /// </summary>
-public class StatManager : ValueManager
+public class StatManager : FloatManager
 {
     // Event handler objects
     public event Action OnMaximumValueChange;
     public event Action OnBaseMaximumValueChange;
     // Current maximum value of stat (modified by buffs/debuffs, etc)
-    protected float _maximum;
+    private float _maximum;
     public float Maximum
     {
         get {return _maximum;}
@@ -71,7 +146,7 @@ public class StatManager : ValueManager
         }
     }
     // Permanent base maximum of stat (calculated from skills, etc).
-    protected float _baseMaximum;
+    private float _baseMaximum;
     public float BaseMaximum
     {
         get {return _baseMaximum;}

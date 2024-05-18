@@ -1,10 +1,10 @@
 using System.Data;
-using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Collections;
 using UnityEngine.AddressableAssets;
+using System.Linq;
 
 /// <summary>
 ///     Handles all skill processing.
@@ -30,7 +30,6 @@ public class Skill
     public float baseLoadTime;
     public float baseUseTime;
     public float baseCooldown;
-    public float baseSuccessRate;
     // Does player start with skill?
     public bool isStartingWith;
     // Learnable? and learn condition
@@ -40,17 +39,14 @@ public class Skill
     public bool isPassive;
 
     // Dictionary of basic skill info and specific rank stats.
-    public Dictionary<string, object> info = new Dictionary<string, object>();
     public Dictionary<string, float[]> stats = new Dictionary<string, float[]>();
 
     // Current index and rank of skill.
-    public ValueManager index = new ValueManager();
-    // Icon sprite
-    public Sprite sprite;
+    public IntManager index = new IntManager();
 
     // Current xp and maximum rank xp.
-    public ValueManager xp = new ValueManager();
-    public ValueManager xpMax = new ValueManager();
+    public FloatManager xp = new FloatManager();
+    public FloatManager xpMax = new FloatManager();
 
     // List of training methods at current rank
     public List<SkillTrainingMethod> methods = new List<SkillTrainingMethod>();
@@ -60,21 +56,21 @@ public class Skill
 
     // Query strings to database.
     private const string skillQuery = @"SELECT * FROM skill WHERE id = @id LIMIT 1;";
-    private const string statsQuery = @"SELECT skill_stat.*, skill_stat_type.stat
+    private const string statsQuery = @"SELECT skill_stat.*, skill_stat_type.name
         FROM skill
         JOIN skill_stat
         ON skill.id = skill_stat.skill_id
         JOIN skill_stat_type
-        ON skill_stat.stat_id = skill_stat_type.stat_id
+        ON skill_stat.skill_stat_id = skill_stat_type.id
         WHERE skill.id = @id;";
-    private const string methodsQuery = @"SELECT training_method_type.method, 
-            training_method.method_id, training_method.xp_gain_each, training_method.count_max 
+    private const string methodsQuery = @"SELECT training_method_type.name, 
+            training_method.training_method_id, training_method.xp_gain_each, training_method.count_max 
         FROM training_method
         JOIN training_method_type
-        ON training_method.method_id = training_method_type.method_id
+        ON training_method.training_method_id = training_method_type.id
         JOIN skill
         ON training_method.skill_id = skill.id
-        WHERE training_method.skill_id = @id AND training_method.rank = @rank;";
+        WHERE training_method.skill_id = @id AND training_method.rank = @rank";
 
     /// <summary>
     ///     Initializes the object.
@@ -82,11 +78,7 @@ public class Skill
     /// <param name="ID">Skill ID in database.</param>
     public Skill(int ID)
     {
-        this.ID = ID;
-        LoadSkillInfo(this.ID);
-
-        sprite = Addressables.LoadAssetAsync<Sprite>(info["icon"].ToString()).WaitForCompletion();
-
+        LoadSkillInfo(ID);
         CreateTrainingMethods();
 
         index.OnChange += AudioManager.Instance.PlayLevelUpSFX;
@@ -99,32 +91,24 @@ public class Skill
     /// <param name="ID">Skill ID in database.</param>
     public void LoadSkillInfo(int ID) 
     {   
+        this.ID = ID;
+
         // Gets the basic skill info
         DataTable dt = GameManager.Instance.QueryDatabase(skillQuery, ("@id", ID));   
-
-        // Iterate over all rows and columns, inserts into dictionary.
-        foreach (DataRow row in dt.Rows)
-        {
-            foreach (DataColumn column in dt.Columns)
-            {
-                info.Add(column.ColumnName, row[column]);
-            }
-        }
-
-        dt.Clear();
+        DataRow row = dt.Rows[0];
+        GameManager.Instance.ParseDatabaseRow(row, this);
 
         // Gets the detailed skill info at every rank.
         dt = GameManager.Instance.QueryDatabase(statsQuery, ("@id", ID));
         
-        // Iterate over all rows and columns, inserts into dictionary.
-        foreach (DataRow row in dt.Rows)
-        {       
+        foreach (DataRow r in dt.Rows)
+        {
             // Stat position field is the last column.
-            int statPos = row.ItemArray.Length - 1;
+            int statPos = r.ItemArray.Length - 1;
             // Set the key to be the stat name, then slice the row by length of ranks
             // converting to string then float and back to array for the value.
-            stats.Add(row.ItemArray[statPos].ToString(), 
-                row.ItemArray.Skip(2).Take(ranks.Length).Select(x => float.Parse(x.ToString())).ToArray());
+            stats.Add(r.ItemArray[statPos].ToString(), 
+                r.ItemArray.Skip(2).Take(ranks.Length).Select(x => float.Parse(x.ToString())).ToArray());
         }
     }
 
@@ -134,7 +118,7 @@ public class Skill
     /// <returns>True if can rank up.</returns>
     public bool CanRankUp()
     {
-        return index.ValueInt + 1 < ranks.Length;
+        return index.Value + 1 < ranks.Length;
     }
 
     /// <summary>
@@ -156,7 +140,7 @@ public class Skill
     /// </summary>
     public void RankDown()
     {
-        if (index.ValueInt - 1 >= 0)
+        if (index.Value - 1 >= 0)
         {
             index.Value--;
         }
@@ -182,7 +166,7 @@ public class Skill
     public void CreateTrainingMethods()
     {
         // Creates a new data table and queries the db.
-        DataTable dt = GameManager.Instance.QueryDatabase(methodsQuery, ("@id", info["id"]), ("@rank", ranks[index.ValueInt]));
+        DataTable dt = GameManager.Instance.QueryDatabase(methodsQuery, ("@id", ID), ("@rank", ranks[index.Value]));
         // Clears the previous training methods.
         foreach (SkillTrainingMethod method in methods)
         {
@@ -196,15 +180,9 @@ public class Skill
         // For every method, create a new method and insert into list.
         foreach (DataRow row in dt.Rows)
         {
-            int methodID = int.Parse(row["method_id"].ToString());
-            string methodName = row["method"].ToString();
-            float xpGainEach = float.Parse(row["xp_gain_each"].ToString());
-            int countMax = int.Parse(row["count_max"].ToString());
-
-            SkillTrainingMethod method = new SkillTrainingMethod(this, methodID, methodName,
-                xpGainEach, countMax);
+            SkillTrainingMethod method = new SkillTrainingMethod(this, row);
             // Adds the max xp from method to skill.
-            xpMax.Value += xpGainEach * countMax;
+            xpMax.Value += method.xpGainEach * method.countMax;
 
             methods.Add(method);
         }
@@ -220,12 +198,12 @@ public class Skill
         // Makes the player busy.
         Player.Instance.isBusy = true;
         // Calculates the base use time for the skill.
-        float useTime = float.Parse(info["base_use_time"].ToString());
+        float useTime = baseUseTime;
 
         // Adds skill specific time modifiers
         if (stats.ContainsKey("use_time"))
         {
-            useTime += stats["use_time"][index.ValueInt];
+            useTime += stats["use_time"][index.Value];
         }
 
         useTime = Math.Max(0, useTime);
@@ -260,7 +238,7 @@ public class Skill
         // Add skill specific modifiers
         if (stats.ContainsKey("success_rate_increase"))
         {
-            chance += stats["success_rate_increase"][index.ValueInt];
+            chance += stats["success_rate_increase"][index.Value];
         }
 
         // Change to percentage and roll die

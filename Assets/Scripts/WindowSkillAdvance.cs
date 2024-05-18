@@ -109,13 +109,13 @@ public class WindowSkillAdvance : Window
     /// </summary>
     private void Draw() 
     {
-        int index = skill.index.ValueInt + 1;
+        int index = skill.index.Value + 1;
 
         // Finds the skill name and reassigns it.
-        skillName.text = "Rank " + skill.ranks[skill.index.ValueInt] + " " + skill.info["name"];
+        skillName.text = "Rank " + skill.ranks[skill.index.Value] + " " + skill.name;
 
         // Finds the skill icon sprite and reassigns it.
-        icon.sprite = skill.sprite;
+        icon.sprite = skill.icon;
 
         rank.text = string.Format("Advance to Rank {0} available", skill.ranks[index]);
 

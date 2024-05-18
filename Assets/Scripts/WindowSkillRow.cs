@@ -63,7 +63,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         // If object selected was icon, change cursor and allow dragging
         if (pointerData.pointerEnter == iconObj)
         {
-            Cursor.SetCursor(skill.sprite.texture, Vector2.zero, CursorMode.Auto);
+            Cursor.SetCursor(skill.icon.texture, Vector2.zero, CursorMode.Auto);
             draggingIcon = true;
         }       
     }
@@ -114,8 +114,8 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         Clear();
         this.skill = skill;
 
-        skillName.text = this.skill.info["name"].ToString();
-        icon.sprite = this.skill.sprite;
+        skillName.text = this.skill.name;
+        icon.sprite = this.skill.icon;
         UpdateRank();
         UpdateXp();
 
@@ -150,7 +150,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     /// </summary>
     private void UpdateRank()
     {
-        rank.text = "Rank " + skill.ranks[skill.index.ValueInt];
+        rank.text = "Rank " + skill.ranks[skill.index.Value];
     }
 
     /// <summary>

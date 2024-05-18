@@ -18,7 +18,7 @@ MonoBehaviour:
   m_GUID: 1bb77648dbfef6245a947fedaa49767b
   m_SerializeEntries:
   - m_GUID: 02d087ced2e56a14a9f3c58af6bab96c
-    m_Address: pickaxe
+    m_Address: Pickaxe
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
