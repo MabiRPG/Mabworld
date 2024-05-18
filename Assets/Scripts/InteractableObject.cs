@@ -39,10 +39,6 @@ public class InteractableObject : MonoBehaviour
     {
         DataTable dt = GameManager.Instance.QueryDatabase(eventQuery, ("@id", ID));
         DataRow row = dt.Rows[0];
-
-        ID = (int)row["event_id"];
-        skillID = (int)row["skill_id"];
-
-        dt.Clear();
+        GameManager.Instance.ParseDatabaseRow(row, this);
     }
 }

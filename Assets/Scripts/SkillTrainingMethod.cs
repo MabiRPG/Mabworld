@@ -1,3 +1,6 @@
+using System.Data;
+using UnityEngine;
+
 /// <summary>
 ///     Handles all training method processing.
 /// </summary>
@@ -17,22 +20,17 @@ public class SkillTrainingMethod
     // Skill instance
     private Skill skill;
     // Player result
-    public Result result = null;
+    private Result result = null;
 
     /// <summary>
     ///     Initializes the object.
     /// </summary>
+    /// <param name="skill">Skill instance method belongs to.</param>
     /// <param name="ID">Method ID in database.</param>
-    /// <param name="name">Method name.</param>
-    /// <param name="xpGainEach">XP gain every count of method.</param>
-    /// <param name="countMax">Maximum count of method.</param>
-    public SkillTrainingMethod(Skill skill, int ID, string name, 
-        float xpGainEach, int countMax)
+    /// <param name="row">Database row to construct class.</param>
+    public SkillTrainingMethod(Skill skill, DataRow row)
     {
-        this.ID = ID;
-        this.name = name;
-        this.xpGainEach = xpGainEach;
-        this.countMax = countMax;
+        GameManager.Instance.ParseDatabaseRow(row, this, ("training_method_id", "ID"));
         // Creates an empty counter for current method.
         count.Value = 0;
 
