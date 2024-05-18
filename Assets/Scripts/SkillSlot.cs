@@ -49,7 +49,7 @@ public class SkillSlot : MonoBehaviour
     public void SetSkill(Skill skill, Action newUseAction, Action openWindowAction)
     {
         this.skill = skill;
-        icon.sprite = this.skill.icon;
+        icon.sprite = this.skill.sprite;
 
         InputManager.Instance.AddButtonBind(key, () => Player.Instance.StartAction(this.skill));
         this.openWindowAction = openWindowAction;

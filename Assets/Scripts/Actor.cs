@@ -6,8 +6,8 @@ using System.Collections.Generic;
 public class Actor : Movement
 {
     // Name and level of actor
-    public StringManager actorName = new StringManager();
-    public IntManager actorLevel = new IntManager();
+    public string actorName;
+    public int actorLevel = 1;
 
     // Health and mana
     public StatManager actorHP = new StatManager(100, 100, 100);
@@ -28,6 +28,9 @@ public class Actor : Movement
     // Dict of primary and secondary (calculated) stats for easier reference
     public Dictionary<string, StatManager> primaryStats = new Dictionary<string, StatManager>();
     public Dictionary<string, StatManager> secondaryStats = new Dictionary<string, StatManager>();
+
+    //public ValueManager actorNameEvent = new ValueManager();
+    //public ValueManager actorLevelEvent = new ValueManager();
 
     public Dictionary<int, Skill> skills = new Dictionary<int, Skill>();
 

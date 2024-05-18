@@ -11,7 +11,7 @@ public class Player : Actor
     // Global instance of player
     public static Player Instance = null;
 
-    public IntManager actorAP = new IntManager(1000);
+    public ValueManager actorAP = new ValueManager(1000);
 
     // How much our life skill success rates scale with dex.
     private int lifeSkillDexFactor = 10;
@@ -174,7 +174,7 @@ public class Player : Actor
     /// <param name="skill">Skill instance</param>
     public void RankUpSkill(Skill skill)
     {
-        int apCost = (int)skill.stats["ap_cost"][skill.index.Value + 1];
+        int apCost = (int)skill.stats["ap_cost"][skill.index.ValueInt + 1];
 
         if (IsSkillLearned(skill) && skill.CanRankUp() && actorAP.Value >= apCost)
         {
@@ -185,8 +185,8 @@ public class Player : Actor
             {
                 if (skill.stats.ContainsKey(stat.Key))
                 {
-                    int currRank = (int)skill.stats[stat.Key][skill.index.Value];
-                    int prevRank = (int)skill.stats[stat.Key][skill.index.Value - 1];
+                    int currRank = (int)skill.stats[stat.Key][skill.index.ValueInt];
+                    int prevRank = (int)skill.stats[stat.Key][skill.index.ValueInt - 1];
                     int statDiff = Math.Max(0, currRank - prevRank);
                     stat.Value.Value += statDiff;
                 }
