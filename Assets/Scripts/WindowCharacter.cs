@@ -1,21 +1,32 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Timeline;
 
 public class WindowCharacter : Window
 {
     public static WindowCharacter Instance = null;
 
-    // HP and MP
+    private TMP_Text actorNameText;
+    private TMP_Text actorTitleText;
+    private TMP_Text actorAgeText;
+    private TMP_Text actorRaceText;
+    private TMP_Text actorLevelText;
+    private TMP_Text actorAPText;
+
     private ProgressBar actorHPBar;
     private ProgressBar actorMPBar;
+    private ProgressBar actorAPbar;
 
-    // Regular Stats
+    private TMP_Text actorDamageText;
+    private TMP_Text actorInjuryText;
+    private TMP_Text actorCriticalText;
+    private TMP_Text actorBalanceText;
+
     private TMP_Text actorStrText;
     private TMP_Text actorIntText;
     private TMP_Text actorDexText;
     private TMP_Text actorLuckText;
 
-    // Defensive Stats
     private TMP_Text actorDefenseText;
     private TMP_Text actorProtectionText;
     private TMP_Text actorMagicDefenseText;
@@ -66,7 +77,7 @@ public class WindowCharacter : Window
     private void OnEnable()
     {
         // Basic Details
-        //Player.Instance.actorNameEvent.OnChange+=Draw;
+        // Player.Instance.actorNameEvent.OnChange+=Draw;
 
         // HP and MP
         Player.Instance.actorHP.OnChange += Draw;
