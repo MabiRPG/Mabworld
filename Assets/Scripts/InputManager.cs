@@ -34,7 +34,7 @@ public class InputManager : MonoBehaviour
         Add(key, action, forceReplace, buttonKeybinds);
     }
 
-    public void Add(KeyCode key, Action action, bool forceReplace, Dictionary<KeyCode, Action> dict)
+    private void Add(KeyCode key, Action action, bool forceReplace, Dictionary<KeyCode, Action> dict)
     {
         if (dict.ContainsKey(key))
         {
@@ -49,6 +49,11 @@ public class InputManager : MonoBehaviour
         }
         
         dict[key] = action;
+    }
+
+    public void RemoveButtonBind(KeyCode key)
+    {
+        buttonKeybinds.Remove(key);
     }
 
     private void Update()
