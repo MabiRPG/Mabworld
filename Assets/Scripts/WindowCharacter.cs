@@ -57,16 +57,16 @@ public class WindowCharacter : Window
         actorMPBar = character.transform.Find("Basic Information (L)").Find("HP & MP Bar Parent").Find("MP Bar Parent").Find("MP Bar").GetComponent<ProgressBar>();
 
         // Regular Stats
-        actorStrText = character.transform.Find("Basic Information (L)").Find("Regular Stats Parent").Find("Str Parent").Find("Value").GetComponent<TMP_Text>();
-        actorIntText = character.transform.Find("Basic Information (L)").Find("Regular Stats Parent").Find("Int Parent").Find("Value").GetComponent<TMP_Text>();
-        actorDexText = character.transform.Find("Basic Information (L)").Find("Regular Stats Parent").Find("Dex Parent").Find("Value").GetComponent<TMP_Text>();
-        actorLuckText = character.transform.Find("Basic Information (L)").Find("Regular Stats Parent").Find("Luck Parent").Find("Value").GetComponent<TMP_Text>();
+        actorStrText = character.transform.Find("Basic Information (R)").Find("Regular Stats Parent").Find("Str Parent").Find("Value").GetComponent<TMP_Text>();
+        actorIntText = character.transform.Find("Basic Information (R)").Find("Regular Stats Parent").Find("Int Parent").Find("Value").GetComponent<TMP_Text>();
+        actorDexText = character.transform.Find("Basic Information (R)").Find("Regular Stats Parent").Find("Dex Parent").Find("Value").GetComponent<TMP_Text>();
+        actorLuckText = character.transform.Find("Basic Information (R)").Find("Regular Stats Parent").Find("Luck Parent").Find("Value").GetComponent<TMP_Text>();
 
         // Defensive Stats
-        actorDefenseText = character.transform.Find("Basic Information (L)").Find("Defensive Stats Parent").Find("Defense Parent").Find("Value").GetComponent<TMP_Text>();
-        actorProtectionText = character.transform.Find("Basic Information (L)").Find("Defensive Stats Parent").Find("Protection Parent").Find("Value").GetComponent<TMP_Text>();
-        actorMagicDefenseText = character.transform.Find("Basic Information (L)").Find("Defensive Stats Parent").Find("Magic Defense Parent").Find("Value").GetComponent<TMP_Text>();
-        actorMagicProtectionText = character.transform.Find("Basic Information (L)").Find("Defensive Stats Parent").Find("Magic Protection Parent").Find("Value").GetComponent<TMP_Text>();
+        actorDefenseText = character.transform.Find("Basic Information (R)").Find("Defensive Stats Parent").Find("Defense Parent").Find("Value").GetComponent<TMP_Text>();
+        actorProtectionText = character.transform.Find("Basic Information (R)").Find("Defensive Stats Parent").Find("Protection Parent").Find("Value").GetComponent<TMP_Text>();
+        actorMagicDefenseText = character.transform.Find("Basic Information (R)").Find("Defensive Stats Parent").Find("Magic Defense Parent").Find("Value").GetComponent<TMP_Text>();
+        actorMagicProtectionText = character.transform.Find("Basic Information (R)").Find("Defensive Stats Parent").Find("Magic Protection Parent").Find("Value").GetComponent<TMP_Text>();
     }
 
     private void Start()

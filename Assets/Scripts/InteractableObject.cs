@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Data;
 using UnityEngine;
 
@@ -15,30 +15,106 @@ public class InteractableObject : MonoBehaviour
     // Label to display in world
     public string name;
     // Sprites to display depending on state of resource
-    public Sprite fullSprite;
-    public Sprite partialFullSprite;
-    public Sprite emptySprite;
+    private Sprite fullSprite;
+    private Sprite partialFullSprite;
+    private Sprite emptySprite;
     // Mouse hover sprite
-    public Sprite mouseHoverSprite;
+    private Sprite mouseHoverSprite;
     // Sound effect when interacting
-    public AudioClip sfx;
+    private AudioClip sfx;
     // How much the resource currently has
-    public ValueManager resource;
+    private IntManager resource;
     // Maximum capacity of resource
-    public int resourceMax;
+    private int resourceMax;
     // How much it regenerates per interval, and interval duration
-    public int resourceRegenPerInterval;
-    public int resourceRegenInterval;
+    private int resourceRegenPerInterval;
+    private int resourceRegenInterval;
     // What loot table this resource draws from
-    public int lootTableID;
-    public bool isMovable;
+    private int lootTableID;
+    private bool isMovable;
 
-    private const string eventQuery = @"SELECT * FROM map_resources WHERE event_id = @id LIMIT 1;";
+    private SpriteRenderer spriteRenderer;
+    private bool isRegening;
+
+    private const string eventQuery = @"SELECT * FROM map_resource WHERE id = @id LIMIT 1;";
 
     private void Start()
     {
+        // Fetch event info from database.
         DataTable dt = GameManager.Instance.QueryDatabase(eventQuery, ("@id", ID));
         DataRow row = dt.Rows[0];
         GameManager.Instance.ParseDatabaseRow(row, this);
+
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        // Add event hook
+        resource.OnChange += ChangeSpriteState;
+        // Set up initial state.
+        ChangeSpriteState();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            Use();
+        }
+    }
+
+    private void ChangeSpriteState()
+    {
+        // If resource is full, set sprite, stop regeneration
+        if (resource.Value == resourceMax)
+        {
+            spriteRenderer.sprite = fullSprite;
+            StopCoroutine(Regenerate());
+            return;
+        }
+        
+        // Otherwise, start regen coroutine
+        if (!isRegening)
+        {
+            StartCoroutine(Regenerate());
+        }
+
+        // If empty, set sprite.
+        if (resource.Value == 0)
+        {
+            spriteRenderer.sprite = emptySprite;
+        }
+        // If partial full sprite exists, use it, otherwise default to full.
+        else
+        {
+            if (partialFullSprite != null)
+            {
+                spriteRenderer.sprite = partialFullSprite;
+            }
+            else
+            {
+                spriteRenderer.sprite = fullSprite;
+            }
+        }
+    }
+
+    private IEnumerator Regenerate()
+    {
+        isRegening = true;
+
+        while (resource.Value < resourceMax)
+        {
+            yield return new WaitForSeconds(resourceRegenInterval);
+            resource.Value = Math.Min(resourceMax, resource.Value + resourceRegenPerInterval);
+        }
+
+        isRegening = false;
+    }
+
+    private void Use()
+    {
+        if (resource.Value == 0)
+        {
+            return;
+        }
+
+        resource.Value--;
     }
 }

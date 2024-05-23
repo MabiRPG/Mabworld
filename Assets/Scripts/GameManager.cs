@@ -136,7 +136,7 @@ public class GameManager : MonoBehaviour
             {
                 if (Key == column.ColumnName)
                 {
-                    field = model.GetType().GetField(FieldName);
+                    field = model.GetType().GetField(FieldName, BindingFlags.Instance | BindingFlags.NonPublic);
                     break;
                 }
             }
@@ -147,7 +147,7 @@ public class GameManager : MonoBehaviour
                 string name = ConvertSnakeCaseToCamelCase(column.ColumnName);
                 // Finds the field in the class model using the default naming convention, 
                 // if it exists
-                field = model.GetType().GetField(name);
+                field = model.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic);
 
                 // Continues if nothing can be found.
                 if (field == null)
@@ -159,6 +159,12 @@ public class GameManager : MonoBehaviour
             // Gets the value in the table, converts it to a string
             string s = row[column].ToString();
             object value;
+
+            // If field is NULL in database, ignore and move on.
+            if (s.Length == 0)
+            {
+                continue;
+            }
 
             // Checks the type of the class field, and converts the database value
             // to the appropriate type
@@ -179,18 +185,38 @@ public class GameManager : MonoBehaviour
                     if (s == "1")
                     {
                         value = true;
-                        break;
                     }
                     else
                     {
-                        value = false;
-                        break;
+                        value = false; 
                     }
+
+                    break;
                 case Type t when t == typeof(Sprite):
-                    value = LoadSprite(s);
+                    value = LoadAsset<Sprite>(s);
                     break;
                 case Type t when t == typeof(AudioClip):
-                    value = LoadAudioClip(s);
+                    value = LoadAsset<AudioClip>(s);
+                    break;
+                case Type t when t == typeof(IntManager):
+                    value = new IntManager(int.Parse(s));
+                    break;
+                case Type t when t == typeof(FloatManager):
+                    value = new FloatManager(float.Parse(s));
+                    break;
+                case Type t when t == typeof(StringManager):
+                    value = new StringManager(s);
+                    break;
+                case Type t when t == typeof(BoolManager):
+                    if (s == "1")
+                    {
+                        value = new BoolManager(true);
+                    }
+                    else
+                    {
+                        value = new BoolManager(false);
+                    }
+
                     break;
                 default:
                     value = s;
@@ -202,16 +228,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public Sprite LoadSprite(string key)
+    public T LoadAsset<T>(string key)
     {
-        Sprite sprite = Addressables.LoadAssetAsync<Sprite>(key).WaitForCompletion();
-        return sprite;
-    }
-
-    public AudioClip LoadAudioClip(string key)
-    {
-        AudioClip audioClip = Addressables.LoadAssetAsync<AudioClip>(key).WaitForCompletion();
-        return audioClip;
+        T t = Addressables.LoadAssetAsync<T>(key).WaitForCompletion();
+        return t;
     }
 
     public string ConvertSnakeCaseToCamelCase(string snakeCase)
