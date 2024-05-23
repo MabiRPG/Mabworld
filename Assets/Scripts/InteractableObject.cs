@@ -3,6 +3,9 @@ using System.Collections;
 using System.Data;
 using UnityEngine;
 
+/// <summary>
+///     Handles all interactable objects in the world.
+/// </summary>
 public class InteractableObject : MonoBehaviour
 {
     // Primary key for event
@@ -38,7 +41,10 @@ public class InteractableObject : MonoBehaviour
 
     private const string eventQuery = @"SELECT * FROM map_resource WHERE id = @id LIMIT 1;";
 
-    private void Start()
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
+    private void Awake()
     {
         // Fetch event info from database.
         DataTable dt = GameManager.Instance.QueryDatabase(eventQuery, ("@id", ID));
@@ -46,20 +52,43 @@ public class InteractableObject : MonoBehaviour
         GameManager.Instance.ParseDatabaseRow(row, this);
 
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+    }
+
+    /// <summary>
+    ///     Called when the object becomes enabled and active.
+    /// </summary>
+    private void OnEnable()
+    {
         // Add event hook
         resource.OnChange += ChangeSpriteState;
         // Set up initial state.
         ChangeSpriteState();
     }
 
+    /// <summary>
+    ///     Called when the object becomes disabled and inactive.
+    /// </summary>
+    private void OnDisable()
+    {
+        resource.Clear();
+    }
+
+    private void OnMouseDown()
+    {
+        Interact();
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F1))
         {
-            Use();
+            Interact();
         }
     }
 
+    /// <summary>
+    ///     Changes the sprite state depending on the resource amount.
+    /// </summary>
     private void ChangeSpriteState()
     {
         // If resource is full, set sprite, stop regeneration
@@ -95,6 +124,10 @@ public class InteractableObject : MonoBehaviour
         }
     }
 
+    /// <summary>
+    ///     Begins regenerating the resource if necessary through a coroutine.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator Regenerate()
     {
         isRegening = true;
@@ -108,7 +141,10 @@ public class InteractableObject : MonoBehaviour
         isRegening = false;
     }
 
-    private void Use()
+    /// <summary>
+    ///     Called when player interacts with the object in the world.
+    /// </summary>
+    private void Interact()
     {
         if (resource.Value == 0)
         {

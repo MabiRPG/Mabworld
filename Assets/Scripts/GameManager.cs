@@ -136,7 +136,8 @@ public class GameManager : MonoBehaviour
             {
                 if (Key == column.ColumnName)
                 {
-                    field = model.GetType().GetField(FieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+                    field = model.GetType().GetField(FieldName,
+                        BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
                     break;
                 }
             }
@@ -147,7 +148,8 @@ public class GameManager : MonoBehaviour
                 string name = ConvertSnakeCaseToCamelCase(column.ColumnName);
                 // Finds the field in the class model using the default naming convention, 
                 // if it exists
-                field = model.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic);
+                field = model.GetType().GetField(name, 
+                    BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
 
                 // Continues if nothing can be found.
                 if (field == null)
