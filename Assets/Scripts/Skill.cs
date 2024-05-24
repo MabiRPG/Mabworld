@@ -247,22 +247,8 @@ public class Skill
 
         // Handle success or fail here
         Result result = Player.Instance.result;
-
-        result.Clear();
         result.skill = this;
-        result.type = Result.Type.Gather;
-
-        if (chance >= roll)
-        {
-            result.isSuccess = true;
-            result.resourceGain = Player.Instance.CalculateLuckyGainMultiplier();
-        }
-        else
-        {
-            result.isSuccess = false;
-        }       
-
-        result.statusEvent.RaiseOnChange();
+        result.SetState(chance >= roll);
 
         // Makes the player available again.
         Player.Instance.isBusy = false;

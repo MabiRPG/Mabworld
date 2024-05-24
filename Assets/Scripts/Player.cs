@@ -247,6 +247,7 @@ public class Player : Actor
         {
             StopCoroutine(playerCoroutine);
             playerCoroutine = null;
+            result.Clear();
             isBusy = false;
         }
     }

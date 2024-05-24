@@ -32,12 +32,12 @@ public class AudioManager : MonoBehaviour
 
     private void OnEnable()
     {
-        Player.Instance.result.statusEvent.OnChange += PlayResultSFX;
+        Player.Instance.result.trainingEvent.OnChange += PlayResultSFX;
     }
 
     private void OnDisable()
     {
-        Player.Instance.result.statusEvent.OnChange -= PlayResultSFX;
+        Player.Instance.result.trainingEvent.OnChange -= PlayResultSFX;
     }
 
     private void PlayResultSFX()

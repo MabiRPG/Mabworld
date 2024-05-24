@@ -78,14 +78,6 @@ public class InteractableObject : MonoBehaviour
         Interact();
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            Interact();
-        }
-    }
-
     /// <summary>
     ///     Changes the sprite state depending on the resource amount.
     /// </summary>
@@ -151,6 +143,27 @@ public class InteractableObject : MonoBehaviour
             return;
         }
 
-        resource.Value--;
+        if (Player.Instance.IsSkillLearned(skillID))
+        {
+            Result result = Player.Instance.result;
+            result.Clear();
+            result.lootTableID = lootTableID;
+            result.type = Result.Type.Gather;
+            result.mapEvent.OnChange += UpdateResource;
+
+            Player.Instance.StartAction(Player.Instance.skills[skillID]);
+        }
+    }
+
+    private void UpdateResource()
+    {
+        Result result = Player.Instance.result;
+
+        if (result.isSuccess)
+        {
+            resource.Value--;
+        }
+
+        Debug.Log($"{resource.Value} {resourceMax}");
     }
 }

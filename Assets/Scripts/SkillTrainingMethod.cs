@@ -36,7 +36,7 @@ public class SkillTrainingMethod
 
         this.skill = skill;
 
-        Player.Instance.result.statusEvent.OnChange += Update;
+        Player.Instance.result.trainingEvent.OnChange += Update;
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public class SkillTrainingMethod
 
     public void Clear()
     {
-        Player.Instance.result.statusEvent.OnChange -= Update;
+        Player.Instance.result.trainingEvent.OnChange -= Update;
         count.Clear();
     }
 
