@@ -163,7 +163,5 @@ public class InteractableObject : MonoBehaviour
         {
             resource.Value--;
         }
-
-        Debug.Log($"{resource.Value} {resourceMax}");
     }
 }

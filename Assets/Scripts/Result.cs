@@ -67,12 +67,11 @@ public class Result
 
             if (itemID != -1)
             {
-                Debug.Log("Got item!");
+                Player.Instance.inventory.Add(itemID, 1);
                 resourceGain = Player.Instance.CalculateLuckyGainMultiplier();
             }
             else
             {
-                Debug.Log("Got nothing!");
             }
         }
 

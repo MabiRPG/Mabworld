@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
     public Canvas canvas;
     public GameObject windowSkillPrefab;
     public GameObject windowCharacterPrefab;
+    public GameObject windowInventoryPrefab;
 
     // Cache of database results.
     private Dictionary<string, DataTable> cache = new Dictionary<string, DataTable>();
@@ -62,6 +63,7 @@ public class GameManager : MonoBehaviour
         Instantiate(audioManager);
         Instantiate(windowSkillPrefab, canvas.transform);
         Instantiate(windowCharacterPrefab, canvas.transform);
+        Instantiate(windowInventoryPrefab, canvas.transform);
     }
 
     /// <summary>

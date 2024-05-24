@@ -100,6 +100,7 @@ public class InputManager : MonoBehaviour
 
         AddButtonBind(KeyCode.Z, () => WindowSkill.Instance.ToggleVisible());
         AddButtonBind(KeyCode.C, () => WindowCharacter.Instance.ToggleVisible());
+        AddButtonBind(KeyCode.I, () => WindowInventory.Instance.ToggleVisible());
         AddButtonBind(KeyCode.M, () => Player.Instance.ToggleMap());
     }
 }

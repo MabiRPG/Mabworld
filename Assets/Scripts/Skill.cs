@@ -78,7 +78,8 @@ public class Skill
     /// <param name="ID">Skill ID in database.</param>
     public Skill(int ID)
     {
-        LoadSkillInfo(ID);
+        this.ID = ID;
+        LoadSkillInfo();
         CreateTrainingMethods();
 
         index.OnChange += AudioManager.Instance.PlayLevelUpSFX;
@@ -88,11 +89,8 @@ public class Skill
     /// <summary>
     ///     Loads the skill info from the database.
     /// </summary>
-    /// <param name="ID">Skill ID in database.</param>
-    public void LoadSkillInfo(int ID) 
+    public void LoadSkillInfo() 
     {   
-        this.ID = ID;
-
         // Gets the basic skill info
         DataTable dt = GameManager.Instance.QueryDatabase(skillQuery, ("@id", ID));   
         DataRow row = dt.Rows[0];

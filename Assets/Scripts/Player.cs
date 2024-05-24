@@ -11,7 +11,10 @@ public class Player : Actor
     // Global instance of player
     public static Player Instance = null;
 
+    // Ability points
     public IntManager actorAP = new IntManager(1000);
+    // Inventory
+    public Inventory inventory = new Inventory(10, 10);
 
     // How much our life skill success rates scale with dex.
     private int lifeSkillDexFactor = 10;
