@@ -42,20 +42,4 @@ public class Inventory
 
         changeEvent.RaiseOnChange();
     }
-
-    // private (int, int) FindFree()
-    // {
-    //     return (0, 0);
-    // }
-
-    // public void AddItem(int itemID, int quantity)
-    // {
-    //     Item item = new Item(itemID);
-    //     (int i, int j) = FindFree();
-
-    //     GameObject slot = grid[FindFree()];
-    //     slot.transform.Find("Item").gameObject.SetActive(true);
-    //     Image image = slot.transform.Find("Item").GetComponent<Image>();
-    //     image.sprite = item.icon;
-    // }
 }

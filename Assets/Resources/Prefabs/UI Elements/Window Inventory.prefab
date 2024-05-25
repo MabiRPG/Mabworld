@@ -217,7 +217,7 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 24, y: 24}
+  m_CellSize: {x: 50, y: 50}
   m_Spacing: {x: 0, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
@@ -238,4 +238,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b971d767d60be04fa4b8584474628c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slot: {fileID: 4218379750947225348, guid: 8960136e4cc41194ab4b5702591277a9, type: 3}
+  slotPrefab: {fileID: 4218379750947225348, guid: 8960136e4cc41194ab4b5702591277a9, type: 3}
+  canvas: {fileID: 7723018937574633005, guid: 2b109b5424192cd4b86a409df24329f6, type: 3}
+  itemTooltipPrefab: {fileID: 6397780202506812243, guid: 9354d603f9439f24886ad3f958645881, type: 3}
