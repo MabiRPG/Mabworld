@@ -18,8 +18,8 @@ public class WindowInventorySlot : MonoBehaviour
     public void SetSlot(Item item, int quantity)
     {
         this.item = item;
+        transform.Find("Item").gameObject.SetActive(true);
         icon.sprite = item.icon;
         quantityText.text = quantity.ToString();
-        transform.Find("Item").gameObject.SetActive(true);
     }
 }

@@ -54,7 +54,7 @@ public class Result
 
             foreach (DataRow row in dt.Rows)
             {
-                float probability = float.Parse(row["probability"].ToString());
+                float probability = i + float.Parse(row["probability"].ToString());
 
                 if (i <= roll && roll <= probability)
                 {

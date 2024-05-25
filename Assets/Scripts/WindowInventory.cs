@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -31,9 +30,6 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
             Destroy(gameObject);
         }
         
-        // Hides the object at start
-        gameObject.SetActive(false);
-
         GameObject obj;
 
         for (int i = 0; i < Player.Instance.inventory.Height; i++)
@@ -49,6 +45,9 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         tooltip = obj.GetComponent<WindowInventoryItemTooltip>();
 
         Draw();
+
+        // Hides the object at start
+        gameObject.SetActive(false);
     }
 
     private void OnEnable()
@@ -76,7 +75,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 canvasRect, Input.mousePosition, canvasCamera, out pos);
             pos.x -= 10;
-            pos.y -= 10;
+            pos.y += 10;
 
             RectTransform rect = tooltip.gameObject.GetComponent<RectTransform>();
             rect.anchoredPosition = pos;

@@ -49,7 +49,7 @@ public class InteractableObject : MonoBehaviour
         // Fetch event info from database.
         DataTable dt = GameManager.Instance.QueryDatabase(eventQuery, ("@id", ID));
         DataRow row = dt.Rows[0];
-        GameManager.Instance.ParseDatabaseRow(row, this);
+        GameManager.Instance.ParseDatabaseRow(row, this, ("loot_table_id", "lootTableID"));
 
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
     }
