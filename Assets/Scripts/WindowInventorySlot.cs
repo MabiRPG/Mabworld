@@ -5,20 +5,21 @@ using UnityEngine.UI;
 public class WindowInventorySlot : MonoBehaviour
 {
     public Item item;
+    public int quantity;
     private Image icon;
-    private TMP_Text quantity;
+    private TMP_Text quantityText;
 
     private void Awake()
     {
         icon = transform.Find("Item").GetComponent<Image>();
-        quantity = transform.Find("Item").Find("Quantity").GetComponent<TMP_Text>();
+        quantityText = transform.Find("Item").Find("Quantity").GetComponent<TMP_Text>();
     }
 
     public void SetSlot(Item item, int quantity)
     {
         this.item = item;
         icon.sprite = item.icon;
-        this.quantity.text = quantity.ToString();
+        quantityText.text = quantity.ToString();
         transform.Find("Item").gameObject.SetActive(true);
     }
 }

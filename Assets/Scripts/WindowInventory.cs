@@ -10,6 +10,7 @@ public class WindowInventory : Window
     private GameObject slot;
 
     private Dictionary<(int, int), GameObject> grid = new Dictionary<(int, int), GameObject>();
+    private Dictionary<Item, List<(int, int)>> usedSlots = new Dictionary<Item, List<(int, int)>>();
 
     protected override void Awake()
     {
@@ -52,24 +53,49 @@ public class WindowInventory : Window
     {
         int i = 0;
         int j = 0;
-
-        Debug.Log("Drawing..");
+        WindowInventorySlot slot;
+        int amountInSlot;
 
         foreach (KeyValuePair<int, Item> pair in Player.Instance.inventory.items)
         {
-            int quantity = pair.Value.quantity;
-            Debug.Log(quantity);
+            int itemID = pair.Key;
+            Item item = pair.Value;
+            int quantity = item.quantity;
+
+            if (usedSlots.ContainsKey(item))
+            {
+                foreach ((int, int) pos in usedSlots[item])
+                {
+                    slot = grid[pos].GetComponent<WindowInventorySlot>(); 
+                    amountInSlot = Math.Min(quantity, item.stackSizeLimit);
+                    slot.SetSlot(item, amountInSlot);
+                    quantity -= amountInSlot;
+
+                    if (quantity <= 0)
+                    {
+                        break;
+                    }
+                }
+            }
            
             while (quantity > 0)
             {
-                WindowInventorySlot slot = grid[(i, j)].GetComponent<WindowInventorySlot>();
-
-                Debug.Log($"{i} {j}");
+                slot = grid[(i, j)].GetComponent<WindowInventorySlot>();
 
                 if (slot.item == null)
                 {
-                    slot.SetSlot(pair.Value, Math.Min(quantity, pair.Value.stackSizeLimit));
-                    quantity -= Math.Min(quantity, pair.Value.stackSizeLimit);
+                    amountInSlot = Math.Min(quantity, item.stackSizeLimit);
+                    slot.SetSlot(item, amountInSlot);
+                    quantity -= amountInSlot;
+                    
+                    if (usedSlots.ContainsKey(item))
+                    {
+                        usedSlots[item].Add((i, j));
+                    }
+                    else
+                    {
+                        usedSlots.Add(item, new List<(int, int)>{(i, j)});
+                    }
                 }
                 else
                 {
@@ -83,7 +109,7 @@ public class WindowInventory : Window
 
                     if (!grid.ContainsKey((i, j)))
                     {
-                        return;
+                        break;
                     }
                 }
             }
