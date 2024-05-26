@@ -119,6 +119,8 @@ public class WindowSkillDetailed : Window
             skill.xpMax.OnChange -= UpdateXp;
             skill = null;
         }
+
+        advanceButtonEvent.Clear();
     }
 
     /// <summary>
@@ -155,6 +157,9 @@ public class WindowSkillDetailed : Window
             WindowSkillTrainingMethod script = obj.GetComponent<WindowSkillTrainingMethod>();
             script.SetMethod(method);
         }
+
+        // Resets the content size fitter.
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)gameObject.transform);
     }
     
     /// <summary>

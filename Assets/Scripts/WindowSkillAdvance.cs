@@ -135,5 +135,8 @@ public class WindowSkillAdvance : Window
         ap.text = string.Format("{0} AP required.\n({1} AP remaining)",
             skill.stats["ap_cost"][index].ToString(), 
             Player.Instance.actorAP.Value.ToString());
+
+        // Resets the content size fitter.
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)gameObject.transform);
     }
 }

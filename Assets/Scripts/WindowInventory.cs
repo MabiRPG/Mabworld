@@ -74,8 +74,8 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
             Camera canvasCamera = transform.parent.GetComponent<Canvas>().worldCamera;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 canvasRect, Input.mousePosition, canvasCamera, out pos);
-            pos.x -= 10;
-            pos.y += 10;
+            pos.x -= 5;
+            pos.y += 5;
 
             RectTransform rect = tooltip.gameObject.GetComponent<RectTransform>();
             rect.anchoredPosition = pos;

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 ///     This class handles the skill window processing.
@@ -88,6 +89,9 @@ public class WindowSkill : Window
                 () => CreateAdvanceSkillWindow(skill.Value)
             );
         }
+        
+        // Resets the content size fitter.
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)gameObject.transform);
     }
 
     /// <summary>

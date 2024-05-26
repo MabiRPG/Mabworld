@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WindowInventoryItemTooltip : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class WindowInventoryItemTooltip : MonoBehaviour
         itemStackSize.text = $"* Max Stack Size: {item.stackSizeLimit}";
         gameObject.SetActive(true);
         gameObject.transform.SetAsLastSibling();
+        // Resets the content size fitter.
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)gameObject.transform);
     }
 
     public void Clear()
