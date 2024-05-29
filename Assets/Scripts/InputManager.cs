@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
-    public static InputManager Instance {get; private set;}
+    public static InputManager Instance = null;
 
     public Dictionary<KeyCode, Action> movementKeybinds = new Dictionary<KeyCode, Action>();
     public Dictionary<KeyCode, Action> buttonKeybinds = new Dictionary<KeyCode, Action>();
