@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class WindowInventoryItem : MonoBehaviour
 {
-    //public Item item;
+    public Item item;
     public int quantity;
     public Point2D pos;
     public int widthInGrid;
@@ -23,6 +23,7 @@ public class WindowInventoryItem : MonoBehaviour
 
     public void SetItem(Item item, int quantity)
     {
+        this.item = item;
         this.quantity = quantity;
         icon.sprite = item.icon;
         text.text = quantity.ToString();

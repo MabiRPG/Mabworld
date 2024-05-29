@@ -74,11 +74,11 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
 
     public void OnPointerMove(PointerEventData pointerData)
     {
-        WindowInventorySlot slot = pointerData.pointerEnter.GetComponent<WindowInventorySlot>();
+        WindowInventoryItem itemHover = pointerData.pointerEnter.GetComponent<WindowInventoryItem>();
 
-        if (slot != null && slot.item != null)
+        if (itemHover != null && itemHover.item != null)
         {
-            tooltip.SetItem(slot.item);
+            tooltip.SetItem(itemHover.item);
             
             Vector2 pos;
             RectTransform canvasRect = transform.parent.GetComponent<RectTransform>();
