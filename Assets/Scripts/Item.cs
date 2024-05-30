@@ -8,8 +8,8 @@ public class Item
     public string description;
     public Sprite icon;
     public int stackSizeLimit;
-    public int widthInGrid = 2;
-    public int heightInGrid = 2;
+    public int widthInGrid;
+    public int heightInGrid;
 
     public int quantity;
     

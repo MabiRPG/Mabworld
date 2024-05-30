@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5129561430385195292}
   - component: {fileID: 1142979300408061070}
   - component: {fileID: -8633193389142446190}
+  - component: {fileID: 1922719477931444808}
   m_Layer: 5
   m_Name: Window Inventory (Item)
   m_TagString: Untagged
@@ -94,6 +95,26 @@ MonoBehaviour:
   heightInGrid: 0
   widthInPixel: 0
   heightInPixel: 0
+--- !u!114 &1922719477931444808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8006003167480471998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 1
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &8713028452100338294
 GameObject:
   m_ObjectHideFlags: 0

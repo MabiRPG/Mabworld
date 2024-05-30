@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
 {
     public static WindowInventory Instance = null;
+
+    [SerializeField]
+    private GameObject slotBackgroundPrefab;
 
     private float slotWidth;
     private float slotHeight;
@@ -21,9 +24,6 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     private Dictionary<Item, List<WindowInventoryItem>> items = new Dictionary<Item, List<WindowInventoryItem>>();
     private List<List<bool>> isSlotUsed = new List<List<bool>>();
     private PrefabManager itemPrefabs;
-
-    //private Dictionary<(int, int), GameObject> grid = new Dictionary<(int, int), GameObject>();
-    //private Dictionary<Item, List<(int, int)>> usedSlots = new Dictionary<Item, List<(int, int)>>();
 
     protected override void Awake()
     {
@@ -45,15 +45,28 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         itemPrefabs = ScriptableObject.CreateInstance<PrefabManager>();
         itemPrefabs.SetPrefab(itemPrefab);
 
+        // Requires an empty gameobject under body to insert into, since the pivot position of the
+        // body is determined by a layout group, giving incorrect size deltas.
+        RectTransform canvasTransform = body.transform.Find("Item Canvas").GetComponent<RectTransform>();
+        slotWidth = canvasTransform.sizeDelta.x / Player.Instance.inventory.Width;
+        slotHeight = canvasTransform.sizeDelta.y / Player.Instance.inventory.Height;
+
         for (int i = 0; i < Player.Instance.inventory.Height; i++)
         {
             isSlotUsed.Add(new List<bool>(new bool[Player.Instance.inventory.Width]));
+
+            // Creating the background of the inventory
+            for (int j = 0; j < Player.Instance.inventory.Width; j++)
+            {
+                Instantiate(slotBackgroundPrefab, body.transform);
+            }
         }
 
-        float width = body.transform.Find("Background").GetComponent<RectTransform>().sizeDelta.x;
-        float height = body.transform.Find("Background").GetComponent<RectTransform>().sizeDelta.y;
-        slotWidth = width / Player.Instance.inventory.Width;
-        slotHeight = height / Player.Instance.inventory.Height;
+        // Pushing item canvas to last so it appears on top of grid
+        canvasTransform.SetAsLastSibling();
+        // Changing grid size based on values above
+        GridLayoutGroup gridGroup = body.GetComponent<GridLayoutGroup>();
+        gridGroup.cellSize = new Vector2(slotWidth, slotHeight);
 
         Draw();
 
@@ -176,7 +189,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
                 Point2D pos = GetFree(item);
 
                 // Allocate a new prefab and set the item details
-                GameObject obj = itemPrefabs.GetFree((item, pos), body.transform.Find("Background"));
+                GameObject obj = itemPrefabs.GetFree((item, pos), body.transform.Find("Item Canvas"));
                 WindowInventoryItem itemScript = obj.GetComponent<WindowInventoryItem>();
                 itemScript.SetItem(item, Math.Min(remainingQuantity, item.stackSizeLimit));
                 remainingQuantity -= itemScript.quantity;
@@ -200,87 +213,4 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
             }
         }
     }
-
-    private void PrintMatrix()
-    {
-        for (int i = 0; i < isSlotUsed.Count; i++)
-        {
-            string s = "";
-
-            for (int j = 0; j < isSlotUsed[i].Count; j++)
-            {
-                s += isSlotUsed[i][j] + ",";
-            }
-
-            Debug.Log(s);
-        }
-    }
 }
-
-//     private void Draw()
-//     {
-//         int i = 0;
-//         int j = 0;
-//         WindowInventorySlot slot;
-//         int amountInSlot;
-
-//         foreach (KeyValuePair<int, Item> pair in Player.Instance.inventory.items)
-//         {
-//             int itemID = pair.Key;
-//             Item item = pair.Value;
-//             int quantity = item.quantity;
-
-//             if (usedSlots.ContainsKey(item))
-//             {
-//                 foreach ((int, int) pos in usedSlots[item])
-//                 {
-//                     slot = grid[pos].GetComponent<WindowInventorySlot>(); 
-//                     amountInSlot = Math.Min(quantity, item.stackSizeLimit);
-//                     slot.SetSlot(item, amountInSlot);
-//                     quantity -= amountInSlot;
-
-//                     if (quantity <= 0)
-//                     {
-//                         break;
-//                     }
-//                 }
-//             }
-           
-//             while (quantity > 0)
-//             {
-//                 slot = grid[(i, j)].GetComponent<WindowInventorySlot>();
-
-//                 if (slot.item == null)
-//                 {
-//                     amountInSlot = Math.Min(quantity, item.stackSizeLimit);
-//                     slot.SetSlot(item, amountInSlot);
-//                     quantity -= amountInSlot;
-                    
-//                     if (usedSlots.ContainsKey(item))
-//                     {
-//                         usedSlots[item].Add((i, j));
-//                     }
-//                     else
-//                     {
-//                         usedSlots.Add(item, new List<(int, int)>{(i, j)});
-//                     }
-//                 }
-//                 else
-//                 {
-//                     j++;
-
-//                     if (!grid.ContainsKey((i, j)))
-//                     {
-//                         j = 0;
-//                         i++;
-//                     }
-
-//                     if (!grid.ContainsKey((i, j)))
-//                     {
-//                         break;
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// }
