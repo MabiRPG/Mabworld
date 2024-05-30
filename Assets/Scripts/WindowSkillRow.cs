@@ -25,7 +25,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
     // Event handlers
     public Action nameButtonAction;
-    public bool draggingIcon = false;
+    public bool isDragging = false;
 
     /// <summary>
     ///     Initializes the object.
@@ -64,7 +64,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         if (pointerData.pointerEnter == iconObj)
         {
             Cursor.SetCursor(skill.icon.texture, Vector2.zero, CursorMode.Auto);
-            draggingIcon = true;
+            isDragging = true;
         }       
     }
 
@@ -82,11 +82,11 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     /// <param name="pointerData"></param>
     public void OnEndDrag(PointerEventData pointerData)
     {
-        if (draggingIcon)
+        if (isDragging)
         {
             // Reset cursor to default
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-            draggingIcon = false;
+            isDragging = false;
 
             // Check if valid skill slot destination, if so, set skill info.
             if (pointerData.pointerEnter == null)

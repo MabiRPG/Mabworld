@@ -6,7 +6,7 @@ public class WindowInventoryItem : MonoBehaviour
 {
     public Item item;
     public int quantity;
-    public Point2D pos;
+    public Vector2 pos;
     public int widthInGrid;
     public int heightInGrid;
     public int widthInPixel;

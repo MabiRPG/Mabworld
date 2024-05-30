@@ -16,7 +16,7 @@ public class InteractableObject : MonoBehaviour
     public string rankRequired;
     public float successRateModifier;
     // Label to display in world
-    public string name;
+    public string sName;
     // Sprites to display depending on state of resource
     private Sprite fullSprite;
     private Sprite partialFullSprite;
@@ -49,7 +49,7 @@ public class InteractableObject : MonoBehaviour
         // Fetch event info from database.
         DataTable dt = GameManager.Instance.QueryDatabase(eventQuery, ("@id", ID));
         DataRow row = dt.Rows[0];
-        GameManager.Instance.ParseDatabaseRow(row, this, ("loot_table_id", "lootTableID"));
+        GameManager.Instance.ParseDatabaseRow(row, this, ("loot_table_id", "lootTableID"), ("name", "sName"));
 
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
     }

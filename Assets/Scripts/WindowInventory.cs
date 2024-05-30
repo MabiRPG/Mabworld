@@ -1,17 +1,19 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
+public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public static WindowInventory Instance = null;
 
     [SerializeField]
     private GameObject slotBackgroundPrefab;
 
+    private RectTransform itemRect;
     private float slotWidth;
     private float slotHeight;
     
@@ -24,6 +26,11 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     private Dictionary<Item, List<WindowInventoryItem>> items = new Dictionary<Item, List<WindowInventoryItem>>();
     private List<List<bool>> isSlotUsed = new List<List<bool>>();
     private PrefabManager itemPrefabs;
+
+    private Vector2 firstItemPos;
+    private GameObject draggingObj;
+    private RectTransform draggingRect;
+    private bool isDragging;
 
     protected override void Awake()
     {
@@ -47,9 +54,9 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
 
         // Requires an empty gameobject under body to insert into, since the pivot position of the
         // body is determined by a layout group, giving incorrect size deltas.
-        RectTransform canvasTransform = body.transform.Find("Item Canvas").GetComponent<RectTransform>();
-        slotWidth = canvasTransform.sizeDelta.x / Player.Instance.inventory.Width;
-        slotHeight = canvasTransform.sizeDelta.y / Player.Instance.inventory.Height;
+        itemRect = body.transform.Find("Item Canvas").GetComponent<RectTransform>();
+        slotWidth = itemRect.sizeDelta.x / Player.Instance.inventory.Width;
+        slotHeight = itemRect.sizeDelta.y / Player.Instance.inventory.Height;
 
         for (int i = 0; i < Player.Instance.inventory.Height; i++)
         {
@@ -63,7 +70,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         }
 
         // Pushing item canvas to last so it appears on top of grid
-        canvasTransform.SetAsLastSibling();
+        itemRect.SetAsLastSibling();
         // Changing grid size based on values above
         GridLayoutGroup gridGroup = body.GetComponent<GridLayoutGroup>();
         gridGroup.cellSize = new Vector2(slotWidth, slotHeight);
@@ -71,7 +78,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         Draw();
 
         // Hides the object at start
-        //gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
 
     private void OnEnable()
@@ -92,12 +99,11 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         if (itemHover != null && itemHover.item != null)
         {
             tooltip.SetItem(itemHover.item);
-            
-            Vector2 pos;
+
             RectTransform canvasRect = transform.parent.GetComponent<RectTransform>();
             Camera canvasCamera = transform.parent.GetComponent<Canvas>().worldCamera;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                canvasRect, Input.mousePosition, canvasCamera, out pos);
+                canvasRect, pointerData.position, canvasCamera, out Vector2 pos);
             pos.x -= 5;
             pos.y += 5;
 
@@ -115,14 +121,61 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         tooltip.Clear();
     }
 
+    public void OnBeginDrag(PointerEventData pointerData)
+    {
+        WindowInventoryItem itemHover = pointerData.pointerEnter.GetComponent<WindowInventoryItem>();
+
+        if (itemHover != null)
+        {
+            draggingObj = itemHover.gameObject;
+            draggingRect = draggingObj.GetComponent<RectTransform>();
+            firstItemPos = draggingRect.anchoredPosition;
+            draggingObj.GetComponent<Image>().raycastTarget = false;
+            isDragging = true;
+        }
+    }
+
+    public new void OnDrag(PointerEventData pointerData)
+    {
+        if (isDragging)
+        {
+            draggingRect.anchoredPosition += pointerData.delta / GameManager.Instance.canvas.scaleFactor;
+        }
+    }
+
+    public void OnEndDrag(PointerEventData pointerData)
+    {
+        if (isDragging)
+        {
+            draggingObj.GetComponent<Image>().raycastTarget = true;
+            isDragging = false;
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(body.GetComponent<RectTransform>(),
+                pointerData.position, pointerData.enterEventCamera, out Vector2 pos);
+
+            // Check if it is within bounds of our inventory window then
+            // round it to the nearest cell size
+            if (pos.x >= 0 && pos.x <= itemRect.sizeDelta.x && -pos.y >= 0 && -pos.y <= itemRect.sizeDelta.y)
+            {
+                pos.x = (int)pos.x / (int)slotWidth * slotWidth;
+                pos.y = (int)pos.y / (int)slotHeight * slotHeight;
+                draggingRect.anchoredPosition = pos;
+            }
+            else
+            {
+                draggingRect.anchoredPosition = firstItemPos;
+            }
+        }
+    }
+
     /// <summary>
     ///     Finds the nearest free space for the item, given the dimensions.
     /// </summary>
     /// <param name="item">Item instance</param>
-    /// <returns>Point2D of the free space, null otherwise</returns>
-    private Point2D GetFree(Item item)
+    /// <returns>Vector2 of the free space, (-1, -1) otherwise</returns>
+    private Vector2 GetFree(Item item)
     {
-        Point2D point = new Point2D();
+        Vector2 point = -Vector2.one;
 
         // Sliding window approach, going through the full usedslot matrix to find
         // an open space for the item.
@@ -143,13 +196,13 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
 
                 if (isAllEmpty)
                 {
-                    point.Point = (i, j);
+                    point.Set(i, j);
                     return point;
                 }
             }
         }
 
-        return null;
+        return point;
     }
 
     private void Draw()
@@ -186,7 +239,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
             while (remainingQuantity > 0)
             {
                 // Find a free space on the inventory
-                Point2D pos = GetFree(item);
+                Vector2 pos = GetFree(item);
 
                 // Allocate a new prefab and set the item details
                 GameObject obj = itemPrefabs.GetFree((item, pos), body.transform.Find("Item Canvas"));
@@ -197,13 +250,13 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
                 // Change the position and sie according to dimensions
                 RectTransform rectTransform = obj.GetComponent<RectTransform>();
                 // Here, our Y is equal to X in world space, and our -X is Y.
-                rectTransform.anchoredPosition = new Vector3(pos.Y * slotWidth, -pos.X * slotHeight, 0);
+                rectTransform.anchoredPosition = new Vector3(pos.y * slotWidth, -pos.x * slotHeight, 0);
                 rectTransform.sizeDelta = new Vector2(item.widthInGrid * slotWidth, item.heightInGrid * slotHeight);
 
                 // Reserve the spaces in the used matrix
-                for (int i = (int)pos.X; i < (int)pos.X + item.heightInGrid; i++)
+                for (int i = (int)pos.x; i < (int)pos.x + item.heightInGrid; i++)
                 {
-                    for (int j = (int)pos.Y; j < (int)pos.Y + item.widthInGrid; j++)
+                    for (int j = (int)pos.y; j < (int)pos.y + item.widthInGrid; j++)
                     {
                         isSlotUsed[i][j] = true;
                     }
