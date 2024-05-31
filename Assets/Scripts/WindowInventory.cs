@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -27,8 +28,10 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
     private List<List<bool>> isSlotUsed = new List<List<bool>>();
     private PrefabManager itemPrefabs;
 
-    private Vector2 firstItemPos;
+    private Vector2 startingPos;
     private GameObject draggingObj;
+    private Item draggingItem;
+    private List<GameObject> highlightObjs = new List<GameObject>();
     private RectTransform draggingRect;
     private bool isDragging;
 
@@ -129,7 +132,9 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
         {
             draggingObj = itemHover.gameObject;
             draggingRect = draggingObj.GetComponent<RectTransform>();
-            firstItemPos = draggingRect.anchoredPosition;
+            startingPos = draggingRect.anchoredPosition;
+            draggingItem = itemHover.item;
+
             draggingObj.GetComponent<Image>().raycastTarget = false;
             isDragging = true;
         }
@@ -140,32 +145,91 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
         if (isDragging)
         {
             draggingRect.anchoredPosition += pointerData.delta / GameManager.Instance.canvas.scaleFactor;
+
+            HighlightArea(pointerData);
         }
     }
 
     public void OnEndDrag(PointerEventData pointerData)
     {
-        if (isDragging)
+        if (!isDragging)
         {
-            draggingObj.GetComponent<Image>().raycastTarget = true;
-            isDragging = false;
+            return;
+        }
 
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(body.GetComponent<RectTransform>(),
-                pointerData.position, pointerData.enterEventCamera, out Vector2 pos);
+        ClearHighlight();
 
-            // Check if it is within bounds of our inventory window then
-            // round it to the nearest cell size
-            if (pos.x >= 0 && pos.x <= itemRect.sizeDelta.x && -pos.y >= 0 && -pos.y <= itemRect.sizeDelta.y)
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(body.GetComponent<RectTransform>(),
+            pointerData.position, pointerData.enterEventCamera, out Vector2 pos);
+
+        // Check if it is within bounds of our inventory window then
+        // round it to the nearest cell size
+        if (pos.x >= 0 && pos.x <= itemRect.sizeDelta.x && -pos.y >= 0 && -pos.y <= itemRect.sizeDelta.y)
+        {
+            pos.x = (int)pos.x / (int)slotWidth * slotWidth;
+            pos.y = (int)pos.y / (int)slotHeight * slotHeight;
+            draggingRect.anchoredPosition = pos;
+        }
+        else
+        {
+            draggingRect.anchoredPosition = startingPos;
+        }
+
+        draggingObj.GetComponent<Image>().raycastTarget = true;
+        isDragging = false;
+    }
+
+    public bool HighlightArea(PointerEventData pointerData)
+    {
+        ClearHighlight();
+
+        GraphicRaycaster rayCaster = GameManager.Instance.canvas.GetComponent<GraphicRaycaster>();
+        List<RaycastResult> hits = new List<RaycastResult>();
+
+        // Create a new pointer data for our raycast manipulation
+        EventSystem eventSystem = GetComponent<EventSystem>();
+        PointerEventData newPointerData = new PointerEventData(eventSystem);
+        Vector2 tempPos = pointerData.position;
+        // Random offset of slotHeight for reasons unknown? Seems to work
+        tempPos.y += slotHeight;
+        
+        // Loop through item dimensions and raycast below object to get slots
+        for (int i = 0; i < draggingItem.widthInGrid; i++)
+        {
+            for (int j = 0; j < draggingItem.heightInGrid; j++)
             {
-                pos.x = (int)pos.x / (int)slotWidth * slotWidth;
-                pos.y = (int)pos.y / (int)slotHeight * slotHeight;
-                draggingRect.anchoredPosition = pos;
+                tempPos.y -= slotHeight;
+                newPointerData.position = tempPos;
+                rayCaster.Raycast(newPointerData, hits);  
             }
-            else
+
+            tempPos.x += slotWidth;
+            tempPos.y = pointerData.position.y + slotHeight;
+        }     
+
+        // Set the highlight objects active and add to list if they exist.
+        foreach (RaycastResult hit in hits)
+        {
+            if(hit.gameObject.transform.Find("Overlay") != null)
             {
-                draggingRect.anchoredPosition = firstItemPos;
+                GameObject obj = hit.gameObject.transform.Find("Overlay").gameObject;
+                obj.SetActive(true);
+                highlightObjs.Add(obj);
             }
         }
+
+        return false;
+    }
+
+    private void ClearHighlight()
+    {
+        // Reset all the highlighted objects and clear list
+        foreach (GameObject obj in highlightObjs)
+        {
+            obj.SetActive(false);
+        }
+
+        highlightObjs.Clear();
     }
 
     /// <summary>
@@ -247,7 +311,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
                 itemScript.SetItem(item, Math.Min(remainingQuantity, item.stackSizeLimit));
                 remainingQuantity -= itemScript.quantity;
 
-                // Change the position and sie according to dimensions
+                // Change the position and size according to dimensions
                 RectTransform rectTransform = obj.GetComponent<RectTransform>();
                 // Here, our Y is equal to X in world space, and our -X is Y.
                 rectTransform.anchoredPosition = new Vector3(pos.y * slotWidth, -pos.x * slotHeight, 0);
