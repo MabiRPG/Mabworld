@@ -1,40 +1,53 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+/// <summary>
+///     Handles all window inventory processing.
+/// </summary>
 public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public static WindowInventory Instance = null;
 
+    // Prefabs for the slot background objects
     [SerializeField]
     private GameObject slotBackgroundPrefab;
 
+    // Dimensions of the cell width in the item canvas
     private RectTransform itemRect;
     private float slotWidth;
     private float slotHeight;
     
+    // Prefabs for the actual item sprites
     [SerializeField]
     private GameObject itemPrefab;
+    // Tooltip on hover over item
     [SerializeField]
     private GameObject itemTooltipPrefab;
     private WindowInventoryItemTooltip tooltip;
 
+    // Dictionary of all items for quick reference
     private Dictionary<Item, List<WindowInventoryItem>> items = new Dictionary<Item, List<WindowInventoryItem>>();
+    // 2d list of all slots that are occupied (true) or empty (false)
     private List<List<bool>> isSlotUsed = new List<List<bool>>();
     private PrefabManager itemPrefabs;
 
+    // For dragging and dropping items around...
+    // Starting item position of the drag
     private Vector2 startingPos;
     private GameObject draggingObj;
     private Item draggingItem;
+    // Slot background objects that are currently highlighted
     private List<GameObject> highlightObjs = new List<GameObject>();
     private RectTransform draggingRect;
     private bool isDragging;
 
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
     protected override void Awake()
     {
         base.Awake();
@@ -63,6 +76,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
 
         for (int i = 0; i < Player.Instance.inventory.Height; i++)
         {
+            // Creating lists by default of false.
             isSlotUsed.Add(new List<bool>(new bool[Player.Instance.inventory.Width]));
 
             // Creating the background of the inventory
@@ -78,23 +92,31 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
         GridLayoutGroup gridGroup = body.GetComponent<GridLayoutGroup>();
         gridGroup.cellSize = new Vector2(slotWidth, slotHeight);
 
-        Draw();
-
         // Hides the object at start
         gameObject.SetActive(false);
     }
 
+    /// <summary>
+    ///     Called when the object becomes enabled and active.
+    /// </summary>
     private void OnEnable()
     {
         Player.Instance.inventory.changeEvent.OnChange += Draw;
         Draw();
     }
 
+    /// <summary>
+    ///     Called when the object becomes disabled and inactive.
+    /// </summary>
     private void OnDisable()
     {
         Player.Instance.inventory.changeEvent.OnChange -= Draw;
     }
 
+    /// <summary>
+    ///     Called when the mouse pointer moves inside the object.
+    /// </summary>
+    /// <param name="pointerData"></param>
     public void OnPointerMove(PointerEventData pointerData)
     {
         WindowInventoryItem itemHover = pointerData.pointerEnter.GetComponent<WindowInventoryItem>();
@@ -119,11 +141,19 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
         }
     }
 
+    /// <summary>
+    ///     Called when the mouse pointer exits the object.
+    /// </summary>
+    /// <param name="pointerData"></param>
     public void OnPointerExit(PointerEventData pointerData)
     {
         tooltip.Clear();
     }
 
+    /// <summary>
+    ///     Called on beginning of mouse drag
+    /// </summary>
+    /// <param name="pointerData"></param>
     public void OnBeginDrag(PointerEventData pointerData)
     {
         WindowInventoryItem itemHover = pointerData.pointerEnter.GetComponent<WindowInventoryItem>();
@@ -140,6 +170,10 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
         }
     }
 
+    /// <summary>
+    ///     Called during mouse drag
+    /// </summary>
+    /// <param name="pointerData"></param>
     public new void OnDrag(PointerEventData pointerData)
     {
         if (isDragging)
@@ -150,6 +184,10 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
         }
     }
 
+    /// <summary>
+    ///     Called at end of mouse drag
+    /// </summary>
+    /// <param name="pointerData"></param>
     public void OnEndDrag(PointerEventData pointerData)
     {
         if (!isDragging)
@@ -179,6 +217,11 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
         isDragging = false;
     }
 
+    /// <summary>
+    ///     Finds the slots underneath pointer and sets them active (highlights them).
+    /// </summary>
+    /// <param name="pointerData"></param>
+    /// <returns>True if there is a free space for the item, false otherwise.</returns>
     public bool HighlightArea(PointerEventData pointerData)
     {
         ClearHighlight();
@@ -187,8 +230,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
         List<RaycastResult> hits = new List<RaycastResult>();
 
         // Create a new pointer data for our raycast manipulation
-        EventSystem eventSystem = GetComponent<EventSystem>();
-        PointerEventData newPointerData = new PointerEventData(eventSystem);
+        PointerEventData newPointerData = new PointerEventData(GetComponent<EventSystem>());
         Vector2 tempPos = pointerData.position;
         // Random offset of slotHeight for reasons unknown? Seems to work
         tempPos.y += slotHeight;
@@ -218,9 +260,18 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
             }
         }
 
+        // Checking if there is enough free space below for the item.
+        if (highlightObjs.Count == draggingItem.widthInGrid * draggingItem.heightInGrid)
+        {
+            return true;
+        }
+
         return false;
     }
 
+    /// <summary>
+    ///     Clears all highlighted areas.
+    /// </summary>
     private void ClearHighlight()
     {
         // Reset all the highlighted objects and clear list
@@ -269,6 +320,9 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
         return point;
     }
 
+    /// <summary>
+    ///     Draws the inventory canvas and allocates the usedSlot matrix.
+    /// </summary>
     private void Draw()
     {
         foreach (Item item in Player.Instance.inventory.items.Values)

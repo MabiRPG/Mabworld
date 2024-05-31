@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-///     Handles allocation or creation of free prefabs when needed
+///     Handles a pool of prefab objects
 /// </summary>
 public class PrefabManager : ScriptableObject
 {
