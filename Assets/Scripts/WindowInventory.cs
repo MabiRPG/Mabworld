@@ -31,8 +31,9 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
 
     // Dictionary of all items for quick reference
     private Dictionary<Item, List<WindowInventoryItem>> items = new Dictionary<Item, List<WindowInventoryItem>>();
+    private List<List<WindowInventorySlot>> slots = new List<List<WindowInventorySlot>>();
     // 2d list of all slots that are occupied (true) or empty (false)
-    private List<List<bool>> isSlotUsed = new List<List<bool>>();
+    //private List<List<bool>> isSlotUsed = new List<List<bool>>();
     private PrefabManager itemPrefabs;
 
     // For dragging and dropping items around...
@@ -41,9 +42,12 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
     private GameObject draggingObj;
     private Item draggingItem;
     // Slot background objects that are currently highlighted
-    private List<GameObject> highlightObjs = new List<GameObject>();
+    private List<WindowInventorySlot> highlightObjs = new List<WindowInventorySlot>();
     private RectTransform draggingRect;
     private bool isDragging;
+
+    private GraphicRaycaster raycaster;
+    private Camera canvasCamera;
 
     /// <summary>
     ///     Initializes the object.
@@ -61,6 +65,9 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
         {
             Destroy(gameObject);
         }
+
+        raycaster = GameManager.Instance.canvas.GetComponent<GraphicRaycaster>();
+        canvasCamera = GameManager.Instance.canvas.GetComponent<Canvas>().worldCamera;
         
         GameObject obj = Instantiate(itemTooltipPrefab, transform.parent);
         tooltip = obj.GetComponent<WindowInventoryItemTooltip>();
@@ -74,15 +81,16 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
         slotWidth = itemRect.sizeDelta.x / Player.Instance.inventory.Width;
         slotHeight = itemRect.sizeDelta.y / Player.Instance.inventory.Height;
 
+        // Creating the background of the inventory
         for (int i = 0; i < Player.Instance.inventory.Height; i++)
         {
-            // Creating lists by default of false.
-            isSlotUsed.Add(new List<bool>(new bool[Player.Instance.inventory.Width]));
+            slots.Add(new List<WindowInventorySlot>());
 
-            // Creating the background of the inventory
             for (int j = 0; j < Player.Instance.inventory.Width; j++)
             {
-                Instantiate(slotBackgroundPrefab, body.transform);
+                obj = Instantiate(slotBackgroundPrefab, body.transform);
+                WindowInventorySlot slot = obj.GetComponent<WindowInventorySlot>();
+                slots[i].Add(slot);
             }
         }
 
@@ -126,7 +134,6 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
             tooltip.SetItem(itemHover.item);
 
             RectTransform canvasRect = transform.parent.GetComponent<RectTransform>();
-            Camera canvasCamera = transform.parent.GetComponent<Canvas>().worldCamera;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 canvasRect, pointerData.position, canvasCamera, out Vector2 pos);
             pos.x -= 5;
@@ -226,39 +233,80 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
     {
         ClearHighlight();
 
-        GraphicRaycaster rayCaster = GameManager.Instance.canvas.GetComponent<GraphicRaycaster>();
-        List<RaycastResult> hits = new List<RaycastResult>();
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(body.GetComponent<RectTransform>(),
+            pointerData.position, pointerData.enterEventCamera, out Vector2 pos);
 
-        // Create a new pointer data for our raycast manipulation
-        PointerEventData newPointerData = new PointerEventData(GetComponent<EventSystem>());
-        Vector2 tempPos = pointerData.position;
-        // Random offset of slotHeight for reasons unknown? Seems to work
-        tempPos.y += slotHeight;
-        
-        // Loop through item dimensions and raycast below object to get slots
-        for (int i = 0; i < draggingItem.widthInGrid; i++)
+        int i = (int)pos.x / (int)slotWidth;
+        int j = -(int)pos.y / (int)slotHeight;
+        int height = i + draggingItem.heightInGrid;
+        int width = j + draggingItem.widthInGrid;
+
+        if (height > slots.Count || width > slots[i].Count)
         {
-            for (int j = 0; j < draggingItem.heightInGrid; j++)
-            {
-                tempPos.y -= slotHeight;
-                newPointerData.position = tempPos;
-                rayCaster.Raycast(newPointerData, hits);  
-            }
-
-            tempPos.x += slotWidth;
-            tempPos.y = pointerData.position.y + slotHeight;
-        }     
-
-        // Set the highlight objects active and add to list if they exist.
-        foreach (RaycastResult hit in hits)
-        {
-            if(hit.gameObject.transform.Find("Overlay") != null)
-            {
-                GameObject obj = hit.gameObject.transform.Find("Overlay").gameObject;
-                obj.SetActive(true);
-                highlightObjs.Add(obj);
-            }
+            return false;
         }
+
+        while (i < height)
+        {
+            while (j < width)
+            {
+                Debug.Log($"{i} {j}");
+
+                if (slots[i][j].isUsed)
+                {
+                    ClearHighlight();
+                    return false;
+                }
+
+                highlightObjs.Add(slots[i][j]);
+                j += 1;
+            }
+
+            i += 1;
+            j = -(int)pos.y / (int)slotHeight;
+        }
+
+        foreach (WindowInventorySlot slot in highlightObjs)
+        {
+            slot.SetOverlay(true);
+        }
+
+        return true;
+
+
+        // GraphicRaycaster rayCaster = GameManager.Instance.canvas.GetComponent<GraphicRaycaster>();
+        // List<RaycastResult> hits = new List<RaycastResult>();
+
+        // // Create a new pointer data for our raycast manipulation
+        // PointerEventData newPointerData = new PointerEventData(GetComponent<EventSystem>());
+        // Vector2 tempPos = pointerData.position;
+        // // Random offset of slotHeight for reasons unknown? Seems to work
+        // tempPos.y += slotHeight;
+        
+        // // Loop through item dimensions and raycast below object to get slots
+        // for (int i = 0; i < draggingItem.widthInGrid; i++)
+        // {
+        //     for (int j = 0; j < draggingItem.heightInGrid; j++)
+        //     {
+        //         tempPos.y -= slotHeight;
+        //         newPointerData.position = tempPos;
+        //         rayCaster.Raycast(newPointerData, hits);  
+        //     }
+
+        //     tempPos.x += slotWidth;
+        //     tempPos.y = pointerData.position.y + slotHeight;
+        // }     
+
+        // // Set the highlight objects active and add to list if they exist.
+        // foreach (RaycastResult hit in hits)
+        // {
+        //     if(hit.gameObject.transform.Find("Overlay") != null)
+        //     {
+        //         GameObject obj = hit.gameObject.transform.Find("Overlay").gameObject;
+        //         obj.SetActive(true);
+        //         highlightObjs.Add(obj);
+        //     }
+        // }
 
         // Checking if there is enough free space below for the item.
         if (highlightObjs.Count == draggingItem.widthInGrid * draggingItem.heightInGrid)
@@ -275,9 +323,9 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
     private void ClearHighlight()
     {
         // Reset all the highlighted objects and clear list
-        foreach (GameObject obj in highlightObjs)
+        foreach (WindowInventorySlot slot in highlightObjs)
         {
-            obj.SetActive(false);
+            slot.SetOverlay(false);
         }
 
         highlightObjs.Clear();
@@ -290,34 +338,113 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
     /// <returns>Vector2 of the free space, (-1, -1) otherwise</returns>
     private Vector2 GetFree(Item item)
     {
-        Vector2 point = -Vector2.one;
+        // Find the starting point for our raycasts through the rect transform
+        RectTransform rectTransform = body.transform.GetComponent<RectTransform>();
+        Vector2 pos = canvasCamera.WorldToScreenPoint(rectTransform.position);
+        // Assign loop counters and full dimensions of the inventory space
+        int i = 0;
+        int j = 0;
+        float fullWidth = rectTransform.sizeDelta.x / slotWidth;
+        float fullHeight = rectTransform.sizeDelta.y / slotHeight;
 
-        // Sliding window approach, going through the full usedslot matrix to find
-        // an open space for the item.
-        for (int i = 0; i < Player.Instance.inventory.Height - item.heightInGrid + 1; i++)
+        while (i < fullHeight - item.heightInGrid + 1)
         {
-            for (int j = 0; j < Player.Instance.inventory.Width - item.widthInGrid + 1; j++)
+            while (j < fullWidth - item.widthInGrid + 1)
             {
-                bool isAllEmpty = true;
+                // Create a new screenpoint vector for our raycast function
+                Vector2 tempPos = new Vector2(pos.x + j * slotWidth, pos.y - i * slotHeight);
 
-                for (int k = 0; k < item.heightInGrid; k++)
+                // Checks if the slots are free, if so, convert the screenpoint back to local
+                // for our item's anchored position later.
+                if (CheckSlotsFree(item, tempPos, false, true))
                 {
-                    if (isSlotUsed[i + k].GetRange(j, item.widthInGrid).Any(i => i.Equals(true)))
-                    {
-                        isAllEmpty = false;
-                        break;
-                    }    
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                        body.GetComponent<RectTransform>(), tempPos, 
+                        canvasCamera, out pos);      
+                    return pos;             
                 }
 
-                if (isAllEmpty)
-                {
-                    point.Set(i, j);
-                    return point;
-                }
+                j++;
+            }
+
+            i++;
+            j = 0;
+        }
+
+        return -Vector2.one;
+    }
+
+    private bool CheckSlotsFree(Item item, Vector2 pos, bool highlightArea, bool reserveArea)
+    {
+        // Slots encountered by raycasting
+        List<WindowInventorySlot> slots = new List<WindowInventorySlot>();
+        // Stores all the results of our raycasts
+        List<RaycastResult> hits = new List<RaycastResult>();
+        // Create a new pointer data for our raycast manipulation
+        PointerEventData pointerData = new PointerEventData(GetComponent<EventSystem>());
+
+        // Iterate over the area given by the starting pos vector2, moving over slot dimensions
+        // with a 0.5 offset to center onto slot and raycasting
+        for (int i = 0; i < item.widthInGrid; i++)
+        {
+            for (int j = 0; j < item.heightInGrid; j++)
+            {
+                float nx = pos.x + (i + 0.5f) * slotWidth;
+                float ny = pos.y - (j + 0.5f) * slotHeight;
+                pointerData.position = new Vector3(nx, ny);
+                raycaster.Raycast(pointerData, hits);
             }
         }
 
-        return point;
+        // Iterates over raycast results, checking if slot exists and if not occupied
+        foreach (RaycastResult hit in hits)
+        {
+            WindowInventorySlot slot = hit.gameObject.GetComponent<WindowInventorySlot>();
+
+            if (slot != null)
+            {
+                if (slot.isUsed)
+                {
+                    return false;
+                }
+
+                slots.Add(slot);
+            }
+        }
+
+        // Enforcing dimensional requirements here
+        if (slots.Count != item.widthInGrid * item.heightInGrid)
+        {
+            return false;
+        }
+
+        // If highlighting, reset highlight, add overlay
+        if (highlightArea)
+        {
+            foreach (WindowInventorySlot slot in highlightObjs)
+            {
+                slot.SetOverlay(false);
+            }
+
+            highlightObjs.Clear();
+
+            foreach (WindowInventorySlot slot in slots)
+            {
+                slot.SetOverlay(true);
+                highlightObjs.Add(slot);
+            }
+        }
+
+        // Reserve the space for the object if necessary
+        if (reserveArea)
+        {
+            foreach (WindowInventorySlot slot in slots)
+            {
+                slot.isUsed = true;
+            }
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -359,6 +486,12 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
                 // Find a free space on the inventory
                 Vector2 pos = GetFree(item);
 
+                // If no space can be found
+                if (pos == -Vector2.one)
+                {
+                    break;
+                }
+
                 // Allocate a new prefab and set the item details
                 GameObject obj = itemPrefabs.GetFree((item, pos), body.transform.Find("Item Canvas"));
                 WindowInventoryItem itemScript = obj.GetComponent<WindowInventoryItem>();
@@ -367,18 +500,8 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
 
                 // Change the position and size according to dimensions
                 RectTransform rectTransform = obj.GetComponent<RectTransform>();
-                // Here, our Y is equal to X in world space, and our -X is Y.
-                rectTransform.anchoredPosition = new Vector3(pos.y * slotWidth, -pos.x * slotHeight, 0);
+                rectTransform.anchoredPosition = pos;
                 rectTransform.sizeDelta = new Vector2(item.widthInGrid * slotWidth, item.heightInGrid * slotHeight);
-
-                // Reserve the spaces in the used matrix
-                for (int i = (int)pos.x; i < (int)pos.x + item.heightInGrid; i++)
-                {
-                    for (int j = (int)pos.y; j < (int)pos.y + item.widthInGrid; j++)
-                    {
-                        isSlotUsed[i][j] = true;
-                    }
-                } 
 
                 items[item].Add(itemScript);
             }
