@@ -199,19 +199,29 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
 
         ClearHighlight();
 
-        if (CheckSlotsFree(draggingItem, pointerData.position, false))
+        if (pointerData.pointerEnter == null)
         {
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                body.GetComponent<RectTransform>(), pointerData.position, 
-                canvasCamera, out Vector2 pos);  
-
-            pos.x = (int)pos.x / (int)slotWidth * slotWidth;
-            pos.y = (int)pos.y / (int)slotHeight * slotHeight;
-            draggingRect.anchoredPosition = pos;            
+            WindowInventoryItem inventoryItem = draggingObj.GetComponent<WindowInventoryItem>();
+            draggingObj.SetActive(false);
+            items[draggingItem].Remove(inventoryItem);
+            Player.Instance.inventory.Remove(draggingItem.ID, inventoryItem.quantity);
         }
         else
         {
-            draggingRect.anchoredPosition = startingPos;
+            if (CheckSlotsFree(draggingItem, pointerData.position, false))
+            {
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    body.GetComponent<RectTransform>(), pointerData.position, 
+                    canvasCamera, out Vector2 pos);  
+
+                pos.x = (int)pos.x / (int)slotWidth * slotWidth;
+                pos.y = (int)pos.y / (int)slotHeight * slotHeight;
+                draggingRect.anchoredPosition = pos;            
+            }
+            else
+            {
+                draggingRect.anchoredPosition = startingPos;
+            }
         }
 
         draggingObj.GetComponent<Image>().raycastTarget = true;
@@ -342,7 +352,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
     }
 
     /// <summary>
-    ///     Draws the inventory canvas and allocates the usedSlot matrix.
+    ///     Draws the inventory canvas.
     /// </summary>
     private void Draw()
     {
@@ -354,18 +364,19 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
             // and populate it
             if (items.ContainsKey(item))
             {
-                foreach (WindowInventoryItem itemScript in items[item])
+                foreach (WindowInventoryItem inventoryItem in items[item])
                 {
                     // Remove the object if the quantity is below 0
                     if (remainingQuantity <= 0)
                     {
-                        itemScript.gameObject.SetActive(false);
-                        items[item].Remove(itemScript);
+                        inventoryItem.gameObject.SetActive(false);
+                        items[item].Remove(inventoryItem);
+                        continue;
                     }
 
                     // Sets the new quantity based on stack limits
-                    itemScript.SetItem(item, Math.Min(remainingQuantity, item.stackSizeLimit));
-                    remainingQuantity -= itemScript.quantity;
+                    inventoryItem.SetItem(item, Math.Min(remainingQuantity, item.stackSizeLimit));
+                    remainingQuantity -= inventoryItem.quantity;
                 }
             }
             // If the item does not exist, create new container for it

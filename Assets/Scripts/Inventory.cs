@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Inventory
 {
@@ -13,6 +14,7 @@ public class Inventory
         Width = width;
         Height = height;
         Size = Width * Height;
+        changeEvent.OnChange += Print;
     }
 
     public void Add(int itemID, int quantity)
@@ -41,5 +43,15 @@ public class Inventory
         }
 
         changeEvent.RaiseOnChange();
+    }
+
+    public void Print()
+    {
+        Debug.ClearDeveloperConsole();
+
+        foreach (KeyValuePair<int, Item> pair in items)
+        {
+            Debug.Log($"{pair.Value.name} {pair.Value.quantity}");
+        }
     }
 }

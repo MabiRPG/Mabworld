@@ -6,11 +6,6 @@ public class WindowInventoryItem : MonoBehaviour
 {
     public Item item;
     public int quantity;
-    public Vector2 pos;
-    public int widthInGrid;
-    public int heightInGrid;
-    public int widthInPixel;
-    public int heightInPixel;
 
     private Image icon;
     private TMP_Text text;
@@ -27,10 +22,5 @@ public class WindowInventoryItem : MonoBehaviour
         this.quantity = quantity;
         icon.sprite = item.icon;
         text.text = quantity.ToString();
-    }
-
-    public void Clear()
-    {
-        gameObject.SetActive(false);
     }
 }
