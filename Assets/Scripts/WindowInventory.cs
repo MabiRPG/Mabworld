@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -156,9 +155,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
     /// <param name="pointerData"></param>
     public void OnBeginDrag(PointerEventData pointerData)
     {
-        WindowInventoryItem itemHover = pointerData.pointerEnter.GetComponent<WindowInventoryItem>();
-
-        if (itemHover != null)
+        if (pointerData.pointerEnter.TryGetComponent<WindowInventoryItem>(out var itemHover))
         {
             draggingObj = itemHover.gameObject;
             draggingRect = draggingObj.GetComponent<RectTransform>();
@@ -174,13 +171,18 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
     ///     Called during mouse drag
     /// </summary>
     /// <param name="pointerData"></param>
-    public new void OnDrag(PointerEventData pointerData)
+    public override void OnDrag(PointerEventData pointerData)
     {
         if (isDragging)
         {
             ClearHighlight();
             draggingRect.anchoredPosition += pointerData.delta / GameManager.Instance.canvas.scaleFactor;
+            draggingRect.SetAsLastSibling();
             CheckSlotsFree(draggingItem, pointerData.position, true);
+        }
+        else
+        {
+            base.OnDrag(pointerData);
         }
     }
 
@@ -238,11 +240,9 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
     private Vector2 GetFree(Item item)
     {
         // Find the starting point for our raycasts through the rect transform
-        RectTransform rectTransform = body.transform.GetComponent<RectTransform>();
+        RectTransform rectTransform = body.transform.Find("Item Canvas").GetComponent<RectTransform>();
         Vector2 pos = canvasCamera.WorldToScreenPoint(rectTransform.position);
-        // Assign loop counters and full dimensions of the inventory space
-        //int i = 0;
-        //int j = 0;
+        // Assign full dimensions of the inventory space
         float fullWidth = rectTransform.sizeDelta.x / slotWidth;
         float fullHeight = rectTransform.sizeDelta.y / slotHeight;
 
@@ -276,6 +276,14 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
     }
 
     // TODO : Minimize number of raycasts per object by cacheing results in an array.
+    /// <summary>
+    ///     Checks if the slots are free under the position given the item dimensions.
+    ///     Highlights the selected area if necessary.
+    /// </summary>
+    /// <param name="item">Item instance to check</param>
+    /// <param name="pos">Starting top-left corner position to iterate from</param>
+    /// <param name="highlightArea"></param>
+    /// <returns></returns>
     private bool CheckSlotsFree(Item item, Vector2 pos, bool highlightArea)
     {
         // Slots encountered by raycasting
@@ -301,10 +309,8 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
         // Iterates over raycast results, checking if slot exists and if not occupied
         foreach (RaycastResult hit in hits)
         {
-            //Debug.Log($"{hit.gameObject.name} {hit.worldPosition}");
-
             // Encountering an item in space
-            if (hit.gameObject.GetComponent<WindowInventoryItem>() != null)
+            if (hit.gameObject.TryGetComponent<WindowInventoryItem>(out _))
             {
                 return false;
             }

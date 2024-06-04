@@ -40,7 +40,10 @@ public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
     /// <param name="pointerData">Event payload associated with pointer (mouse / touch) events.</param>
     public virtual void OnDrag(PointerEventData pointerData)
     {
-        rectTransform.anchoredPosition += pointerData.delta / GameManager.Instance.canvas.scaleFactor;
+        if (pointerData.pointerEnter == header)
+        {
+            rectTransform.anchoredPosition += pointerData.delta / GameManager.Instance.canvas.scaleFactor;
+        }
     }
 
     /// <summary>
