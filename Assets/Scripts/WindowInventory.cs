@@ -173,6 +173,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
     /// <param name="pointerData"></param>
     public override void OnDrag(PointerEventData pointerData)
     {
+        // If we are moving an item, then move only that item. Otherwise, move the window.
         if (isDragging)
         {
             ClearHighlight();
@@ -199,6 +200,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
 
         ClearHighlight();
 
+        // If the pointer is over no windows or space, delete the item and remove it from window
         if (pointerData.pointerEnter == null)
         {
             WindowInventoryItem inventoryItem = draggingObj.GetComponent<WindowInventoryItem>();
@@ -206,6 +208,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
             items[draggingItem].Remove(inventoryItem);
             Player.Instance.inventory.Remove(draggingItem.ID, inventoryItem.quantity);
         }
+        // Otherwise, check if the space underneath has a slot for the item and move it.
         else
         {
             if (CheckSlotsFree(draggingItem, pointerData.position, false))
@@ -236,7 +239,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
         // Reset all the highlighted objects and clear list
         foreach (GameObject slot in highlightObjs)
         {
-            slot.transform.Find("Overlay").gameObject.SetActive(false);
+            slot.SetActive(false);
         }
 
         highlightObjs.Clear();
@@ -326,9 +329,9 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
             }
 
             // Otherwise, accumulate inventory slots in space for later processing
-            if (hit.gameObject.transform.Find("Overlay"))
+            if (hit.gameObject.transform.Find("Overlay") != null)
             {
-                slots.Add(hit.gameObject);
+                slots.Add(hit.gameObject.transform.Find("Overlay").gameObject);
             }
         }
 
@@ -343,7 +346,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
         {
             foreach (GameObject slot in slots)
             {
-                slot.transform.Find("Overlay").gameObject.SetActive(true);
+                slot.SetActive(true);
                 highlightObjs.Add(slot);
             }
         }
@@ -398,7 +401,9 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
                 }
 
                 // Allocate a new prefab and set the item details
-                GameObject obj = itemPrefabs.GetFree((item, pos), body.transform.Find("Item Canvas"));
+                // Here we are using a random key to avoid conflicts but the pool still works!
+                GameObject obj = itemPrefabs.GetFree(GameManager.Instance.rnd.Next(), 
+                    body.transform.Find("Item Canvas"));
                 WindowInventoryItem itemScript = obj.GetComponent<WindowInventoryItem>();
                 itemScript.SetItem(item, Math.Min(remainingQuantity, item.stackSizeLimit));
                 remainingQuantity -= itemScript.quantity;
@@ -406,7 +411,8 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler,
                 // Change the position and size according to dimensions
                 RectTransform rectTransform = obj.GetComponent<RectTransform>();
                 rectTransform.anchoredPosition = pos;
-                rectTransform.sizeDelta = new Vector2(item.widthInGrid * slotWidth, item.heightInGrid * slotHeight);
+                rectTransform.sizeDelta = new Vector2(item.widthInGrid * slotWidth, 
+                    item.heightInGrid * slotHeight);
 
                 items[item].Add(itemScript);
             }
