@@ -7,7 +7,7 @@ using UnityEngine.UI;
 /// <summary>
 ///     Handles all window inventory processing.
 /// </summary>
-public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler//, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
 {
     public static WindowInventory Instance = null;
 
@@ -33,8 +33,6 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler/
     private PrefabManager itemPrefabs;
 
     // For dragging and dropping items around...
-    // Starting item position of the drag
-    private Vector2 startingPos;
     private GameObject holdingObj;
     private Item holdingItem;
     // Slot background objects that are currently highlighted
@@ -115,6 +113,9 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler/
         Player.Instance.inventory.changeEvent.OnChange -= Draw;
     }
 
+    /// <summary>
+    ///     Called on every frame.
+    /// </summary>
     public void Update()
     {
         // If mouse click, check the item hold state and update
@@ -148,6 +149,10 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler/
         }
     }
 
+    /// <summary>
+    ///     Called when an item is clicked for the first time.
+    /// </summary>
+    /// <param name="hits"></param>
     private void OnItemClick(List<RaycastResult> hits)
     {
         foreach (RaycastResult hit in hits)
@@ -158,7 +163,6 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler/
                 holdingItem = itemHover.item;
 
                 holdingRect = holdingObj.GetComponent<RectTransform>();
-                startingPos = holdingRect.anchoredPosition;
                 holdingRect.SetParent(GameManager.Instance.canvas.GetComponent<RectTransform>());
                 holdingRect.SetAsLastSibling();
 
@@ -169,6 +173,9 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler/
         }
     }
 
+    /// <summary>
+    ///     Called when an item is moved after clicking.
+    /// </summary>
     private void OnItemMove()
     {
         ClearHighlight();
@@ -182,17 +189,24 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler/
         CheckSlotsFreeWithOneItem(holdingItem, Input.mousePosition);  
     }
 
+    /// <summary>
+    ///     Called when an item is released from the cursor.
+    /// </summary>
+    /// <param name="hits"></param>
     private void OnItemDrop(List<RaycastResult> hits)
     {
-        // Dropped outside of any window or place.
+        // Dropped outside of any window, removes the item from inventory and clears cursor.
         if (hits.Count == 0)
         {
+            // Restores the transform to the inventory window and sets inactive
             holdingRect.SetParent(body.transform.Find("Item Canvas"));
             holdingRect.localPosition = Vector2.zero;
             holdingObj.SetActive(false);
-            items[holdingItem].Remove(holdingObj.GetComponent<WindowInventoryItem>());
-            Player.Instance.inventory.Remove(holdingItem.ID, holdingItem.quantity);   
-            
+            // Removes from window inventory and reduces quantity on inventory side
+            WindowInventoryItem itemHover = holdingObj.GetComponent<WindowInventoryItem>();
+            items[holdingItem].Remove(itemHover);
+            Player.Instance.inventory.Remove(holdingItem.ID, itemHover.quantity);   
+
             holdingObj.GetComponent<Image>().raycastTarget = true;
             isHolding = false;      
             ClearHighlight();            
@@ -200,16 +214,22 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler/
             return;             
         }
 
+        // Finds the screen position of our raycast
         Vector2 pos = hits[0].screenPosition;
 
+        // Checking if there is a valid space underneath the cursor w/ leeway of one item,
+        // swapping with the currently held item if possible.
         if (CheckSlotsFreeWithOneItem(holdingItem, pos))
         {
+            // Restores the transform to the inventory window to align our item again
             holdingRect.SetParent(body.transform.Find("Item Canvas"));
             holdingRect.localPosition = Vector2.zero;
+            // Converts our screen point of our mouse cursor to a local point
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 body.GetComponent<RectTransform>(), pos, 
                 canvasCamera, out pos);  
 
+            // Rounds it to the closest cell corner and assigns it
             pos.x = (int)pos.x / (int)slotWidth * slotWidth;
             pos.y = (int)pos.y / (int)slotHeight * slotHeight;
             holdingRect.anchoredPosition = pos;
@@ -217,6 +237,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler/
             holdingObj.GetComponent<Image>().raycastTarget = true;
             isHolding = false;      
 
+            // Swaps the object with the one underneath if possible
             if (swappingObj != null)
             {
                 holdingObj = swappingObj;
@@ -230,6 +251,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler/
                 isHolding = true;   
             }      
         }
+        // Otherwise, if no space is available, make sure it remains on top.
         else
         {
             holdingRect.SetAsLastSibling();
@@ -295,7 +317,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler/
         }
 
         // Enforcing dimensional requirements here
-        if (slots.Count != item.widthInGrid * item.heightInGrid && swappingObj != null)
+        if (slots.Count != item.widthInGrid * item.heightInGrid && swappingObj == null)
         {
             return false;
         }
@@ -365,89 +387,6 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler/
     {
         tooltip.Clear();
     }
-
-    // /// <summary>
-    // ///     Called on beginning of mouse drag
-    // /// </summary>
-    // /// <param name="pointerData"></param>
-    // public void OnBeginDrag(PointerEventData pointerData)
-    // {
-    //     if (pointerData.pointerEnter.TryGetComponent<WindowInventoryItem>(out var itemHover))
-    //     {
-    //         draggingObj = itemHover.gameObject;
-    //         draggingRect = draggingObj.GetComponent<RectTransform>();
-    //         startingPos = draggingRect.anchoredPosition;
-    //         draggingItem = itemHover.item;
-
-    //         draggingObj.GetComponent<Image>().raycastTarget = false;
-    //         isDragging = true;
-    //     }
-    // }
-
-    // /// <summary>
-    // ///     Called during mouse drag
-    // /// </summary>
-    // /// <param name="pointerData"></param>
-    // public override void OnDrag(PointerEventData pointerData)
-    // {
-    //     // If we are moving an item, then move only that item. Otherwise, move the window.
-    //     if (isDragging)
-    //     {
-    //         ClearHighlight();
-    //         draggingRect.anchoredPosition += pointerData.delta / GameManager.Instance.canvas.scaleFactor;
-    //         draggingRect.SetAsLastSibling();
-    //         CheckSlotsFreeWithOneItem(draggingItem, pointerData.position);
-    //     }
-    //     else
-    //     {
-    //         base.OnDrag(pointerData);
-    //     }
-    // }
-
-    // /// <summary>
-    // ///     Called at end of mouse drag
-    // /// </summary>
-    // /// <param name="pointerData"></param>
-    // public void OnEndDrag(PointerEventData pointerData)
-    // {
-    //     if (!isDragging)
-    //     {
-    //         return;
-    //     }
-
-    //     ClearHighlight();
-
-    //     // If the pointer is over no windows or space, delete the item and remove it from window
-    //     if (pointerData.pointerEnter == null)
-    //     {
-    //         WindowInventoryItem inventoryItem = draggingObj.GetComponent<WindowInventoryItem>();
-    //         draggingObj.SetActive(false);
-    //         items[draggingItem].Remove(inventoryItem);
-    //         Player.Instance.inventory.Remove(draggingItem.ID, inventoryItem.quantity);
-    //     }
-    //     // Otherwise, check if the space underneath has a slot for the item and move it.
-    //     else
-    //     {
-    //         if (CheckSlotsFreeWithOneItem(draggingItem, pointerData.position))
-    //         {
-    //             RectTransformUtility.ScreenPointToLocalPointInRectangle(
-    //                 body.GetComponent<RectTransform>(), pointerData.position, 
-    //                 canvasCamera, out Vector2 pos);  
-
-    //             pos.x = (int)pos.x / (int)slotWidth * slotWidth;
-    //             pos.y = (int)pos.y / (int)slotHeight * slotHeight;
-    //             draggingRect.anchoredPosition = pos;            
-    //         }
-    //         // Resets it to the original space if a free space cannot be found.
-    //         else
-    //         {
-    //             draggingRect.anchoredPosition = startingPos;
-    //         }
-    //     }
-
-    //     draggingObj.GetComponent<Image>().raycastTarget = true;
-    //     isDragging = false;
-    // }
 
     /// <summary>
     ///     Finds the nearest free space for the item, given the dimensions.
