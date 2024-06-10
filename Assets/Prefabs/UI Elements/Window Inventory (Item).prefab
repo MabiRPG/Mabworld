@@ -91,10 +91,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   quantity: 0
-  widthInGrid: 0
-  heightInGrid: 0
-  widthInPixel: 0
-  heightInPixel: 0
 --- !u!114 &1922719477931444808
 MonoBehaviour:
   m_ObjectHideFlags: 0
