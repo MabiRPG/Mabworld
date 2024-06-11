@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -98,6 +99,9 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         GridLayoutGroup gridGroup = body.GetComponent<GridLayoutGroup>();
         gridGroup.cellSize = new Vector2(slotWidth, slotHeight);
 
+        // Resets the content size fitter.
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)gameObject.transform);
+
         // Hides the object at start
         gameObject.SetActive(false);
     }
@@ -107,8 +111,11 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     /// </summary>
     private void OnEnable()
     {
-        Player.Instance.inventory.changeEvent.OnChange += Draw;
-        Draw();
+        // Honestly, not sure why coroutines are required, but the window will not draw
+        // if the inventory changes while the window is closed unless it is run in a 
+        // coroutine.
+        Player.Instance.inventory.changeEvent.OnChange += delegate { StartCoroutine(Draw()); };
+        StartCoroutine(Draw());
     }
 
     /// <summary>
@@ -116,7 +123,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     /// </summary>
     private void OnDisable()
     {
-        Player.Instance.inventory.changeEvent.OnChange -= Draw;
+        Player.Instance.inventory.changeEvent.Clear();
     }
 
     /// <summary>
@@ -408,7 +415,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     private Vector2 GetFree(Item item)
     {
         // Find the starting point for our raycasts through the rect transform
-        RectTransform rectTransform = body.transform.Find("Item Canvas").GetComponent<RectTransform>();
+        RectTransform rectTransform = body.GetComponent<RectTransform>();
         Vector2 pos = canvasCamera.WorldToScreenPoint(rectTransform.position);
         // Assign full dimensions of the inventory space
         float fullWidth = rectTransform.sizeDelta.x / slotWidth;
@@ -423,8 +430,6 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
                 float nx = pos.x + (j + 0.5f) * slotWidth;
                 float ny = pos.y - (i + 0.5f) * slotHeight;
 
-                Debug.Log(new Vector2(nx, ny));
-
                 // Checks if the slots are free, if so, convert the screenpoint back to local
                 // for our item's anchored position later.
                 if (CheckSlotsFree(item, new Vector2(nx, ny)))
@@ -434,7 +439,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
                     float oy = ny + 0.5f * slotHeight;
 
                     RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                        body.transform.Find("Item Canvas").GetComponent<RectTransform>(), 
+                        body.GetComponent<RectTransform>(), 
                         new Vector2(ox, oy), canvasCamera, out pos);      
 
                     return pos;             
@@ -477,12 +482,9 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         // Iterates over raycast results, checking if slot exists and if not occupied
         foreach (RaycastResult hit in hits)
         {
-            //Debug.Log($"{hit.screenPosition} {hit.gameObject.name}");
-
             // Encountering an item in space
             if (hit.gameObject.TryGetComponent<WindowInventoryItem>(out _))
             {
-                //Debug.Log("hit item");
                 return false;
             }
 
@@ -496,7 +498,6 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         // Enforcing dimensional requirements here
         if (slots.Count != item.widthInGrid * item.heightInGrid)
         {
-            //Debug.Log("not enough slots");
             return false;
         }
 
@@ -506,14 +507,14 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     /// <summary>
     ///     Draws the inventory canvas.
     /// </summary>
-    private void Draw()
+    private IEnumerator Draw()
     {
-        Debug.Log("drawing");
+        // Random delay introduced to draw the window, 
+        // if inventory changes while window is closed. NEED TO FIX
+        yield return new WaitForEndOfFrame();
 
         foreach (Item item in Player.Instance.inventory.items.Values)
         {
-            Debug.Log(item.quantity);
-
             int remainingQuantity = item.quantity;
 
             // If the item already exists in the inventory, try to add the new quantity
@@ -547,8 +548,6 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
                 // Find a free space on the inventory
                 Vector2 pos = GetFree(item);
 
-                Debug.Log(pos);
-
                 // If no space can be found
                 if (pos == -Vector2.one)
                 {
@@ -570,6 +569,10 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
                     item.heightInGrid * slotHeight);
 
                 items[item].Add(itemScript);
+
+                // Random delay introduced to draw the window, 
+                // if inventory changes while window is closed. NEED TO FIX
+                yield return new WaitForEndOfFrame();
             }
         }
     }
