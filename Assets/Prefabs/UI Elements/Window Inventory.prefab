@@ -341,3 +341,4 @@ MonoBehaviour:
   slotBackgroundPrefab: {fileID: 3883853983777116982, guid: b3093ad54504cbd42a32c803e6980883, type: 3}
   itemPrefab: {fileID: 8006003167480471998, guid: d1b833fa6274e464c8238628b515d564, type: 3}
   itemTooltipPrefab: {fileID: 6397780202506812243, guid: 9354d603f9439f24886ad3f958645881, type: 3}
+  splitStackPrefab: {fileID: 2803705538706826907, guid: ab6fb8adcba7d4441883489b82099cb6, type: 3}

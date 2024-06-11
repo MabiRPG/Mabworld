@@ -23,7 +23,7 @@ public class Inventory
         Width = width;
         Height = height;
         Size = Width * Height;
-        changeEvent.OnChange += Print;
+        //changeEvent.OnChange += Print;
     }
 
     /// <summary>

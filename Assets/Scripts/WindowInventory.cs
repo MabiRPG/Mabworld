@@ -27,6 +27,9 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     [SerializeField]
     private GameObject itemTooltipPrefab;
     private WindowInventoryItemTooltip tooltip;
+    [SerializeField]
+    private GameObject splitStackPrefab;
+    private WindowInventorySplitStack splitStack;
 
     // Dictionary of all items for quick reference
     private Dictionary<Item, List<WindowInventoryItem>> items = new Dictionary<Item, List<WindowInventoryItem>>();
@@ -67,6 +70,9 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         
         GameObject obj = Instantiate(itemTooltipPrefab, transform.parent);
         tooltip = obj.GetComponent<WindowInventoryItemTooltip>();
+
+        obj = Instantiate(splitStackPrefab, transform.parent);
+        splitStack = obj.GetComponent<WindowInventorySplitStack>();
 
         itemPrefabs = ScriptableObject.CreateInstance<PrefabManager>();
         itemPrefabs.SetPrefab(itemPrefab);
@@ -159,6 +165,12 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         {
             if (hit.gameObject.TryGetComponent<WindowInventoryItem>(out var itemHover))
             {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    splitStack.SetItem(itemHover);
+                    return;
+                }
+                
                 holdingObj = itemHover.gameObject;
                 holdingItem = itemHover.item;
 
@@ -411,6 +423,8 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
                 float nx = pos.x + (j + 0.5f) * slotWidth;
                 float ny = pos.y - (i + 0.5f) * slotHeight;
 
+                Debug.Log(new Vector2(nx, ny));
+
                 // Checks if the slots are free, if so, convert the screenpoint back to local
                 // for our item's anchored position later.
                 if (CheckSlotsFree(item, new Vector2(nx, ny)))
@@ -420,8 +434,8 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
                     float oy = ny + 0.5f * slotHeight;
 
                     RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                        body.GetComponent<RectTransform>(), new Vector2(ox, oy), 
-                        canvasCamera, out pos);      
+                        body.transform.Find("Item Canvas").GetComponent<RectTransform>(), 
+                        new Vector2(ox, oy), canvasCamera, out pos);      
 
                     return pos;             
                 }
@@ -463,9 +477,12 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         // Iterates over raycast results, checking if slot exists and if not occupied
         foreach (RaycastResult hit in hits)
         {
+            //Debug.Log($"{hit.screenPosition} {hit.gameObject.name}");
+
             // Encountering an item in space
             if (hit.gameObject.TryGetComponent<WindowInventoryItem>(out _))
             {
+                //Debug.Log("hit item");
                 return false;
             }
 
@@ -479,6 +496,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         // Enforcing dimensional requirements here
         if (slots.Count != item.widthInGrid * item.heightInGrid)
         {
+            //Debug.Log("not enough slots");
             return false;
         }
 
@@ -490,8 +508,12 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     /// </summary>
     private void Draw()
     {
+        Debug.Log("drawing");
+
         foreach (Item item in Player.Instance.inventory.items.Values)
         {
+            Debug.Log(item.quantity);
+
             int remainingQuantity = item.quantity;
 
             // If the item already exists in the inventory, try to add the new quantity
@@ -524,6 +546,8 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
             {
                 // Find a free space on the inventory
                 Vector2 pos = GetFree(item);
+
+                Debug.Log(pos);
 
                 // If no space can be found
                 if (pos == -Vector2.one)
