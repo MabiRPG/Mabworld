@@ -14,7 +14,7 @@ public class Player : Actor
     // Ability points
     public IntManager actorAP = new IntManager(1000);
     // Inventory
-    public Inventory inventory = new Inventory(5, 5);
+    public InventoryManager inventory = new InventoryManager();
 
     // How much our life skill success rates scale with dex.
     private int lifeSkillDexFactor = 10;

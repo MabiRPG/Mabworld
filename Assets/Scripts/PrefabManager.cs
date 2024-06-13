@@ -57,6 +57,13 @@ public class PrefabManager : ScriptableObject
         return obj;
     }
 
+    public void ChangeKey(object oldKey, object newKey)
+    {
+        GameObject obj = prefabs[oldKey];
+        prefabs.Remove(oldKey);
+        prefabs[newKey] = obj;
+    }
+
     /// <summary>
     ///     Sets the state of all prefabs.
     /// </summary>

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class WindowInventorySplitStack : Window
 {
-    private WindowInventoryItem item;
+    private WindowInventoryItem itemHover;
     private IntManager quantity = new IntManager(1);
     
     private TMP_InputField quantityInput;
@@ -18,6 +18,7 @@ public class WindowInventorySplitStack : Window
 
     private Button cancelButton;
     private Button confirmButton;
+    private WindowInventory windowInventory;
 
     protected override void Awake()
     {
@@ -58,6 +59,7 @@ public class WindowInventorySplitStack : Window
         quantity.OnChange += UpdateText;
 
         cancelButton.onClick.AddListener(CloseWindow);
+        confirmButton.onClick.AddListener(delegate { CreateItem(quantity.Value); });
     }
 
     private void OnDisable()
@@ -70,15 +72,18 @@ public class WindowInventorySplitStack : Window
         quantity.Clear();
 
         cancelButton.onClick.RemoveAllListeners();
+        confirmButton.onClick.RemoveAllListeners();
     }
 
-    public void SetItem(WindowInventoryItem item)
+    public void SetItem(WindowInventoryItem itemHover, WindowInventory windowInventory)
     {
-        this.item = item;
-        quantityInput.text = "1";
-        rangeValidator.SetRange(1f, item.quantity);
-        maxQuantityText.text = "/ " + item.quantity;
-        slider.maxValue = item.quantity;
+        this.itemHover = itemHover;
+        this.windowInventory = windowInventory;
+
+        quantity.Value = itemHover.quantity / 2;
+        rangeValidator.SetRange(1f, itemHover.quantity);
+        maxQuantityText.text = "/ " + itemHover.quantity;
+        slider.maxValue = itemHover.quantity;
         slider.minValue = 1;
         slider.wholeNumbers = true;
 
@@ -86,9 +91,17 @@ public class WindowInventorySplitStack : Window
         gameObject.transform.SetAsLastSibling();
     }
 
+    private void CreateItem(int quantity)
+    {
+        itemHover.SetItem(itemHover.item, itemHover.quantity - quantity);
+        //WindowInventoryItem inventoryItem = windowInventory.CreateItem(itemHover.item, quantity);
+        //windowInventory.SetHoverItem(inventoryItem);
+        CloseWindow();
+    }
+
     private void SetQuantity(float quantity)
     {
-        if (1f <= quantity && quantity <= item.quantity)
+        if (1f <= quantity && quantity <= itemHover.quantity)
         {
             this.quantity.Value = (int)quantity;
         }

@@ -68,7 +68,7 @@ public class Result
             if (itemID != -1)
             { 
                 resourceGain = Player.Instance.CalculateLuckyGainMultiplier();
-                Player.Instance.inventory.Add(itemID, resourceGain);
+                Player.Instance.inventory.AddItem(itemID, resourceGain);
             }
             else
             {

@@ -17,7 +17,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     private GameObject slotBackgroundPrefab;
 
     // Dimensions of the cell width in the item canvas
-    private RectTransform itemRect;
+    private RectTransform itemCanvasRect;
     private float slotWidth;
     private float slotHeight;
     
@@ -33,7 +33,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     private WindowInventorySplitStack splitStack;
 
     // Dictionary of all items for quick reference
-    private Dictionary<Item, List<WindowInventoryItem>> items = new Dictionary<Item, List<WindowInventoryItem>>();
+    //private Dictionary<Item, List<WindowInventoryItem>> items = new Dictionary<Item, List<WindowInventoryItem>>();
     private PrefabManager itemPrefabs;
 
     // For dragging and dropping items around...
@@ -45,9 +45,13 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     private bool isHolding;
     // Item to swap with
     private GameObject swappingObj;
+    private int holdingRow;
+    private int holdingColumn;
 
     private GraphicRaycaster raycaster;
     private Camera canvasCamera;
+
+    public InventoryBag bag;
 
     /// <summary>
     ///     Initializes the object.
@@ -80,24 +84,37 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
 
         // Requires an empty gameobject under body to insert into, since the pivot position of the
         // body is determined by a layout group, giving incorrect size deltas.
-        itemRect = body.transform.Find("Item Canvas").GetComponent<RectTransform>();
-        slotWidth = itemRect.sizeDelta.x / Player.Instance.inventory.Width;
-        slotHeight = itemRect.sizeDelta.y / Player.Instance.inventory.Height;
+        itemCanvasRect = body.transform.Find("Item Canvas").GetComponent<RectTransform>();
+
+        //slotWidth = itemRect.sizeDelta.x / Player.Instance.inventory.Width;
+        //slotHeight = itemRect.sizeDelta.y / Player.Instance.inventory.Height;
+        slotWidth = InventoryManager.slotWidth;
+        slotHeight = InventoryManager.slotHeight;
+
+        bag = Player.Instance.inventory.Bags[0];
+
+        itemCanvasRect.sizeDelta = new Vector2(bag.width * slotWidth, bag.height * slotHeight);
 
         // Creating the background of the inventory
-        for (int i = 0; i < Player.Instance.inventory.Height; i++)
+        for (int row = 0; row < bag.height; row++)
         {
-            for (int j = 0; j < Player.Instance.inventory.Width; j++)
+            for (int column = 0; column < bag.width; column++)
             {
-                Instantiate(slotBackgroundPrefab, body.transform);
+                if (InventoryBag.StateMap[bag.Grid[row][column]] != InventoryBag.State.Null)
+                {
+                    obj = Instantiate(slotBackgroundPrefab, itemCanvasRect);
+                    RectTransform transform = obj.GetComponent<RectTransform>();
+                    transform.sizeDelta = new Vector2(slotWidth, slotHeight);
+                    transform.anchoredPosition = new Vector2(column * slotWidth, -row * slotHeight);
+                }
             }
         }
 
         // Pushing item canvas to last so it appears on top of grid
-        itemRect.SetAsLastSibling();
-        // Changing grid size based on values above
-        GridLayoutGroup gridGroup = body.GetComponent<GridLayoutGroup>();
-        gridGroup.cellSize = new Vector2(slotWidth, slotHeight);
+        itemCanvasRect.SetAsLastSibling();
+        // // Changing grid size based on values above
+        // GridLayoutGroup gridGroup = body.GetComponent<GridLayoutGroup>();
+        // gridGroup.cellSize = new Vector2(slotWidth, slotHeight);
 
         // Resets the content size fitter.
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)gameObject.transform);
@@ -114,8 +131,10 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         // Honestly, not sure why coroutines are required, but the window will not draw
         // if the inventory changes while the window is closed unless it is run in a 
         // coroutine.
-        Player.Instance.inventory.changeEvent.OnChange += delegate { StartCoroutine(Draw()); };
-        StartCoroutine(Draw());
+
+        //Player.Instance.inventory.changeEvent.OnChange += delegate { StartCoroutine(Draw()); };
+        //StartCoroutine(Draw());
+        bag.changeEvent.OnChange += DrawTest;
     }
 
     /// <summary>
@@ -123,7 +142,8 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     /// </summary>
     private void OnDisable()
     {
-        Player.Instance.inventory.changeEvent.Clear();
+        //Player.Instance.inventory.changeEvent.OnChange -= delegate { StartCoroutine(Draw()); };
+        bag.changeEvent.OnChange -= DrawTest;
     }
 
     /// <summary>
@@ -168,28 +188,65 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     /// <param name="hits"></param>
     private void OnItemClick(List<RaycastResult> hits)
     {
-        foreach (RaycastResult hit in hits)
+        Vector2 pos = Input.mousePosition;
+        // Converts our screen point of our mouse cursor to a local point
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            body.transform.Find("Item Canvas").GetComponent<RectTransform>(), pos, 
+            canvasCamera, out pos);  
+        int row = -(int)pos.y / (int)slotWidth;
+        int column = (int)pos.x / (int)slotHeight;
+        (int startingRow, int startingColumn) = bag.GetStartingPos(row, column);
+
+        //Debug.Log($"picking {row} {column} {startingRow} {startingColumn}");
+
+        if (startingRow == -1 || startingColumn == -1)
         {
-            if (hit.gameObject.TryGetComponent<WindowInventoryItem>(out var itemHover))
-            {
-                if (Input.GetKey(KeyCode.LeftShift))
-                {
-                    splitStack.SetItem(itemHover);
-                    return;
-                }
-                
-                holdingObj = itemHover.gameObject;
-                holdingItem = itemHover.item;
-
-                holdingRect = holdingObj.GetComponent<RectTransform>();
-                holdingRect.SetParent(GameManager.Instance.canvas.GetComponent<RectTransform>());
-                holdingRect.SetAsLastSibling();
-
-                holdingObj.GetComponent<Image>().raycastTarget = false;
-                isHolding = true;        
-                break;
-            }
+            return;
         }
+
+        (Item item, int quantity) = bag.GetItemAtPos(startingRow, startingColumn);
+        bag.RemoveItem(quantity, startingRow, startingColumn);
+
+        GameObject obj = itemPrefabs.prefabs[(startingRow, startingColumn)];
+        WindowInventoryItem itemHover = obj.GetComponent<WindowInventoryItem>();
+
+        if (quantity > 1 && Input.GetKey(KeyCode.LeftShift))
+        {
+            splitStack.SetItem(itemHover, this);
+            return;
+        }
+
+        SetHoverItem(itemHover);
+        holdingRow = startingRow;
+        holdingColumn = startingColumn;
+
+        // foreach (RaycastResult hit in hits)
+        // {
+        //     if (hit.gameObject.TryGetComponent<WindowInventoryItem>(out var itemHover))
+        //     {
+        //         if (itemHover.quantity > 1 && Input.GetKey(KeyCode.LeftShift))
+        //         {
+        //             splitStack.SetItem(itemHover, this);
+        //             break;
+        //         }
+
+        //         SetHoverItem(itemHover, row, column);
+        //         break;
+        //     }
+        // }
+    }
+
+    public void SetHoverItem(WindowInventoryItem itemHover)
+    {
+        holdingObj = itemHover.gameObject;
+        holdingItem = itemHover.item;
+
+        holdingRect = holdingObj.GetComponent<RectTransform>();
+        holdingRect.SetParent(GameManager.Instance.canvas.GetComponent<RectTransform>());
+        holdingRect.SetAsLastSibling();
+
+        holdingObj.GetComponent<Image>().raycastTarget = false;
+        isHolding = true;           
     }
 
     /// <summary>
@@ -223,8 +280,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
             holdingObj.SetActive(false);
             // Removes from window inventory and reduces quantity on inventory side
             WindowInventoryItem itemHover = holdingObj.GetComponent<WindowInventoryItem>();
-            items[holdingItem].Remove(itemHover);
-            Player.Instance.inventory.Remove(holdingItem.ID, itemHover.quantity);   
+            bag.RemoveItem(itemHover.quantity, holdingRow, holdingColumn);
 
             holdingObj.GetComponent<Image>().raycastTarget = true;
             isHolding = false;      
@@ -233,50 +289,80 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
             return;             
         }
 
-        // Finds the screen position of our raycast
-        Vector2 pos = hits[0].screenPosition;
+        Vector2 pos = Input.mousePosition;
+        // Converts our screen point of our mouse cursor to a local point
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            body.transform.Find("Item Canvas").GetComponent<RectTransform>(), pos, 
+            canvasCamera, out pos);  
+        int row = -(int)pos.y / (int)slotWidth;
+        int column = (int)pos.x / (int)slotHeight;
 
-        // Checking if there is a valid space underneath the cursor w/ leeway of one item,
-        // swapping with the currently held item if possible.
-        if (CheckSlotsFreeWithOneItem(holdingItem, pos))
+        //Debug.Log($"dropping {row} {column}");
+
+        if (bag.IsEmpty(row, column, holdingItem.widthInGrid, holdingItem.heightInGrid))
         {
             // Restores the transform to the inventory window to align our item again
             holdingRect.SetParent(body.transform.Find("Item Canvas"));
             holdingRect.localPosition = Vector2.zero;
-            // Converts our screen point of our mouse cursor to a local point
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                body.GetComponent<RectTransform>(), pos, 
-                canvasCamera, out pos);  
-
             // Rounds it to the closest cell corner and assigns it
             pos.x = (int)pos.x / (int)slotWidth * slotWidth;
             pos.y = (int)pos.y / (int)slotHeight * slotHeight;
             holdingRect.anchoredPosition = pos;
 
+            bag.AddItem(holdingItem, holdingItem.quantity, row, column);
+            itemPrefabs.ChangeKey((holdingRow, holdingColumn), (row, column));
+
             holdingObj.GetComponent<Image>().raycastTarget = true;
-            isHolding = false;      
-
-            // Swaps the object with the one underneath if possible
-            if (swappingObj != null)
-            {
-                holdingObj = swappingObj;
-                holdingItem = swappingObj.GetComponent<WindowInventoryItem>().item;
-
-                holdingRect = holdingObj.GetComponent<RectTransform>();
-                holdingRect.SetParent(GameManager.Instance.canvas.GetComponent<RectTransform>());
-                holdingRect.SetAsLastSibling();
-
-                holdingObj.GetComponent<Image>().raycastTarget = false;
-                isHolding = true;   
-            }      
+            isHolding = false;   
         }
-        // Otherwise, if no space is available, make sure it remains on top.
         else
         {
             holdingRect.SetAsLastSibling();
         }
 
         ClearHighlight();
+
+        // // Checking if there is a valid space underneath the cursor w/ leeway of one item,
+        // // swapping with the currently held item if possible.
+        // if (CheckSlotsFreeWithOneItem(holdingItem, pos))
+        // {
+        //     // Restores the transform to the inventory window to align our item again
+        //     holdingRect.SetParent(body.transform.Find("Item Canvas"));
+        //     holdingRect.localPosition = Vector2.zero;
+        //     // Converts our screen point of our mouse cursor to a local point
+        //     RectTransformUtility.ScreenPointToLocalPointInRectangle(
+        //         body.GetComponent<RectTransform>(), pos, 
+        //         canvasCamera, out pos);  
+
+        //     // Rounds it to the closest cell corner and assigns it
+        //     pos.x = (int)pos.x / (int)slotWidth * slotWidth;
+        //     pos.y = (int)pos.y / (int)slotHeight * slotHeight;
+        //     holdingRect.anchoredPosition = pos;
+
+        //     holdingObj.GetComponent<Image>().raycastTarget = true;
+        //     isHolding = false;      
+
+        //     // Swaps the object with the one underneath if possible
+        //     if (swappingObj != null)
+        //     {
+        //         holdingObj = swappingObj;
+        //         holdingItem = swappingObj.GetComponent<WindowInventoryItem>().item;
+
+        //         holdingRect = holdingObj.GetComponent<RectTransform>();
+        //         holdingRect.SetParent(GameManager.Instance.canvas.GetComponent<RectTransform>());
+        //         holdingRect.SetAsLastSibling();
+
+        //         holdingObj.GetComponent<Image>().raycastTarget = false;
+        //         isHolding = true;   
+        //     }      
+        // }
+        // // Otherwise, if no space is available, make sure it remains on top.
+        // else
+        // {
+        //     holdingRect.SetAsLastSibling();
+        // }
+
+        // ClearHighlight();
     }
 
     // TODO : Minimize number of raycasts per object by cacheing results in an array.
@@ -507,73 +593,114 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     /// <summary>
     ///     Draws the inventory canvas.
     /// </summary>
-    private IEnumerator Draw()
+    // public IEnumerator Draw()
+    // {
+    //     // Random delay introduced to draw the window, 
+    //     // if inventory changes while window is closed. NEED TO FIX
+    //     yield return new WaitForEndOfFrame();
+
+    //     foreach (Item item in Player.Instance.inventory.AllItems.Values)
+    //     {
+    //         int remainingQuantity = item.quantity;
+
+    //         // If the item already exists in the inventory, try to add the new quantity
+    //         // and populate it
+    //         if (items.ContainsKey(item))
+    //         {
+    //             // Reverse iterator since we're removing items in the list.
+    //             for (int i = items[item].Count - 1; i >= 0; i--)
+    //             {
+    //                 WindowInventoryItem inventoryItem = items[item][i];
+
+    //                 // Remove the object if the quantity is below 0
+    //                 if (remainingQuantity <= 0)
+    //                 {
+    //                     inventoryItem.gameObject.SetActive(false);
+    //                     items[item].RemoveAt(i);
+    //                     continue;
+    //                 }
+
+    //                 // Sets the new quantity based on stack limits
+    //                 inventoryItem.SetItem(item, Math.Min(remainingQuantity, item.stackSizeLimit));
+    //                 remainingQuantity -= inventoryItem.quantity;
+    //             }
+    //         }
+    //         // If the item does not exist, create new container for it
+    //         else
+    //         {
+    //             items.Add(item, new List<WindowInventoryItem>());
+    //         }
+
+    //         // If there is remaining quantity, create new prefabs.
+    //         while (remainingQuantity > 0)
+    //         {
+    //             // Find a free space on the inventory
+    //             Vector2 pos = GetFree(item);
+
+    //             // If no space can be found
+    //             if (pos == -Vector2.one)
+    //             {
+    //                 break;
+    //             }
+
+    //             WindowInventoryItem inventoryItem = CreateItem(item, Math.Min(remainingQuantity, item.stackSizeLimit));
+    //             remainingQuantity -= inventoryItem.quantity;
+
+    //             // Change the position and size according to dimensions
+    //             RectTransform rectTransform = inventoryItem.gameObject.GetComponent<RectTransform>();
+    //             rectTransform.anchoredPosition = pos;
+
+    //             // Random delay introduced to draw the window, 
+    //             // if inventory changes while window is closed. NEED TO FIX
+    //             yield return new WaitForEndOfFrame();
+    //         }
+    //     }
+    // }
+
+    // public WindowInventoryItem CreateItem(Item item, int quantity)
+    // {
+    //     // Allocate a new prefab and set the item details
+    //     // Here we are using a random key to avoid conflicts but the pool still works!
+    //     GameObject obj = itemPrefabs.GetFree(GameManager.Instance.rnd.Next(), 
+    //         body.transform.Find("Item Canvas"));
+    //     WindowInventoryItem inventoryItem = obj.GetComponent<WindowInventoryItem>();
+    //     inventoryItem.SetItem(item, quantity);
+
+    //     RectTransform rectTransform = inventoryItem.gameObject.GetComponent<RectTransform>();
+    //     rectTransform.sizeDelta = new Vector2(item.widthInGrid * slotWidth, 
+    //         item.heightInGrid * slotHeight);
+
+    //     items[item].Add(inventoryItem);
+
+    //     return inventoryItem;
+
+    //     // // Change the position and size according to dimensions
+    //     // RectTransform rectTransform = obj.GetComponent<RectTransform>();
+    //     // rectTransform.anchoredPosition = pos;
+    //     // rectTransform.sizeDelta = new Vector2(item.widthInGrid * slotWidth, 
+    //     //     item.heightInGrid * slotHeight);
+
+    //     // items[item].Add(inventoryItem);
+
+    //     // return true;      
+    // }
+
+    private void DrawTest()
     {
-        // Random delay introduced to draw the window, 
-        // if inventory changes while window is closed. NEED TO FIX
-        yield return new WaitForEndOfFrame();
-
-        foreach (Item item in Player.Instance.inventory.items.Values)
+        foreach (var pair in bag.Items)
         {
-            int remainingQuantity = item.quantity;
+            (int startingRow, int startingColumn) = pair.Key;
+            (Item item, int quantity) = pair.Value;
 
-            // If the item already exists in the inventory, try to add the new quantity
-            // and populate it
-            if (items.ContainsKey(item))
-            {
-                foreach (WindowInventoryItem inventoryItem in items[item])
-                {
-                    // Remove the object if the quantity is below 0
-                    if (remainingQuantity <= 0)
-                    {
-                        inventoryItem.gameObject.SetActive(false);
-                        items[item].Remove(inventoryItem);
-                        continue;
-                    }
+            GameObject obj = itemPrefabs.GetFree((startingRow, startingColumn), body.transform.Find("Item Canvas"));
+            WindowInventoryItem inventoryItem = obj.GetComponent<WindowInventoryItem>();
+            inventoryItem.SetItem(item, quantity);       
 
-                    // Sets the new quantity based on stack limits
-                    inventoryItem.SetItem(item, Math.Min(remainingQuantity, item.stackSizeLimit));
-                    remainingQuantity -= inventoryItem.quantity;
-                }
-            }
-            // If the item does not exist, create new container for it
-            else
-            {
-                items.Add(item, new List<WindowInventoryItem>());
-            }
-
-            // If there is remaining quantity, create new prefabs.
-            while (remainingQuantity > 0)
-            {
-                // Find a free space on the inventory
-                Vector2 pos = GetFree(item);
-
-                // If no space can be found
-                if (pos == -Vector2.one)
-                {
-                    break;
-                }
-
-                // Allocate a new prefab and set the item details
-                // Here we are using a random key to avoid conflicts but the pool still works!
-                GameObject obj = itemPrefabs.GetFree(GameManager.Instance.rnd.Next(), 
-                    body.transform.Find("Item Canvas"));
-                WindowInventoryItem itemScript = obj.GetComponent<WindowInventoryItem>();
-                itemScript.SetItem(item, Math.Min(remainingQuantity, item.stackSizeLimit));
-                remainingQuantity -= itemScript.quantity;
-
-                // Change the position and size according to dimensions
-                RectTransform rectTransform = obj.GetComponent<RectTransform>();
-                rectTransform.anchoredPosition = pos;
-                rectTransform.sizeDelta = new Vector2(item.widthInGrid * slotWidth, 
-                    item.heightInGrid * slotHeight);
-
-                items[item].Add(itemScript);
-
-                // Random delay introduced to draw the window, 
-                // if inventory changes while window is closed. NEED TO FIX
-                yield return new WaitForEndOfFrame();
-            }
+            RectTransform rectTransform = inventoryItem.gameObject.GetComponent<RectTransform>();
+            rectTransform.sizeDelta = new Vector2(item.widthInGrid * slotWidth, 
+                item.heightInGrid * slotHeight);
+            rectTransform.anchoredPosition = new Vector2(startingColumn * slotWidth, 
+                -startingRow * slotHeight);     
         }
     }
 }
