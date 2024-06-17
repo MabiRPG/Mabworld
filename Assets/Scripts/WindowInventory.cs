@@ -309,6 +309,8 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
             pos.y = (int)pos.y / (int)slotHeight * slotHeight;
             holdingRect.anchoredPosition = pos;
 
+            WindowInventoryItem itemHover = holdingObj.GetComponent<WindowInventoryItem>();
+            bag.RemoveItem(itemHover.quantity, holdingRow, holdingColumn);
             bag.AddItem(holdingItem, holdingItem.quantity, row, column);
             itemPrefabs.ChangeKey((holdingRow, holdingColumn), (row, column));
 

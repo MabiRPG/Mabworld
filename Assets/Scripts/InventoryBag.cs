@@ -34,6 +34,8 @@ public class InventoryBag
     {
         this.ID = ID;
         CreateGrid(ID);
+
+        changeEvent.OnChange += Print;
     }
 
     public void CreateGrid(int ID)
@@ -223,5 +225,35 @@ public class InventoryBag
 
         changeEvent.RaiseOnChange();
         return true;
+    }
+
+    public bool ShiftItem(int startingRow, int startingColumn, int endingRow, int endingColumn)
+    {
+        if (!Items.ContainsKey((startingRow, startingColumn)) || Items.ContainsKey((endingRow, endingColumn)))
+        {
+            return false;
+        }
+
+        (Item slotItem, int slotQuantity) = Items[(startingRow, startingColumn)];
+        Items.Remove((startingRow, startingColumn));
+        Items.Add((endingRow, endingColumn), (slotItem, slotQuantity));
+
+        foreach ((int row, int column) in ItemSlotsUsed.Keys.ToList())
+        {
+            if (ItemSlotsUsed[(row, column)] == (startingRow, startingColumn))
+            {
+                
+            }
+        }
+
+        return true;
+    }
+
+    private void Print()
+    {
+        foreach (var pair in Items)
+        {
+            Debug.Log($"({pair.Key.startingRow},{pair.Key.startingColumn}) {pair.Value.item.name}:{pair.Value.quantity}");
+        }
     }
 }
