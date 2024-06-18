@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -222,7 +223,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     private void OnItemClick()
     {
         (int row, int column) = ConvertScreenPointToBagPoint();
-        InventoryItem inventoryItem = bag.RemoveItemAt(row, column);
+        InventoryItem inventoryItem = bag.FindItemAt(row, column);
 
         if (inventoryItem == null)
         {
@@ -230,14 +231,59 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         }
 
         GameObject obj = itemPrefabs.prefabs[inventoryItem];
-        movableItem = new MovableItem(
-            inventoryItem,
-            obj.GetComponent<WindowInventoryItem>(),
-            body.transform.Find("Item Canvas")
-        );
+        WindowInventoryItem windowItem = obj.GetComponent<WindowInventoryItem>();
 
+        if (inventoryItem.quantity > 1 && Input.GetKey(KeyCode.LeftShift))
+        {
+            Action<int> onSplitAction = quantity =>
+            {
+                OnItemSplit(inventoryItem, windowItem, quantity);
+            };
+
+            splitStack.SetItem(windowItem, onSplitAction);
+        }
+        else
+        {
+            bag.RemoveItemAt(row, column);
+            movableItem = new MovableItem(inventoryItem, windowItem, 
+                body.transform.Find("Item Canvas"));
+
+            movableItem.Begin();
+            isMovingItem = true;
+        }
+    }
+
+    /// <summary>
+    ///     Called when an item is split through the split stack window.
+    /// </summary>
+    /// <param name="inventoryItem"></param>
+    /// <param name="windowItem"></param>
+    /// <param name="quantity">Quantity of resulting new split stack.</param>
+    private void OnItemSplit(InventoryItem inventoryItem, WindowInventoryItem windowItem, int quantity)
+    {
+        InventoryItem newInventoryItem = new InventoryItem(inventoryItem.item, quantity, -1, -1);
+        
+        GameObject obj = itemPrefabs.GetFree(newInventoryItem, body.transform.Find("Item Canvas"));
+        WindowInventoryItem newWindowItem = obj.GetComponent<WindowInventoryItem>();
+        newWindowItem.SetItem(inventoryItem.item, quantity);
+
+        RectTransform rectTransform = obj.GetComponent<RectTransform>();
+        rectTransform.sizeDelta = new Vector2(inventoryItem.width * slotWidth, 
+            inventoryItem.height * slotHeight);
+
+        movableItem = new MovableItem(newInventoryItem, newWindowItem, 
+            body.transform.Find("Item Canvas"));
         movableItem.Begin();
         isMovingItem = true;
+
+        inventoryItem.quantity -= quantity;
+        Draw();
+
+        if (inventoryItem.quantity == 0)
+        {
+            bag.RemoveItemAt(inventoryItem.origin.row, inventoryItem.origin.column);
+            windowItem.gameObject.SetActive(false);
+        }
     }
 
     /// <summary>
@@ -411,6 +457,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             body.transform.Find("Item Canvas").GetComponent<RectTransform>(), pos, 
             canvasCamera, out pos);  
+        
         return (-(int)pos.y / (int)slotWidth, (int)pos.x / (int)slotHeight);        
     }
 

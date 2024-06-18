@@ -201,6 +201,16 @@ public class InventoryBag
         return itemsHit.Count;
     }
 
+    public InventoryItem FindItemAt(int row, int column)
+    {
+        if (!items.ContainsKey((row, column)))
+        {
+            return null;
+        }
+
+        return items[(row, column)];
+    }
+
     /// <summary>
     ///     Finds all the items in a defined space.
     /// </summary>

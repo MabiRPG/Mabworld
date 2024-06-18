@@ -18,7 +18,7 @@ public class WindowInventorySplitStack : Window
 
     private Button cancelButton;
     private Button confirmButton;
-    private WindowInventory windowInventory;
+    private Action<int> splitItemAction;
 
     protected override void Awake()
     {
@@ -75,27 +75,27 @@ public class WindowInventorySplitStack : Window
         confirmButton.onClick.RemoveAllListeners();
     }
 
-    public void SetItem(WindowInventoryItem itemHover, WindowInventory windowInventory)
+    public void SetItem(WindowInventoryItem itemHover, Action<int> splitItemAction)
     {
         this.itemHover = itemHover;
-        this.windowInventory = windowInventory;
+        this.splitItemAction = splitItemAction;
 
-        quantity.Value = itemHover.quantity / 2;
+        // Re-enable the object first, so the quantity event triggers properly.
+        gameObject.SetActive(true);
+        gameObject.transform.SetAsLastSibling();
+
+        // Setting quantity here updates all fields
+        quantity.Value = 1;
         rangeValidator.SetRange(1f, itemHover.quantity);
         maxQuantityText.text = "/ " + itemHover.quantity;
         slider.maxValue = itemHover.quantity;
         slider.minValue = 1;
         slider.wholeNumbers = true;
-
-        gameObject.SetActive(true);
-        gameObject.transform.SetAsLastSibling();
     }
 
     private void CreateItem(int quantity)
     {
-        itemHover.SetItem(itemHover.item, itemHover.quantity - quantity);
-        //WindowInventoryItem inventoryItem = windowInventory.CreateItem(itemHover.item, quantity);
-        //windowInventory.SetHoverItem(inventoryItem);
+        splitItemAction(quantity);
         CloseWindow();
     }
 
