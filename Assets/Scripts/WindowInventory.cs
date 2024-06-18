@@ -83,8 +83,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     private GraphicRaycaster raycaster;
     private Camera canvasCamera;
 
-    public InventoryBagTest bag;
-    public InventoryItem holdingItemTest;
+    public InventoryBag bag;
 
     /// <summary>
     ///     Initializes the object.
@@ -202,14 +201,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     /// <param name="hits"></param>
     private void OnItemClick()
     {
-        Vector2 pos = Input.mousePosition;
-        // Converts our screen point of our mouse cursor to a local point
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            body.transform.Find("Item Canvas").GetComponent<RectTransform>(), pos, 
-            canvasCamera, out pos);  
-        int row = -(int)pos.y / (int)slotWidth;
-        int column = (int)pos.x / (int)slotHeight;
-
+        (int row, int column) = ConvertScreenPointToBagPoint();
         InventoryItem inventoryItem = bag.RemoveItemAt(row, column);
 
         if (inventoryItem == null)
@@ -268,32 +260,19 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
             // Restores the transform to the inventory window and sets inactive
             movableItem.End();
             movableItem.windowItem.gameObject.SetActive(false);
-
             // Removes from window inventory and reduces quantity on inventory side
             // TODO : Remove from master inventory...
-
             isMovingItem = false;      
             return;             
         }
 
-        Vector2 pos = Input.mousePosition;
-        // Converts our screen point of our mouse cursor to a local point
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            body.transform.Find("Item Canvas").GetComponent<RectTransform>(), pos, 
-            canvasCamera, out pos);  
-        int row = -(int)pos.y / (int)slotWidth;
-        int column = (int)pos.x / (int)slotHeight;
+        (int row, int column) = ConvertScreenPointToBagPoint();
 
         if (bag.InsertItemAt(movableItem.inventoryItem, row, column))
         {
             // Restores the transform to the inventory window to align our item again
             movableItem.End();
-
-            // Rounds it to the closest cell corner and assigns it
-            pos.x = (int)pos.x / (int)slotWidth * slotWidth;
-            pos.y = (int)pos.y / (int)slotHeight * slotHeight;
-            movableItem.Move(pos.x, pos.y);
-
+            movableItem.Move(column * slotWidth, -row * slotHeight);
             isMovingItem = false;
         }
         else
@@ -357,6 +336,16 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         }
 
         highlightObjs.Clear();
+    }
+
+    private (int row, int column) ConvertScreenPointToBagPoint()
+    {
+        Vector2 pos = Input.mousePosition;
+        // Converts our screen point of our mouse cursor to a local point
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            body.transform.Find("Item Canvas").GetComponent<RectTransform>(), pos, 
+            canvasCamera, out pos);  
+        return (-(int)pos.y / (int)slotWidth, (int)pos.x / (int)slotHeight);        
     }
 
     /// <summary>

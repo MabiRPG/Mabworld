@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 public class InventoryBag
 {
@@ -10,108 +9,30 @@ public class InventoryBag
     public int width;
     public int height;
 
-    // public enum State
-    // {
-    //     Null,
-    //     Empty,
-    //     Full
-    // }
-    // public static Dictionary<int, State> StateMap = new Dictionary<int, State>
-    // {
-    //     {-1, State.Null},
-    //     {0, State.Empty},
-    //     {1, State.Full}
-    // };
-
-    public List<List<int>> Grid;
-    public Dictionary<(int startingRow, int startingColumn), (Item item, int quantity)> Items = 
-        new Dictionary<(int, int), (Item, int)>();
-    public Dictionary<(int row, int column), (int startingRow, int startingColumn)> ItemSlotsUsed = 
-        new Dictionary<(int row, int column), (int startingRow, int startingColumn)>();
+    public List<(int row, int column)> excludedSlots = new List<(int, int)>();
+    public Dictionary<(int row, int column), InventoryItem> items = new Dictionary<(int row, int column), InventoryItem>();
     public EventManager changeEvent = new EventManager();
 
-    public InventoryBag(int ID)
+    public InventoryBag()
     {
-        this.ID = ID;
-        CreateGrid(ID);
-
-        changeEvent.OnChange += Print;
+        excludedSlots.Add((0, 0));
+        excludedSlots.Add((3, 3));
+        width = 4;
+        height = 4;
     }
 
-    public void CreateGrid(int ID)
+    public bool IsEmpty(int row, int column, int width, int height)
     {
-        switch(ID)
+        if (row + height > this.height || column + width > this.width)
         {
-            case 1:
-                Grid = new List<List<int>> {
-                    new List<int>{-1, 0, 0, 0 },
-                    new List<int>{0, 0, 0, 0 },
-                    new List<int>{0, 0, 0, 0 },
-                    new List<int>{0, 0, 0, -1 }
-                };
-
-                break;
-            case 2:
-                Grid = new List<List<int>> {
-                    new List<int>{-1, 0, 0, 0, 0, 0, -1 },
-                    new List<int>{-1, -1, 0, 0, 0, -1, -1 },
-                    new List<int>{ 0, 0, 0, 0, 0, 0, 0 }
-                };
-                break;
+            return false;
         }
 
-        width = Grid[0].Count;
-        height = Grid.Count;
-    }
-
-    public (int, int) GetStartingPos(int row, int column)
-    {
-        if (!ItemSlotsUsed.ContainsKey((row, column)))
+        for (int i = row; i < row + height; i++)
         {
-            return (-1, -1);
-        }
-
-        return ItemSlotsUsed[(row, column)];
-    }
-
-    public (Item, int) GetItemAtPos(int row, int column)
-    {
-        if (!Items.ContainsKey((row, column)))
-        {
-            return (null, 0);
-        }
-
-        return Items[GetStartingPos(row, column)];
-    }
-
-    private (int, int) FindFreePosition(int itemWidth, int itemHeight)
-    {
-        if (Grid.Count == 0 || itemWidth <= 0 || itemWidth > Grid[0].Count || itemHeight <= 0 || itemHeight > Grid.Count)
-        {
-            return (-1, -1);
-        }
-
-        for (int row = 0; row <= Grid.Count - itemHeight; row++)
-        {
-            for (int column = 0; column <= Grid[row].Count - itemWidth; column++)
+            for (int j = column; j < column + width; j++)
             {
-                if (IsEmpty(row, column, itemWidth, itemHeight))
-                {
-                    return (row, column);
-                }
-            }
-        }
-
-        return (-1, -1);
-    }
-
-    public bool IsEmpty(int startingRow, int startingColumn, int itemWidth, int itemHeight)
-    {
-        for (int row = startingRow; row < startingRow + itemHeight; row++)
-        {
-            for (int column = startingColumn; column < startingColumn + itemWidth; column++)
-            {
-                if (Grid[row][column] != 0)
+                if (items.ContainsKey((i, j)) || excludedSlots.Contains((i, j)))
                 {
                     return false;
                 }
@@ -121,34 +42,21 @@ public class InventoryBag
         return true;
     }
 
-    public void SetState(int startingRow, int startingColumn, int width, int height, int state)
+    public int PushItem(Item item, int quantity)
     {
-        for (int row = startingRow; row < startingRow + height; row++)
+        void Add(int quantity, int row, int column)
         {
-            for (int column = startingColumn; column < startingColumn + width; column++)
-            {
-                Grid[row][column] = state;
+            InventoryItem inventoryItem = new InventoryItem(item, quantity, row, column);
 
-                if (ItemSlotsUsed.ContainsKey((row, column)) && state == 0)
+            for (int i = row; i < row + item.heightInGrid; i++)
+            {
+                for (int j = column; j < column + item.widthInGrid; j++)
                 {
-                    ItemSlotsUsed.Remove((row, column));
-                }
-                else if (!ItemSlotsUsed.ContainsKey((row, column)) && state == 1)
-                {
-                    ItemSlotsUsed.Add((row, column), (startingRow, startingColumn));
+                    items.Add((i, j), inventoryItem);
                 }
             }
         }
-    }
 
-    /// <summary>
-    ///     Adds an item to the inventory bag, if possible.
-    /// </summary>
-    /// <param name="item"></param>
-    /// <param name="quantity"></param>
-    /// <returns>Number of items successfully added.</returns>
-    public int AddItem(Item item, int quantity)
-    {
         if (quantity <= 0)
         {
             return 0;
@@ -156,94 +64,102 @@ public class InventoryBag
 
         int remainingQuantity = quantity;
 
-        foreach (var key in Items.Keys.ToList())
+        foreach (InventoryItem inventoryItem in items.Values)
         {
-            (Item slotItem, int slotQuantity) = Items[key];
-
-            if (item == slotItem && slotQuantity < item.stackSizeLimit)
+            if (item == inventoryItem.item && inventoryItem.quantity < item.stackSizeLimit)
             {
-                slotQuantity = Math.Min(slotQuantity + remainingQuantity, item.stackSizeLimit);
-                Items[key] = (item, slotQuantity);
-                remainingQuantity -= slotQuantity;
+                int diff = Math.Min(inventoryItem.quantity + remainingQuantity, item.stackSizeLimit);
+                diff -= inventoryItem.quantity;
+
+                inventoryItem.quantity += diff;
+                remainingQuantity -= diff;
             }
 
             if (remainingQuantity == 0)
             {
-                break;
+                changeEvent.RaiseOnChange();
+                return quantity;
             }
         }
 
-        while (remainingQuantity > 0)
+        for (int i = 0; i < height - item.heightInGrid + 1; i++)
         {
-            (int startingRow, int startingColumn) = FindFreePosition(item.widthInGrid, item.heightInGrid);
-
-            if (startingRow == -1 || startingColumn == -1)
+            for (int j = 0; j < width - item.widthInGrid + 1; j++)
             {
-                break;
-            }
+                if (IsEmpty(i, j, item.widthInGrid, item.heightInGrid))
+                {
+                    Add(Math.Min(remainingQuantity, item.stackSizeLimit), i, j);
+                    remainingQuantity -= Math.Min(remainingQuantity, item.stackSizeLimit);
 
-            SetState(startingRow, startingColumn, item.widthInGrid, item.heightInGrid, 1);
-            int slotQuantity = Math.Min(remainingQuantity, item.stackSizeLimit);
-            Items.Add((startingRow, startingColumn), (item, slotQuantity));
-            remainingQuantity -= slotQuantity;
+                    if (remainingQuantity == 0)
+                    {
+                        changeEvent.RaiseOnChange();
+                        return quantity;
+                    }
+                }
+            }
         }
 
         changeEvent.RaiseOnChange();
         return quantity - remainingQuantity;
     }
 
-    // public void AddItem(Item item, int quantity, int startingRow, int startingColumn)
-    // {
-    //     SetState(startingRow, startingColumn, item.widthInGrid, item.heightInGrid, 1);
-    //     Items.Add((startingRow, startingColumn), (item, quantity));
-    // }
-
-    public bool RemoveItem(int quantity, int startingRow, int startingColumn)
+    public bool InsertItemAt(InventoryItem inventoryItem, int row, int column)
     {
-        if (startingRow == -1 || startingColumn == -1 || quantity <= 0 || !Items.ContainsKey((startingRow, startingColumn)))
+        if (!IsEmpty(row, column, inventoryItem.width, inventoryItem.height))
         {
             return false;
         }
 
-        (Item slotItem, int slotQuantity) = Items[(startingRow, startingColumn)];
-        slotQuantity -= Math.Max(quantity, 0);
-
-        if (slotQuantity == 0)
+        for (int i = row; i < row + inventoryItem.height; i++)
         {
-            SetState(startingRow, startingColumn, slotItem.widthInGrid, slotItem.heightInGrid, 0);
-            Items.Remove((startingRow, startingColumn));
-        }
-        else
-        {
-            Items[(startingRow, startingColumn)] = (slotItem, slotQuantity);
+            for (int j = column; j < column + inventoryItem.width; j++)
+            {
+                items.Add((i, j), inventoryItem);
+            }
         }
 
+        inventoryItem.origin = (row, column);
         changeEvent.RaiseOnChange();
         return true;
     }
 
-    public bool ShiftItem(int startingRow, int startingColumn, int endingRow, int endingColumn)
+    public InventoryItem RemoveItemAt(int row, int column)
     {
-        if (!Items.ContainsKey((startingRow, startingColumn)) || Items.ContainsKey((endingRow, endingColumn)))
+        if (!items.ContainsKey((row, column)))
         {
-            return false;
+            return null;
         }
 
-        (Item slotItem, int slotQuantity) = Items[(startingRow, startingColumn)];
-        Items.Remove((startingRow, startingColumn));
-        Items.Add((endingRow, endingColumn), (slotItem, slotQuantity));
-        SetState(startingRow, startingColumn, slotItem.widthInGrid, slotItem.heightInGrid, 0);
-        SetState(endingRow, endingColumn, slotItem.widthInGrid, slotItem.heightInGrid, 1);
+        InventoryItem inventoryItem = items[(row, column)];
+
+        foreach ((int i, int j) in items.Keys.ToList())
+        {
+            if (items[(i, j)] == inventoryItem)
+            {
+                items.Remove((i, j));
+            }
+        }
 
         changeEvent.RaiseOnChange();
-        return true;
+        return inventoryItem;
     }
 
-    private void Print()
+    public int CountItemsAt(int row, int column, int width, int height)
     {
-        foreach (var pair in Items)
+        List<InventoryItem> itemsHit = new List<InventoryItem>();
+
+        for (int i = row; i < row + height; i++)
         {
-            Debug.Log($"({pair.Key.startingRow},{pair.Key.startingColumn}) {pair.Value.item.name}:{pair.Value.quantity}");
+            for (int j = column; j < column + width; j++)
+            {
+                if (items.ContainsKey((i, j)) && !itemsHit.Contains(items[(i, j)]))
+                {
+                    itemsHit.Add(items[(i, j)]);
+                }
+            }
         }
+
+        return itemsHit.Count;
     }
 }
