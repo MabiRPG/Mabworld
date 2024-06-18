@@ -5,7 +5,7 @@ public class InventoryManager
     public static int slotWidth = 50;
     public static int slotHeight = 50;
     public Dictionary<int, Item> AllItems = new Dictionary<int, Item>();
-    public List<InventoryBag> Bags = new List<InventoryBag>();
+    public List<InventoryBagTest> Bags = new List<InventoryBagTest>();
 
     public InventoryManager()
     {
@@ -14,7 +14,7 @@ public class InventoryManager
 
     public void AddBag(int bagID)
     {
-        Bags.Add(new InventoryBag(bagID));
+        Bags.Add(new InventoryBagTest());
     }
 
     public void AddItem(int itemID, int quantity)
@@ -33,9 +33,9 @@ public class InventoryManager
 
         int remainingQuantity = quantity;
 
-        foreach (InventoryBag bag in Bags)
+        foreach (InventoryBagTest bag in Bags)
         {
-            int addedQuantity = bag.AddItem(item, remainingQuantity);
+            int addedQuantity = bag.PushItem(item, remainingQuantity);
             remainingQuantity -= addedQuantity;
 
             if (remainingQuantity < 0)

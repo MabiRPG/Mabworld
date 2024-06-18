@@ -10,18 +10,18 @@ public class InventoryBag
     public int width;
     public int height;
 
-    public enum State
-    {
-        Null,
-        Empty,
-        Full
-    }
-    public static Dictionary<int, State> StateMap = new Dictionary<int, State>
-    {
-        {-1, State.Null},
-        {0, State.Empty},
-        {1, State.Full}
-    };
+    // public enum State
+    // {
+    //     Null,
+    //     Empty,
+    //     Full
+    // }
+    // public static Dictionary<int, State> StateMap = new Dictionary<int, State>
+    // {
+    //     {-1, State.Null},
+    //     {0, State.Empty},
+    //     {1, State.Full}
+    // };
 
     public List<List<int>> Grid;
     public Dictionary<(int startingRow, int startingColumn), (Item item, int quantity)> Items = 
@@ -111,7 +111,7 @@ public class InventoryBag
         {
             for (int column = startingColumn; column < startingColumn + itemWidth; column++)
             {
-                if (StateMap[Grid[row][column]] != State.Empty)
+                if (Grid[row][column] != 0)
                 {
                     return false;
                 }
@@ -123,22 +123,17 @@ public class InventoryBag
 
     public void SetState(int startingRow, int startingColumn, int width, int height, int state)
     {
-        if (!StateMap.ContainsKey(state))
-        {
-            return;
-        }
-
         for (int row = startingRow; row < startingRow + height; row++)
         {
             for (int column = startingColumn; column < startingColumn + width; column++)
             {
                 Grid[row][column] = state;
 
-                if (ItemSlotsUsed.ContainsKey((row, column)) && StateMap[state] == State.Empty)
+                if (ItemSlotsUsed.ContainsKey((row, column)) && state == 0)
                 {
                     ItemSlotsUsed.Remove((row, column));
                 }
-                else if (!ItemSlotsUsed.ContainsKey((row, column)) && StateMap[state] == State.Full)
+                else if (!ItemSlotsUsed.ContainsKey((row, column)) && state == 1)
                 {
                     ItemSlotsUsed.Add((row, column), (startingRow, startingColumn));
                 }
@@ -197,11 +192,11 @@ public class InventoryBag
         return quantity - remainingQuantity;
     }
 
-    public void AddItem(Item item, int quantity, int startingRow, int startingColumn)
-    {
-        SetState(startingRow, startingColumn, item.widthInGrid, item.heightInGrid, 1);
-        Items.Add((startingRow, startingColumn), (item, quantity));
-    }
+    // public void AddItem(Item item, int quantity, int startingRow, int startingColumn)
+    // {
+    //     SetState(startingRow, startingColumn, item.widthInGrid, item.heightInGrid, 1);
+    //     Items.Add((startingRow, startingColumn), (item, quantity));
+    // }
 
     public bool RemoveItem(int quantity, int startingRow, int startingColumn)
     {
@@ -237,15 +232,10 @@ public class InventoryBag
         (Item slotItem, int slotQuantity) = Items[(startingRow, startingColumn)];
         Items.Remove((startingRow, startingColumn));
         Items.Add((endingRow, endingColumn), (slotItem, slotQuantity));
+        SetState(startingRow, startingColumn, slotItem.widthInGrid, slotItem.heightInGrid, 0);
+        SetState(endingRow, endingColumn, slotItem.widthInGrid, slotItem.heightInGrid, 1);
 
-        foreach ((int row, int column) in ItemSlotsUsed.Keys.ToList())
-        {
-            if (ItemSlotsUsed[(row, column)] == (startingRow, startingColumn))
-            {
-                
-            }
-        }
-
+        changeEvent.RaiseOnChange();
         return true;
     }
 
