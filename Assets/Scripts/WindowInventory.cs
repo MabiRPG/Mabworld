@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+/// <summary>
+///     Handles processing the item being moved by user on mouse click.
+/// </summary>
 public class MovableItem
 {
     public InventoryItem inventoryItem;
@@ -14,6 +17,12 @@ public class MovableItem
     private RectTransform rectTransform;
     private Image image;
 
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
+    /// <param name="inventoryItem"></param>
+    /// <param name="windowItem"></param>
+    /// <param name="originTransform">Starting Transform component of window item.</param>
     public MovableItem(InventoryItem inventoryItem, WindowInventoryItem windowItem, Transform originTransform)
     {
         this.inventoryItem = inventoryItem;
@@ -24,6 +33,9 @@ public class MovableItem
         image = windowItem.gameObject.GetComponent<Image>();
     }
 
+    /// <summary>
+    ///     Called before the item moves.
+    /// </summary>
     public void Begin()
     {
         rectTransform.SetParent(GameManager.Instance.canvas.GetComponent<RectTransform>());
@@ -31,11 +43,19 @@ public class MovableItem
         image.raycastTarget = false;
     }
 
+    /// <summary>
+    ///     Called during the item move.
+    /// </summary>
+    /// <param name="x">x-coordinate to move item.</param>
+    /// <param name="y">y-coordinate to move item.</param>
     public void Move(float x, float y)
     {
         rectTransform.localPosition = new Vector2(x, y) / GameManager.Instance.canvas.scaleFactor;
     }
 
+    /// <summary>
+    ///     Called after the item stops.
+    /// </summary>
     public void End()
     {
         rectTransform.SetParent(originTransform);
@@ -210,7 +230,6 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         }
 
         GameObject obj = itemPrefabs.prefabs[inventoryItem];
-
         movableItem = new MovableItem(
             inventoryItem,
             obj.GetComponent<WindowInventoryItem>(),
@@ -268,6 +287,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
 
         (int row, int column) = ConvertScreenPointToBagPoint();
 
+        // If the space is insertable (empty) then insert the item back
         if (bag.InsertItemAt(movableItem.inventoryItem, row, column))
         {
             // Restores the transform to the inventory window to align our item again
@@ -275,12 +295,45 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
             movableItem.Move(column * slotWidth, -row * slotHeight);
             isMovingItem = false;
         }
+        // Otherwise, check if there is exactly one item underneath, then swap
+        else if (bag.CountItemsAt(row, column, movableItem.item.widthInGrid, movableItem.item.heightInGrid) == 1)
+        {
+            // Find the item underneath and remove it
+            List<InventoryItem> itemsFound = bag.FindItemsAt(
+                row, column,
+                row + movableItem.item.heightInGrid,
+                column + movableItem.item.widthInGrid
+            );
+
+            (int i, int j) = itemsFound[0].origin;
+            InventoryItem inventoryItem = bag.RemoveItemAt(i, j);
+
+            // Reinsert our item
+            bag.InsertItemAt(movableItem.inventoryItem, row, column);
+            // Restores the transform to the inventory window to align our item again
+            movableItem.End();
+            movableItem.Move(column * slotWidth, -row * slotHeight);
+
+            // Create a new movable item and restart
+            GameObject obj = itemPrefabs.prefabs[inventoryItem];
+            movableItem = new MovableItem(
+                inventoryItem,
+                obj.GetComponent<WindowInventoryItem>(),
+                body.transform.Find("Item Canvas")
+            );
+
+            movableItem.Begin();
+            isMovingItem = true;
+        }
         else
         {
             movableItem.Begin();
         }
     }
 
+    /// <summary>
+    ///     Sets the slot highlight depending on the cursor position.
+    /// </summary>
     private void SetHighlight()
     {
         // Slots encountered by raycasting
@@ -311,8 +364,17 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
             }
         }
 
+        // Count the number of items under our cursor
+        (int row, int column) = ConvertScreenPointToBagPoint();
+        int itemsHit = bag.CountItemsAt(row, column, movableItem.item.widthInGrid, movableItem.item.heightInGrid);
+
         // Enforcing dimensional requirements here
         if (slots.Count != movableItem.item.widthInGrid * movableItem.item.heightInGrid)
+        {
+            return;
+        }
+        // Can only swap with exactly one item
+        else if (itemsHit > 1)
         {
             return;
         }
@@ -338,6 +400,10 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         highlightObjs.Clear();
     }
 
+    /// <summary>
+    ///     Converts the mouse position to a position in our bag matrix.
+    /// </summary>
+    /// <returns>Tuple of (row, column) indices.</returns>
     private (int row, int column) ConvertScreenPointToBagPoint()
     {
         Vector2 pos = Input.mousePosition;
