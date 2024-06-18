@@ -277,7 +277,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         isMovingItem = true;
 
         inventoryItem.quantity -= quantity;
-        Draw();
+        windowItem.SetItem(inventoryItem.item, inventoryItem.quantity);
 
         if (inventoryItem.quantity == 0)
         {
@@ -345,31 +345,56 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         else if (bag.CountItemsAt(row, column, movableItem.item.widthInGrid, movableItem.item.heightInGrid) == 1)
         {
             // Find the item underneath and remove it
-            List<InventoryItem> itemsFound = bag.FindItemsAt(
+            InventoryItem itemFound = bag.FindItemsAt(
                 row, column,
                 row + movableItem.item.heightInGrid,
                 column + movableItem.item.widthInGrid
-            );
+            )[0];
 
-            (int i, int j) = itemsFound[0].origin;
-            InventoryItem inventoryItem = bag.RemoveItemAt(i, j);
+            GameObject obj;
 
-            // Reinsert our item
-            bag.InsertItemAt(movableItem.inventoryItem, row, column);
-            // Restores the transform to the inventory window to align our item again
-            movableItem.End();
-            movableItem.Move(column * slotWidth, -row * slotHeight);
+            if (itemFound.item == movableItem.inventoryItem.item && itemFound.quantity < itemFound.item.stackSizeLimit)
+            {
+                int diff = Math.Min(itemFound.quantity + movableItem.inventoryItem.quantity, itemFound.item.stackSizeLimit);
+                diff -= itemFound.quantity;
 
-            // Create a new movable item and restart
-            GameObject obj = itemPrefabs.prefabs[inventoryItem];
-            movableItem = new MovableItem(
-                inventoryItem,
-                obj.GetComponent<WindowInventoryItem>(),
-                body.transform.Find("Item Canvas")
-            );
+                itemFound.quantity += diff;
+                obj = itemPrefabs.prefabs[itemFound];
+                WindowInventoryItem windowItem = obj.GetComponent<WindowInventoryItem>();
+                windowItem.SetItem(itemFound.item, itemFound.quantity);
 
-            movableItem.Begin();
-            isMovingItem = true;
+                movableItem.inventoryItem.quantity -= diff;
+                movableItem.windowItem.SetItem(itemFound.item, movableItem.inventoryItem.quantity);
+
+                if (movableItem.inventoryItem.quantity == 0)
+                {
+                    movableItem.windowItem.gameObject.SetActive(false);
+                    movableItem.End();
+                    isMovingItem = false;
+                }
+            }
+            else
+            {
+                (int i, int j) = itemFound.origin;
+                InventoryItem inventoryItem = bag.RemoveItemAt(i, j);
+
+                // Reinsert our item
+                bag.InsertItemAt(movableItem.inventoryItem, row, column);
+                // Restores the transform to the inventory window to align our item again
+                movableItem.End();
+                movableItem.Move(column * slotWidth, -row * slotHeight);
+
+                // Create a new movable item and restart
+                obj = itemPrefabs.prefabs[inventoryItem];
+                movableItem = new MovableItem(
+                    inventoryItem,
+                    obj.GetComponent<WindowInventoryItem>(),
+                    body.transform.Find("Item Canvas")
+                );
+
+                movableItem.Begin();
+                isMovingItem = true;
+            }
         }
         else
         {
