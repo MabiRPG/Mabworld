@@ -353,6 +353,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
 
             GameObject obj;
 
+            // Check if we can recombine the stacks assuming the same item
             if (itemFound.item == movableItem.inventoryItem.item && itemFound.quantity < itemFound.item.stackSizeLimit)
             {
                 int diff = Math.Min(itemFound.quantity + movableItem.inventoryItem.quantity, itemFound.item.stackSizeLimit);
@@ -371,7 +372,11 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
                     movableItem.windowItem.gameObject.SetActive(false);
                     movableItem.End();
                     isMovingItem = false;
+                    return;
                 }
+
+                movableItem.Begin();
+                isMovingItem = true;
             }
             else
             {
