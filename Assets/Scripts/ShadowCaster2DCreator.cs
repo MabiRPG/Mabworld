@@ -1,21 +1,9 @@
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using UnityEditor;
-using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using YamlDotNet.RepresentationModel;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
-
-public class TilesetMeta
-{
-	public int FileFormatVersion;
-	public int GUID;
-	public Dictionary<string, object> TextureImporter;
-}
 
 #if UNITY_EDITOR
 
@@ -39,23 +27,6 @@ public class ShadowCaster2DCreator : MonoBehaviour
         using var reader = new StreamReader(filePath);
         var yaml = new YamlStream();
         yaml.Load(reader);
-
-		// // Examine the stream
-		// foreach (var node in yaml.Documents)
-		// {
-		// 	var mapping = (YamlMappingNode)node.RootNode;
-
-		// 	foreach (var entry in mapping.Children)
-		// 	{
-		// 		Debug.Log(((YamlScalarNode)entry.Key).Value);
-		// 	}
-		// }
-
-		// ShadowCaster2D shadowCaster2D = GetComponent<ShadowCaster2D>();
-		// SerializedProperty m_ShapePath = new UnityEditor.SerializedObject(shadowCaster2D).FindProperty("m_ShapePath");
-		// SerializedProperty m_Mesh = new UnityEditor.SerializedObject(shadowCaster2D).FindProperty("m_mesh");
-		// m_ShapePath.ClearArray();
-		// m_Mesh = null;
 
 		shadowCaster = GetComponent<ShadowCaster2D>();
 		meshField.SetValue(shadowCaster, null);
@@ -83,11 +54,44 @@ public class ShadowCaster2DCreator : MonoBehaviour
 				RectTransform rectTransform = GetComponent<RectTransform>();
 				float xScale = rectTransform.sizeDelta.x / width;
 				float yScale = rectTransform.sizeDelta.y / height;
+				float xHalfSizeDelta = rectTransform.sizeDelta.x / 2f;
+				float yHalfSizeDelta = rectTransform.sizeDelta.y / 2f;
 
 				foreach (YamlMappingNode point in outlinePoints.Children)
 				{
-					float x = float.Parse(point["x"].ToString()) * xScale + rectTransform.sizeDelta.x * (rectTransform.pivot.x - xPivot);
-					float y = float.Parse(point["y"].ToString()) * yScale + rectTransform.sizeDelta.y * (rectTransform.pivot.y - yPivot);
+					float ox = float.Parse(point["x"].ToString());
+					float oy = float.Parse(point["y"].ToString());
+
+					float x = ox * xScale + rectTransform.sizeDelta.x * (rectTransform.pivot.x - xPivot);
+					float y = oy * yScale + rectTransform.sizeDelta.y * (rectTransform.pivot.y - yPivot);
+
+					float factor = 0f;
+					float offset = 0.1f;
+
+					// First quadrant
+					if (ox >= 0 && oy < 0)
+					{
+						x = x * (1 - factor) - offset;
+						y = y * (1 + factor) + offset;
+					}
+					// Second quadrant...
+					else if (ox < 0 && oy < 0)
+					{
+						x = x * (1 + factor) + offset;
+						y = y * (1 + factor) + offset;
+					}
+					// Third...
+					else if (ox < 0 && oy >= 0)
+					{
+						x = x * (1 + factor) + offset;
+						y = y * (1 - factor) - offset;
+					}
+					// Fourth
+					else
+					{
+						x = x * (1 - factor) - offset;
+						y = y * (1 - factor) - offset;
+					}
 
 					Vector3 pos = new Vector3(x, y, 0);
 					points[i] = pos;
@@ -100,27 +104,7 @@ public class ShadowCaster2DCreator : MonoBehaviour
 		}
 
 		onEnableMethod.Invoke(shadowCaster, new object[0]);
-
-
-		// Debug.Log(m_ShapePath.arraySize);
-
-		// var spriteSheet = (YamlMappingNode)textureImporter.Children[new YamlScalarNode("spriteSheet")];
-		// var sprite = (YamlSequenceNode)spriteSheet.Children[
-
-        // var deserializer = new DeserializerBuilder()
-        //     .WithNamingConvention(UnderscoredNamingConvention.Instance)
-        //     .Build();
-
-		// var p = deserializer.Deserialize<TilesetMeta>(reader);
-		// Debug.Log(p.TextureImporter["spriteSheet"]);
-
-
     }
-
-	private void GenerateShadowShapePath()
-	{
-
-	}
 
 	public void Create()
 	{
@@ -157,80 +141,3 @@ public class ShadowCaster2DTileMapEditor : Editor
 }
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
