@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject inputManager;
     [SerializeField]
+    private GameObject lightManager;
+    [SerializeField]
     private GameObject audioManager;
 
     [Header("Global Variables")]
@@ -60,6 +62,7 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         Instantiate(inputManager);
+        Instantiate(lightManager);
         Instantiate(audioManager);
         Instantiate(windowSkillPrefab, canvas.transform);
         Instantiate(windowCharacterPrefab, canvas.transform);

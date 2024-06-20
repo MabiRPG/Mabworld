@@ -9,18 +9,27 @@ using YamlDotNet.RepresentationModel;
 
 public class ShadowCaster2DCreator : MonoBehaviour
 {
-	[SerializeField]
-	private bool selfShadows = true;
-
 	private ShadowCaster2D shadowCaster;
-	private static BindingFlags accessFlagsPrivate =
-		BindingFlags.NonPublic | BindingFlags.Instance;
-	private static FieldInfo meshField =
-		typeof(ShadowCaster2D).GetField("m_Mesh", accessFlagsPrivate);
-	private static FieldInfo shapePathField =
-		typeof(ShadowCaster2D).GetField("m_ShapePath", accessFlagsPrivate);
-	private static MethodInfo onEnableMethod =
-		typeof(ShadowCaster2D).GetMethod("OnEnable", accessFlagsPrivate);
+	private static BindingFlags accessFlagsPrivate = BindingFlags.NonPublic | BindingFlags.Instance;
+	private static FieldInfo meshField = typeof(ShadowCaster2D).GetField("m_Mesh", accessFlagsPrivate);
+	private static FieldInfo shapePathField = typeof(ShadowCaster2D).GetField("m_ShapePath", accessFlagsPrivate);
+	private static MethodInfo onEnableMethod = typeof(ShadowCaster2D).GetMethod("OnEnable", accessFlagsPrivate);
+
+	private (string spriteSheetPath, int spriteID) FindSpriteSheet()
+	{
+		Debug.Log(gameObject.GetInstanceID());
+		Debug.Log(AssetDatabase.GetAssetPath(gameObject.GetInstanceID()));
+		using var reader = new StreamReader(AssetDatabase.GetAssetPath(gameObject.GetInstanceID()));
+		var yaml = new YamlStream();
+		yaml.Load(reader);
+
+		var mapping = (YamlMappingNode)yaml.Documents[0].RootNode;
+		var spriteRenderer = (YamlMappingNode)mapping.Children["SpriteRenderer"]["m_Sprite"];
+		int fileID = int.Parse(spriteRenderer["fileID"].ToString());
+		GUID guid = new GUID(spriteRenderer["guid"].ToString());
+
+		return (AssetDatabase.GUIDToAssetPath(guid), fileID);
+	}
 
 	private void ReadPrefabYamlFile(string filePath, int guid)
 	{
@@ -108,8 +117,10 @@ public class ShadowCaster2DCreator : MonoBehaviour
 
 	public void Create()
 	{
+		(string spriteSheetPath, int spriteID) = FindSpriteSheet();
+		Debug.Log($"{spriteSheetPath} {spriteID}");
 		//ReadPrefabYamlFile("C:\\Users\\Xande\\Documents\\Unity\\Mabworld\\Assets\\Prefabs\\Terrain\\Trees\\Tree.prefab");
-		ReadPrefabYamlFile("C:\\Users\\Xande\\Documents\\Unity\\Mabworld\\Assets\\Resources\\Sprites\\Map Tilesets\\Grassland Tileset.png.meta", 597273058);
+		//ReadPrefabYamlFile("C:\\Users\\Xande\\Documents\\Unity\\Mabworld\\Assets\\Resources\\Sprites\\Map Tilesets\\Grassland Tileset.png.meta", 597273058);
 	}
 	public void DestroyOldShadowCasters()
 	{
