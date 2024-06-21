@@ -45,7 +45,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f0ff2cfcb2f4c54bad22c735ed80e0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  globalLightPrefab: {fileID: 6619564739988214603, guid: 78ee9b9d88fac0047b69cdc093641e8f, type: 3}
+  dawnColor:
+    serializedVersion: 2
+    rgba: 4284960327
+  dayColor:
+    serializedVersion: 2
+    rgba: 4293000959
+  duskColor:
+    serializedVersion: 2
+    rgba: 4280838887
+  nightColor:
+    serializedVersion: 2
+    rgba: 4280226579
+  dawnDurationInSeconds: 10
+  dayDurationInSeconds: 100
+  duskDurationInSeconds: 10
+  nightDurationInSeconds: 100
 --- !u!114 &2534740890193931010
 MonoBehaviour:
   m_ObjectHideFlags: 0
