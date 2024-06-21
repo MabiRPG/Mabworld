@@ -9,16 +9,25 @@ public class LightManager : MonoBehaviour
 
     private Light2D globalLight;
 
-    private readonly List<Color32> lightingColors = new List<Color32>{
-        new Color32(91, 46, 0, 255),
-        new Color32(255, 255, 255, 255),
-        new Color32(91, 46, 0, 255),
-        new Color32(4, 4, 5, 255)
-    };
-    private readonly int dawnDurationInSeconds = 10;
-    private readonly int dayDurationInSeconds = 100;
-    private readonly int duskDurationInSeconds = 10;
-    private readonly int nightDurationInSeconds = 100;
+    [Header("Colors")]
+    [SerializeField]
+    private Color32 dawnColor = new Color32(91, 46, 0, 255);
+    [SerializeField]
+    private Color32 dayColor = new Color32(255, 255, 255, 255);
+    [SerializeField]
+    private Color32 duskColor = new Color32(91, 46, 0, 255);
+    [SerializeField]
+    private Color32 nightColor = new Color32(4, 4, 5, 255);
+
+    [Header("Timers")]
+    [SerializeField]
+    private int dawnDurationInSeconds = 10;
+    [SerializeField]
+    private int dayDurationInSeconds = 100;
+    [SerializeField]
+    private int duskDurationInSeconds = 10;
+    [SerializeField]
+    private int nightDurationInSeconds = 100;
 
     private void Awake()
     {
@@ -41,13 +50,13 @@ public class LightManager : MonoBehaviour
     {
         while (true)
         {
-            StartCoroutine(BeginLightingCycle(dawnDurationInSeconds, lightingColors[0]));
+            StartCoroutine(BeginLightingCycle(dawnDurationInSeconds, dawnColor));
             yield return new WaitForSeconds(dawnDurationInSeconds);
-            StartCoroutine(BeginLightingCycle(dayDurationInSeconds, lightingColors[1]));
+            StartCoroutine(BeginLightingCycle(dayDurationInSeconds, dayColor));
             yield return new WaitForSeconds(dayDurationInSeconds);
-            StartCoroutine(BeginLightingCycle(duskDurationInSeconds, lightingColors[2]));
+            StartCoroutine(BeginLightingCycle(duskDurationInSeconds, duskColor));
             yield return new WaitForSeconds(duskDurationInSeconds);
-            StartCoroutine(BeginLightingCycle(nightDurationInSeconds, lightingColors[3]));
+            StartCoroutine(BeginLightingCycle(nightDurationInSeconds, nightColor));
             yield return new WaitForSeconds(nightDurationInSeconds);
         }
     }
