@@ -1,0 +1,537 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7357783827937270445
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 218375894666371858}
+  m_Layer: 0
+  m_Name: New Prefab 3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &218375894666371858
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7357783827937270445}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1692446629966012557}
+  - {fileID: 2944291591383387619}
+  - {fileID: 2516248090123232668}
+  - {fileID: 2529165264275118711}
+  - {fileID: 2101890687343320391}
+  - {fileID: 8593630214256896785}
+  - {fileID: 1303637454870604763}
+  - {fileID: 1377917322911677875}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1269667441792558956
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 218375894666371858}
+    m_Modifications:
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.51
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1082134495715149598, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_Name
+      value: Lotus Petal with Gold (4)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+--- !u!4 &2101890687343320391 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+  m_PrefabInstance: {fileID: 1269667441792558956}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2002253005802314406
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 218375894666371858}
+    m_Modifications:
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.28
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1082134495715149598, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_Name
+      value: Lotus Petal with Gold
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+--- !u!4 &1692446629966012557 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+  m_PrefabInstance: {fileID: 2002253005802314406}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2207567447003009520
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 218375894666371858}
+    m_Modifications:
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -5.16
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.78
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1082134495715149598, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_Name
+      value: Lotus Petal with Gold (6)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+--- !u!4 &1303637454870604763 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+  m_PrefabInstance: {fileID: 2207567447003009520}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2281901414624102296
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 218375894666371858}
+    m_Modifications:
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -5.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1082134495715149598, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_Name
+      value: Lotus Petal with Gold (7)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+--- !u!4 &1377917322911677875 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+  m_PrefabInstance: {fileID: 2281901414624102296}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2623786744338970568
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 218375894666371858}
+    m_Modifications:
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.79
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.09
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1082134495715149598, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_Name
+      value: Lotus Petal with Gold (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+--- !u!4 &2944291591383387619 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+  m_PrefabInstance: {fileID: 2623786744338970568}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &3341156284550127543
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 218375894666371858}
+    m_Modifications:
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -4.33
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1082134495715149598, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_Name
+      value: Lotus Petal with Gold (2)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+--- !u!4 &2516248090123232668 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+  m_PrefabInstance: {fileID: 3341156284550127543}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &3435349135119638620
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 218375894666371858}
+    m_Modifications:
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.48
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.54
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1082134495715149598, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_Name
+      value: Lotus Petal with Gold (3)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+--- !u!4 &2529165264275118711 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+  m_PrefabInstance: {fileID: 3435349135119638620}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &8932639825995551034
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 218375894666371858}
+    m_Modifications:
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.27
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1082134495715149598, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+      propertyPath: m_Name
+      value: Lotus Petal with Gold (5)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+--- !u!4 &8593630214256896785 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 915824733505747499, guid: c7317d654dd4c0a4294d9a5103b95170, type: 3}
+  m_PrefabInstance: {fileID: 8932639825995551034}
+  m_PrefabAsset: {fileID: 0}
