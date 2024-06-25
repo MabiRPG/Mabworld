@@ -19,8 +19,8 @@ public class WindowSkillDetailed : Window
     // Skill of window
     private Skill skill;
     // Prefab manager instances
-    private PrefabManager statPrefabs;
-    private PrefabManager trainingMethodPrefabs;
+    private PrefabFactory statPrefabs;
+    private PrefabFactory trainingMethodPrefabs;
 
     // List of prefab object references.
     private TMP_Text skillName;
@@ -55,9 +55,9 @@ public class WindowSkillDetailed : Window
         advanceButton = body.transform.Find("Advance Parent").Find("Advance Button").GetComponent<Button>();
         closeButton = body.transform.Find("Close Button").GetComponent<Button>();
 
-        statPrefabs = ScriptableObject.CreateInstance<PrefabManager>();
+        statPrefabs = ScriptableObject.CreateInstance<PrefabFactory>();
         statPrefabs.SetPrefab(statPrefab);
-        trainingMethodPrefabs = ScriptableObject.CreateInstance<PrefabManager>();
+        trainingMethodPrefabs = ScriptableObject.CreateInstance<PrefabFactory>();
         trainingMethodPrefabs.SetPrefab(trainingMethodPrefab);
     }
 

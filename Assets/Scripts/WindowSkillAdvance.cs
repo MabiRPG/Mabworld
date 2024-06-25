@@ -12,7 +12,7 @@ public class WindowSkillAdvance : Window
     [SerializeField]
     private GameObject statPrefab;
     // Manager of all stat prefab instances.
-    private PrefabManager statPrefabs;
+    private PrefabFactory statPrefabs;
     
     // Skill instance to render
     private Skill skill;
@@ -41,7 +41,7 @@ public class WindowSkillAdvance : Window
         advanceButton = body.transform.Find("Button Parent").Find("Advance Button").GetComponent<Button>();
         cancelButton = body.transform.Find("Button Parent").Find("Cancel Button").GetComponent<Button>();
 
-        statPrefabs = ScriptableObject.CreateInstance<PrefabManager>();
+        statPrefabs = ScriptableObject.CreateInstance<PrefabFactory>();
         statPrefabs.SetPrefab(statPrefab);
     }
 
@@ -132,8 +132,10 @@ public class WindowSkillAdvance : Window
             script.SetText(stat.Key, stat.Value[index]);
         }        
 
+        int apCost = (int)skill.stats["ap_cost"][skill.index.Value + 1] - (int)skill.stats["ap_cost"][skill.index.Value];
+
         ap.text = string.Format("{0} AP required.\n({1} AP remaining)",
-            skill.stats["ap_cost"][index].ToString(), 
+            apCost.ToString(), 
             Player.Instance.actorAP.Value.ToString());
 
         // Resets the content size fitter.

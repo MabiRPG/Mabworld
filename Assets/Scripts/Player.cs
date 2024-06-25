@@ -177,7 +177,7 @@ public class Player : Actor
     /// <param name="skill">Skill instance</param>
     public void RankUpSkill(Skill skill)
     {
-        int apCost = (int)skill.stats["ap_cost"][skill.index.Value + 1];
+        int apCost = (int)skill.stats["ap_cost"][skill.index.Value + 1] - (int)skill.stats["ap_cost"][skill.index.Value];
 
         if (IsSkillLearned(skill) && skill.CanRankUp() && actorAP.Value >= apCost)
         {

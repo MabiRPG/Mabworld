@@ -93,7 +93,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     private WindowInventorySplitStack splitStack;
 
     // Dictionary of all items for quick reference
-    private PrefabManager itemPrefabs;
+    private PrefabFactory itemPrefabs;
 
     // For dragging and dropping items around...
     // Slot background objects that are currently highlighted
@@ -132,7 +132,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         obj = Instantiate(splitStackPrefab, transform.parent);
         splitStack = obj.GetComponent<WindowInventorySplitStack>();
 
-        itemPrefabs = ScriptableObject.CreateInstance<PrefabManager>();
+        itemPrefabs = ScriptableObject.CreateInstance<PrefabFactory>();
         itemPrefabs.SetPrefab(itemPrefab);
 
         // Requires an empty gameobject under body to insert into, since the pivot position of the

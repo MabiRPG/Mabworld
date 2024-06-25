@@ -21,9 +21,9 @@ public class WindowSkill : Window
     private GameObject windowSkillAdvancePrefab;
     
     // Prefab manager instances.
-    private PrefabManager skillPrefabs;
-    private PrefabManager detailedPrefabs;
-    private PrefabManager advancePrefabs;
+    private PrefabFactory skillPrefabs;
+    private PrefabFactory detailedPrefabs;
+    private PrefabFactory advancePrefabs;
 
     /// <summary>
     ///     Initializes the object.
@@ -45,11 +45,11 @@ public class WindowSkill : Window
         // Hides the object at start
         gameObject.SetActive(false);
 
-        skillPrefabs = ScriptableObject.CreateInstance<PrefabManager>();
+        skillPrefabs = ScriptableObject.CreateInstance<PrefabFactory>();
         skillPrefabs.SetPrefab(skillPrefab);
-        detailedPrefabs = ScriptableObject.CreateInstance<PrefabManager>();
+        detailedPrefabs = ScriptableObject.CreateInstance<PrefabFactory>();
         detailedPrefabs.SetPrefab(windowSkillDetailedPrefab);
-        advancePrefabs = ScriptableObject.CreateInstance<PrefabManager>();
+        advancePrefabs = ScriptableObject.CreateInstance<PrefabFactory>();
         advancePrefabs.SetPrefab(windowSkillAdvancePrefab);
     }
 

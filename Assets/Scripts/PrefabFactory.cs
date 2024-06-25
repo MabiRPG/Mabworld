@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 ///     Handles a pool of prefab objects
 /// </summary>
-public class PrefabManager : ScriptableObject
+public class PrefabFactory : ScriptableObject
 {
     // Prefab to instantiate
     private GameObject prefab;
