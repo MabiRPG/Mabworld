@@ -18,6 +18,7 @@ public class Result
     public Skill skill;
     // Resource ID and gain if gather action
     public int lootTableID;
+    public int resourceID;
     public int resourceGain;
     // Event handler for status
     public EventManager trainingEvent = new EventManager();
@@ -66,12 +67,10 @@ public class Result
             }
 
             if (itemID != -1)
-            { 
+            {
+                resourceID = itemID;
                 resourceGain = Player.Instance.CalculateLuckyGainMultiplier();
                 Player.Instance.inventory.AddItem(itemID, resourceGain);
-            }
-            else
-            {
             }
         }
 
@@ -88,6 +87,7 @@ public class Result
         type = Type.None;
         skill = null;
         lootTableID = -1;
+        resourceID = -1;
         resourceGain = 1;
         mapEvent.Clear();
     }

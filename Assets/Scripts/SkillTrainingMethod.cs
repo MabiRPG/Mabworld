@@ -79,9 +79,10 @@ public class SkillTrainingMethod
         count.Clear();
     }
 
-    //--------------------------------------------------------------------------
-    // * Checks training requirements against the status flag.
-    //--------------------------------------------------------------------------
+    /// <summary>
+    ///     Checks the training requirements against the status.
+    /// </summary>
+    /// <returns></returns>
     public bool CheckTraining()
     {
         switch(ID)
@@ -91,36 +92,48 @@ public class SkillTrainingMethod
             case 2:
                 return IsFail();
             case 3:
-                return GatherTwoOrMore();
+                return IsGatherTwoOrMore();
         }
 
         return false;
     }
 
-    //--------------------------------------------------------------------------
-    // * Checks if the action was a success
-    //--------------------------------------------------------------------------
+    /// <summary>
+    ///     Checks if the action was a success.
+    /// </summary>
+    /// <returns></returns>
     public bool IsSuccess()
     {
         return result.isSuccess;
     }
 
-    //--------------------------------------------------------------------------
-    // * Checks if the action was a failure
-    //--------------------------------------------------------------------------
+    /// <summary>
+    ///     Checks if the action was a failure.
+    /// </summary>
+    /// <returns></returns>
     public bool IsFail()
     {
         return !IsSuccess();
     }
 
-    //--------------------------------------------------------------------------
-    // * Checks if two or more resources were gathered at once.
-    //--------------------------------------------------------------------------
-    public bool GatherTwoOrMore()
+    /// <summary>
+    ///     Checks if two or more resources were gathered at once.
+    /// </summary>
+    /// <returns></returns>
+    public bool IsGatherTwoOrMore()
     {
         if (IsSuccess() && result.type == Result.Type.Gather && result.resourceGain > 1)
         {
             return true;
+        }
+
+        return false;
+    }
+
+    public bool IsGatherOakLog()
+    {
+        if (IsSuccess() && result.type == Result.Type.Gather && result.resourceID == -1)
+        {
         }
 
         return false;
