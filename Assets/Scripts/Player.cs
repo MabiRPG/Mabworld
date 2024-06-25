@@ -68,6 +68,7 @@ public class Player : Actor
         LearnSkill(1);
         LearnSkill(2);
         LearnSkill(3);
+        LearnSkill(4);
     }
 
     /// <summary>
