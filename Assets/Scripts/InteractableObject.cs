@@ -11,11 +11,15 @@ public class InteractableObject : MonoBehaviour
     // Primary key for event
     public int ID;
     // Skill associated
+    [System.NonSerialized]
     public int skillID;
     // Rank restrictions on skill to gather
+    [System.NonSerialized]
     public string rankRequired;
+    [System.NonSerialized]
     public float successRateModifier;
     // Label to display in world
+    [System.NonSerialized]
     public string sName;
     // Sprites to display depending on state of resource
     private Sprite fullSprite;
@@ -49,7 +53,8 @@ public class InteractableObject : MonoBehaviour
         // Fetch event info from database.
         DataTable dt = GameManager.Instance.QueryDatabase(eventQuery, ("@id", ID));
         DataRow row = dt.Rows[0];
-        GameManager.Instance.ParseDatabaseRow(row, this, ("loot_table_id", "lootTableID"), ("name", "sName"));
+        GameManager.Instance.ParseDatabaseRow(row, this, 
+            ("loot_table_id", "lootTableID"), ("name", "sName"), ("skill_id", "skillID"));
 
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
     }
@@ -145,13 +150,16 @@ public class InteractableObject : MonoBehaviour
 
         if (Player.Instance.IsSkillLearned(skillID))
         {
-            Result result = Player.Instance.result;
-            result.Clear();
-            result.lootTableID = lootTableID;
-            result.type = Result.Type.Gather;
-            result.mapEvent.OnChange += UpdateResource;
+            if (rankRequired != null && Player.Instance.skills[skillID].IsRankOrGreater(rankRequired))
+            {
+                Result result = Player.Instance.result;
+                result.Clear();
+                result.lootTableID = lootTableID;
+                result.type = Result.Type.Gather;
+                result.mapEvent.OnChange += UpdateResource;
 
-            Player.Instance.StartAction(Player.Instance.skills[skillID]);
+                Player.Instance.StartAction(Player.Instance.skills[skillID]);
+            }
         }
     }
 

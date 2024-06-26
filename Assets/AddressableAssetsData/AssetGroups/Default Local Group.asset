@@ -18,7 +18,7 @@ MonoBehaviour:
   m_GUID: 5f0c457da11acdf4d953a39b05767b39
   m_SerializeEntries:
   - m_GUID: e21d56fdf2315b34a979b836facd9da7
-    m_Address: Herb
+    m_Address: Foundation_Herb_Patch
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -38,7 +38,37 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dc4c5014b80cf834b801ebef3ab2588b
-    m_Address: Base_Herb
+    m_Address: Foundation_Herb
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7a05cd9a90140447a5263a63a22b227
+    m_Address: Willow_Log
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a40e65a033b1ba541808a554a92918bc
+    m_Address: Maple_Log
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8365099920500af42a4302490e8cd6d8
+    m_Address: Oak_Log
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 254a029fd542e4944971f500f6651821
+    m_Address: Low_Spirit_Herb
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70dc893f3c20c4441830f1f2a049100e
+    m_Address: Essence_Herb
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc1b91bc947c5d640849638c78ef5b76
+    m_Address: Copper_Ore
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -132,8 +132,29 @@ public class SkillTrainingMethod
 
     public bool IsGatherOakLog()
     {
-        if (IsSuccess() && result.type == Result.Type.Gather && result.resourceID == -1)
+        if (IsSuccess() && result.type == Result.Type.Gather && result.resourceID == 6)
         {
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool IsGatherWillowLog()
+    {
+        if (IsSuccess() && result.type == Result.Type.Gather && result.resourceID == 6)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool IsGatherMapleLog()
+    {
+        if (IsSuccess() && result.type == Result.Type.Gather && result.resourceID == 6)
+        {
+            return true;
         }
 
         return false;

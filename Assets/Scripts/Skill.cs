@@ -52,7 +52,8 @@ public class Skill
     public List<SkillTrainingMethod> methods = new List<SkillTrainingMethod>();
 
     // All ranks in string format
-    public string[] ranks = {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
+    public List<string> ranks = new List<string>
+    {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
 
     // Query strings to database.
     private const string skillQuery = @"SELECT * FROM skill WHERE id = @id LIMIT 1;";
@@ -106,7 +107,7 @@ public class Skill
             // Set the key to be the stat name, then slice the row by length of ranks
             // converting to string then float and back to array for the value.
             stats.Add(r.ItemArray[statPos].ToString(), 
-                r.ItemArray.Skip(2).Take(ranks.Length).Select(x => float.Parse(x.ToString())).ToArray());
+                r.ItemArray.Skip(2).Take(ranks.Count).Select(x => float.Parse(x.ToString())).ToArray());
         }
     }
 
@@ -116,7 +117,7 @@ public class Skill
     /// <returns>True if can rank up.</returns>
     public bool CanRankUp()
     {
-        return index.Value + 1 < ranks.Length;
+        return index.Value + 1 < ranks.Count;
     }
 
     /// <summary>
@@ -142,6 +143,21 @@ public class Skill
         {
             index.Value--;
         }
+    }
+
+    /// <summary>
+    ///     Checks if the skill is at the given rank or greater.
+    /// </summary>
+    /// <param name="rank">String of the given rank</param>
+    /// <returns></returns>
+    public bool IsRankOrGreater(string rank)
+    {
+        if (ranks.Contains(rank))
+        {
+            return index.Value >= ranks.IndexOf(rank);
+        }
+
+        return false;
     }
 
     /// <summary>
