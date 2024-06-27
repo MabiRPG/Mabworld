@@ -1,94 +1,55 @@
 using System.Data;
-using UnityEngine;
 
-/// <summary>
-///     Handles all player state results.
-/// </summary>
-public class Result
+public abstract class ResultHandler
 {
-    // If action was success
     public bool isSuccess;
-    // Type of action
     public enum Type
     {
         None,
-        Gather
+        Gather,
     }
+
     public Type type;
     public Skill skill;
-    // Resource ID and gain if gather action
-    public int lootTableID;
+
+    public abstract void SetSuccess(bool state);
+}
+
+public class MapResourceResultHandler : ResultHandler
+{
+    private int lootTableID;
     public int resourceID;
     public int resourceGain;
-    // Event handler for status
-    public EventManager trainingEvent = new EventManager();
+    private int remainingResource;
+    public bool isEmpty;
     public EventManager mapEvent = new EventManager();
 
-    private const string lootTableQuery = @"SELECT * FROM loot_table WHERE id = @id;";
-
-    public void SetState(bool isSuccess)
+    public void SetResource(Skill skill, int lootTableID, int remainingResource)
     {
-        this.isSuccess = isSuccess;
+        type = Type.Gather;
+        this.skill = skill;
+        this.lootTableID = lootTableID;
+        this.remainingResource = remainingResource;
+    }
+
+    public override void SetSuccess(bool state)
+    {
+        isSuccess = state;
 
         if (isSuccess && lootTableID != -1)
-        {   
-            DataTable dt = GameManager.Instance.QueryDatabase(lootTableQuery, ("@id", lootTableID));
-            float totalProbability = 0f;
+        {
+            GameManager.Instance.lootGenerator.SetLootTable(lootTableID);
+            (resourceID, resourceGain) = GameManager.Instance.lootGenerator.Generate();
 
-            foreach (DataRow row in dt.Rows)
+            remainingResource -= resourceGain;
+
+            if (remainingResource <= 0)
             {
-                totalProbability += float.Parse(row["probability"].ToString());
-            }
-
-            if (totalProbability > 1)
-            {
-                foreach (DataRow row in dt.Rows)
-                {
-                    float normalizedProbability = float.Parse(row["probability"].ToString()) / totalProbability;
-                    row["probability"] = normalizedProbability;
-                }
-            }
-
-            float roll = (float)GameManager.Instance.rnd.NextDouble();
-            float i = 0f;
-            int itemID = -1;
-
-            foreach (DataRow row in dt.Rows)
-            {
-                float probability = i + float.Parse(row["probability"].ToString());
-
-                if (i <= roll && roll <= probability)
-                {
-                    itemID = int.Parse(row["item_id"].ToString()); 
-                    break;
-                }
-                
-                i += probability;
-            }
-
-            if (itemID != -1)
-            {
-                resourceID = itemID;
-                resourceGain = Player.Instance.CalculateLuckyGainMultiplier();
-                Player.Instance.inventory.AddItem(itemID, resourceGain);
+                isEmpty = true;
             }
         }
 
-        trainingEvent.RaiseOnChange();
         mapEvent.RaiseOnChange();
+        Player.Instance.MapResourceRaiseOnChange(this);
     }
-
-    /// <summary>
-    ///     Clears the status.
-    /// </summary>
-    public void Clear()
-    {
-        isSuccess = false;
-        type = Type.None;
-        skill = null;
-        lootTableID = -1;
-        resourceID = -1;
-        resourceGain = 1;
-        mapEvent.Clear();
-    }
-}
+} 

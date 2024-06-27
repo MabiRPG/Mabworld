@@ -43,6 +43,8 @@ public class GameManager : MonoBehaviour
 
     // RNG obj
     public System.Random rnd = new System.Random();
+    // Loot system
+    public LootGenerator lootGenerator = new LootGenerator();
 
     /// <summary>
     ///     Initializes the object.

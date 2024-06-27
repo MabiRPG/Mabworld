@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
 
@@ -13,14 +15,13 @@ public class SkillTrainingMethod
     // XP gain for each count of method
     public float xpGainEach;
     // Current method counter
-    public ValueManager count = new ValueManager();
+    public IntManager count = new IntManager();
     // Maximum counts of method
     public int countMax;
+    private int itemID;
     
     // Skill instance
     private Skill skill;
-    // Player result
-    private Result result = null;
 
     /// <summary>
     ///     Initializes the object.
@@ -30,28 +31,28 @@ public class SkillTrainingMethod
     /// <param name="row">Database row to construct class.</param>
     public SkillTrainingMethod(Skill skill, DataRow row)
     {
-        GameManager.Instance.ParseDatabaseRow(row, this, ("training_method_id", "ID"));
+        GameManager.Instance.ParseDatabaseRow(row, this, 
+            ("training_method_id", "ID"), ("item_id", "itemID"));
         // Creates an empty counter for current method.
         count.Value = 0;
 
         this.skill = skill;
 
-        Player.Instance.result.trainingEvent.OnChange += Update;
+        Player.Instance.trainingEvent += Update;
     }
 
     /// <summary>
     ///     Checks if less than maximum counts, and checks training requirements.
     /// </summary>
-    public void Update()
+    public void Update(MapResourceResultHandler resultHandler)
     {
-        result = Player.Instance.result;
-
-        if (skill != result.skill)
+        if (skill != resultHandler.skill)
         {
             return;
         }
 
-        if (CheckTraining())
+
+        if (CheckTraining(resultHandler))
         {
             count.Value += 1;
             skill.AddXP(xpGainEach);
@@ -75,7 +76,7 @@ public class SkillTrainingMethod
 
     public void Clear()
     {
-        Player.Instance.result.trainingEvent.OnChange -= Update;
+        Player.Instance.trainingEvent -= Update;
         count.Clear();
     }
 
@@ -83,16 +84,27 @@ public class SkillTrainingMethod
     ///     Checks the training requirements against the status.
     /// </summary>
     /// <returns></returns>
-    public bool CheckTraining()
+    public bool CheckTraining(MapResourceResultHandler resultHandler)
     {
-        switch(ID)
+        if (ID == 1)
         {
-            case 1:
-                return IsSuccess();
-            case 2:
-                return IsFail();
-            case 3:
-                return IsGatherTwoOrMore();
+            return IsSuccess(resultHandler);
+        }
+        else if (ID == 2)
+        {
+            return IsFail(resultHandler);
+        }
+        else if (ID == 3)
+        {
+            return IsGatherTwoOrMore(resultHandler);
+        }
+        else if (new List<int> { 4, 6, 8, 10, 12, 14, 16, 18, 20 }.Contains(ID))
+        {
+            return IsGatherResource(resultHandler);
+        }
+        else if (new List<int> { 5, 7, 9, 11, 13, 15, 17, 19, 21 }.Contains(ID))
+        {
+            return IsFullyGatherResource(resultHandler);
         }
 
         return false;
@@ -102,27 +114,28 @@ public class SkillTrainingMethod
     ///     Checks if the action was a success.
     /// </summary>
     /// <returns></returns>
-    public bool IsSuccess()
+    public bool IsSuccess(MapResourceResultHandler resultHandler)
     {
-        return result.isSuccess;
+        return resultHandler.isSuccess;
     }
 
     /// <summary>
     ///     Checks if the action was a failure.
     /// </summary>
     /// <returns></returns>
-    public bool IsFail()
+    public bool IsFail(MapResourceResultHandler resultHandler)
     {
-        return !IsSuccess();
+        return !IsSuccess(resultHandler);
     }
 
     /// <summary>
     ///     Checks if two or more resources were gathered at once.
     /// </summary>
     /// <returns></returns>
-    public bool IsGatherTwoOrMore()
+    public bool IsGatherTwoOrMore(MapResourceResultHandler resultHandler)
     {
-        if (IsSuccess() && result.type == Result.Type.Gather && result.resourceGain > 1)
+        if (IsSuccess(resultHandler) && resultHandler.type == ResultHandler.Type.Gather
+                && resultHandler.resourceGain > 1)
         {
             return true;
         }
@@ -130,9 +143,10 @@ public class SkillTrainingMethod
         return false;
     }
 
-    public bool IsGatherOakLog()
+    public bool IsGatherResource(MapResourceResultHandler resultHandler)
     {
-        if (IsSuccess() && result.type == Result.Type.Gather && result.resourceID == 6)
+        if (IsSuccess(resultHandler) && resultHandler.type == ResultHandler.Type.Gather 
+                && resultHandler.resourceID == itemID)
         {
             return true;
         }
@@ -140,19 +154,9 @@ public class SkillTrainingMethod
         return false;
     }
 
-    public bool IsGatherWillowLog()
+    public bool IsFullyGatherResource(MapResourceResultHandler resultHandler)
     {
-        if (IsSuccess() && result.type == Result.Type.Gather && result.resourceID == 6)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    public bool IsGatherMapleLog()
-    {
-        if (IsSuccess() && result.type == Result.Type.Gather && result.resourceID == 6)
+        if (IsGatherResource(resultHandler) && resultHandler.isEmpty)
         {
             return true;
         }

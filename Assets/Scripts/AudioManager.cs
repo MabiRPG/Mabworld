@@ -32,17 +32,17 @@ public class AudioManager : MonoBehaviour
 
     private void OnEnable()
     {
-        Player.Instance.result.trainingEvent.OnChange += PlayResultSFX;
+        Player.Instance.trainingEvent += PlayResultSFX;
     }
 
     private void OnDisable()
     {
-        Player.Instance.result.trainingEvent.OnChange -= PlayResultSFX;
+        Player.Instance.trainingEvent -= PlayResultSFX;
     }
 
-    private void PlayResultSFX()
+    private void PlayResultSFX<T>(T resultHandler) where T : ResultHandler
     {
-        if (Player.Instance.result.isSuccess)
+        if (resultHandler.isSuccess)
         {
             playerAudio.PlayOneShot(emotionSuccessSFX);
         }

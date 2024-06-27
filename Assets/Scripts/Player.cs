@@ -32,10 +32,8 @@ public class Player : Actor
     public bool isBusy = false;
     private IEnumerator playerCoroutine;
 
-    // Result instance of player
-    public Result result = new Result();
-
-    public GameObject Map;
+    public GameObject map;
+    public event Action<MapResourceResultHandler> trainingEvent;
 
     /// <summary>
     ///     Initializes the object.
@@ -77,7 +75,7 @@ public class Player : Actor
     /// <param name="other"></param>
     private void OnTriggerEnter2D(Collider2D other)
     {
-        InteractableObject target = other.gameObject.GetComponent<InteractableObject>();
+        MapResource target = other.gameObject.GetComponent<MapResource>();
 
         if (target != null)
         {
@@ -123,7 +121,7 @@ public class Player : Actor
     /// </summary>
     public void ToggleMap()
     {
-        Map.SetActive(!Map.activeSelf);
+        map.SetActive(!map.activeSelf);
     }
 
     /// <summary>
@@ -233,11 +231,11 @@ public class Player : Actor
     ///     Uses the skill by starting a coroutine.
     /// </summary>
     /// <param name="skill">Skill instance to use.</param>
-    public void StartAction(Skill skill)
+    public void StartAction<T>(Skill skill, T resultHandler) where T : ResultHandler
     {
         if (IsSkillLearned(skill) && !isBusy)
         {
-            playerCoroutine = skill.Use();
+            playerCoroutine = skill.Use(resultHandler);
             StartCoroutine(playerCoroutine);
         }
     }
@@ -251,8 +249,12 @@ public class Player : Actor
         {
             StopCoroutine(playerCoroutine);
             playerCoroutine = null;
-            result.Clear();
             isBusy = false;
         }
+    }
+
+    public void MapResourceRaiseOnChange(MapResourceResultHandler sender)
+    {
+        trainingEvent(sender);
     }
 }

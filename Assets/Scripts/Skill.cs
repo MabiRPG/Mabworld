@@ -53,7 +53,7 @@ public class Skill
 
     // All ranks in string format
     public List<string> ranks = new List<string>
-    {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
+        {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
 
     // Query strings to database.
     private const string skillQuery = @"SELECT * FROM skill WHERE id = @id LIMIT 1;";
@@ -64,14 +64,9 @@ public class Skill
         JOIN skill_stat_type
         ON skill_stat.skill_stat_id = skill_stat_type.id
         WHERE skill.id = @id;";
-    private const string methodsQuery = @"SELECT training_method_type.name, 
-            training_method.training_method_id, training_method.xp_gain_each, training_method.count_max 
-        FROM training_method
-        JOIN training_method_type
-        ON training_method.training_method_id = training_method_type.id
-        JOIN skill
-        ON training_method.skill_id = skill.id
-        WHERE training_method.skill_id = @id AND training_method.rank = @rank";
+    private const string methodsQuery = @"SELECT *
+        FROM ""PROD Training Method Query""
+        WHERE skill_id = @id AND rank = @rank";
 
     /// <summary>
     ///     Initializes the object.
@@ -207,7 +202,7 @@ public class Skill
         }
     }
 
-    public IEnumerator Use()
+    public IEnumerator Use<T>(T resultHandler) where T : ResultHandler
     {
         // Makes the player busy.
         Player.Instance.isBusy = true;
@@ -260,9 +255,7 @@ public class Skill
         float roll = (float)GameManager.Instance.rnd.NextDouble();
 
         // Handle success or fail here
-        Result result = Player.Instance.result;
-        result.skill = this;
-        result.SetState(chance >= roll);
+        resultHandler.SetSuccess(chance >= roll);
 
         // Makes the player available again.
         Player.Instance.isBusy = false;

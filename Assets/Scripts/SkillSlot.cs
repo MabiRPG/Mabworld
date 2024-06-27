@@ -56,7 +56,7 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
             }
             else
             {
-                Player.Instance.StartAction(skill);
+                //Player.Instance.StartAction(skill);
             }
         }
         // If right mouse button pressed
@@ -77,7 +77,7 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
         this.skill = skill;
         icon.sprite = this.skill.icon;
 
-        InputManager.Instance.AddButtonBind(key, () => Player.Instance.StartAction(this.skill));
+        //InputManager.Instance.AddButtonBind(key, () => Player.Instance.StartAction(this.skill));
         this.openWindowAction = openWindowAction;
     }
 
