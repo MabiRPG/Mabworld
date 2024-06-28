@@ -50,6 +50,7 @@ public class MapResourceResultHandler : ResultHandler
         }
 
         mapEvent.RaiseOnChange();
+        Player.Instance.OnUsed();
         Player.Instance.MapResourceRaiseOnChange(this);
     }
 } 

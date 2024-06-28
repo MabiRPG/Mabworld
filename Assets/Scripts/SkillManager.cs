@@ -93,7 +93,7 @@ public class SkillManager
     {
         if (IsLearned(skill) && bubble != null)
         {
-            return bubble.Ready(skill.icon, skill.GetLoadTime());
+            return bubble.Pulse(skill.icon, skill.GetLoadTime());
         }
 
         return null;
@@ -107,7 +107,7 @@ public class SkillManager
     {
         if (bubble != null)
         {
-            return bubble.Cancel();
+            return bubble.Fade();
         }
 
         return null;

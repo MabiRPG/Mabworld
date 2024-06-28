@@ -76,7 +76,7 @@ public class WindowSkill : Window
     private void Draw()
     {
         // For every skill, create a new prefab to display skill info in window.
-        foreach (KeyValuePair<int, Skill> skill in Player.Instance.skills)
+        foreach (KeyValuePair<int, Skill> skill in Player.Instance.skillManager.Skills)
         {
             // Instantiates the prefab in the window. Parent window has
             // a vertical layout group to control children components.

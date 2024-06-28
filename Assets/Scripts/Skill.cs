@@ -169,6 +169,16 @@ public class Skill
         }
     }
 
+    public float GetStat(string key)
+    {
+        if (stats.ContainsKey(key))
+        {
+            return stats[key][index.Value];
+        }
+
+        return 0;
+    }
+
     public float GetLoadTime()
     {
         float time = baseLoadTime;
@@ -176,6 +186,19 @@ public class Skill
         if (stats.ContainsKey("load_time"))
         {
             time += stats["load_time"][index.Value];
+        }
+
+        return time;
+    }
+
+    public float GetUseTime()
+    {
+        float time = baseUseTime;
+
+        // Adds skill specific time modifiers
+        if (stats.ContainsKey("use_time"))
+        {
+            time += stats["use_time"][index.Value];
         }
 
         return time;
@@ -216,16 +239,8 @@ public class Skill
 
     public IEnumerator Use<T>(T resultHandler) where T : ResultHandler
     {
-        // Makes the player busy.
-        Player.Instance.isBusy = true;
         // Calculates the base use time for the skill.
-        float useTime = baseUseTime;
-
-        // Adds skill specific time modifiers
-        if (stats.ContainsKey("use_time"))
-        {
-            useTime += stats["use_time"][index.Value];
-        }
+        float useTime = GetUseTime();
 
         useTime = Math.Max(0, useTime);
 
@@ -255,12 +270,8 @@ public class Skill
 
         // Calculate base success rate of skill
         float chance = GameManager.Instance.lifeSkillBaseSuccessRate + Player.Instance.CalculateLifeSkillSuccessRate();
-
-        // Add skill specific modifiers
-        if (stats.ContainsKey("success_rate_increase"))
-        {
-            chance += stats["success_rate_increase"][index.Value];
-        }
+        // TODO : change to summation of previous ranks...
+        chance += GetStat("success_rate_increase");
 
         // Change to percentage and roll die
         chance /= 100;
@@ -268,8 +279,5 @@ public class Skill
 
         // Handle success or fail here
         resultHandler.SetSuccess(chance >= roll);
-
-        // Makes the player available again.
-        Player.Instance.isBusy = false;
     }
 }

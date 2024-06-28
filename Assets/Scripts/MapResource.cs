@@ -151,9 +151,9 @@ public class MapResource : MonoBehaviour
             return;
         }
 
-        if (Player.Instance.state == Actor.State.SkillLoaded && Player.Instance.skillLoad.ID == skillID)
+        if (Player.Instance.state == Actor.State.SkillLoaded && Player.Instance.skillLoaded.ID == skillID)
         {
-            resultHandler.SetResource(Player.Instance.skills[skillID], lootTableID, resource.Value);
+            resultHandler.SetResource(Player.Instance.skillLoaded, lootTableID, resource.Value);
             Player.Instance.UseSkill(resultHandler);
         }
 

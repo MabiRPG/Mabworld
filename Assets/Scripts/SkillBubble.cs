@@ -53,6 +53,16 @@ public class SkillBubble : MonoBehaviour
         cancelClip = Addressables.LoadAssetAsync<AudioClip>(cancelFilename).WaitForCompletion();
 
         // Hides the sprite at the start.
+        Hide();
+    }
+
+    public void Show()
+    {
+        spriteRenderer.color = new Color(1, 1, 1, 1);
+    }
+
+    public void Hide()
+    {
         spriteRenderer.color = new Color(1, 1, 1, 0);
     }
 
@@ -62,10 +72,10 @@ public class SkillBubble : MonoBehaviour
     /// <param name="sprite">Skill sprite icon to show.</param>
     /// <param name="duration">Duration in seconds to load the skill.</param>
     /// <returns>Coroutine to be run.</returns>
-    public IEnumerator Ready(Sprite sprite, float duration)
+    public IEnumerator Pulse(Sprite sprite, float duration)
     {
         spriteRenderer.sprite = sprite;
-        spriteRenderer.color = new Color(1, 1, 1, 1);
+        Show();
         float timer = 0f;
 
         if (scaleLowerLimit > scaleUpperLimit)
@@ -113,7 +123,7 @@ public class SkillBubble : MonoBehaviour
     ///     Gets the coroutine to show the skill cancelling.
     /// </summary>
     /// <returns>Coroutine to be run.</returns>
-    public IEnumerator Cancel()
+    public IEnumerator Fade()
     {
         audioSource.clip = cancelClip;
         audioSource.Play();
@@ -130,8 +140,7 @@ public class SkillBubble : MonoBehaviour
             yield return new WaitForSeconds(cancelAlphaChangeInterval);
         }
 
-        // Set it absolute at 0 once done.
-        spriteRenderer.color = new Color(1, 1, 1, 0);
+        Hide();
         cancelEvent.RaiseOnChange();
     }
 }

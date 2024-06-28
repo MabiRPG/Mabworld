@@ -50,7 +50,7 @@ public class LootGenerator
         }
 
         int resourceGain = Player.Instance.CalculateLuckyGainMultiplier();
-        Player.Instance.inventory.AddItem(resourceID, resourceGain);
+        Player.Instance.inventoryManager.AddItem(resourceID, resourceGain);
         return (resourceID, resourceGain);
     }
 }

@@ -14,7 +14,7 @@ public class Player : Actor
     // Ability points
     public IntManager actorAP = new IntManager(1000);
     // Inventory
-    public InventoryManager inventory = new InventoryManager();
+    public InventoryManager inventoryManager = new InventoryManager();
 
     // How much our life skill success rates scale with dex.
     private int lifeSkillDexFactor = 10;
@@ -27,10 +27,6 @@ public class Player : Actor
     private int luckyGain = 2;
     private int hugeLuckyFactor = 50000;
     private int hugeLuckyGain = 20;
-
-    // Flag for player if busy
-    public bool isBusy = false;
-    private IEnumerator playerCoroutine;
 
     public GameObject map;
     public event Action<MapResourceResultHandler> trainingEvent;
@@ -63,11 +59,6 @@ public class Player : Actor
         base.Start();
 
         // Debug purposes...
-        LearnSkill(1);
-        LearnSkill(2);
-        LearnSkill(3);
-        LearnSkill(4);
-
         skillManager.Learn(1);
         skillManager.Learn(2);
         skillManager.Learn(3);
@@ -127,48 +118,14 @@ public class Player : Actor
     }
 
     /// <summary>
-    ///     Checks if the skill has been learned
-    /// </summary>
-    /// <param name="ID">Skill ID in database</param>
-    /// <returns>True if learned, False otherwise</returns>
-    public bool IsSkillLearned(int ID)
-    {
-        return skills.ContainsKey(ID);
-    }
-
-    /// <summary>
-    ///     Checks if the skill has been learned
-    /// </summary>
-    /// <param name="skill">Skill instance to check</param>
-    /// <returns>True if learned, False otherwise</returns>
-    public bool IsSkillLearned(Skill skill)
-    {
-        return skills.ContainsValue(skill);
-    }
-
-    /// <summary>
-    ///     Learns the skill
-    /// </summary>
-    /// <param name="ID">Skill ID in database</param>
-    public void LearnSkill(int ID)
-    {
-        if (IsSkillLearned(ID))
-        {
-            return;
-        }
-
-        skills.Add(ID, new Skill(ID));
-    }
-
-    /// <summary>
     ///     Ranks up the skill
     /// </summary>
     /// <param name="ID">Skill ID in database</param>
     public void RankUpSkill(int ID)
     {
-        if (IsSkillLearned(ID))
+        if (skillManager.IsLearned(ID))
         {
-            RankUpSkill(skills[ID]);
+            RankUpSkill(skillManager.Get(ID));
         }
     }
 
@@ -180,7 +137,7 @@ public class Player : Actor
     {
         int apCost = (int)skill.stats["ap_cost"][skill.index.Value + 1] - (int)skill.stats["ap_cost"][skill.index.Value];
 
-        if (IsSkillLearned(skill) && skill.CanRankUp() && actorAP.Value >= apCost)
+        if (skillManager.IsLearned(skill) && skill.CanRankUp() && actorAP.Value >= apCost)
         {
             actorAP.Value -= apCost;
             skill.RankUp();
@@ -227,32 +184,6 @@ public class Player : Actor
         }
 
         return 1;
-    }
-
-    /// <summary>
-    ///     Uses the skill by starting a coroutine.
-    /// </summary>
-    /// <param name="skill">Skill instance to use.</param>
-    public void StartAction<T>(Skill skill, T resultHandler) where T : ResultHandler
-    {
-        if (IsSkillLearned(skill) && !isBusy)
-        {
-            playerCoroutine = skill.Use(resultHandler);
-            StartCoroutine(playerCoroutine);
-        }
-    }
-
-    /// <summary>
-    ///     Interrupts the current coroutine and returns control to player.
-    /// </summary>
-    public void InterruptAction()
-    {
-        if (playerCoroutine != null)
-        {
-            StopCoroutine(playerCoroutine);
-            playerCoroutine = null;
-            isBusy = false;
-        }
     }
 
     public void MapResourceRaiseOnChange(MapResourceResultHandler sender)

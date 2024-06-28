@@ -141,7 +141,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
 
         slotWidth = InventoryManager.slotWidth;
         slotHeight = InventoryManager.slotHeight;
-        bag = Player.Instance.inventory.Bags[0];
+        bag = Player.Instance.inventoryManager.Bags[0];
 
         itemCanvasRect.sizeDelta = new Vector2(bag.width * slotWidth, bag.height * slotHeight);
 

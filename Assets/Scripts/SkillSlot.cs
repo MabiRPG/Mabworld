@@ -78,7 +78,7 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
         this.skill = skill;
         icon.sprite = this.skill.icon;
 
-        //InputManager.Instance.AddButtonBind(key, () => Player.Instance.StartAction(this.skill));
+        InputManager.Instance.AddButtonBind(key, () => Player.Instance.LoadSkill(skill));
         this.openWindowAction = openWindowAction;
     }
 

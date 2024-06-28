@@ -68,7 +68,7 @@ public class InputManager : MonoBehaviour
             //Player.Instance.InterruptAction();
             Player.Instance.CancelSkill();
         }
-        else if (Player.Instance.isBusy)
+        else if (Player.Instance.state != Actor.State.Idle)
         {
             return;
         }
