@@ -1,0 +1,1632 @@
+fileFormatVersion: 2
+guid: 762bc6cae3f95be458e672b19a562c1f
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: 001-Grassland01_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 544
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b1394a3800a704b4eaaa3809cd988c61
+      internalID: -450361595
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_1
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 546
+        width: 31
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0476ced547fe9994a8cbf5b8b17e00e6
+      internalID: 1213866829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_2
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 544
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 22a75af43df99bb4db0cf22cebe51d90
+      internalID: 1231299318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_3
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 545
+        width: 31
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ccd57bce148a0874190af8a20611867b
+      internalID: -1929596120
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_4
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 483
+        width: 28
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d02f0f4bf11a6cf4688624e0bfad0d8a
+      internalID: 1213265443
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_5
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 514
+        width: 26
+        height: 25
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 38a768dffdbd07247a94557c9fbd5d35
+      internalID: -1924724918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_6
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 547
+        width: 26
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5fdc6dc839827184cb215c003a329c37
+      internalID: 417790509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_7
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 544
+        width: 32
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2033267458320764c841c48ff277543d
+      internalID: 662815804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_8
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 547
+        width: 28
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 66b74f8c4fba0f2459e70f72c812a8ab
+      internalID: -326793513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_9
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 554
+        width: 14
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 598249ea4a4e5694abeff1ff97d46fe0
+      internalID: 701291382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_10
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 481
+        width: 32
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 7, y: 5, z: 7, w: 7}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f7d039ca366cceb49a5c04ee910386b0
+      internalID: -722214596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_11
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 483
+        width: 25
+        height: 21
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 36bbae9e529d37945a793747e61cbaac
+      internalID: 1158711549
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_12
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 513
+        width: 31
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 368ced2f152073f4db7c39ec1aa6b9a2
+      internalID: -1985716186
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_13
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 520
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 717e28541199e0649b376910213d589c
+      internalID: 1100329437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_14
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 512
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7e47c609d91a5894c8c554b1c27dd7bd
+      internalID: -1535881898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_15
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 513
+        width: 32
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0f2cbbf54cebc2a4f858c97ae4379972
+      internalID: 1523137569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_16
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 225
+        width: 85
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 059038cc8c9fb7441ada0b3df3b905c2
+      internalID: -646811078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_17
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 515
+        width: 28
+        height: 25
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b82fdf2258f13c443aa9ee1bf87af5ed
+      internalID: 1396453794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_18
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 512
+        width: 32
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3829c912548260742a7390ada50f23b9
+      internalID: 1161851682
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_20
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 132
+        width: 31
+        height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 65de5ceb5595a7d43b82ca252aa3b09d
+      internalID: -970597074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_21
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 192
+        width: 25
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 12, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4f4c37d442bfb3c48a0c01f180b864e7
+      internalID: 1860698304
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_22
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 423
+        width: 77
+        height: 81
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 12, y: 12, z: 12, w: 13}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eeb1c90f4cfb5e14a8ff5b1dbb84ab9e
+      internalID: -1959685093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_23
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 416
+        width: 65
+        height: 65
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 9, y: 7, z: 7, w: 14}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a3b20f88b1192841b74282b58e1169c
+      internalID: 1765798875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_24
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 481
+        width: 10
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8c6c6b005ac4efb49aa053c5ebf0a283
+      internalID: -453924930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_25
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 482
+        width: 19
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: db91b57c9bddd434188282eddb97996b
+      internalID: 144085264
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_26
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 452
+        width: 27
+        height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 49eecca31d41f8f468e3abf25033b9f8
+      internalID: -1892971026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_27
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 449
+        width: 32
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eae2cddb44594e8449df6f9a0b0de19f
+      internalID: -338439594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_28
+      rect:
+        serializedVersion: 2
+        x: 227
+        y: 448
+        width: 27
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 239d3a9f05e622c4aafbc028204d3d8e
+      internalID: 105864794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_29
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 261
+        width: 115
+        height: 152
+      alignment: 9
+      pivot: {x: 0.52069175, y: 0.12971215}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 12.5, y: -74}
+        - {x: 14.5, y: -72}
+        - {x: 13.5, y: -70}
+        - {x: 16.5, y: -68}
+        - {x: 16.5, y: -66}
+        - {x: 14.5, y: -63}
+        - {x: 14.5, y: -54}
+        - {x: 17.5, y: -52}
+        - {x: 18.5, y: -52}
+        - {x: 21.5, y: -49}
+        - {x: 22.5, y: -49}
+        - {x: 26.5, y: -51}
+        - {x: 30.5, y: -48}
+        - {x: 32.5, y: -48}
+        - {x: 34.5, y: -46}
+        - {x: 40.5, y: -45}
+        - {x: 46.5, y: -40}
+        - {x: 46.5, y: -38}
+        - {x: 47.5, y: -39}
+        - {x: 49.5, y: -39}
+        - {x: 56.5, y: -33}
+        - {x: 56.5, y: -25}
+        - {x: 57.5, y: -24}
+        - {x: 57.5, y: -21}
+        - {x: 56.5, y: -20}
+        - {x: 57.5, y: -19}
+        - {x: 57.5, y: -16}
+        - {x: 56.5, y: -15}
+        - {x: 57.5, y: -14}
+        - {x: 57.5, y: 1}
+        - {x: 55.5, y: 3}
+        - {x: 55.5, y: 9}
+        - {x: 52.5, y: 12}
+        - {x: 52.5, y: 15}
+        - {x: 50.5, y: 17}
+        - {x: 50.5, y: 20}
+        - {x: 48.5, y: 22}
+        - {x: 48.5, y: 25}
+        - {x: 45.5, y: 28}
+        - {x: 45.5, y: 30}
+        - {x: 46.5, y: 31}
+        - {x: 46.5, y: 36}
+        - {x: 44.5, y: 38}
+        - {x: 44.5, y: 40}
+        - {x: 39.5, y: 45}
+        - {x: 38.5, y: 45}
+        - {x: 35.5, y: 48}
+        - {x: 35.5, y: 52}
+        - {x: 33.5, y: 55}
+        - {x: 29.5, y: 57}
+        - {x: 29.5, y: 58}
+        - {x: 26.5, y: 62}
+        - {x: 23.5, y: 68}
+        - {x: 17.5, y: 73}
+        - {x: 9.5, y: 75}
+        - {x: 8.5, y: 76}
+        - {x: -3.5, y: 76}
+        - {x: -5.5, y: 74}
+        - {x: -6.5, y: 75}
+        - {x: -8.5, y: 75}
+        - {x: -11.5, y: 74}
+        - {x: -16.5, y: 68}
+        - {x: -16.5, y: 64}
+        - {x: -18.5, y: 64}
+        - {x: -20.5, y: 62}
+        - {x: -21.5, y: 62}
+        - {x: -27.5, y: 56}
+        - {x: -28.5, y: 50}
+        - {x: -27.5, y: 49}
+        - {x: -30.5, y: 49}
+        - {x: -33.5, y: 48}
+        - {x: -35.5, y: 45}
+        - {x: -36.5, y: 45}
+        - {x: -40.5, y: 41}
+        - {x: -40.5, y: 39}
+        - {x: -41.5, y: 38}
+        - {x: -41.5, y: 34}
+        - {x: -43.5, y: 31}
+        - {x: -44.5, y: 31}
+        - {x: -48.5, y: 27}
+        - {x: -48.5, y: 24}
+        - {x: -50.5, y: 22}
+        - {x: -50.5, y: 18}
+        - {x: -49.5, y: 17}
+        - {x: -49.5, y: 14}
+        - {x: -54.5, y: 10}
+        - {x: -55.5, y: 7}
+        - {x: -55.5, y: 3}
+        - {x: -53.5, y: -1}
+        - {x: -57.5, y: -3}
+        - {x: -57.5, y: -16}
+        - {x: -56.5, y: -17}
+        - {x: -56.5, y: -20}
+        - {x: -54.5, y: -22}
+        - {x: -54.5, y: -26}
+        - {x: -51.5, y: -30}
+        - {x: -51.5, y: -33}
+        - {x: -46.5, y: -38}
+        - {x: -45.5, y: -38}
+        - {x: -42.5, y: -42}
+        - {x: -39.5, y: -43}
+        - {x: -36.5, y: -43}
+        - {x: -32.5, y: -47}
+        - {x: -28.5, y: -47}
+        - {x: -26.5, y: -49}
+        - {x: -24.5, y: -49}
+        - {x: -22.5, y: -51}
+        - {x: -18.5, y: -51}
+        - {x: -17.5, y: -52}
+        - {x: -11.5, y: -53}
+        - {x: -8.5, y: -55}
+        - {x: -8.5, y: -60}
+        - {x: -9.5, y: -61}
+        - {x: -10.5, y: -65}
+        - {x: -12.5, y: -67}
+        - {x: -12.5, y: -70}
+        - {x: -8.5, y: -71}
+        - {x: -9.5, y: -74}
+        - {x: -7.5, y: -76}
+        - {x: -5.5, y: -76}
+        - {x: -2.5, y: -74}
+        - {x: 0.5, y: -74}
+        - {x: 0.5, y: -76}
+        - {x: 6.5, y: -76}
+        - {x: 7.5, y: -72}
+        - {x: 10.5, y: -74}
+      physicsShape:
+      - - {x: 12.5, y: -74}
+        - {x: 14.5, y: -72}
+        - {x: 13.5, y: -70}
+        - {x: 16.5, y: -68}
+        - {x: 16.5, y: -66}
+        - {x: 14.5, y: -63}
+        - {x: 14.5, y: -54}
+        - {x: 17.5, y: -52}
+        - {x: 18.5, y: -52}
+        - {x: 21.5, y: -49}
+        - {x: 22.5, y: -49}
+        - {x: 26.5, y: -51}
+        - {x: 30.5, y: -48}
+        - {x: 32.5, y: -48}
+        - {x: 34.5, y: -46}
+        - {x: 40.5, y: -45}
+        - {x: 46.5, y: -40}
+        - {x: 46.5, y: -38}
+        - {x: 47.5, y: -39}
+        - {x: 49.5, y: -39}
+        - {x: 56.5, y: -33}
+        - {x: 56.5, y: -25}
+        - {x: 57.5, y: -24}
+        - {x: 57.5, y: -21}
+        - {x: 56.5, y: -20}
+        - {x: 57.5, y: -19}
+        - {x: 57.5, y: -16}
+        - {x: 56.5, y: -15}
+        - {x: 57.5, y: -14}
+        - {x: 57.5, y: 1}
+        - {x: 55.5, y: 3}
+        - {x: 55.5, y: 9}
+        - {x: 52.5, y: 12}
+        - {x: 52.5, y: 15}
+        - {x: 50.5, y: 17}
+        - {x: 50.5, y: 20}
+        - {x: 48.5, y: 22}
+        - {x: 48.5, y: 25}
+        - {x: 45.5, y: 28}
+        - {x: 45.5, y: 30}
+        - {x: 46.5, y: 31}
+        - {x: 46.5, y: 36}
+        - {x: 44.5, y: 38}
+        - {x: 44.5, y: 40}
+        - {x: 39.5, y: 45}
+        - {x: 38.5, y: 45}
+        - {x: 35.5, y: 48}
+        - {x: 35.5, y: 52}
+        - {x: 33.5, y: 55}
+        - {x: 29.5, y: 57}
+        - {x: 29.5, y: 58}
+        - {x: 26.5, y: 62}
+        - {x: 23.5, y: 68}
+        - {x: 17.5, y: 73}
+        - {x: 9.5, y: 75}
+        - {x: 8.5, y: 76}
+        - {x: -3.5, y: 76}
+        - {x: -5.5, y: 74}
+        - {x: -6.5, y: 75}
+        - {x: -8.5, y: 75}
+        - {x: -11.5, y: 74}
+        - {x: -16.5, y: 68}
+        - {x: -16.5, y: 64}
+        - {x: -18.5, y: 64}
+        - {x: -20.5, y: 62}
+        - {x: -21.5, y: 62}
+        - {x: -27.5, y: 56}
+        - {x: -28.5, y: 50}
+        - {x: -27.5, y: 49}
+        - {x: -30.5, y: 49}
+        - {x: -33.5, y: 48}
+        - {x: -35.5, y: 45}
+        - {x: -36.5, y: 45}
+        - {x: -40.5, y: 41}
+        - {x: -40.5, y: 39}
+        - {x: -41.5, y: 38}
+        - {x: -41.5, y: 34}
+        - {x: -43.5, y: 31}
+        - {x: -44.5, y: 31}
+        - {x: -48.5, y: 27}
+        - {x: -48.5, y: 24}
+        - {x: -50.5, y: 22}
+        - {x: -50.5, y: 18}
+        - {x: -49.5, y: 17}
+        - {x: -49.5, y: 14}
+        - {x: -54.5, y: 10}
+        - {x: -55.5, y: 7}
+        - {x: -55.5, y: 3}
+        - {x: -53.5, y: -1}
+        - {x: -57.5, y: -3}
+        - {x: -57.5, y: -16}
+        - {x: -56.5, y: -17}
+        - {x: -56.5, y: -20}
+        - {x: -54.5, y: -22}
+        - {x: -54.5, y: -26}
+        - {x: -51.5, y: -30}
+        - {x: -51.5, y: -33}
+        - {x: -46.5, y: -38}
+        - {x: -45.5, y: -38}
+        - {x: -42.5, y: -42}
+        - {x: -39.5, y: -43}
+        - {x: -36.5, y: -43}
+        - {x: -32.5, y: -47}
+        - {x: -28.5, y: -47}
+        - {x: -26.5, y: -49}
+        - {x: -24.5, y: -49}
+        - {x: -22.5, y: -51}
+        - {x: -18.5, y: -51}
+        - {x: -17.5, y: -52}
+        - {x: -11.5, y: -53}
+        - {x: -8.5, y: -55}
+        - {x: -8.5, y: -60}
+        - {x: -9.5, y: -61}
+        - {x: -10.5, y: -65}
+        - {x: -12.5, y: -67}
+        - {x: -12.5, y: -70}
+        - {x: -8.5, y: -71}
+        - {x: -9.5, y: -74}
+        - {x: -7.5, y: -76}
+        - {x: -5.5, y: -76}
+        - {x: -2.5, y: -74}
+        - {x: 0.5, y: -74}
+        - {x: 0.5, y: -76}
+        - {x: 6.5, y: -76}
+        - {x: 7.5, y: -72}
+        - {x: 10.5, y: -74}
+      tessellationDetail: 1
+      bones: []
+      spriteID: d2adc2ac59c30e640a90a83ce7f586ab
+      internalID: 597273058
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_30
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 256
+        width: 124
+        height: 160
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 9, y: -73}
+        - {x: 11, y: -71}
+        - {x: 10, y: -69}
+        - {x: 14, y: -66}
+        - {x: 11, y: -60}
+        - {x: 10, y: -45}
+        - {x: 11, y: -44}
+        - {x: 11, y: -41}
+        - {x: 12, y: -41}
+        - {x: 17, y: -46}
+        - {x: 18, y: -46}
+        - {x: 20, y: -44}
+        - {x: 20, y: -42}
+        - {x: 17, y: -38}
+        - {x: 19, y: -38}
+        - {x: 22, y: -40}
+        - {x: 27, y: -45}
+        - {x: 28, y: -48}
+        - {x: 30, y: -49}
+        - {x: 30, y: -52}
+        - {x: 33, y: -56}
+        - {x: 36, y: -55}
+        - {x: 36, y: -50}
+        - {x: 39, y: -50}
+        - {x: 41, y: -48}
+        - {x: 43, y: -48}
+        - {x: 45, y: -46}
+        - {x: 45, y: -45}
+        - {x: 41, y: -41}
+        - {x: 32, y: -39}
+        - {x: 29, y: -36}
+        - {x: 32, y: -35}
+        - {x: 33, y: -36}
+        - {x: 38, y: -37}
+        - {x: 50, y: -43}
+        - {x: 52, y: -41}
+        - {x: 52, y: -39}
+        - {x: 49, y: -35}
+        - {x: 46, y: -34}
+        - {x: 44, y: -32}
+        - {x: 40, y: -31}
+        - {x: 41, y: -30}
+        - {x: 45, y: -30}
+        - {x: 46, y: -29}
+        - {x: 49, y: -29}
+        - {x: 50, y: -28}
+        - {x: 54, y: -28}
+        - {x: 55, y: -27}
+        - {x: 61, y: -27}
+        - {x: 62, y: -26}
+        - {x: 62, y: -22}
+        - {x: 45, y: -22}
+        - {x: 44, y: -23}
+        - {x: 39, y: -23}
+        - {x: 38, y: -24}
+        - {x: 35, y: -24}
+        - {x: 34, y: -25}
+        - {x: 31, y: -25}
+        - {x: 30, y: -26}
+        - {x: 27, y: -26}
+        - {x: 26, y: -27}
+        - {x: 22, y: -27}
+        - {x: 21, y: -28}
+        - {x: 17, y: -28}
+        - {x: 16, y: -29}
+        - {x: 12, y: -29}
+        - {x: 11, y: -28}
+        - {x: 15, y: -24}
+        - {x: 16, y: -24}
+        - {x: 22, y: -20}
+        - {x: 24, y: -20}
+        - {x: 25, y: -19}
+        - {x: 29, y: -19}
+        - {x: 30, y: -18}
+        - {x: 34, y: -17}
+        - {x: 46, y: -5}
+        - {x: 46, y: -3}
+        - {x: 44, y: -1}
+        - {x: 43, y: -1}
+        - {x: 37, y: -7}
+        - {x: 36, y: -7}
+        - {x: 34, y: -9}
+        - {x: 30, y: -10}
+        - {x: 29, y: -11}
+        - {x: 26, y: -11}
+        - {x: 25, y: -12}
+        - {x: 25, y: -10}
+        - {x: 26, y: -10}
+        - {x: 33, y: -7}
+        - {x: 41, y: 2}
+        - {x: 41, y: 3}
+        - {x: 46, y: 7}
+        - {x: 57, y: 12}
+        - {x: 61, y: 17}
+        - {x: 60, y: 20}
+        - {x: 56, y: 20}
+        - {x: 50, y: 17}
+        - {x: 49, y: 17}
+        - {x: 48, y: 18}
+        - {x: 59, y: 29}
+        - {x: 59, y: 30}
+        - {x: 62, y: 34}
+        - {x: 62, y: 37}
+        - {x: 60, y: 39}
+        - {x: 57, y: 38}
+        - {x: 57, y: 36}
+        - {x: 54, y: 33}
+        - {x: 54, y: 39}
+        - {x: 53, y: 40}
+        - {x: 53, y: 44}
+        - {x: 51, y: 46}
+        - {x: 48, y: 45}
+        - {x: 47, y: 35}
+        - {x: 46, y: 34}
+        - {x: 46, y: 31}
+        - {x: 45, y: 28}
+        - {x: 45, y: 30}
+        - {x: 44, y: 31}
+        - {x: 44, y: 35}
+        - {x: 42, y: 39}
+        - {x: 43, y: 40}
+        - {x: 43, y: 46}
+        - {x: 41, y: 48}
+        - {x: 38, y: 47}
+        - {x: 36, y: 42}
+        - {x: 32, y: 38}
+        - {x: 31, y: 41}
+        - {x: 31, y: 44}
+        - {x: 30, y: 47}
+        - {x: 26, y: 50}
+        - {x: 24, y: 50}
+        - {x: 22, y: 49}
+        - {x: 22, y: 47}
+        - {x: 21, y: 48}
+        - {x: 17, y: 47}
+        - {x: 11, y: 40}
+        - {x: 10, y: 40}
+        - {x: 10, y: 44}
+        - {x: 13, y: 46}
+        - {x: 14, y: 49}
+        - {x: 16, y: 51}
+        - {x: 18, y: 56}
+        - {x: 20, y: 58}
+        - {x: 25, y: 69}
+        - {x: 25, y: 71}
+        - {x: 26, y: 72}
+        - {x: 26, y: 78}
+        - {x: 25, y: 80}
+        - {x: 20, y: 80}
+        - {x: 20, y: 75}
+        - {x: 19, y: 73}
+        - {x: 18, y: 75}
+        - {x: 13, y: 79}
+        - {x: 10, y: 78}
+        - {x: 10, y: 75}
+        - {x: 12, y: 72}
+        - {x: 12, y: 63}
+        - {x: 10, y: 62}
+        - {x: 9, y: 59}
+        - {x: 6, y: 55}
+        - {x: 6, y: 54}
+        - {x: 3, y: 51}
+        - {x: 2, y: 51}
+        - {x: -1, y: 55}
+        - {x: -3, y: 58}
+        - {x: -4, y: 63}
+        - {x: -7, y: 67}
+        - {x: -9, y: 75}
+        - {x: -12, y: 79}
+        - {x: -15, y: 78}
+        - {x: -15, y: 69}
+        - {x: -14, y: 68}
+        - {x: -15, y: 68}
+        - {x: -16, y: 69}
+        - {x: -25, y: 77}
+        - {x: -26, y: 77}
+        - {x: -28, y: 75}
+        - {x: -27, y: 71}
+        - {x: -25, y: 69}
+        - {x: -25, y: 68}
+        - {x: -18, y: 61}
+        - {x: -17, y: 61}
+        - {x: -12, y: 55}
+        - {x: -9, y: 48}
+        - {x: -6, y: 45}
+        - {x: -6, y: 29}
+        - {x: -8, y: 26}
+        - {x: -10, y: 29}
+        - {x: -11, y: 31}
+        - {x: -10, y: 32}
+        - {x: -10, y: 35}
+        - {x: -6, y: 41}
+        - {x: -6, y: 42}
+        - {x: -8, y: 44}
+        - {x: -10, y: 44}
+        - {x: -14, y: 41}
+        - {x: -15, y: 37}
+        - {x: -22, y: 50}
+        - {x: -25, y: 49}
+        - {x: -25, y: 46}
+        - {x: -29, y: 43}
+        - {x: -32, y: 36}
+        - {x: -33, y: 31}
+        - {x: -34, y: 31}
+        - {x: -36, y: 33}
+        - {x: -36, y: 35}
+        - {x: -32, y: 38}
+        - {x: -30, y: 43}
+        - {x: -30, y: 47}
+        - {x: -32, y: 49}
+        - {x: -35, y: 48}
+        - {x: -37, y: 43}
+        - {x: -40, y: 39}
+        - {x: -41, y: 39}
+        - {x: -42, y: 41}
+        - {x: -42, y: 43}
+        - {x: -43, y: 44}
+        - {x: -43, y: 48}
+        - {x: -45, y: 50}
+        - {x: -46, y: 50}
+        - {x: -49, y: 46}
+        - {x: -49, y: 42}
+        - {x: -48, y: 41}
+        - {x: -47, y: 35}
+        - {x: -45, y: 33}
+        - {x: -45, y: 31}
+        - {x: -47, y: 30}
+        - {x: -49, y: 30}
+        - {x: -53, y: 28}
+        - {x: -58, y: 28}
+        - {x: -60, y: 26}
+        - {x: -60, y: 25}
+        - {x: -57, y: 22}
+        - {x: -50, y: 22}
+        - {x: -46, y: 24}
+        - {x: -40, y: 25}
+        - {x: -37, y: 22}
+        - {x: -37, y: 21}
+        - {x: -35, y: 19}
+        - {x: -38, y: 17}
+        - {x: -38, y: 14}
+        - {x: -41, y: 9}
+        - {x: -42, y: 7}
+        - {x: -44, y: 10}
+        - {x: -47, y: 14}
+        - {x: -50, y: 13}
+        - {x: -50, y: 8}
+        - {x: -49, y: 5}
+        - {x: -44, y: 0}
+        - {x: -41, y: -6}
+        - {x: -42, y: -7}
+        - {x: -47, y: -7}
+        - {x: -49, y: -4}
+        - {x: -50, y: 0}
+        - {x: -52, y: 1}
+        - {x: -53, y: 5}
+        - {x: -56, y: 8}
+        - {x: -59, y: 7}
+        - {x: -59, y: 3}
+        - {x: -54, y: -7}
+        - {x: -62, y: -7}
+        - {x: -62, y: -12}
+        - {x: -60, y: -13}
+        - {x: -56, y: -13}
+        - {x: -55, y: -14}
+        - {x: -49, y: -14}
+        - {x: -48, y: -15}
+        - {x: -48, y: -16}
+        - {x: -37, y: -28}
+        - {x: -37, y: -29}
+        - {x: -42, y: -30}
+        - {x: -51, y: -35}
+        - {x: -54, y: -35}
+        - {x: -56, y: -37}
+        - {x: -55, y: -40}
+        - {x: -49, y: -40}
+        - {x: -48, y: -39}
+        - {x: -45, y: -39}
+        - {x: -44, y: -38}
+        - {x: -40, y: -37}
+        - {x: -45, y: -43}
+        - {x: -46, y: -48}
+        - {x: -44, y: -50}
+        - {x: -41, y: -49}
+        - {x: -41, y: -47}
+        - {x: -28, y: -34}
+        - {x: -22, y: -34}
+        - {x: -21, y: -35}
+        - {x: -18, y: -35}
+        - {x: -17, y: -36}
+        - {x: -15, y: -36}
+        - {x: -12, y: -38}
+        - {x: -12, y: -48}
+        - {x: -11, y: -49}
+        - {x: -11, y: -53}
+        - {x: -12, y: -54}
+        - {x: -12, y: -59}
+        - {x: -13, y: -60}
+        - {x: -14, y: -64}
+        - {x: -16, y: -66}
+        - {x: -16, y: -69}
+        - {x: -12, y: -70}
+        - {x: -13, y: -73}
+        - {x: -11, y: -75}
+        - {x: -9, y: -75}
+        - {x: -6, y: -73}
+        - {x: -4, y: -73}
+        - {x: -2, y: -77}
+        - {x: 0, y: -77}
+        - {x: 3, y: -75}
+        - {x: 4, y: -71}
+        - {x: 7, y: -73}
+      - - {x: -29, y: -23}
+        - {x: -34, y: -21}
+        - {x: -33, y: -15}
+        - {x: -25, y: -15}
+        - {x: -24, y: -16}
+        - {x: -18, y: -17}
+        - {x: -14, y: -20}
+        - {x: -13, y: -24}
+        - {x: -26, y: -24}
+        - {x: -27, y: -23}
+      - - {x: -14, y: -6}
+        - {x: -18, y: -4}
+        - {x: -30, y: -3}
+        - {x: -33, y: -1}
+        - {x: -35, y: 3}
+        - {x: -32, y: 8}
+        - {x: -33, y: 16}
+        - {x: -20, y: 3}
+        - {x: -19, y: 3}
+        - {x: -12, y: -4}
+        - {x: -11, y: -7}
+        - {x: -12, y: -6}
+      - - {x: 11, y: 1}
+        - {x: 17, y: 9}
+        - {x: 18, y: 11}
+        - {x: 21, y: 14}
+        - {x: 22, y: 17}
+        - {x: 30, y: 26}
+        - {x: 31, y: 26}
+        - {x: 37, y: 32}
+        - {x: 36, y: 21}
+        - {x: 35, y: 20}
+        - {x: 35, y: 16}
+        - {x: 34, y: 15}
+        - {x: 34, y: 13}
+        - {x: 32, y: 10}
+        - {x: 27, y: 4}
+        - {x: 26, y: 3}
+        - {x: 23, y: 3}
+        - {x: 22, y: 2}
+        - {x: 19, y: 2}
+        - {x: 16, y: 1}
+        - {x: 15, y: 0}
+        - {x: 13, y: 0}
+        - {x: 12, y: -1}
+        - {x: 9, y: -2}
+      - - {x: -13, y: 14}
+        - {x: -14, y: 15}
+        - {x: -18, y: 16}
+        - {x: -23, y: 22}
+        - {x: -25, y: 26}
+        - {x: -22, y: 29}
+        - {x: -19, y: 30}
+        - {x: -18, y: 25}
+        - {x: -16, y: 20}
+        - {x: -14, y: 18}
+        - {x: -12, y: 15}
+        - {x: -12, y: 13}
+        - {x: -10, y: 12}
+        - {x: -11, y: 14}
+      - - {x: 10, y: 19}
+        - {x: 10, y: 30}
+        - {x: 10, y: 29}
+        - {x: 8, y: 17}
+        - {x: 9, y: 17}
+      - - {x: 18, y: 33}
+        - {x: 18, y: 37}
+        - {x: 20, y: 40}
+        - {x: 24, y: 45}
+        - {x: 23, y: 45}
+        - {x: 24, y: 42}
+        - {x: 24, y: 33}
+        - {x: 22, y: 32}
+        - {x: 20, y: 30}
+      physicsShape: []
+      tessellationDetail: 1
+      bones: []
+      spriteID: 76dbfded5ec711340b5bb590acce729c
+      internalID: -1179203020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_31
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 161
+        width: 7
+        height: 87
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dac83508fbc87614594a3c3a9710d32a
+      internalID: -2107515882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_34
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 0
+        width: 150
+        height: 160
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e21693a7b5fe3194db03b6ed183ee9e2
+      internalID: -1816826107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_19
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 161
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 054731de4599b08408ff36b2b4c902e3
+      internalID: 814903200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_38
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 193
+        width: 26
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 12, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 31e8f5f58fd809c458e68753f4bc32d7
+      internalID: -17293631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_39
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 108
+        width: 31
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9453ce7caad441c4893ab229b2200eb3
+      internalID: -2008022748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_40
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 96
+        width: 31
+        height: 90
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 56cf0105fb505ab4bacbdfc148ea8050
+      internalID: -1417315763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_41
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 96
+        width: 31
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 12}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e6852f02591dd2b419a5f2df31f4f815
+      internalID: -1551224915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_44
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 167
+        width: 32
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 13, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4fcc03a14aa920d418ffff891eeb89ff
+      internalID: -360863700
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-Grassland01_45
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 160
+        width: 94
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 10, y: 0, z: 11, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e1988575ad954ca479839072fd3104c1
+      internalID: 1243308192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      001-Grassland01_0: -450361595
+      001-Grassland01_1: 1213866829
+      001-Grassland01_10: -722214596
+      001-Grassland01_11: 1158711549
+      001-Grassland01_12: -1985716186
+      001-Grassland01_13: 1100329437
+      001-Grassland01_14: -1535881898
+      001-Grassland01_15: 1523137569
+      001-Grassland01_16: -646811078
+      001-Grassland01_17: 1396453794
+      001-Grassland01_18: 1161851682
+      001-Grassland01_19: 814903200
+      001-Grassland01_2: 1231299318
+      001-Grassland01_20: -970597074
+      001-Grassland01_21: 1860698304
+      001-Grassland01_22: -1959685093
+      001-Grassland01_23: 1765798875
+      001-Grassland01_24: -453924930
+      001-Grassland01_25: 144085264
+      001-Grassland01_26: -1892971026
+      001-Grassland01_27: -338439594
+      001-Grassland01_28: 105864794
+      001-Grassland01_29: 597273058
+      001-Grassland01_3: -1929596120
+      001-Grassland01_30: -1179203020
+      001-Grassland01_31: -2107515882
+      001-Grassland01_32: 422705245
+      001-Grassland01_33: -296404520
+      001-Grassland01_34: -1816826107
+      001-Grassland01_35: 512418080
+      001-Grassland01_36: 919861549
+      001-Grassland01_37: 1321316386
+      001-Grassland01_38: -17293631
+      001-Grassland01_39: -2008022748
+      001-Grassland01_4: 1213265443
+      001-Grassland01_40: -1417315763
+      001-Grassland01_41: -1551224915
+      001-Grassland01_42: -249144769
+      001-Grassland01_43: -164318392
+      001-Grassland01_44: -360863700
+      001-Grassland01_45: 1243308192
+      001-Grassland01_5: -1924724918
+      001-Grassland01_6: 417790509
+      001-Grassland01_7: 662815804
+      001-Grassland01_8: -326793513
+      001-Grassland01_9: 701291382
+      Leaves: -1668636003
+      Stump: 603501164
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

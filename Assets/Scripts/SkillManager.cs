@@ -8,17 +8,14 @@ using UnityEngine;
 /// </summary>
 public class SkillManager
 {
-    // Parent actor game object.
-    private GameObject actorObj;
     public SkillBubble bubble;
 
     // Hashmap of skills on (Skill ID, Skill instance)
     public Dictionary<int, Skill> Skills = new Dictionary<int, Skill>();
 
-    public SkillManager(GameObject actorObj)
+    public SkillManager(SkillBubble bubble)
     {
-        this.actorObj = actorObj;
-        bubble = this.actorObj.transform.Find("Skill Bubble").GetComponent<SkillBubble>();
+        this.bubble = bubble;
     }
 
     /// <summary>

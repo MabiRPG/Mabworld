@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 ///     Handles all actor-level info and calculations.
@@ -31,7 +32,8 @@ public class Actor : Movement
     public Dictionary<string, StatManager> primaryStats = new Dictionary<string, StatManager>();
     public Dictionary<string, StatManager> secondaryStats = new Dictionary<string, StatManager>();
 
-    //public Dictionary<int, Skill> skills = new Dictionary<int, Skill>();
+    [SerializeField]
+    private GameObject skillBubblePrefab;
 
     public enum State
     {
@@ -71,7 +73,9 @@ public class Actor : Movement
         secondaryStats.Add("m_defense", actorMDefense);
         secondaryStats.Add("m_protection", actorMProt);
 
-        skillManager = new SkillManager(gameObject);
+        GameObject obj = Instantiate(skillBubblePrefab, transform);
+        SkillBubble bubble = obj.GetComponent<SkillBubble>();
+        skillManager = new SkillManager(bubble);
     }
 
     /// <summary>
@@ -179,6 +183,8 @@ public class Actor : Movement
 
     public void OnUsed()
     {
+        actorCoroutine = null;
+        skillLoaded = null;
         skillManager.bubble.Hide();
         state = State.Idle;
     }
