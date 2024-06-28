@@ -67,6 +67,11 @@ public class Player : Actor
         LearnSkill(2);
         LearnSkill(3);
         LearnSkill(4);
+
+        skillManager.Learn(1);
+        skillManager.Learn(2);
+        skillManager.Learn(3);
+        skillManager.Learn(4);
     }
 
     /// <summary>
@@ -75,12 +80,9 @@ public class Player : Actor
     /// <param name="other"></param>
     private void OnTriggerEnter2D(Collider2D other)
     {
-        MapResource target = other.gameObject.GetComponent<MapResource>();
-
-        if (target != null)
+        if (other.gameObject.TryGetComponent(out MapResource target))
         {
-            //int ID = int.Parse(target.info["skill_id"].ToString());
-            //UseSkill(ID);
+            //Debug.Log(target);
         }
     }
 

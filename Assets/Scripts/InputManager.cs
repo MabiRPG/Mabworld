@@ -65,7 +65,8 @@ public class InputManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Player.Instance.InterruptAction();
+            //Player.Instance.InterruptAction();
+            Player.Instance.CancelSkill();
         }
         else if (Player.Instance.isBusy)
         {

@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
@@ -31,6 +33,20 @@ public class Actor : Movement
 
     public Dictionary<int, Skill> skills = new Dictionary<int, Skill>();
 
+    public enum State
+    {
+        Idle,
+        SkillLoading,
+        SkillLoaded,
+        SkillCancelling,
+        SkillUsing
+    }
+    public State state = State.Idle;
+
+    public SkillManager skillManager;
+    public IEnumerator actorCoroutine;
+    public Skill skillLoad;
+
     // How much defense scales with strength
     protected int defenseStrFactor = 10;
     // Magic defense scale with str
@@ -54,6 +70,8 @@ public class Actor : Movement
         secondaryStats.Add("protection", actorProt);
         secondaryStats.Add("m_defense", actorMDefense);
         secondaryStats.Add("m_protection", actorMProt);
+
+        skillManager = new SkillManager(gameObject);
     }
 
     /// <summary>
@@ -64,6 +82,9 @@ public class Actor : Movement
         actorStr.OnBaseMaximumValueChange += CalculateDefense;
         actorStr.OnBaseMaximumValueChange += CalculateMDefense;
         actorInt.OnBaseMaximumValueChange += CalculateMProt;
+
+        skillManager.bubble.readyEvent.OnChange += OnLoad;
+        skillManager.bubble.cancelEvent.OnChange += OnCancel;
     }
 
     /// <summary>
@@ -74,6 +95,9 @@ public class Actor : Movement
         actorStr.OnBaseMaximumValueChange -= CalculateDefense;
         actorStr.OnBaseMaximumValueChange -= CalculateMDefense;
         actorInt.OnBaseMaximumValueChange -= CalculateMProt;
+
+        skillManager.bubble.readyEvent.OnChange -= OnLoad;
+        skillManager.bubble.cancelEvent.OnChange -= OnCancel;
     }
 
     /// <summary>
@@ -98,5 +122,68 @@ public class Actor : Movement
     private void CalculateMProt()
     {
         actorMProt.BaseMaximum = actorInt.BaseMaximum / mProtIntFactor;
+    }
+
+    public void LoadSkill(Skill skill)
+    {
+        if (state != State.Idle)
+        {
+            return;
+        }
+
+        actorCoroutine = skillManager.Ready(skill);
+        skillLoad = skill;
+
+        StartCoroutine(actorCoroutine);
+        state = State.SkillLoading;
+    }
+
+    private void OnLoad()
+    {
+        state = State.SkillLoaded;
+    }
+
+    public void CancelSkill()
+    {
+        if (state != State.SkillLoading && state != State.SkillLoaded)
+        {
+            return;
+        }
+
+        StopCoroutine(actorCoroutine);
+        
+        actorCoroutine = skillManager.Cancel();
+        skillLoad = null;
+
+        StartCoroutine(actorCoroutine);
+        state = State.SkillCancelling;
+    }
+
+    private void OnCancel()
+    {
+        state = State.Idle;
+    }
+
+    public void UseSkill<T>(T resultHandler) where T : ResultHandler
+    {
+        if (state != State.SkillLoaded || skillLoad == null)
+        {
+            return;
+        }
+
+        actorCoroutine = skillManager.Use(skillLoad, resultHandler);
+        
+        StartCoroutine(actorCoroutine);
+        state = State.SkillUsing;
+    }
+
+    public void StopAction()
+    {
+        if (state != State.Idle)
+        {
+            StopCoroutine(actorCoroutine);
+            actorCoroutine = null;
+            state = State.Idle;
+        }
     }
 }

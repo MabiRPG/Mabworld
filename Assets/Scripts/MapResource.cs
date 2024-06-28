@@ -151,14 +151,20 @@ public class MapResource : MonoBehaviour
             return;
         }
 
-        if (Player.Instance.IsSkillLearned(skillID))
+        if (Player.Instance.state == Actor.State.SkillLoaded && Player.Instance.skillLoad.ID == skillID)
         {
-            if (rankRequired != null && Player.Instance.skills[skillID].IsRankOrGreater(rankRequired))
-            {
-                resultHandler.SetResource(Player.Instance.skills[skillID], lootTableID, resource.Value);
-                Player.Instance.StartAction(Player.Instance.skills[skillID], resultHandler);
-            }
+            resultHandler.SetResource(Player.Instance.skills[skillID], lootTableID, resource.Value);
+            Player.Instance.UseSkill(resultHandler);
         }
+
+        // if (Player.Instance.IsSkillLearned(skillID))
+        // {
+        //     if (rankRequired != null && Player.Instance.skills[skillID].IsRankOrGreater(rankRequired))
+        //     {
+        //         resultHandler.SetResource(Player.Instance.skills[skillID], lootTableID, resource.Value);
+        //         //Player.Instance.StartAction(Player.Instance.skills[skillID], resultHandler);
+        //     }
+        // }
     }
 
     private void UpdateResource()

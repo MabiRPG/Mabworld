@@ -57,6 +57,7 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
             else
             {
                 //Player.Instance.StartAction(skill);
+                Player.Instance.LoadSkill(Player.Instance.skillManager.Get(skill.ID));
             }
         }
         // If right mouse button pressed

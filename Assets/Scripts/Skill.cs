@@ -169,6 +169,18 @@ public class Skill
         }
     }
 
+    public float GetLoadTime()
+    {
+        float time = baseLoadTime;
+
+        if (stats.ContainsKey("load_time"))
+        {
+            time += stats["load_time"][index.Value];
+        }
+
+        return time;
+    }
+
     /// <summary>
     ///     Implements the rank-specific training methods.
     /// </summary>
