@@ -77,6 +77,17 @@ public class Player : Actor
         }
     }
 
+    private void Update()
+    {
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+
+        if (horizontal != 0 || vertical != 0)
+        {
+            AttemptMove(horizontal, vertical);
+        }
+    }
+
     /// <summary>
     ///     Moves the player up.
     /// </summary>

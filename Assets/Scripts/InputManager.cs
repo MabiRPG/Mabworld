@@ -94,10 +94,10 @@ public class InputManager : MonoBehaviour
 
     public void Reset()
     {
-        AddMovementBind(KeyCode.W, () => Player.Instance.MoveUp());
-        AddMovementBind(KeyCode.A, () => Player.Instance.MoveLeft());
-        AddMovementBind(KeyCode.S, () => Player.Instance.MoveDown());
-        AddMovementBind(KeyCode.D, () => Player.Instance.MoveRight());
+        // AddMovementBind(KeyCode.W, () => Player.Instance.MoveUp());
+        // AddMovementBind(KeyCode.A, () => Player.Instance.MoveLeft());
+        // AddMovementBind(KeyCode.S, () => Player.Instance.MoveDown());
+        // AddMovementBind(KeyCode.D, () => Player.Instance.MoveRight());
 
         AddButtonBind(KeyCode.Z, () => WindowSkill.Instance.ToggleVisible());
         AddButtonBind(KeyCode.C, () => WindowCharacter.Instance.ToggleVisible());

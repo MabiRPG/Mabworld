@@ -32,6 +32,13 @@ public class Actor : Movement
     public Dictionary<string, StatManager> primaryStats = new Dictionary<string, StatManager>();
     public Dictionary<string, StatManager> secondaryStats = new Dictionary<string, StatManager>();
 
+    // How much defense scales with strength
+    protected int defenseStrFactor = 10;
+    // Magic defense scale with str
+    protected int mDefenseStrFactor = 10;
+    // Magic Protection scale with int
+    protected int mProtIntFactor = 20; 
+
     [SerializeField]
     private GameObject skillBubblePrefab;
 
@@ -48,13 +55,6 @@ public class Actor : Movement
     public SkillManager skillManager;
     public IEnumerator actorCoroutine;
     public Skill skillLoaded;
-
-    // How much defense scales with strength
-    protected int defenseStrFactor = 10;
-    // Magic defense scale with str
-    protected int mDefenseStrFactor = 10;
-    // Magic Protection scale with int
-    protected int mProtIntFactor = 20; 
 
     /// <summary>
     ///     Initializes the object.

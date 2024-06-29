@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,18 +23,29 @@ public class Movement : MonoBehaviour
 
     protected void AttemptMove (float xDir, float yDir)
     {
-        Vector2 start = transform.position;
-        Vector2 end = start + new Vector2(xDir, yDir);
-
-        boxCollider.enabled = false;
-        RaycastHit2D hit = Physics2D.Linecast(start, end, blockingLayer);
-        boxCollider.enabled = true;
-
-        if (hit.transform == null & !isMoving)
+        if (isMoving)
         {
-            StartCoroutine(Move(end));
-            Animate(xDir, yDir);
+            return;
         }
+
+        Vector2 direction = new Vector2(xDir, yDir);
+        // Must be initialized with some length or it won't detect anything!
+        RaycastHit2D[] results = new RaycastHit2D[10];
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.SetLayerMask(blockingLayer);
+        boxCollider.Cast(direction, filter, results);
+
+        Vector2 closestPoint = boxCollider.ClosestPoint(results[0].point);
+        Vector2 target = (results[0].point - closestPoint) * (direction * direction);
+
+        // Find the smallest distance movable by a magnitude of 1.
+        if (target.sqrMagnitude > direction.sqrMagnitude)
+        {
+            target = direction;
+        }
+
+        StartCoroutine(Move(transform.position + (Vector3)target));
+        Animate(xDir, yDir);
     }
 
     private IEnumerator Move (Vector3 end)
