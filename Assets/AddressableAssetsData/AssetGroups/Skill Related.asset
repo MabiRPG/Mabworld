@@ -62,18 +62,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 20750510db104f348af93a7acd9e0e23
-    m_Address: Skill_Ready
+  - m_GUID: 899622703511b2342adbdb994c0893b2
+    m_Address: Woodcut
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c2652ebbe9939584a8b2646bd31da96a
-    m_Address: Skill_Load
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f0928aff39e338b4ea28d70c3ceb6caf
-    m_Address: Skill_Cancel
+  - m_GUID: c9a561d5ae9adfe409a7eca0b464dd0d
+    m_Address: Sickle
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
