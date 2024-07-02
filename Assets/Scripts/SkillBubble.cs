@@ -97,7 +97,7 @@ public class SkillBubble : MonoBehaviour
         {
             float interval = Math.Min(duration - timer, scaleChangeInterval);
 
-            while (scale.x > scaleLowerLimit)
+            while (timer < duration && scale.x > scaleLowerLimit)
             {
                 transform.localScale -= scaleChange;
                 scale = transform.localScale;
@@ -105,7 +105,7 @@ public class SkillBubble : MonoBehaviour
                 yield return new WaitForSeconds(interval);
             }
 
-            while (scale.x < scaleUpperLimit)
+            while (timer < duration && scale.x < scaleUpperLimit)
             {
                 transform.localScale += scaleChange;
                 scale = transform.localScale;
@@ -114,6 +114,7 @@ public class SkillBubble : MonoBehaviour
             }
         }
 
+        transform.localScale = new Vector3(scaleUpperLimit, scaleUpperLimit, scaleUpperLimit);
         audioSource.clip = readyClip;
         audioSource.Play();
         readyEvent.RaiseOnChange(); 

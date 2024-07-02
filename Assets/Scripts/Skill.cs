@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Collections;
-using UnityEngine.AddressableAssets;
 using System.Linq;
 
 /// <summary>
@@ -241,11 +240,7 @@ public class Skill
     {
         // Calculates the base use time for the skill.
         float useTime = GetUseTime();
-
         useTime = Math.Max(0, useTime);
-
-        // Debug purposes...
-        useTime = 0.1f;
 
         float currTime = 0;
         // Interval for which audio should play
@@ -261,15 +256,15 @@ public class Skill
             // Play a sound if audio interval is reached
             if (interval % audioInterval == 0)
             {
-                audio.clip = Addressables.LoadAssetAsync<AudioClip>("pickaxe").WaitForCompletion();
-                audio.Play();
+                audio.PlayOneShot(sfx);
             }
 
             currTime += interval;
         }
 
         // Calculate base success rate of skill
-        float chance = GameManager.Instance.lifeSkillBaseSuccessRate + Player.Instance.CalculateLifeSkillSuccessRate();
+        float chance = GameManager.Instance.lifeSkillBaseSuccessRate;
+        chance += Player.Instance.CalculateLifeSkillSuccessRate();
         // TODO : change to summation of previous ranks...
         chance += GetStat("success_rate_increase");
 
