@@ -32,7 +32,7 @@ public class LootGenerator
 
     public (int resourceID, int resourceGain) Generate()
     {
-        float roll = (float)GameManager.Instance.rnd.NextDouble();
+        float roll = UnityEngine.Random.Range(0, 1);
         float i = 0f;
         int resourceID = -1;
 

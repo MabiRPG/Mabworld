@@ -196,7 +196,7 @@ public class Player : Actor
     {
         float lucky = (float)actorLuck.Value / luckyFactor;
         float hugeLucky = (float)actorLuck.Value / hugeLuckyFactor;
-        float roll = (float)GameManager.Instance.rnd.NextDouble();
+        float roll = UnityEngine.Random.Range(0, 1);
 
         if (hugeLucky >= roll) 
         {

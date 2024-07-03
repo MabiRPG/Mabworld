@@ -41,8 +41,6 @@ public class GameManager : MonoBehaviour
     // Cache of database results.
     private Dictionary<string, DataTable> cache = new Dictionary<string, DataTable>();
 
-    // RNG obj
-    public System.Random rnd = new System.Random();
     // Loot system
     public LootGenerator lootGenerator = new LootGenerator();
 

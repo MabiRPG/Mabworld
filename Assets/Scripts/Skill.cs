@@ -301,7 +301,7 @@ public class Skill
 
         // Change to percentage and roll die
         chance /= 100;
-        float roll = (float)GameManager.Instance.rnd.NextDouble();
+        float roll = UnityEngine.Random.Range(0, 1);
 
         // Handle success or fail here
         resultHandler.SetSuccess(chance >= roll);
