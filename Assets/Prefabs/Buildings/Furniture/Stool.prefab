@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6328298557573240465}
   - component: {fileID: 7787028284310011537}
   - component: {fileID: 7167864104210926843}
+  - component: {fileID: 6009044268455336191}
   m_Layer: 6
   m_Name: Stool
   m_TagString: Untagged
@@ -71,8 +72,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1104993555
-  m_SortingLayer: 3
+  m_SortingLayerID: -510946667
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: -1209320068, guid: 5cb138f9ab8fe9849999a372a28711ed, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -130,3 +131,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.625, y: 0.65625}
   m_EdgeRadius: 0
+--- !u!114 &6009044268455336191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4740375798689862415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff

@@ -183,8 +183,6 @@ public class WindowSkillDetailed : Window
     /// </summary>
     private void UpdateXp()
     {
-        advanceButton.transform.parent.gameObject.SetActive(false);
-
         // If < 100, use normal bar, else use overfill bar.
         if (skill.xp.Value <= 100) 
         {
@@ -192,11 +190,6 @@ public class WindowSkillDetailed : Window
             xpBarScript.SetCurrent(skill.xp.Value);
             xpBarScript.SetMaximum(100);
             overXpBar.SetActive(false);
-
-            if (skill.xp.Value == 100)
-            {
-                advanceButton.transform.parent.gameObject.SetActive(true);
-            }
         }
         else 
         {
@@ -204,12 +197,26 @@ public class WindowSkillDetailed : Window
             overXpBarScript.SetCurrent(skill.xp.Value);
             overXpBarScript.SetMaximum(skill.xpMax.Value);
             overXpBar.SetActive(true);
-            advanceButton.transform.parent.gameObject.SetActive(true);
-        }       
+        }
 
-        if (!skill.CanRankUp())
+        if (skill.xp.Value >= 100 && skill.CanRankUp())
         {
-            advanceButton.transform.parent.gameObject.SetActive(false);
+            advanceButton.gameObject.SetActive(true);
+
+            int apCost = (int)skill.GetStatForwardDiff("ap_cost");
+
+            if (Player.Instance.actorAP.Value >= apCost)
+            {
+                advanceButton.interactable = true;
+            }
+            else
+            {
+                advanceButton.interactable = false;
+            }
+        }
+        else
+        {
+            advanceButton.gameObject.SetActive(false);
         }
     }
 }

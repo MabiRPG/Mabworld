@@ -7056,7 +7056,7 @@ GameObject:
   - component: {fileID: 4811030253998775179}
   - component: {fileID: 1619379472990790680}
   m_Layer: 5
-  m_Name: HP & MP Bar Parent
+  m_Name: Bars Parent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

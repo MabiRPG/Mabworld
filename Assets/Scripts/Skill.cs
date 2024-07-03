@@ -270,7 +270,8 @@ public class Skill
     {
         // Calculates the base use time for the skill.
         float useTime = GetUseTime();
-        useTime = Math.Max(0, useTime);
+        // 0.1 for debugging purposes...
+        useTime = Math.Max(0.1f, useTime);
 
         float currTime = 0;
         // Interval for which audio should play

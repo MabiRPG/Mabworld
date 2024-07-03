@@ -16,7 +16,7 @@ public class WindowCharacter : Window
 
     private ProgressBar actorHPBar;
     private ProgressBar actorMPBar;
-    private ProgressBar actorXPbar;
+    private ProgressBar actorXPBar;
 
     // private TMP_Text actorDamageText;
     // private TMP_Text actorInjuryText;
@@ -50,7 +50,7 @@ public class WindowCharacter : Window
         {
             Destroy(gameObject);
         }
-        
+
         basicInfoLeft = body.transform.Find("Basic Info (L)").gameObject;
         Dictionary<string, TMP_Text> dict = CreateComponentMap(basicInfoLeft.transform);
         actorNameText = dict["name"];
@@ -62,8 +62,9 @@ public class WindowCharacter : Window
         actorLuckText = dict["luck"];
 
         // HP and MP
-        actorHPBar = body.transform.Find("Basic Info (L)").Find("HP & MP Bar Parent").Find("HP Bar Parent").Find("HP Bar").GetComponent<ProgressBar>();
-        actorMPBar = body.transform.Find("Basic Info (L)").Find("HP & MP Bar Parent").Find("MP Bar Parent").Find("MP Bar").GetComponent<ProgressBar>();
+        actorHPBar = body.transform.Find("Basic Info (L)").Find("Bars Parent").Find("HP Bar Parent").Find("HP Bar").GetComponent<ProgressBar>();
+        actorMPBar = body.transform.Find("Basic Info (L)").Find("Bars Parent").Find("MP Bar Parent").Find("MP Bar").GetComponent<ProgressBar>();
+        actorXPBar = body.transform.Find("Basic Info (L)").Find("Bars Parent").Find("XP Bar Parent").Find("XP Bar").GetComponent<ProgressBar>();
 
         equipmentSlots = body.transform.Find("Equipment Slots").gameObject;
         //dict = CreateComponentMap(equipmentSlots.transform);
@@ -117,6 +118,7 @@ public class WindowCharacter : Window
         // HP and MP
         Player.Instance.actorHP.OnChange += Draw;
         Player.Instance.actorMP.OnChange += Draw;
+        Player.Instance.actorXP.OnChange += Draw;
 
         // Regular Stats
         Player.Instance.actorStr.OnChange += Draw;
@@ -143,6 +145,7 @@ public class WindowCharacter : Window
         // HP and MP
         Player.Instance.actorHP.OnChange -= Draw;
         Player.Instance.actorMP.OnChange -= Draw;
+        Player.Instance.actorXP.OnChange -= Draw;
 
         // Regular Stats
         Player.Instance.actorStr.OnChange -= Draw;
@@ -169,6 +172,8 @@ public class WindowCharacter : Window
         actorHPBar.SetMaximum(Player.Instance.actorHP.Maximum);
         actorMPBar.SetCurrent(Player.Instance.actorMP.Value);
         actorMPBar.SetMaximum(Player.Instance.actorMP.Maximum);
+        actorXPBar.SetCurrent(Player.Instance.actorXP.Value);
+        actorXPBar.SetMaximum(Player.Instance.actorXP.Maximum);
 
         // Regular Stats
         actorStrText.text = Player.Instance.actorStr.Value.ToString();

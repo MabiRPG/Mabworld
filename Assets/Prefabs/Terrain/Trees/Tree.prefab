@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1283388930606413790}
   - component: {fileID: 7467647774810808992}
   - component: {fileID: 3391382962896546553}
+  - component: {fileID: 1853360264476920006}
   m_Layer: 6
   m_Name: Tree
   m_TagString: Untagged
@@ -80,7 +81,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1104993555
   m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 597273058, guid: 762bc6cae3f95be458e672b19a562c1f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -124,7 +125,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.014292955, y: -0.11116457}
+  m_Offset: {x: 0.008725315, y: -0.07409859}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.52069175, y: 0.12971215}
@@ -135,7 +136,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.8368983, y: 1.0728674}
+  m_Size: {x: 0.6002374, y: 0.8928337}
   m_EdgeRadius: 0
 --- !u!114 &1283388930606413790
 MonoBehaviour:
@@ -285,7 +286,7 @@ MonoBehaviour:
   - {x: 0.15817732, y: -0.4718443, z: 0}
   m_ShapePathHash: -235650520
   m_Mesh: {fileID: 0}
-  m_InstanceId: -2726
+  m_InstanceId: -2574
   m_LocalBounds:
     m_Center: {x: -0.07565415, y: 1.8167249, z: 0}
     m_Extent: {x: 1.7281251, y: 2.353125, z: 0}
@@ -314,3 +315,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShadowGroup: 0
+--- !u!114 &1853360264476920006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5800020594450263162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff

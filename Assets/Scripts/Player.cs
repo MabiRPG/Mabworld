@@ -154,6 +154,7 @@ public class Player : Actor
         {
             actorAP.Value -= apCost;
             skill.RankUp();
+            actorLevel.Value += apCost;
 
             foreach(KeyValuePair<string, StatManager> stat in primaryStats)
             {
@@ -163,6 +164,10 @@ public class Player : Actor
         }        
     }
 
+    /// <summary>
+    ///     Adds xp to the player.
+    /// </summary>
+    /// <param name="x">Amount of xp to add.</param>
     public void AddXP(float x)
     {
         actorXP.Value += x;
@@ -170,7 +175,6 @@ public class Player : Actor
         if (actorXP.Value >= actorXP.Maximum)
         {
             actorAP.Value++;
-            actorLevel.Value++;
             actorXP.Value -= actorXP.Maximum;
         }
     }

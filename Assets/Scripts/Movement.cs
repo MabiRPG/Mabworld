@@ -11,6 +11,7 @@ public class Movement : MonoBehaviour
     private Rigidbody2D rb2D;
     private Animator animator;
 
+    [SerializeField]
     private bool isMoving = false;
 
     // Start is called before the first frame update
@@ -60,6 +61,8 @@ public class Movement : MonoBehaviour
             Vector3 newPosition = Vector3.MoveTowards(rb2D.position, end, 0.1f);
             rb2D.MovePosition(newPosition);
             sqdRemainingDistance = (transform.position - end).sqrMagnitude;
+
+            Debug.Log(newPosition);
 
             yield return null;
         }
