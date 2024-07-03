@@ -168,6 +168,11 @@ public class Skill
         }
     }
 
+    /// <summary>
+    ///     Gets the value of the stat at the current rank.
+    /// </summary>
+    /// <param name="key">String of stat name</param>
+    /// <returns></returns>
     public float GetStat(string key)
     {
         if (stats.ContainsKey(key))
@@ -178,29 +183,48 @@ public class Skill
         return 0;
     }
 
-    public float GetLoadTime()
+    /// <summary>
+    ///     Gets the stat difference between the current rank and the previous.
+    /// </summary>
+    /// <param name="key">String of stat name</param>
+    /// <returns>(Current - Previous) of the stat, 0 at the starting rank.</returns>
+    public float GetStatBackwardDiff(string key)
     {
-        float time = baseLoadTime;
-
-        if (stats.ContainsKey("load_time"))
+        if (stats.ContainsKey(key))
         {
-            time += stats["load_time"][index.Value];
+            float curr = stats[key][index.Value];
+            float prev = stats[key][Math.Max(0, index.Value - 1)];
+            return curr - prev;
         }
 
-        return time;
+        return 0;
+    }
+
+    /// <summary>
+    ///     Gets the stat difference between the next rank and the current one.
+    /// </summary>
+    /// <param name="key">String of stat name</param>
+    /// <returns>(Next - Current) of the stat, 0 at the final rank.</returns>
+    public float GetStatForwardDiff(string key)
+    {
+        if (stats.ContainsKey(key))
+        {
+            float next = stats[key][Math.Min(ranks.Count - 1, index.Value + 1)];
+            float curr = stats[key][index.Value];
+            return next - curr;
+        }
+
+        return 0;
+    }
+
+    public float GetLoadTime()
+    {
+        return baseLoadTime + GetStat("load_time");
     }
 
     public float GetUseTime()
     {
-        float time = baseUseTime;
-
-        // Adds skill specific time modifiers
-        if (stats.ContainsKey("use_time"))
-        {
-            time += stats["use_time"][index.Value];
-        }
-
-        return time;
+        return baseUseTime + GetStat("use_time");
     }
 
     /// <summary>
@@ -236,6 +260,12 @@ public class Skill
         }
     }
 
+    /// <summary>
+    ///     Uses the skill by playing the animation and sounds, and checking success.
+    /// </summary>
+    /// <typeparam name="T">Derived class of Type ResultHandler</typeparam>
+    /// <param name="resultHandler">ResultHandler instance to manage the success or failure</param>
+    /// <returns>Coroutine to be run.</returns>
     public IEnumerator Use<T>(T resultHandler) where T : ResultHandler
     {
         // Calculates the base use time for the skill.

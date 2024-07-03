@@ -135,6 +135,8 @@ public class WindowSkillDetailed : Window
 
         // For every stat, create a new stat field prefab and populate it.
         statPrefabs.SetActiveAll(false);
+        body.transform.Find("Stats").gameObject.SetActive(true);
+        int i = 0;
 
         foreach (KeyValuePair<string, float[]> stat in skill.stats)
         {
@@ -146,16 +148,30 @@ public class WindowSkillDetailed : Window
             GameObject obj = statPrefabs.GetFree(stat.Key, statTransform);
             WindowSkillStat script = obj.GetComponent<WindowSkillStat>();
             script.SetText(stat.Key, stat.Value[index]);
+            i++;
+        }
+
+        if (i == 0)
+        {
+            body.transform.Find("Stats").gameObject.SetActive(false);
         }
 
         // For every training method, create a new training method prefab and populate it.
         trainingMethodPrefabs.SetActiveAll(false);
+        body.transform.Find("Training Methods").gameObject.SetActive(true);
+        i = 0;
 
         foreach (SkillTrainingMethod method in skill.methods)
         {
             GameObject obj = trainingMethodPrefabs.GetFree(method.name, trainingMethodsTransform);
             WindowSkillTrainingMethod script = obj.GetComponent<WindowSkillTrainingMethod>();
             script.SetMethod(method);
+            i++;
+        }
+
+        if (i == 0)
+        {
+            body.transform.Find("Training Methods").gameObject.SetActive(false);
         }
 
         // Resets the content size fitter.

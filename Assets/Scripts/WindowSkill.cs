@@ -66,8 +66,15 @@ public class WindowSkill : Window
     /// </summary>
     private void OnEnable()
     {
+        Player.Instance.actorAP.OnChange += Draw;
+
         skillPrefabs.SetActiveAll(false);
         Draw();
+    }
+
+    private void OnDisable()
+    {
+        Player.Instance.actorAP.OnChange -= Draw;
     }
 
     /// <summary>

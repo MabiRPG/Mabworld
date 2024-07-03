@@ -130,9 +130,9 @@ public class WindowSkillAdvance : Window
             GameObject obj = statPrefabs.GetFree(stat.Key, statTransform);
             WindowSkillStat script = obj.GetComponent<WindowSkillStat>();
             script.SetText(stat.Key, stat.Value[index]);
-        }        
+        }
 
-        int apCost = (int)skill.stats["ap_cost"][skill.index.Value + 1] - (int)skill.stats["ap_cost"][skill.index.Value];
+        int apCost = (int)skill.GetStatForwardDiff("ap_cost");
 
         ap.text = string.Format("{0} AP required.\n({1} AP remaining)",
             apCost.ToString(), 

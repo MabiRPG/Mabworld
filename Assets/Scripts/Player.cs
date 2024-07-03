@@ -11,8 +11,9 @@ public class Player : Actor
     // Global instance of player
     public static Player Instance = null;
 
-    // Ability points
-    public IntManager actorAP = new IntManager(1000);
+    // Ability points and experience
+    public IntManager actorAP = new IntManager(0);
+    public StatManager actorXP = new StatManager(0, 100, 100);
     // Inventory
     public InventoryManager inventoryManager = new InventoryManager();
 
@@ -59,6 +60,7 @@ public class Player : Actor
         base.Start();
 
         // Debug purposes...
+        actorName.Value = "Test";
         skillManager.Learn(1);
         skillManager.Learn(2);
         skillManager.Learn(3);
@@ -146,7 +148,7 @@ public class Player : Actor
     /// <param name="skill">Skill instance</param>
     public void RankUpSkill(Skill skill)
     {
-        int apCost = (int)skill.stats["ap_cost"][skill.index.Value + 1] - (int)skill.stats["ap_cost"][skill.index.Value];
+        int apCost = (int)skill.GetStatForwardDiff("ap_cost");
 
         if (skillManager.IsLearned(skill) && skill.CanRankUp() && actorAP.Value >= apCost)
         {
@@ -155,15 +157,22 @@ public class Player : Actor
 
             foreach(KeyValuePair<string, StatManager> stat in primaryStats)
             {
-                if (skill.stats.ContainsKey(stat.Key))
-                {
-                    int currRank = (int)skill.stats[stat.Key][skill.index.Value];
-                    int prevRank = (int)skill.stats[stat.Key][skill.index.Value - 1];
-                    int statDiff = Math.Max(0, currRank - prevRank);
-                    stat.Value.Value += statDiff;
-                }
+                int statAdd = (int)skill.GetStatBackwardDiff(stat.Key);
+                stat.Value.Value += statAdd;
             }
         }        
+    }
+
+    public void AddXP(float x)
+    {
+        actorXP.Value += x;
+
+        if (actorXP.Value >= actorXP.Maximum)
+        {
+            actorAP.Value++;
+            actorLevel.Value++;
+            actorXP.Value -= actorXP.Maximum;
+        }
     }
 
     /// <summary>

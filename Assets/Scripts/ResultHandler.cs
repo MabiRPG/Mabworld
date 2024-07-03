@@ -1,5 +1,3 @@
-using System.Data;
-
 public abstract class ResultHandler
 {
     public bool isSuccess;
@@ -36,16 +34,21 @@ public class MapResourceResultHandler : ResultHandler
     {
         isSuccess = state;
 
-        if (isSuccess && lootTableID != -1)
+        if (isSuccess)
         {
-            GameManager.Instance.lootGenerator.SetLootTable(lootTableID);
-            (resourceID, resourceGain) = GameManager.Instance.lootGenerator.Generate();
+            Player.Instance.AddXP(100);
 
-            remainingResource -= resourceGain;
-
-            if (remainingResource <= 0)
+            if (lootTableID != -1)
             {
-                isEmpty = true;
+                GameManager.Instance.lootGenerator.SetLootTable(lootTableID);
+                (resourceID, resourceGain) = GameManager.Instance.lootGenerator.Generate();
+
+                remainingResource -= resourceGain;
+
+                if (remainingResource <= 0)
+                {
+                    isEmpty = true;
+                }
             }
         }
 

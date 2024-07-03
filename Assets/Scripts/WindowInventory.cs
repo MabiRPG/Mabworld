@@ -222,6 +222,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     /// <param name="hits"></param>
     private void OnItemClick()
     {
+        // TODO: Fix this so it only calls when window is selected.
         (int row, int column) = ConvertScreenPointToBagPoint();
         InventoryItem inventoryItem = bag.FindItemAt(row, column);
 
@@ -483,12 +484,18 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     private (int row, int column) ConvertScreenPointToBagPoint()
     {
         Vector2 pos = Input.mousePosition;
-        // Converts our screen point of our mouse cursor to a local point
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            body.transform.Find("Item Canvas").GetComponent<RectTransform>(), pos, 
-            canvasCamera, out pos);  
-        
-        return (-(int)pos.y / (int)slotWidth, (int)pos.x / (int)slotHeight);        
+        RectTransform itemCanvasRect = body.transform.Find("Item Canvas").GetComponent<RectTransform>();
+        // Checks if its in our rect.
+        if (RectTransformUtility.RectangleContainsScreenPoint(itemCanvasRect, pos))
+        {
+            // Converts our screen point of our mouse cursor to a local point
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                itemCanvasRect, pos, canvasCamera, out pos);
+
+            return (-(int)pos.y / (int)slotWidth, (int)pos.x / (int)slotHeight);
+        }
+
+        return (-1, -1);     
     }
 
     /// <summary>
