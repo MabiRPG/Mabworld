@@ -43,9 +43,6 @@ public class WindowSkill : Window
             Destroy(gameObject);
         }
 
-        // Hides the object at start
-        gameObject.SetActive(false);
-
         skillPrefabs = ScriptableObject.CreateInstance<PrefabFactory>();
         skillPrefabs.SetPrefab(skillPrefab);
         detailedPrefabs = ScriptableObject.CreateInstance<PrefabFactory>();
@@ -60,6 +57,8 @@ public class WindowSkill : Window
     private void Start()
     {
         Draw();
+        // Hides the object at start
+        gameObject.SetActive(false);
     }
 
     /// <summary>

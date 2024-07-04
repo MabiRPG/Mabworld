@@ -55,10 +55,8 @@ public class Player : Actor
     /// <summary>
     ///     Called after all Awakes.
     /// </summary>
-    protected override void Start()
+    protected void Start()
     {
-        base.Start();
-
         // Debug purposes...
         actorName.Value = "Test";
         skillManager.Learn(1);

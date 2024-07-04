@@ -39,9 +39,6 @@ public class Actor : Movement
     // Magic Protection scale with int
     protected int mProtIntFactor = 20; 
 
-    [SerializeField]
-    private GameObject skillBubblePrefab;
-
     public enum State
     {
         Idle,
@@ -59,8 +56,10 @@ public class Actor : Movement
     /// <summary>
     ///     Initializes the object.
     /// </summary>
-    protected virtual void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         primaryStats.Add("hp", actorHP);
         primaryStats.Add("mp", actorMP);
         primaryStats.Add("str", actorStr);
@@ -73,7 +72,7 @@ public class Actor : Movement
         secondaryStats.Add("m_defense", actorMDefense);
         secondaryStats.Add("m_protection", actorMProt);
 
-        GameObject obj = Instantiate(skillBubblePrefab, transform);
+        GameObject obj = Instantiate(GameManager.Instance.skillBubblePrefab, transform);
         SkillBubble bubble = obj.GetComponent<SkillBubble>();
         skillManager = new SkillManager(bubble);
     }

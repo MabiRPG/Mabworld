@@ -15,7 +15,7 @@ public class Movement : MonoBehaviour
     private bool isMoving = false;
 
     // Start is called before the first frame update
-    protected virtual void Start()
+    protected virtual void Awake()
     {
         boxCollider = GetComponent<BoxCollider2D>(); 
         rb2D = GetComponent<Rigidbody2D>();
@@ -61,8 +61,6 @@ public class Movement : MonoBehaviour
             Vector3 newPosition = Vector3.MoveTowards(rb2D.position, end, 0.1f);
             rb2D.MovePosition(newPosition);
             sqdRemainingDistance = (transform.position - end).sqrMagnitude;
-
-            Debug.Log(newPosition);
 
             yield return null;
         }

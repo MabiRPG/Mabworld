@@ -165,7 +165,10 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
 
         // Resets the content size fitter.
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)gameObject.transform);
+    }
 
+    private void Start()
+    {
         // Hides the object at start
         gameObject.SetActive(false);
     }

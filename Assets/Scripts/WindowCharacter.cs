@@ -72,9 +72,6 @@ public class WindowCharacter : Window
         basicInfoRight = body.transform.Find("Basic Info (R)").gameObject;
         //dict = CreateComponentMap(basicInfoRight.transform);
 
-        // Hides the object at start
-        gameObject.SetActive(false);
-
         // Defensive Stats
         // actorDefenseText = body.transform.Find("Basic Information (R)").Find("Defensive Stats Parent").Find("Defense Parent").Find("Value").GetComponent<TMP_Text>();
         // actorProtectionText = body.transform.Find("Basic Information (R)").Find("Defensive Stats Parent").Find("Protection Parent").Find("Value").GetComponent<TMP_Text>();
@@ -106,6 +103,8 @@ public class WindowCharacter : Window
     private void Start()
     {
         Draw();
+        // Hides the object at start
+        gameObject.SetActive(false);
     }
 
     private void OnEnable()

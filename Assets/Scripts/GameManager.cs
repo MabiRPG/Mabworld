@@ -31,12 +31,19 @@ public class GameManager : MonoBehaviour
     private string databaseName;
     // Base success rate of life skills
     public float lifeSkillBaseSuccessRate;
+
+    [Header("Universal Prefabs")]
+    [SerializeField]
+    public GameObject skillBubblePrefab;
     
     [Header("Window Prefabs")]
     public Canvas canvas;
-    public GameObject windowSkillPrefab;
-    public GameObject windowCharacterPrefab;
-    public GameObject windowInventoryPrefab;
+    [SerializeField]
+    private GameObject windowSkillPrefab;
+    [SerializeField]
+    private GameObject windowCharacterPrefab;
+    [SerializeField]
+    private GameObject windowInventoryPrefab;
 
     // Cache of database results.
     private Dictionary<string, DataTable> cache = new Dictionary<string, DataTable>();
@@ -60,7 +67,10 @@ public class GameManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
+    }
 
+    private void Start()
+    {
         Instantiate(inputManager);
         Instantiate(lightManager);
         Instantiate(audioManager);
