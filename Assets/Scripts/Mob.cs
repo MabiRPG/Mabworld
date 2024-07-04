@@ -1,39 +1,78 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
 class Mob : Actor
 {
     private Vector2 origin;
+    private Animator animator;
     private NavMeshAgent navMeshAgent;
-    private NavMeshPath path;
 
-    public float traverseRadius = 3;
-    public float delayBetweenAction;
-    public float idleChance;
+    [SerializeField]
+    private float traversalRadius = 3;
+    [SerializeField]
+    private float delayBetweenAction;
+
+    private IEnumerator movementCoroutine;
 
     protected override void Awake()
     {
         base.Awake();
 
         navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent.updatePosition = false;
         navMeshAgent.updateRotation = false;
         navMeshAgent.updateUpAxis = false;
         transform.rotation = Quaternion.identity;
 
         origin = transform.position;
-        path = new NavMeshPath();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
     {
-        if (!navMeshAgent.hasPath)
+        if (movementCoroutine == null)
         {
-            Vector2 nextPos = origin + Random.insideUnitCircle * traverseRadius;
+            Vector3 nextPos = origin + UnityEngine.Random.insideUnitCircle * traversalRadius;
+            nextPos.z = 0;
 
-            if (navMeshAgent.CalculatePath(nextPos, path))
+            if (navMeshAgent.SetDestination(nextPos))
             {
-                navMeshAgent.SetPath(path);
+                movementCoroutine = Move(); 
+                StartCoroutine(movementCoroutine);
             }
         }
+    }
+
+    private IEnumerator Move()
+    {
+        while (navMeshAgent.pathPending)
+        {
+            yield return null;
+        }
+
+        if (!navMeshAgent.hasPath)
+        {
+            movementCoroutine = null;
+            yield break;
+        }
+
+        animator.SetBool("isMoving", true);
+
+        while (navMeshAgent.hasPath)
+        {
+            Vector2 nextPos = navMeshAgent.nextPosition;
+            Vector2 diff = nextPos - (Vector2)transform.position;
+            transform.position = nextPos;
+            animator.SetFloat("moveX", diff.x);
+            animator.SetFloat("moveY", diff.y);
+
+            yield return null;
+        }
+
+        animator.SetBool("isMoving", false);
+        yield return new WaitForSeconds(UnityEngine.Random.Range(3, 15));
+        movementCoroutine = null;
     }
 }
