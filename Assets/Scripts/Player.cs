@@ -130,7 +130,7 @@ public class Player : Actor
         {
             Vector3 nextPos = Vector3.MoveTowards(transform.position, target, 0.1f);
             Vector2 diff = nextPos - transform.position;
-            transform.position = nextPos;
+            rigidBody2d.MovePosition(nextPos);
             animator.SetFloat("moveX", diff.x);
             animator.SetFloat("moveY", diff.y);
 
@@ -138,7 +138,7 @@ public class Player : Actor
             yield return null;
         }
 
-        transform.position = target;
+        rigidBody2d.MovePosition(target);
         animator.SetBool("isMoving", false);
         moveEvent.RaiseOnChange();
     }
@@ -217,7 +217,7 @@ public class Player : Actor
     {
         float lucky = (float)actorLuck.Value / luckyFactor;
         float hugeLucky = (float)actorLuck.Value / hugeLuckyFactor;
-        float roll = UnityEngine.Random.Range(0, 1);
+        float roll = UnityEngine.Random.Range(0f, 1f);
 
         if (hugeLucky >= roll) 
         {

@@ -9,7 +9,9 @@ class Mob : Actor
     [SerializeField]
     private float traversalRadius = 3;
     [SerializeField]
-    private float delayBetweenAction;
+    private float minimumIdleTime = 3;
+    [SerializeField]
+    private float maximumIdleTime = 15;
 
     protected override void Awake()
     {
@@ -19,19 +21,21 @@ class Mob : Actor
 
     private void Update()
     {
-        if (state == State.Idle)
+        if (state != State.Idle)
         {
-            if (!navMeshAgent.pathPending && !navMeshAgent.hasPath)
-            {
-                Vector3 nextPos = origin + UnityEngine.Random.insideUnitCircle * traversalRadius;
-                nextPos.z = 0;
-                navMeshAgent.SetDestination(nextPos);
-            }
-            else if (navMeshAgent.hasPath)
-            {
-                actorCoroutine = Move();
-                StartCoroutine(actorCoroutine);
-            }
+            return;
+        }
+
+        if (!navMeshAgent.pathPending && !navMeshAgent.hasPath)
+        {
+            Vector3 nextPos = origin + UnityEngine.Random.insideUnitCircle * traversalRadius;
+            nextPos.z = 0;
+            navMeshAgent.SetDestination(nextPos);
+        }
+        else if (navMeshAgent.hasPath)
+        {
+            actorCoroutine = Move();
+            StartCoroutine(actorCoroutine);
         }
     }
 
@@ -52,7 +56,7 @@ class Mob : Actor
         }
 
         animator.SetBool("isMoving", false);
-        yield return new WaitForSeconds(UnityEngine.Random.Range(3, 15));
+        yield return new WaitForSeconds(UnityEngine.Random.Range(minimumIdleTime, maximumIdleTime));
         moveEvent.RaiseOnChange();
     }
 }

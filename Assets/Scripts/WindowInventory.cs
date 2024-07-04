@@ -489,7 +489,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         Vector2 pos = Input.mousePosition;
         RectTransform itemCanvasRect = body.transform.Find("Item Canvas").GetComponent<RectTransform>();
         // Checks if its in our rect.
-        if (RectTransformUtility.RectangleContainsScreenPoint(itemCanvasRect, pos))
+        if (RectTransformUtility.RectangleContainsScreenPoint(itemCanvasRect, pos, canvasCamera))
         {
             // Converts our screen point of our mouse cursor to a local point
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
