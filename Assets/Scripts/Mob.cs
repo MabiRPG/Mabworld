@@ -1,63 +1,43 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.AI;
 
 class Mob : Actor
 {
     private Vector2 origin;
-    private Animator animator;
-    private NavMeshAgent navMeshAgent;
 
     [SerializeField]
     private float traversalRadius = 3;
     [SerializeField]
     private float delayBetweenAction;
 
-    private IEnumerator movementCoroutine;
-
     protected override void Awake()
     {
         base.Awake();
-
-        navMeshAgent = GetComponent<NavMeshAgent>();
-        navMeshAgent.updatePosition = false;
-        navMeshAgent.updateRotation = false;
-        navMeshAgent.updateUpAxis = false;
-        transform.rotation = Quaternion.identity;
-
         origin = transform.position;
-        animator = GetComponent<Animator>();
     }
 
     private void Update()
     {
-        if (movementCoroutine == null)
+        if (state == State.Idle)
         {
-            Vector3 nextPos = origin + UnityEngine.Random.insideUnitCircle * traversalRadius;
-            nextPos.z = 0;
-
-            if (navMeshAgent.SetDestination(nextPos))
+            if (!navMeshAgent.pathPending && !navMeshAgent.hasPath)
             {
-                movementCoroutine = Move(); 
-                StartCoroutine(movementCoroutine);
+                Vector3 nextPos = origin + UnityEngine.Random.insideUnitCircle * traversalRadius;
+                nextPos.z = 0;
+                navMeshAgent.SetDestination(nextPos);
+            }
+            else if (navMeshAgent.hasPath)
+            {
+                actorCoroutine = Move();
+                StartCoroutine(actorCoroutine);
             }
         }
     }
 
     private IEnumerator Move()
     {
-        while (navMeshAgent.pathPending)
-        {
-            yield return null;
-        }
-
-        if (!navMeshAgent.hasPath)
-        {
-            movementCoroutine = null;
-            yield break;
-        }
-
+        state = State.Moving;
         animator.SetBool("isMoving", true);
 
         while (navMeshAgent.hasPath)
@@ -73,6 +53,6 @@ class Mob : Actor
 
         animator.SetBool("isMoving", false);
         yield return new WaitForSeconds(UnityEngine.Random.Range(3, 15));
-        movementCoroutine = null;
+        moveEvent.RaiseOnChange();
     }
 }

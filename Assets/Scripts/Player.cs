@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.AI;
 
 /// <summary>
 ///     Handles all player & input processing.
@@ -84,40 +85,62 @@ public class Player : Actor
 
         if (horizontal != 0 || vertical != 0)
         {
-            AttemptMove(horizontal, vertical);
+            AttemptMove(new Vector2(horizontal, vertical));
         }
     }
 
-    /// <summary>
-    ///     Moves the player up.
-    /// </summary>
-    public void MoveUp()
+    private void AttemptMove(Vector2 direction)
     {
-        AttemptMove(0, 1);
+        if (state != State.Idle)
+        {
+            return;
+        }
+
+        // Must be initialized with some length or it won't detect anything!
+        RaycastHit2D[] results = new RaycastHit2D[10];
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.SetLayerMask(blockingLayer);
+        boxCollider.Cast(direction, filter, results);
+
+        Vector2 closestPoint = boxCollider.ClosestPoint(results[0].point);
+        Vector2 target = (results[0].point - closestPoint) * (direction * direction);
+
+        // Find the smallest distance movable by a magnitude of 1.
+        if (target.sqrMagnitude > direction.sqrMagnitude)
+        {
+            target = direction;
+        }
+        else if (target.sqrMagnitude == 0)
+        {
+            return;
+        }
+
+        actorCoroutine = Move(transform.position + (Vector3)target);
+        StartCoroutine(actorCoroutine);
     }
 
-    /// <summary>
-    ///     Moves the player left.
-    /// </summary>
-    public void MoveLeft()
+    private IEnumerator Move(Vector3 target)
     {
-        AttemptMove(-1, 0);
-    }
+        state = State.Moving;
+        animator.SetBool("isMoving", true);
 
-    /// <summary>
-    ///     Moves the player down.
-    /// </summary>
-    public void MoveDown()
-    {
-        AttemptMove(0, -1);
-    }
+        float sqdRemainingDistance = (transform.position - target).sqrMagnitude;
 
-    /// <summary>
-    ///     Moves the player right.
-    /// </summary>
-    public void MoveRight()
-    {
-        AttemptMove(1, 0);
+        while (sqdRemainingDistance > 0.1)
+        {
+            Vector3 nextPos = Vector3.MoveTowards(transform.position, target, 0.1f);
+            Vector2 diff = nextPos - transform.position;
+            transform.position = nextPos;
+            animator.SetFloat("moveX", diff.x);
+            animator.SetFloat("moveY", diff.y);
+
+            sqdRemainingDistance = (transform.position - target).sqrMagnitude;
+            yield return null;
+        }
+
+        transform.position = target;
+        animator.SetBool("isMoving", false);
+        moveEvent.RaiseOnChange();
     }
 
     /// <summary>

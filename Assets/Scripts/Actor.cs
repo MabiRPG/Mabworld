@@ -2,12 +2,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 /// <summary>
 ///     Handles all actor-level info and calculations.
 /// </summary>
-public class Actor : Movement
+public class Actor : MonoBehaviour
 {
+    [SerializeField]
+    protected LayerMask blockingLayer;
+    protected BoxCollider2D boxCollider;
+    protected Rigidbody2D rigidBody2d;
+    protected Animator animator;
+    protected NavMeshAgent navMeshAgent;
+
     // Name and level of actor
     public StringManager actorName = new StringManager();
     public IntManager actorLevel = new IntManager();
@@ -42,6 +50,7 @@ public class Actor : Movement
     public enum State
     {
         Idle,
+        Moving,
         SkillLoading,
         SkillLoaded,
         SkillCancelling,
@@ -53,13 +62,13 @@ public class Actor : Movement
     public IEnumerator actorCoroutine;
     public Skill skillLoaded;
 
+    public EventManager moveEvent = new EventManager();
+
     /// <summary>
     ///     Initializes the object.
     /// </summary>
-    protected override void Awake()
+    protected virtual void Awake()
     {
-        base.Awake();
-
         primaryStats.Add("hp", actorHP);
         primaryStats.Add("mp", actorMP);
         primaryStats.Add("str", actorStr);
@@ -75,6 +84,15 @@ public class Actor : Movement
         GameObject obj = Instantiate(GameManager.Instance.skillBubblePrefab, transform);
         SkillBubble bubble = obj.GetComponent<SkillBubble>();
         skillManager = new SkillManager(bubble);
+
+        boxCollider = GetComponent<BoxCollider2D>(); 
+        rigidBody2d = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent.updatePosition = false;
+        navMeshAgent.updateRotation = false;
+        navMeshAgent.updateUpAxis = false;
+        transform.rotation = Quaternion.identity;
     }
 
     /// <summary>
@@ -86,6 +104,7 @@ public class Actor : Movement
         actorStr.OnBaseMaximumValueChange += CalculateMDefense;
         actorInt.OnBaseMaximumValueChange += CalculateMProt;
 
+        moveEvent.OnChange += OnMoved;
         skillManager.bubble.readyEvent.OnChange += OnLoaded;
         skillManager.bubble.cancelEvent.OnChange += OnCancelled;
     }
@@ -99,6 +118,7 @@ public class Actor : Movement
         actorStr.OnBaseMaximumValueChange -= CalculateMDefense;
         actorInt.OnBaseMaximumValueChange -= CalculateMProt;
 
+        moveEvent.OnChange -= OnMoved;
         skillManager.bubble.readyEvent.OnChange -= OnLoaded;
         skillManager.bubble.cancelEvent.OnChange -= OnCancelled;
     }
@@ -125,6 +145,12 @@ public class Actor : Movement
     private void CalculateMProt()
     {
         actorMProt.BaseMaximum = actorInt.BaseMaximum / mProtIntFactor;
+    }
+
+    private void OnMoved()
+    {
+        actorCoroutine = null;
+        state = State.Idle;
     }
 
     public void LoadSkill(Skill skill)
