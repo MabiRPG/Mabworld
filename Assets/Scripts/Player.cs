@@ -80,66 +80,118 @@ public class Player : Actor
 
     private void Update()
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-
-        if (horizontal != 0 || vertical != 0)
+        if (state == State.Moving && Input.GetMouseButtonDown(0))
         {
-            AttemptMove(new Vector2(horizontal, vertical));
+            navMeshAgent.SetDestination(transform.position);
+            StopCoroutine(actorCoroutine);
+            moveEvent.RaiseOnChange();
+
+            MoveToCursor();
+            return;
+        }
+        else if (state != State.Idle)
+        {
+            return;
+        }
+
+        if (!navMeshAgent.pathPending && !navMeshAgent.hasPath)
+        {
+            // float horizontal = Input.GetAxisRaw("Horizontal");
+            // float vertical = Input.GetAxisRaw("Vertical");
+
+            // if (horizontal != 0 || vertical != 0)
+            // {
+            //     Vector3 targetPosition = transform.position + new Vector3(horizontal, vertical, 0f);
+
+            //     if (Mathf.Abs(transform.position.x - targetPosition.x) < 0.0001f)
+            //     {
+            //         targetPosition += new Vector3(0.0001f, 0.0001f, 0f);
+            //     }
+
+            //     NavMeshPath path = new NavMeshPath();
+            //     navMeshAgent.CalculatePath(targetPosition, path);
+            //     navMeshAgent.SetPath(path);
+            //     actorCoroutine = Move();
+            //     StartCoroutine(actorCoroutine);
+
+            //     // if (!navMeshAgent.Raycast(targetPosition, out _))
+            //     // {
+            //     //     actorCoroutine = Move(targetPosition);
+            //     //     StartCoroutine(actorCoroutine);
+            //     // }
+            // }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                MoveToCursor();
+            }
+        }
+        else if (navMeshAgent.hasPath)
+        {
+            actorCoroutine = Move();
+            StartCoroutine(actorCoroutine);
         }
     }
 
-    private void AttemptMove(Vector2 direction)
+    private void MoveToCursor()
     {
-        if (state != State.Idle)
-        {
-            return;
-        }
-
-        // Must be initialized with some length or it won't detect anything!
-        RaycastHit2D[] results = new RaycastHit2D[10];
-        ContactFilter2D filter = new ContactFilter2D();
-        filter.SetLayerMask(blockingLayer);
-        boxCollider.Cast(direction, filter, results);
-
-        Vector2 closestPoint = boxCollider.ClosestPoint(results[0].point);
-        Vector2 target = (results[0].point - closestPoint) * (direction * direction);
-
-        // Find the smallest distance movable by a magnitude of 1.
-        if (target.sqrMagnitude > direction.sqrMagnitude)
-        {
-            target = direction;
-        }
-        else if (target.sqrMagnitude == 0)
-        {
-            return;
-        }
-
-        actorCoroutine = Move(transform.position + (Vector3)target);
-        StartCoroutine(actorCoroutine);
+        Vector3 target = GameManager.Instance.canvas.worldCamera.ScreenToWorldPoint(Input.mousePosition);
+        target.z = 0f;
+        navMeshAgent.SetDestination(target);        
     }
 
-    private IEnumerator Move(Vector3 target)
+    private IEnumerator Move()
     {
         state = State.Moving;
         animator.SetBool("isMoving", true);
 
-        float sqdRemainingDistance = (transform.position - target).sqrMagnitude;
-
-        while (sqdRemainingDistance > 0.1)
+        while (navMeshAgent.hasPath)
         {
-            Vector3 nextPos = Vector3.MoveTowards(transform.position, target, 0.1f);
-            Vector2 diff = nextPos - transform.position;
-            rigidBody2d.MovePosition(nextPos);
+            Vector2 nextPos = navMeshAgent.nextPosition;
+            Vector2 diff = nextPos - (Vector2)transform.position;
+            transform.position = nextPos;
             animator.SetFloat("moveX", diff.x);
             animator.SetFloat("moveY", diff.y);
 
-            sqdRemainingDistance = (transform.position - target).sqrMagnitude;
             yield return null;
         }
 
-        rigidBody2d.MovePosition(target);
         animator.SetBool("isMoving", false);
+        transform.position = new Vector3(navMeshAgent.destination.x, navMeshAgent.destination.y, 0f);
+        moveEvent.RaiseOnChange();
+    }
+
+    private IEnumerator Move(Vector3 targetPosition)
+    {
+        state = State.Moving;
+        animator.SetBool("isMoving", true);
+
+        float sqdRemainingDistance = (transform.position - targetPosition).sqrMagnitude;
+
+        while (sqdRemainingDistance > navMeshAgent.speed * Time.deltaTime)
+        {
+            Vector3 nextPos = Vector3.MoveTowards(transform.position, targetPosition, navMeshAgent.speed * Time.deltaTime);
+            Vector2 diff = nextPos - transform.position;
+            transform.position = nextPos;
+            // navMeshAgent.Move(diff);
+            // Offset required for moving an agent directly through code
+            // nextPos.y -= navMeshAgent.baseOffset;
+            // navMeshAgent.Warp(nextPos);
+            // Set the difference for our animator
+            animator.SetFloat("moveX", diff.x);
+            animator.SetFloat("moveY", diff.y);
+
+            sqdRemainingDistance = (transform.position - targetPosition).sqrMagnitude;
+            yield return null;
+        }
+
+        // Set the final positions exactly
+        transform.position = targetPosition;
+        // target.y -= navMeshAgent.baseOffset;
+        // navMeshAgent.Warp(target);
+        //navMeshAgent.destination = transform.position;
+        animator.SetBool("isMoving", false);
+        // Change states
         moveEvent.RaiseOnChange();
     }
 

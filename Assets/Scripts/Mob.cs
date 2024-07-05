@@ -28,9 +28,9 @@ class Mob : Actor
 
         if (!navMeshAgent.pathPending && !navMeshAgent.hasPath)
         {
-            Vector3 nextPos = origin + UnityEngine.Random.insideUnitCircle * traversalRadius;
-            nextPos.z = 0;
-            navMeshAgent.SetDestination(nextPos);
+            Vector3 target = origin + UnityEngine.Random.insideUnitCircle * traversalRadius;
+            target.z = 0;
+            navMeshAgent.SetDestination(target);
         }
         else if (navMeshAgent.hasPath)
         {
@@ -56,6 +56,7 @@ class Mob : Actor
         }
 
         animator.SetBool("isMoving", false);
+        transform.position = new Vector3(navMeshAgent.destination.x, navMeshAgent.destination.y, 0f);
         yield return new WaitForSeconds(UnityEngine.Random.Range(minimumIdleTime, maximumIdleTime));
         moveEvent.RaiseOnChange();
     }
