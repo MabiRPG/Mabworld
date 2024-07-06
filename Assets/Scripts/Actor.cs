@@ -147,12 +147,19 @@ public class Actor : MonoBehaviour
         actorMProt.BaseMaximum = actorInt.BaseMaximum / mProtIntFactor;
     }
 
+    /// <summary>
+    ///     Called when leaving Actor State.Moving.
+    /// </summary>
     private void OnMoved()
     {
         actorCoroutine = null;
         state = State.Idle;
     }
 
+    /// <summary>
+    ///     Called to load a skill on the actor.
+    /// </summary>
+    /// <param name="skill">Skill instance to load.</param>
     public void LoadSkill(Skill skill)
     {
         if (state != State.Idle)
@@ -167,11 +174,17 @@ public class Actor : MonoBehaviour
         state = State.SkillLoading;
     }
 
+    /// <summary>
+    ///     Called when leaving Actor State.Loading.
+    /// </summary>
     private void OnLoaded()
     {
         state = State.SkillLoaded;
     }
 
+    /// <summary>
+    ///     Called to cancel the current skill on the actor.
+    /// </summary>
     public void CancelSkill()
     {
         if (state != State.SkillLoading && state != State.SkillLoaded)
@@ -188,11 +201,19 @@ public class Actor : MonoBehaviour
         state = State.SkillCancelling;
     }
 
+    /// <summary>
+    ///     Called when leaving Actor State.Cancelling.
+    /// </summary>
     private void OnCancelled()
     {
         state = State.Idle;
     }
 
+    /// <summary>
+    ///     Called to use the loaded skill on the target.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="resultHandler">ResultHandler instance of the target.</param>
     public void UseSkill<T>(T resultHandler) where T : ResultHandler
     {
         if (state != State.SkillLoaded || skillLoaded == null)
@@ -206,6 +227,9 @@ public class Actor : MonoBehaviour
         state = State.SkillUsing;
     }
 
+    /// <summary>
+    ///     Called when leaving Actor State.SkillUsing.
+    /// </summary>
     public void OnUsed()
     {
         actorCoroutine = null;

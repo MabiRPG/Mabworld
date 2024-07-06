@@ -2,7 +2,6 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.AI;
 
 /// <summary>
 ///     Handles all player & input processing.
@@ -78,8 +77,13 @@ public class Player : Actor
         }
     }
 
+    /// <summary>
+    ///     Called on every frame.
+    /// </summary>
     private void Update()
     {
+        // Cancels the current movement input and recalculates a new path to the position
+        // on left mouse button press
         if (state == State.Moving && Input.GetMouseButtonDown(0))
         {
             navMeshAgent.SetDestination(transform.position);
@@ -126,6 +130,7 @@ public class Player : Actor
                 MoveToCursor();
             }
         }
+        // Perform auto-pathing if a path exists.
         else if (navMeshAgent.hasPath)
         {
             actorCoroutine = Move();
@@ -133,6 +138,9 @@ public class Player : Actor
         }
     }
 
+    /// <summary>
+    ///     Sets the NavMeshAgent destination to the mouse cursor.
+    /// </summary>
     private void MoveToCursor()
     {
         Vector3 target = GameManager.Instance.canvas.worldCamera.ScreenToWorldPoint(Input.mousePosition);
@@ -140,6 +148,11 @@ public class Player : Actor
         navMeshAgent.SetDestination(target);        
     }
 
+    /// <summary>
+    ///     Moves the NavMeshAgent according to the preset path, and changes the animator states 
+    ///     accordingly.
+    /// </summary>
+    /// <returns>Coroutine to be run.</returns>
     private IEnumerator Move()
     {
         state = State.Moving;
@@ -150,6 +163,7 @@ public class Player : Actor
             Vector2 nextPos = navMeshAgent.nextPosition;
             Vector2 diff = nextPos - (Vector2)transform.position;
             transform.position = nextPos;
+            // Set the animator to the relative movement vector
             animator.SetFloat("moveX", diff.x);
             animator.SetFloat("moveY", diff.y);
 
@@ -157,7 +171,10 @@ public class Player : Actor
         }
 
         animator.SetBool("isMoving", false);
+        // Set the final position exactly to the destination, with the z=0 
+        // due to some bug that causes it to be non-zero.
         transform.position = new Vector3(navMeshAgent.destination.x, navMeshAgent.destination.y, 0f);
+        // Change states.
         moveEvent.RaiseOnChange();
     }
 

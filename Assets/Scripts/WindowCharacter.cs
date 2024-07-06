@@ -3,6 +3,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+///     Handles processing the character window for the player.
+/// </summary>
 public class WindowCharacter : Window
 {
     public static WindowCharacter Instance = null;
@@ -37,6 +40,9 @@ public class WindowCharacter : Window
     private GameObject equipmentSlots;
     private GameObject basicInfoRight;
 
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
     protected override void Awake()
     {
         base.Awake();
@@ -51,6 +57,7 @@ public class WindowCharacter : Window
             Destroy(gameObject);
         }
 
+        // Creates a hashmap of components to easily reference by name.
         basicInfoLeft = body.transform.Find("Basic Info (L)").gameObject;
         Dictionary<string, TMP_Text> dict = CreateComponentMap(basicInfoLeft.transform);
         actorNameText = dict["name"];
@@ -79,6 +86,14 @@ public class WindowCharacter : Window
         // actorMagicProtectionText = body.transform.Find("Basic Information (R)").Find("Defensive Stats Parent").Find("Magic Protection Parent").Find("Value").GetComponent<TMP_Text>();
     }
 
+    /// <summary>
+    ///     Creates a dictionary of TMP_Text components in the transform that end with "Parent".
+    /// </summary>
+    /// <param name="transform">Transform of the GameObject to search under.</param>
+    /// <returns>
+    ///     Dictionary of string and TMP_Text components where the keys are the parent
+    ///     GameObject's field names, and the values are their corresponding TMP_Text components.
+    /// </returns>
     private Dictionary<string, TMP_Text> CreateComponentMap(Transform transform)
     {
         Dictionary<string, TMP_Text> dict = new Dictionary<string, TMP_Text>();
@@ -100,6 +115,9 @@ public class WindowCharacter : Window
         return dict;
     }
 
+    /// <summary>
+    ///     Called after all Awakes.
+    /// </summary>
     private void Start()
     {
         Draw();
@@ -107,6 +125,9 @@ public class WindowCharacter : Window
         gameObject.SetActive(false);
     }
 
+    /// <summary>
+    ///     Called when the object becomes enabled and active.
+    /// </summary>
     private void OnEnable()
     {
         // Basic Details
@@ -134,6 +155,9 @@ public class WindowCharacter : Window
         Draw();
     }
 
+    /// <summary>
+    ///     Called when the object becomes disabled and inactive.
+    /// </summary>
     private void OnDisable()
     {
         // Basic Details
@@ -159,6 +183,9 @@ public class WindowCharacter : Window
         Player.Instance.actorMProt.OnChange -= Draw;
     }
 
+    /// <summary>
+    ///     Draws the window.
+    /// </summary>
     private void Draw()
     {
         // Basic Details

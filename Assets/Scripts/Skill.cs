@@ -217,11 +217,19 @@ public class Skill
         return 0;
     }
 
+    /// <summary>
+    ///     Gets the current skill load time in seconds, including rank modifiers.
+    /// </summary>
+    /// <returns></returns>
     public float GetLoadTime()
     {
         return baseLoadTime + GetStat("load_time");
     }
 
+    /// <summary>
+    ///     Gets the current skill use time in seconds, including rank modifiers.
+    /// </summary>
+    /// <returns></returns>
     public float GetUseTime()
     {
         return baseUseTime + GetStat("use_time");
