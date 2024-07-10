@@ -102,7 +102,7 @@ public class GameManager : MonoBehaviour
         }
 
         // Creates the database uri location
-        string dbUri = string.Format("URI=file:Assets/Database/{0}", databaseName);
+        string dbUri = "URI=file:" + Application.streamingAssetsPath + "/mabinogi.db";
 
         // Opens a connection
         IDbConnection dbConnection = new SqliteConnection(dbUri);
