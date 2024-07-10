@@ -325,6 +325,11 @@ public class Skill
         resultHandler.SetSuccess(chance >= roll);
     }
 
+    /// <summary>
+    ///     Places the skill on cooldown.
+    /// </summary>
+    /// <param name="time">Cooldown time in seconds.</param>
+    /// <returns>Coroutine to be run.</returns>
     public IEnumerator Cooldown(float time)
     {
         cooldown.Value = time;
@@ -342,5 +347,7 @@ public class Skill
                 cooldown.Value -= 0.1f;
             }
         }
+
+        cooldown.Value = 0;
     }
 }

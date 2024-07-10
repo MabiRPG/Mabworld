@@ -162,7 +162,7 @@ public class Actor : MonoBehaviour
     /// <param name="skill">Skill instance to load.</param>
     public void LoadSkill(Skill skill)
     {
-        if (state != State.Idle)
+        if (state != State.Idle || skill.cooldown.Value != 0)
         {
             return;
         }
@@ -239,6 +239,10 @@ public class Actor : MonoBehaviour
         state = State.Idle;
     }
 
+    /// <summary>
+    ///     Called to put the skill on cooldown.
+    /// </summary>
+    /// <param name="skill">Skill instance to cooldown.</param>
     public void CooldownSkill(Skill skill)
     {
         StartCoroutine(skillManager.Cooldown(skill));

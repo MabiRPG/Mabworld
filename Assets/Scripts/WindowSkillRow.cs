@@ -199,6 +199,9 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         }
     }
 
+    /// <summary>
+    ///     Updates the cooldown timers for the skill.
+    /// </summary>
     private void UpdateCooldown()
     {
         if (skill.cooldown.Value > 0)

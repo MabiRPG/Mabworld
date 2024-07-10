@@ -122,6 +122,11 @@ public class SkillManager
         return skill.Use(resultHandler);
     }
 
+    /// <summary>
+    ///     Puts the skill on cooldown, and gets the coroutine to be run.
+    /// </summary>
+    /// <param name="skill">Skill instance to use</param>
+    /// <returns>Coroutine to be run.</returns>
     public IEnumerator Cooldown(Skill skill)
     {
         return skill.Cooldown(skill.GetCooldownTime());
