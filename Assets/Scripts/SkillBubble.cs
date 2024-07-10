@@ -56,6 +56,14 @@ public class SkillBubble : MonoBehaviour
         Hide();
     }
 
+    private void OnMouseDown()
+    {
+        if (spriteRenderer.color.a == 1)
+        {
+            Player.Instance.InterruptAction();
+        }
+    }
+
     public void Show()
     {
         spriteRenderer.color = new Color(1, 1, 1, 1);
