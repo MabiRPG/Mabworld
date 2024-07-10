@@ -15,8 +15,9 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
     private Skill skill;
     // References to prefab objects
     private Image icon;
+    private TMP_Text cooldown;
     private Sprite defaultIcon;
-    private TMP_Text text;
+    private TMP_Text keyText;
     private GameObject slotItem;
 
     // Actions to invoke when triggered
@@ -27,10 +28,11 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
     /// </summary>
     private void Awake()
     {
-        icon = GetComponentInChildren<Image>();
+        icon = transform.Find("Icon").GetComponent<Image>();
+        cooldown = transform.Find("Icon").Find("Cooldown Timer").GetComponent<TMP_Text>();
         defaultIcon = icon.sprite;
-        text = transform.Find("Key").GetComponentInChildren<TMP_Text>();
-        text.text = key.ToString();
+        keyText = transform.Find("Key").GetComponent<TMP_Text>();
+        keyText.text = key.ToString();
         slotItem = transform.Find("Icon").gameObject;
     }
 
@@ -71,12 +73,13 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
     ///     Sets the skill slot
     /// </summary>
     /// <param name="skill">Skill instance</param>
-    /// <param name="newUseAction">Action triggered when skill is used</param>
     /// <param name="openWindowAction">Action triggered when skill details is pressed</param>
-    public void SetSkill(Skill skill, Action newUseAction, Action openWindowAction)
+    public void SetSkill(Skill skill, Action openWindowAction)
     {
         this.skill = skill;
         icon.sprite = this.skill.icon;
+        this.skill.cooldown.OnChange += UpdateCooldown;
+        UpdateCooldown();
 
         InputManager.Instance.AddButtonBind(key, () => Player.Instance.LoadSkill(skill));
         this.openWindowAction = openWindowAction;
@@ -87,8 +90,39 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
     /// </summary>
     private void Clear()
     {
+        skill.cooldown.OnChange -= UpdateCooldown;
+        icon.fillAmount = 1f;
+        cooldown.gameObject.SetActive(false);
         skill = null;
         icon.sprite = defaultIcon;
         InputManager.Instance.RemoveButtonBind(key);
+    }
+
+    private void UpdateCooldown()
+    {
+        if (skill.cooldown.Value > 0)
+        {
+            float iconFillAmount = (skill.GetCooldownTime() - skill.cooldown.Value) / skill.GetCooldownTime();
+            icon.fillAmount = iconFillAmount;
+            cooldown.gameObject.SetActive(true);
+
+            if (skill.cooldown.Value > 60)
+            {
+                cooldown.text = string.Format("{0:0}m", (int)skill.cooldown.Value / 60);
+            }
+            else if (skill.cooldown.Value > 10)
+            {
+                cooldown.text = string.Format("{0:0}s", skill.cooldown.Value);
+            }
+            else
+            {
+                cooldown.text = string.Format("{0:0.0}s", skill.cooldown.Value);
+            }
+        }
+        else
+        {
+            icon.fillAmount = 1f;
+            cooldown.gameObject.SetActive(false);
+        }
     }
 }

@@ -14,7 +14,7 @@ public class WindowSkillStat : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        field = gameObject.GetComponent<TMP_Text>();
+        field = GetComponent<TMP_Text>();
     }
 
     /// <summary>

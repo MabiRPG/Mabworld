@@ -233,8 +233,14 @@ public class Actor : MonoBehaviour
     public void OnUsed()
     {
         actorCoroutine = null;
+        CooldownSkill(skillLoaded);
         skillLoaded = null;
         skillManager.bubble.Hide();
         state = State.Idle;
+    }
+
+    public void CooldownSkill(Skill skill)
+    {
+        StartCoroutine(skillManager.Cooldown(skill));
     }
 }

@@ -121,4 +121,9 @@ public class SkillManager
     {
         return skill.Use(resultHandler);
     }
+
+    public IEnumerator Cooldown(Skill skill)
+    {
+        return skill.Cooldown(skill.GetCooldownTime());
+    }
 }

@@ -15,8 +15,8 @@ public class WindowSkillTrainingMethod : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        methodName = gameObject.transform.Find("Method Name").GetComponent<TMP_Text>();
-        field = gameObject.transform.Find("Method Values").GetComponent<TMP_Text>();
+        methodName = transform.Find("Method Name").GetComponent<TMP_Text>();
+        field = transform.Find("Method Values").GetComponent<TMP_Text>();
     }
 
     /// <summary>

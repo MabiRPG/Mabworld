@@ -16,6 +16,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     private TMP_Text skillName;
     private Button nameButton;
     private Image icon;
+    private TMP_Text cooldown;
     private TMP_Text rank;
     private GameObject xpBar;
     private ProgressBar xpBarScript;
@@ -32,15 +33,16 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     /// </summary>
     private void Awake()
     {
-        skillName = gameObject.transform.Find("Name Button").GetComponentInChildren<TMP_Text>();
-        nameButton = gameObject.transform.Find("Name Button").GetComponent<Button>();
-        icon = gameObject.transform.Find("Icon").GetComponent<Image>();
-        rank = gameObject.transform.Find("Rank").GetComponent<TMP_Text>();
-        xpBar = gameObject.transform.Find("XP Bar").gameObject;
+        skillName = transform.Find("Name Button").GetComponentInChildren<TMP_Text>();
+        nameButton = transform.Find("Name Button").GetComponent<Button>();
+        icon = transform.Find("Icon").GetComponent<Image>();
+        cooldown = transform.Find("Icon").Find("Cooldown Timer").GetComponent<TMP_Text>();
+        rank = transform.Find("Rank").GetComponent<TMP_Text>();
+        xpBar = transform.Find("XP Bar").gameObject;
         xpBarScript = xpBar.GetComponent<ProgressBar>();
-        overXpBar = gameObject.transform.Find("Overfill XP Bar").gameObject;
+        overXpBar = transform.Find("Overfill XP Bar").gameObject;
         overXpBarScript = overXpBar.GetComponent<ProgressBar>();     
-        advanceButton = gameObject.transform.Find("Advance Button").GetComponent<Button>(); 
+        advanceButton = transform.Find("Advance Button").GetComponent<Button>(); 
     }
 
     /// <summary>
@@ -98,7 +100,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
             if (slot != null)
             {
-                slot.SetSkill(skill, null, nameButtonAction);
+                slot.SetSkill(skill, nameButtonAction);
             }
         }
     }
@@ -122,6 +124,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         this.skill.index.OnChange += UpdateRank;
         this.skill.xp.OnChange += UpdateXp;
         this.skill.xpMax.OnChange += UpdateXp;
+        this.skill.cooldown.OnChange += UpdateCooldown;
 
         this.nameButtonAction = nameButtonAction;
         nameButton.onClick.AddListener(delegate {nameButtonAction();});
@@ -138,6 +141,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             skill.index.OnChange -= UpdateRank;
             skill.xp.OnChange -= UpdateXp;
             skill.xpMax.OnChange -= UpdateXp;
+            skill.cooldown.OnChange -= UpdateCooldown;
             skill = null;
         }
         
@@ -192,6 +196,34 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         else
         {
             advanceButton.gameObject.SetActive(false);
+        }
+    }
+
+    private void UpdateCooldown()
+    {
+        if (skill.cooldown.Value > 0)
+        {
+            float iconFillAmount = (skill.GetCooldownTime() - skill.cooldown.Value) / skill.GetCooldownTime();
+            icon.fillAmount = iconFillAmount;
+            cooldown.gameObject.SetActive(true);
+
+            if (skill.cooldown.Value > 60)
+            {
+                cooldown.text = string.Format("{0:0}m", (int)skill.cooldown.Value / 60);
+            }
+            else if (skill.cooldown.Value > 10)
+            {
+                cooldown.text = string.Format("{0:0}s", skill.cooldown.Value);
+            }
+            else
+            {
+                cooldown.text = string.Format("{0:0.0}s", skill.cooldown.Value);
+            }
+        }
+        else
+        {
+            icon.fillAmount = 1f;
+            cooldown.gameObject.SetActive(false);
         }
     }
 }

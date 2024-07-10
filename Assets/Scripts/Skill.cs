@@ -42,10 +42,11 @@ public class Skill
 
     // Current index and rank of skill.
     public IntManager index = new IntManager();
-
     // Current xp and maximum rank xp.
     public FloatManager xp = new FloatManager();
     public FloatManager xpMax = new FloatManager();
+    // Current cooldown timer
+    public FloatManager cooldown = new FloatManager();
 
     // List of training methods at current rank
     public List<SkillTrainingMethod> methods = new List<SkillTrainingMethod>();
@@ -236,6 +237,15 @@ public class Skill
     }
 
     /// <summary>
+    ///     Gets the current skill cooldown time in seconds, including rank modifiers.
+    /// </summary>
+    /// <returns></returns>
+    public float GetCooldownTime()
+    {
+        return baseCooldown + GetStat("cooldown_time");
+    }
+
+    /// <summary>
     ///     Implements the rank-specific training methods.
     /// </summary>
     public void CreateTrainingMethods()
@@ -313,5 +323,24 @@ public class Skill
 
         // Handle success or fail here
         resultHandler.SetSuccess(chance >= roll);
+    }
+
+    public IEnumerator Cooldown(float time)
+    {
+        cooldown.Value = time;
+
+        while (cooldown.Value > 0)
+        {
+            if (cooldown.Value > 10)
+            {
+                yield return new WaitForSecondsRealtime(1);
+                cooldown.Value -= 1;
+            }
+            else
+            {
+                yield return new WaitForSecondsRealtime(0.1f);
+                cooldown.Value -= 0.1f;
+            }
+        }
     }
 }
