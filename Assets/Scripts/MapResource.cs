@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
 
@@ -83,7 +84,26 @@ public class MapResource : MonoBehaviour
 
     private void OnMouseDown()
     {
-        Interact();
+        if (resource.Value == 0)
+        {
+            return;
+        }
+
+        Skill playerSkill = Player.Instance.skillManager.Get(skillID);
+
+        if (rankRequired == null || !playerSkill.IsRankOrGreater(rankRequired))
+        {
+            return;
+        }
+
+        resultHandler.SetResource(playerSkill, lootTableID, resource.Value);
+        
+        Player.Instance.AddToQueue(new List<Action>{
+            () => Player.Instance.MoveToPosition(transform.TransformPoint(Vector2.left * 0.5f)),
+            () => {Player.Instance.Orientate(new Vector2(1, 0)); Player.Instance.AdvanceQueue();},
+            () => Player.Instance.LoadSkill(playerSkill),
+            () => Player.Instance.UseSkill(resultHandler)
+        });
     }
 
     /// <summary>
@@ -138,24 +158,6 @@ public class MapResource : MonoBehaviour
         }
 
         isRegening = false;
-    }
-
-    /// <summary>
-    ///     Called when player interacts with the object in the world.
-    /// </summary>
-    private void Interact()
-    {
-        if (resource.Value == 0)
-        {
-            return;
-        }
-
-        if (Player.Instance.state == Actor.State.SkillLoaded && Player.Instance.skillLoaded.ID == skillID
-            && rankRequired != null && Player.Instance.skillLoaded.IsRankOrGreater(rankRequired))
-        {
-            resultHandler.SetResource(Player.Instance.skillLoaded, lootTableID, resource.Value);
-            Player.Instance.UseSkill(resultHandler);
-        }
     }
 
     private void UpdateResource()

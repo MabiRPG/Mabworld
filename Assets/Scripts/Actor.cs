@@ -57,6 +57,7 @@ public class Actor : MonoBehaviour
         SkillUsing
     }
     public State state = State.Idle;
+    protected Queue<Action> actionQueue = new Queue<Action>();
 
     public SkillManager skillManager;
     public IEnumerator actorCoroutine;
@@ -154,6 +155,7 @@ public class Actor : MonoBehaviour
     {
         actorCoroutine = null;
         state = State.Idle;
+        AdvanceQueue();
     }
 
     /// <summary>
@@ -180,12 +182,13 @@ public class Actor : MonoBehaviour
     private void OnLoaded()
     {
         state = State.SkillLoaded;
+        AdvanceQueue();
     }
 
     /// <summary>
     ///     Called to cancel the current skill on the actor.
     /// </summary>
-    public void CancelSkill()
+    public void CancelLoadSkill()
     {
         if (state != State.SkillLoading && state != State.SkillLoaded)
         {
@@ -237,6 +240,23 @@ public class Actor : MonoBehaviour
         skillLoaded = null;
         skillManager.bubble.Hide();
         state = State.Idle;
+        AdvanceQueue();
+    }
+
+    public void CancelUseSkill()
+    {
+        if (state != State.SkillUsing)
+        {
+            return;
+        }
+
+        StopCoroutine(actorCoroutine);
+
+        actorCoroutine = skillManager.Cancel();
+        skillLoaded = null;
+
+        StartCoroutine(actorCoroutine);
+        state = State.SkillCancelling;
     }
 
     /// <summary>
@@ -246,5 +266,39 @@ public class Actor : MonoBehaviour
     public void CooldownSkill(Skill skill)
     {
         StartCoroutine(skillManager.Cooldown(skill));
+    }
+
+    public void AddToQueue(List<Action> actions)
+    {
+        foreach (Action action in actions)
+        {
+            actionQueue.Enqueue(action);
+        }
+    }
+
+    public void AdvanceQueue()
+    {
+        if (actionQueue.Count > 0)
+        {
+            actionQueue.Dequeue().Invoke();
+        }
+    }
+
+    public void InterruptAction()
+    {
+        switch (state)
+        {
+            case State.SkillLoading:
+                CancelLoadSkill();
+                break;
+            case State.SkillLoaded:
+                CancelLoadSkill();
+                break;
+            case State.SkillUsing:
+                CancelUseSkill();
+                break;
+        }
+
+        actionQueue.Clear();
     }
 }

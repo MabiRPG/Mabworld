@@ -56,10 +56,9 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
             {
                 openWindowAction.Invoke();
             }
-            else
+            else if (!skill.isPassive)
             {
-                //Player.Instance.StartAction(skill);
-                Player.Instance.LoadSkill(Player.Instance.skillManager.Get(skill.ID));
+                Player.Instance.LoadSkill(skill);
             }
         }
         // If right mouse button pressed
@@ -81,7 +80,11 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
         this.skill.cooldown.OnChange += UpdateCooldown;
         UpdateCooldown();
 
-        InputManager.Instance.AddButtonBind(key, () => Player.Instance.LoadSkill(skill));
+        if (!skill.isPassive)
+        {
+            InputManager.Instance.AddButtonBind(key, () => Player.Instance.LoadSkill(skill));
+        }
+
         this.openWindowAction = openWindowAction;
     }
 

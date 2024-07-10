@@ -148,9 +148,24 @@ public class Player : Actor
     /// </summary>
     private void MoveToCursor()
     {
-        Vector3 target = GameManager.Instance.canvas.worldCamera.ScreenToWorldPoint(Input.mousePosition);
-        target.z = 0f;
-        navMeshAgent.SetDestination(target);        
+        MoveToPosition(GameManager.Instance.canvas.worldCamera.ScreenToWorldPoint(Input.mousePosition));
+    }
+
+    public void MoveToPosition(Vector3 position)
+    {
+        position.z = 0f;
+        navMeshAgent.SetDestination(position);
+    }
+
+    public void MoveToPosition(Vector2 position)
+    {
+        navMeshAgent.SetDestination(position);
+    }
+
+    public void Orientate(Vector2 orientation)
+    {
+        animator.SetFloat("moveX", orientation.x);
+        animator.SetFloat("moveY", orientation.y);
     }
 
     /// <summary>

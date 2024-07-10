@@ -51,6 +51,11 @@ public class MapResourceResultHandler : ResultHandler
         this.skill = skill;
         this.lootTableID = lootTableID;
         this.remainingResource = remainingResource;
+
+        if (remainingResource > 0)
+        {
+            isEmpty = false;
+        }
     }
 
     /// <summary>

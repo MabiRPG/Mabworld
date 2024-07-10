@@ -1,5 +1,5 @@
-using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -62,6 +62,7 @@ class Mob : Actor
     {
         state = State.Moving;
         animator.SetBool("isMoving", true);
+        //List<Vector2> positionStore = new List<Vector2>();
 
         while (navMeshAgent.hasPath)
         {
@@ -71,6 +72,35 @@ class Mob : Actor
             // Set the animator to the relative movement vector
             animator.SetFloat("moveX", diff.x);
             animator.SetFloat("moveY", diff.y);
+
+            // TODO : Update collision reset on stuck.
+            // if (positionStore.Count < 5)
+            // {
+            //     positionStore.Add(nextPos);
+            // }
+            // else
+            // {
+            //     positionStore.Add(nextPos);
+            //     positionStore.RemoveAt(0);
+            // }
+
+            // float avgDifference = 0f;
+
+            // for (int i = 1; i < positionStore.Count; i++)
+            // {
+            //     avgDifference += positionStore[i].magnitude - positionStore[i - 1].magnitude;
+            // }
+
+            // avgDifference /= positionStore.Count - 1;
+
+            // if (avgDifference > 0f && avgDifference < 0.1f)
+            // {
+            //     animator.SetBool("isMoving", false);
+            //     navMeshAgent.ResetPath();
+            //     transform.position = origin;
+            //     moveEvent.RaiseOnChange();
+            //     yield break;
+            // }
 
             yield return null;
         }

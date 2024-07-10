@@ -6,7 +6,6 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager Instance = null;
 
-    public Dictionary<KeyCode, Action> movementKeybinds = new Dictionary<KeyCode, Action>();
     public Dictionary<KeyCode, Action> buttonKeybinds = new Dictionary<KeyCode, Action>();
 
     private void Awake()
@@ -22,11 +21,6 @@ public class InputManager : MonoBehaviour
         }        
 
         Reset();
-    }
-
-    public void AddMovementBind(KeyCode key, Action action, bool forceReplace = true)
-    {
-        Add(key, action, forceReplace, movementKeybinds);
     }
 
     public void AddButtonBind(KeyCode key, Action action, bool forceReplace = true)
@@ -65,26 +59,12 @@ public class InputManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            //Player.Instance.InterruptAction();
-            Player.Instance.CancelSkill();
+            Player.Instance.InterruptAction();
         }
-        else if (Player.Instance.state != Actor.State.Idle)
-        {
-            return;
-        }
-
+        
         foreach (KeyValuePair<KeyCode, Action> pair in buttonKeybinds)
         {
             if (Input.GetKeyDown(pair.Key))
-            {
-                pair.Value.Invoke();
-                break;
-            }
-        }
-
-        foreach (KeyValuePair<KeyCode, Action> pair in movementKeybinds)
-        {
-            if (Input.GetKey(pair.Key))
             {
                 pair.Value.Invoke();
                 break;
@@ -94,11 +74,6 @@ public class InputManager : MonoBehaviour
 
     public void Reset()
     {
-        // AddMovementBind(KeyCode.W, () => Player.Instance.MoveUp());
-        // AddMovementBind(KeyCode.A, () => Player.Instance.MoveLeft());
-        // AddMovementBind(KeyCode.S, () => Player.Instance.MoveDown());
-        // AddMovementBind(KeyCode.D, () => Player.Instance.MoveRight());
-
         AddButtonBind(KeyCode.Z, () => WindowSkill.Instance.ToggleVisible());
         AddButtonBind(KeyCode.C, () => WindowCharacter.Instance.ToggleVisible());
         AddButtonBind(KeyCode.I, () => WindowInventory.Instance.ToggleVisible());

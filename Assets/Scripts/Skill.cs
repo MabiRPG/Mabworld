@@ -288,9 +288,6 @@ public class Skill
     {
         // Calculates the base use time for the skill.
         float useTime = GetUseTime();
-        // 0.1 for debugging purposes...
-        useTime = Math.Max(0.1f, useTime);
-
         float currTime = 0;
         // Interval for which audio should play
         float audioInterval = 1f;
@@ -300,7 +297,7 @@ public class Skill
         {
             // Find the remaining interval time and yield
             float interval = Math.Min(useTime - currTime, audioInterval);
-            yield return new WaitForSeconds(interval);
+            yield return new WaitForSecondsRealtime(interval);
 
             // Play a sound if audio interval is reached
             if (interval % audioInterval == 0)
