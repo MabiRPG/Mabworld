@@ -23,7 +23,7 @@ public class Player : Actor
     private int lifeSkillSuccessCap = 18;
 
     // How much our lucky gathers scale with luck stat
-    private int luckyFactor = 20;
+    private int luckyFactor = 2000;
     // How much resource multiplier is applied on trigger lucky
     private int luckyGain = 2;
     private int hugeLuckyFactor = 50000;
@@ -82,6 +82,11 @@ public class Player : Actor
     /// </summary>
     private void Update()
     {
+        if (!GameManager.Instance.isCanvasEmptyUnderMouse)
+        {
+            return;
+        }
+
         // Cancels the current movement input and recalculates a new path to the position
         // on left mouse button press
         if (state == State.Moving && Input.GetMouseButtonDown(0))

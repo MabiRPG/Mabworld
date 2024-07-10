@@ -98,9 +98,8 @@ public class MapResource : MonoBehaviour
             StopCoroutine(Regenerate());
             return;
         }
-        
         // Otherwise, start regen coroutine
-        if (!isRegening)
+        else if (!isRegening && resource.Value == 0)
         {
             StartCoroutine(Regenerate());
         }

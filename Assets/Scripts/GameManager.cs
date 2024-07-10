@@ -7,6 +7,8 @@ using System;
 using System.Reflection;
 using System.Text;
 using System.Globalization;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 /// <summary>
 ///     This class handles all game-wide processing. Refer to Game.instance for the 
@@ -47,9 +49,11 @@ public class GameManager : MonoBehaviour
 
     // Cache of database results.
     private Dictionary<string, DataTable> cache = new Dictionary<string, DataTable>();
-
     // Loot system
     public LootGenerator lootGenerator = new LootGenerator();
+    private GraphicRaycaster raycaster;
+    [System.NonSerialized]
+    public bool isCanvasEmptyUnderMouse;
 
     /// <summary>
     ///     Initializes the object.
@@ -67,8 +71,13 @@ public class GameManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
+
+        raycaster = canvas.GetComponent<GraphicRaycaster>();
     }
 
+    /// <summary>
+    ///     Called after all Awakes.
+    /// </summary>
     private void Start()
     {
         Instantiate(inputManager);
@@ -77,6 +86,14 @@ public class GameManager : MonoBehaviour
         Instantiate(windowSkillPrefab, canvas.transform);
         Instantiate(windowCharacterPrefab, canvas.transform);
         Instantiate(windowInventoryPrefab, canvas.transform);
+    }
+
+    /// <summary>
+    ///     Called on every frame.
+    /// </summary>
+    private void Update()
+    {
+        isCanvasEmptyUnderMouse = IsCanvasEmptyAt(Input.mousePosition);
     }
 
     /// <summary>
@@ -281,5 +298,25 @@ public class GameManager : MonoBehaviour
         }
 
         return camelCase.ToString();
+    }
+
+    private bool IsCanvasEmptyAt(Vector2 position)
+    {
+        // Stores all the results of our raycasts
+        List<RaycastResult> hits = new List<RaycastResult>();
+        // Create a new pointer data for our raycast manipulation
+        PointerEventData pointerData = new PointerEventData(GetComponent<EventSystem>())
+        {
+            position = position
+        };
+
+        raycaster.Raycast(pointerData, hits);
+
+        if (hits.Count > 0)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

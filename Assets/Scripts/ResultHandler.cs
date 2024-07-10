@@ -73,9 +73,9 @@ public class MapResourceResultHandler : ResultHandler
                 GameManager.Instance.lootGenerator.SetLootTable(lootTableID);
                 (resourceID, resourceGain) = GameManager.Instance.lootGenerator.Generate();
 
-                remainingResource -= resourceGain;
+                remainingResource--;
 
-                if (remainingResource <= 0)
+                if (remainingResource == 0)
                 {
                     isEmpty = true;
                 }
