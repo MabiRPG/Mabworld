@@ -21,10 +21,10 @@ public class InventoryBag
     /// </summary>
     public InventoryBag()
     {
-        excludedSlots.Add((0, 0));
-        excludedSlots.Add((3, 3));
-        width = 4;
-        height = 4;
+        // excludedSlots.Add((0, 0));
+        // excludedSlots.Add((3, 3));
+        width = 7;
+        height = 7;
     }
 
     /// <summary>

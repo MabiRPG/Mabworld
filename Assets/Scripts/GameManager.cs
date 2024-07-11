@@ -51,8 +51,8 @@ public class GameManager : MonoBehaviour
     private Dictionary<string, DataTable> cache = new Dictionary<string, DataTable>();
     // Loot system
     public LootGenerator lootGenerator = new LootGenerator();
-    private GraphicRaycaster raycaster;
-    [System.NonSerialized]
+    public GraphicRaycaster raycaster;
+    [HideInInspector]
     public bool isCanvasEmptyUnderMouse;
 
     /// <summary>

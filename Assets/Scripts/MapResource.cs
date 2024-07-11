@@ -82,6 +82,9 @@ public class MapResource : MonoBehaviour
         resultHandler.mapEvent.Clear();
     }
 
+    /// <summary>
+    ///     Called when mouse clicked on collider.
+    /// </summary>
     private void OnMouseDown()
     {
         if (resource.Value == 0)
@@ -97,7 +100,7 @@ public class MapResource : MonoBehaviour
         }
 
         resultHandler.SetResource(playerSkill, lootTableID, resource.Value);
-        
+
         Player.Instance.AddToQueue(new List<Action>{
             () => Player.Instance.MoveToPosition(transform.TransformPoint(Vector2.left * 0.5f)),
             () => {Player.Instance.Orientate(new Vector2(1, 0)); Player.Instance.AdvanceQueue();},

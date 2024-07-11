@@ -56,19 +56,29 @@ public class SkillBubble : MonoBehaviour
         Hide();
     }
 
+    /// <summary>
+    ///     Called when mouse clicked on collider.
+    /// </summary>
     private void OnMouseDown()
     {
+        // If the skill bubble is visible, interrupt action.
         if (spriteRenderer.color.a == 1)
         {
             Player.Instance.InterruptAction();
         }
     }
 
+    /// <summary>
+    ///     Shows the skill bubble.
+    /// </summary>
     public void Show()
     {
         spriteRenderer.color = new Color(1, 1, 1, 1);
     }
 
+    /// <summary>
+    ///     Hides the skill bubble.
+    /// </summary>
     public void Hide()
     {
         spriteRenderer.color = new Color(1, 1, 1, 0);

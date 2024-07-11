@@ -72,6 +72,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd8c49f696e8aad41bc459de18adf8a3
+    m_Address: Oak_Tree
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 08dc6e3b437034b4cb4a4dafdf80f76a
+    m_Address: Farm Village Tileset 1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 90300f635a8a18b4b8bf6c5125043372
+    m_Address: Rock
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1e04f432b98b4f94099995e59e4681f1, type: 2}
   m_SchemaSet:

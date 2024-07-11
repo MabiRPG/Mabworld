@@ -1,7 +1,27 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+
+// TODO : Switch draggable skill icons to proper monobehaviors without cursor.
+// public class MovableSkillIcon : MonoBehaviour
+// {
+//     public Skill skill;
+//     private Transform rectTransform;
+//     private Image image;
+
+//     private void Awake()
+//     {
+//         rectTransform = GetComponent<RectTransform>();
+//         image = GetComponent<Image>();
+//     }
+
+//     public void SetSkill(Skill skill)
+//     {
+//         this.skill = skill;
+//         image.sprite = skill.icon;
+//     }
+// }
 
 /// <summary>
 ///     This class handles the skill window processing.
@@ -76,6 +96,30 @@ public class WindowSkill : Window
     {
         Player.Instance.actorAP.OnChange -= Draw;
     }
+
+    // private void Update()
+    // {
+    //     if (Input.GetMouseButtonDown(0))
+    //     {
+    //         // Stores all the results of our raycasts
+    //         List<RaycastResult> hits = new List<RaycastResult>();
+    //         // Create a new pointer data for our raycast manipulation
+    //         PointerEventData pointerData = new PointerEventData(GetComponent<EventSystem>());
+    //         pointerData.position = Input.mousePosition;
+    //         // Raycast for any windows underneath
+    //         GameManager.Instance.raycaster.Raycast(pointerData, hits);
+
+    //         if (hits.Count == 0)
+    //         {
+    //             return;
+    //         }
+
+    //         if (hits[0].gameObject.name == "Icon")
+    //         {
+    //             Debug.Log("hit icon");
+    //         }
+    //     }
+    // }
 
     /// <summary>
     ///     Draws the window.
