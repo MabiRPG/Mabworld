@@ -12,15 +12,15 @@ public class MapResource : MonoBehaviour
     // Primary key for event
     public int ID;
     // Skill associated
-    [System.NonSerialized]
+    [HideInInspector]
     public int skillID;
     // Rank restrictions on skill to gather
-    [System.NonSerialized]
+    [HideInInspector]
     public string rankRequired;
-    [System.NonSerialized]
+    [HideInInspector]
     public float successRateModifier;
     // Label to display in world
-    [System.NonSerialized]
+    [HideInInspector]
     public string sName;
     // Sprites to display depending on state of resource
     private Sprite fullSprite;
@@ -101,12 +101,45 @@ public class MapResource : MonoBehaviour
 
         resultHandler.SetResource(playerSkill, lootTableID, resource.Value);
 
-        Player.Instance.AddToQueue(new List<Action>{
-            () => Player.Instance.MoveToPosition(transform.TransformPoint(Vector2.left * 0.5f)),
-            () => {Player.Instance.Orientate(new Vector2(1, 0)); Player.Instance.AdvanceQueue();},
-            () => Player.Instance.LoadSkill(playerSkill),
-            () => Player.Instance.UseSkill(resultHandler)
-        });
+        // Player.Instance.AddToQueue(new List<Action>{
+        //     () => Player.Instance.MoveToPosition(transform.TransformPoint(Vector2.left * 0.5f)),
+        //     () => {Player.Instance.Orientate(new Vector2(1, 0)); Player.Instance.AdvanceQueue();},
+        //     () => Player.Instance.LoadSkill(playerSkill),
+        //     () => Player.Instance.UseSkill(resultHandler)
+        // });
+
+        StartCoroutine(Interact(playerSkill));
+    }
+
+    private IEnumerator Interact(Skill playerSkill)
+    {
+        // Player.Instance.movementController.PauseUpdate = true;
+
+        MoveState moveState = new MoveState(Player.Instance.movementController);
+        SkillLoadState loadState = new SkillLoadState(Player.Instance.skillController, playerSkill);
+        moveState.exitAction += () =>
+        {
+            Player.Instance.Orientate(new Vector2(1, 0));
+            Player.Instance.skillController.SetResultHandler(resultHandler);
+            Player.Instance.skillController.SetState(loadState);
+        };
+
+        Player.Instance.movementController.PathToPosition(transform.TransformPoint(Vector2.left * 0.5f));
+
+        while (!Player.Instance.navMeshAgent.hasPath)
+        {
+            yield return null;
+        }
+
+        Player.Instance.movementController.SetState(moveState);
+
+        while (Player.Instance.movementController.State is not IdleState 
+            && Player.Instance.skillController.State is not IdleState)
+        {
+            yield return null;
+        } 
+
+        // Player.Instance.movementController.PauseUpdate = false;
     }
 
     /// <summary>

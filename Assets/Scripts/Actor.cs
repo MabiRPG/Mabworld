@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,10 +12,10 @@ public class Actor : MonoBehaviour
 {
     [SerializeField]
     protected LayerMask blockingLayer;
-    protected BoxCollider2D boxCollider;
-    protected Rigidbody2D rigidBody2d;
-    protected Animator animator;
-    protected NavMeshAgent navMeshAgent;
+    // protected BoxCollider2D boxCollider;
+    // protected Rigidbody2D rigidBody2d;
+    public Animator animator;
+    public NavMeshAgent navMeshAgent;
 
     // Name and level of actor
     public StringManager actorName = new StringManager();
@@ -65,6 +66,8 @@ public class Actor : MonoBehaviour
 
     public EventManager moveEvent = new EventManager();
 
+    public SkillBubble bubble;
+
     /// <summary>
     ///     Initializes the object.
     /// </summary>
@@ -83,11 +86,11 @@ public class Actor : MonoBehaviour
         secondaryStats.Add("m_protection", actorMProt);
 
         GameObject obj = Instantiate(GameManager.Instance.skillBubblePrefab, transform);
-        SkillBubble bubble = obj.GetComponent<SkillBubble>();
+        bubble = obj.GetComponent<SkillBubble>();
         skillManager = new SkillManager(bubble);
 
-        boxCollider = GetComponent<BoxCollider2D>(); 
-        rigidBody2d = GetComponent<Rigidbody2D>();
+        // boxCollider = GetComponent<BoxCollider2D>(); 
+        // rigidBody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.updatePosition = false;

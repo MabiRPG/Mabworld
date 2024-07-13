@@ -54,6 +54,8 @@ public class GameManager : MonoBehaviour
     public GraphicRaycaster raycaster;
     [HideInInspector]
     public bool isCanvasEmptyUnderMouse;
+    [HideInInspector]
+    public bool isSceneEmptyUnderMouse;
 
     /// <summary>
     ///     Initializes the object.
@@ -94,6 +96,7 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         isCanvasEmptyUnderMouse = IsCanvasEmptyAt(Input.mousePosition);
+        isSceneEmptyUnderMouse = IsSceneEmptyAt(Input.mousePosition);
     }
 
     /// <summary>
@@ -318,5 +321,18 @@ public class GameManager : MonoBehaviour
         }
 
         return true;
+    }
+
+    private bool IsSceneEmptyAt(Vector2 position)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(position);
+        RaycastHit2D hits = Physics2D.GetRayIntersection(ray);
+
+        if (hits.transform != null)
+        {
+            return false;
+        }
+
+        return true; 
     }
 }

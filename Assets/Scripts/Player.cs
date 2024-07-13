@@ -29,6 +29,9 @@ public class Player : Actor
     private int hugeLuckyFactor = 50000;
     private int hugeLuckyGain = 20;
 
+    public PlayerMovementController movementController;
+    public PlayerSkillController skillController;
+
     public GameObject map;
     public event Action<MapResourceResultHandler> trainingEvent;
 
@@ -50,6 +53,12 @@ public class Player : Actor
         }
 
         DontDestroyOnLoad(gameObject);
+
+        movementController = gameObject.AddComponent<PlayerMovementController>();
+        movementController.SetActor(this);
+
+        skillController = gameObject.AddComponent<PlayerSkillController>();
+        skillController.SetActor(this);
     }
 
     /// <summary>
@@ -66,82 +75,77 @@ public class Player : Actor
     }
 
     /// <summary>
-    ///     Triggered whenever colliding with another collider 2D.
-    /// </summary>
-    /// <param name="other"></param>
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.TryGetComponent(out MapResource target))
-        {
-            //Debug.Log(target);
-        }
-    }
-
-    /// <summary>
     ///     Called on every frame.
     /// </summary>
-    private void Update()
-    {
-        if (!GameManager.Instance.isCanvasEmptyUnderMouse)
-        {
-            return;
-        }
+    // private void Update()
+    // {
+    //     if (!GameManager.Instance.isCanvasEmptyUnderMouse)
+    //     {
+    //         return;
+    //     }
 
-        // Cancels the current movement input and recalculates a new path to the position
-        // on left mouse button press
-        if (state == State.Moving && Input.GetMouseButtonDown(0))
-        {
-            navMeshAgent.SetDestination(transform.position);
-            StopCoroutine(actorCoroutine);
-            moveEvent.RaiseOnChange();
+    //     // Cancels the current movement input and recalculates a new path to the position
+    //     // // on left mouse button press
+    //     // if (state == State.Moving && Input.GetMouseButtonDown(0))
+    //     // {
+    //     //     navMeshAgent.SetDestination(transform.position);
+    //     //     StopCoroutine(actorCoroutine);
+    //     //     moveEvent.RaiseOnChange();
 
-            MoveToCursor();
-            return;
-        }
-        else if (state != State.Idle)
-        {
-            return;
-        }
+    //     //     MoveToCursor();
+    //     //     return;
+    //     // }
+    //     // else if (state != State.Idle)
+    //     // {
+    //     //     return;
+    //     // }
 
-        if (!navMeshAgent.pathPending && !navMeshAgent.hasPath)
-        {
-            // float horizontal = Input.GetAxisRaw("Horizontal");
-            // float vertical = Input.GetAxisRaw("Vertical");
+    //     if (movementStateMachine.State != movementStateMachine.DefaultState)
+    //     {
+    //         return;
+    //     }
 
-            // if (horizontal != 0 || vertical != 0)
-            // {
-            //     Vector3 targetPosition = transform.position + new Vector3(horizontal, vertical, 0f);
+    //     if (!navMeshAgent.pathPending && !navMeshAgent.hasPath)
+    //     {
+    //         // float horizontal = Input.GetAxisRaw("Horizontal");
+    //         // float vertical = Input.GetAxisRaw("Vertical");
 
-            //     if (Mathf.Abs(transform.position.x - targetPosition.x) < 0.0001f)
-            //     {
-            //         targetPosition += new Vector3(0.0001f, 0.0001f, 0f);
-            //     }
+    //         // if (horizontal != 0 || vertical != 0)
+    //         // {
+    //         //     Vector3 targetPosition = transform.position + new Vector3(horizontal, vertical, 0f);
 
-            //     NavMeshPath path = new NavMeshPath();
-            //     navMeshAgent.CalculatePath(targetPosition, path);
-            //     navMeshAgent.SetPath(path);
-            //     actorCoroutine = Move();
-            //     StartCoroutine(actorCoroutine);
+    //         //     if (Mathf.Abs(transform.position.x - targetPosition.x) < 0.0001f)
+    //         //     {
+    //         //         targetPosition += new Vector3(0.0001f, 0.0001f, 0f);
+    //         //     }
 
-            //     // if (!navMeshAgent.Raycast(targetPosition, out _))
-            //     // {
-            //     //     actorCoroutine = Move(targetPosition);
-            //     //     StartCoroutine(actorCoroutine);
-            //     // }
-            // }
+    //         //     NavMeshPath path = new NavMeshPath();
+    //         //     navMeshAgent.CalculatePath(targetPosition, path);
+    //         //     navMeshAgent.SetPath(path);
+    //         //     actorCoroutine = Move();
+    //         //     StartCoroutine(actorCoroutine);
 
-            if (Input.GetMouseButtonDown(0))
-            {
-                MoveToCursor();
-            }
-        }
-        // Perform auto-pathing if a path exists.
-        else if (navMeshAgent.hasPath)
-        {
-            actorCoroutine = Move();
-            StartCoroutine(actorCoroutine);
-        }
-    }
+    //         //     // if (!navMeshAgent.Raycast(targetPosition, out _))
+    //         //     // {
+    //         //     //     actorCoroutine = Move(targetPosition);
+    //         //     //     StartCoroutine(actorCoroutine);
+    //         //     // }
+    //         // }
+
+    //         if (Input.GetMouseButtonDown(0))
+    //         {
+    //             MoveToCursor();
+    //         }
+    //     }
+    //     // Perform auto-pathing if a path exists.
+    //     else if (navMeshAgent.hasPath)
+    //     {
+    //         // actorCoroutine = Move();
+    //         // StartCoroutine(actorCoroutine);
+
+    //         movementStateMachine.SetState(movementStateMachine.moveState);
+    //     }
+    // }
 
     /// <summary>
     ///     Sets the NavMeshAgent destination to the mouse cursor.

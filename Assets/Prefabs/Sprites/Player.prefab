@@ -415,7 +415,12 @@ MonoBehaviour:
   blockingLayer:
     serializedVersion: 2
     m_Bits: 64
+  animator: {fileID: 0}
+  navMeshAgent: {fileID: 0}
   state: 0
+  bubble: {fileID: 0}
+  movementController: {fileID: 0}
+  skillController: {fileID: 0}
   map: {fileID: 0}
 --- !u!82 &6480767166102820284
 AudioSource:

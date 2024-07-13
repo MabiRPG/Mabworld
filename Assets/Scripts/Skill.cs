@@ -78,7 +78,7 @@ public class Skill
         LoadSkillInfo();
         CreateTrainingMethods();
 
-        index.OnChange += AudioManager.Instance.PlayLevelUpSFX;
+        index.OnChange += AudioController.Instance.PlayLevelUpSFX;
         index.OnChange += CreateTrainingMethods;
     }
 
