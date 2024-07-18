@@ -187,6 +187,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     private void OnDisable()
     {
         bag.changeEvent.OnChange -= Draw;
+        tooltip.Clear();
     }
 
     /// <summary>
