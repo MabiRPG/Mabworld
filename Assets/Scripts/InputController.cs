@@ -59,7 +59,7 @@ public class InputController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Player.Instance.InterruptAction();
+            Player.Instance.controller.Interrupt();
         }
         
         foreach (KeyValuePair<KeyCode, Action> pair in buttonKeybinds)

@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -48,24 +47,7 @@ public class Actor : MonoBehaviour
     // Magic Protection scale with int
     protected int mProtIntFactor = 20; 
 
-    public enum State
-    {
-        Idle,
-        Moving,
-        SkillLoading,
-        SkillLoaded,
-        SkillCancelling,
-        SkillUsing
-    }
-    public State state = State.Idle;
-    protected Queue<Action> actionQueue = new Queue<Action>();
-
     public SkillManager skillManager;
-    public IEnumerator actorCoroutine;
-    public Skill skillLoaded;
-
-    public EventManager moveEvent = new EventManager();
-
     public SkillBubble bubble;
 
     /// <summary>
@@ -107,10 +89,6 @@ public class Actor : MonoBehaviour
         actorStr.OnBaseMaximumValueChange += CalculateDefense;
         actorStr.OnBaseMaximumValueChange += CalculateMDefense;
         actorInt.OnBaseMaximumValueChange += CalculateMProt;
-
-        moveEvent.OnChange += OnMoved;
-        skillManager.bubble.readyEvent.OnChange += OnLoaded;
-        skillManager.bubble.cancelEvent.OnChange += OnCancelled;
     }
 
     /// <summary>
@@ -121,10 +99,6 @@ public class Actor : MonoBehaviour
         actorStr.OnBaseMaximumValueChange -= CalculateDefense;
         actorStr.OnBaseMaximumValueChange -= CalculateMDefense;
         actorInt.OnBaseMaximumValueChange -= CalculateMProt;
-
-        moveEvent.OnChange -= OnMoved;
-        skillManager.bubble.readyEvent.OnChange -= OnLoaded;
-        skillManager.bubble.cancelEvent.OnChange -= OnCancelled;
     }
 
     /// <summary>
@@ -149,159 +123,5 @@ public class Actor : MonoBehaviour
     private void CalculateMProt()
     {
         actorMProt.BaseMaximum = actorInt.BaseMaximum / mProtIntFactor;
-    }
-
-    /// <summary>
-    ///     Called when leaving Actor State.Moving.
-    /// </summary>
-    private void OnMoved()
-    {
-        actorCoroutine = null;
-        state = State.Idle;
-        AdvanceQueue();
-    }
-
-    /// <summary>
-    ///     Called to load a skill on the actor.
-    /// </summary>
-    /// <param name="skill">Skill instance to load.</param>
-    public void LoadSkill(Skill skill)
-    {
-        if (state != State.Idle || skill.cooldown.Value != 0)
-        {
-            return;
-        }
-
-        actorCoroutine = skillManager.Ready(skill);
-        skillLoaded = skill;
-
-        StartCoroutine(actorCoroutine);
-        state = State.SkillLoading;
-    }
-
-    /// <summary>
-    ///     Called when leaving Actor State.Loading.
-    /// </summary>
-    private void OnLoaded()
-    {
-        state = State.SkillLoaded;
-        AdvanceQueue();
-    }
-
-    /// <summary>
-    ///     Called to cancel the current skill on the actor.
-    /// </summary>
-    public void CancelLoadSkill()
-    {
-        if (state != State.SkillLoading && state != State.SkillLoaded)
-        {
-            return;
-        }
-
-        StopCoroutine(actorCoroutine);
-        
-        actorCoroutine = skillManager.Cancel();
-        skillLoaded = null;
-
-        StartCoroutine(actorCoroutine);
-        state = State.SkillCancelling;
-    }
-
-    /// <summary>
-    ///     Called when leaving Actor State.Cancelling.
-    /// </summary>
-    private void OnCancelled()
-    {
-        state = State.Idle;
-    }
-
-    /// <summary>
-    ///     Called to use the loaded skill on the target.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="resultHandler">ResultHandler instance of the target.</param>
-    public void UseSkill<T>(T resultHandler) where T : ResultHandler
-    {
-        if (state != State.SkillLoaded || skillLoaded == null)
-        {
-            return;
-        }
-
-        actorCoroutine = skillManager.Use(skillLoaded, resultHandler);
-        
-        StartCoroutine(actorCoroutine);
-        state = State.SkillUsing;
-    }
-
-    /// <summary>
-    ///     Called when leaving Actor State.SkillUsing.
-    /// </summary>
-    public void OnUsed()
-    {
-        actorCoroutine = null;
-        CooldownSkill(skillLoaded);
-        skillLoaded = null;
-        skillManager.bubble.Hide();
-        state = State.Idle;
-        AdvanceQueue();
-    }
-
-    public void CancelUseSkill()
-    {
-        if (state != State.SkillUsing)
-        {
-            return;
-        }
-
-        StopCoroutine(actorCoroutine);
-
-        actorCoroutine = skillManager.Cancel();
-        skillLoaded = null;
-
-        StartCoroutine(actorCoroutine);
-        state = State.SkillCancelling;
-    }
-
-    /// <summary>
-    ///     Called to put the skill on cooldown.
-    /// </summary>
-    /// <param name="skill">Skill instance to cooldown.</param>
-    public void CooldownSkill(Skill skill)
-    {
-        StartCoroutine(skillManager.Cooldown(skill));
-    }
-
-    public void AddToQueue(List<Action> actions)
-    {
-        foreach (Action action in actions)
-        {
-            actionQueue.Enqueue(action);
-        }
-    }
-
-    public void AdvanceQueue()
-    {
-        if (actionQueue.Count > 0)
-        {
-            actionQueue.Dequeue().Invoke();
-        }
-    }
-
-    public void InterruptAction()
-    {
-        switch (state)
-        {
-            case State.SkillLoading:
-                CancelLoadSkill();
-                break;
-            case State.SkillLoaded:
-                CancelLoadSkill();
-                break;
-            case State.SkillUsing:
-                CancelUseSkill();
-                break;
-        }
-
-        actionQueue.Clear();
     }
 }

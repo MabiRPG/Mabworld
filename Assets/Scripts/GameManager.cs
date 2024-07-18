@@ -95,8 +95,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        isCanvasEmptyUnderMouse = IsCanvasEmptyAt(Input.mousePosition);
-        isSceneEmptyUnderMouse = IsSceneEmptyAt(Input.mousePosition);
+        isCanvasEmptyUnderMouse = CanvasEmptyAt(Input.mousePosition);
+        isSceneEmptyUnderMouse = SceneEmptyAt(Input.mousePosition);
     }
 
     /// <summary>
@@ -303,7 +303,7 @@ public class GameManager : MonoBehaviour
         return camelCase.ToString();
     }
 
-    private bool IsCanvasEmptyAt(Vector2 position)
+    private bool CanvasEmptyAt(Vector2 position)
     {
         // Stores all the results of our raycasts
         List<RaycastResult> hits = new List<RaycastResult>();
@@ -323,7 +323,7 @@ public class GameManager : MonoBehaviour
         return true;
     }
 
-    private bool IsSceneEmptyAt(Vector2 position)
+    private bool SceneEmptyAt(Vector2 position)
     {
         Ray ray = Camera.main.ScreenPointToRay(position);
         RaycastHit2D hits = Physics2D.GetRayIntersection(ray);
@@ -334,5 +334,10 @@ public class GameManager : MonoBehaviour
         }
 
         return true; 
+    }
+
+    public bool EmptyAt()
+    {
+        return isCanvasEmptyUnderMouse && isSceneEmptyUnderMouse;
     }
 }

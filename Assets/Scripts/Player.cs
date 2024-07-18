@@ -29,8 +29,7 @@ public class Player : Actor
     private int hugeLuckyFactor = 50000;
     private int hugeLuckyGain = 20;
 
-    public PlayerMovementController movementController;
-    public PlayerSkillController skillController;
+    public PlayerController controller;
 
     public GameObject map;
     public event Action<MapResourceResultHandler> trainingEvent;
@@ -54,11 +53,8 @@ public class Player : Actor
 
         DontDestroyOnLoad(gameObject);
 
-        movementController = gameObject.AddComponent<PlayerMovementController>();
-        movementController.SetActor(this);
-
-        skillController = gameObject.AddComponent<PlayerSkillController>();
-        skillController.SetActor(this);
+        controller = gameObject.AddComponent<PlayerController>();
+        controller.Init(this);
     }
 
     /// <summary>
@@ -72,168 +68,6 @@ public class Player : Actor
         skillManager.Learn(2);
         skillManager.Learn(3);
         skillManager.Learn(4);
-    }
-
-    /// <summary>
-    ///     Called on every frame.
-    /// </summary>
-    // private void Update()
-    // {
-    //     if (!GameManager.Instance.isCanvasEmptyUnderMouse)
-    //     {
-    //         return;
-    //     }
-
-    //     // Cancels the current movement input and recalculates a new path to the position
-    //     // // on left mouse button press
-    //     // if (state == State.Moving && Input.GetMouseButtonDown(0))
-    //     // {
-    //     //     navMeshAgent.SetDestination(transform.position);
-    //     //     StopCoroutine(actorCoroutine);
-    //     //     moveEvent.RaiseOnChange();
-
-    //     //     MoveToCursor();
-    //     //     return;
-    //     // }
-    //     // else if (state != State.Idle)
-    //     // {
-    //     //     return;
-    //     // }
-
-    //     if (movementStateMachine.State != movementStateMachine.DefaultState)
-    //     {
-    //         return;
-    //     }
-
-    //     if (!navMeshAgent.pathPending && !navMeshAgent.hasPath)
-    //     {
-    //         // float horizontal = Input.GetAxisRaw("Horizontal");
-    //         // float vertical = Input.GetAxisRaw("Vertical");
-
-    //         // if (horizontal != 0 || vertical != 0)
-    //         // {
-    //         //     Vector3 targetPosition = transform.position + new Vector3(horizontal, vertical, 0f);
-
-    //         //     if (Mathf.Abs(transform.position.x - targetPosition.x) < 0.0001f)
-    //         //     {
-    //         //         targetPosition += new Vector3(0.0001f, 0.0001f, 0f);
-    //         //     }
-
-    //         //     NavMeshPath path = new NavMeshPath();
-    //         //     navMeshAgent.CalculatePath(targetPosition, path);
-    //         //     navMeshAgent.SetPath(path);
-    //         //     actorCoroutine = Move();
-    //         //     StartCoroutine(actorCoroutine);
-
-    //         //     // if (!navMeshAgent.Raycast(targetPosition, out _))
-    //         //     // {
-    //         //     //     actorCoroutine = Move(targetPosition);
-    //         //     //     StartCoroutine(actorCoroutine);
-    //         //     // }
-    //         // }
-
-    //         if (Input.GetMouseButtonDown(0))
-    //         {
-    //             MoveToCursor();
-    //         }
-    //     }
-    //     // Perform auto-pathing if a path exists.
-    //     else if (navMeshAgent.hasPath)
-    //     {
-    //         // actorCoroutine = Move();
-    //         // StartCoroutine(actorCoroutine);
-
-    //         movementStateMachine.SetState(movementStateMachine.moveState);
-    //     }
-    // }
-
-    /// <summary>
-    ///     Sets the NavMeshAgent destination to the mouse cursor.
-    /// </summary>
-    private void MoveToCursor()
-    {
-        MoveToPosition(GameManager.Instance.canvas.worldCamera.ScreenToWorldPoint(Input.mousePosition));
-    }
-
-    public void MoveToPosition(Vector3 position)
-    {
-        position.z = 0f;
-        navMeshAgent.SetDestination(position);
-    }
-
-    public void MoveToPosition(Vector2 position)
-    {
-        navMeshAgent.SetDestination(position);
-    }
-
-    public void Orientate(Vector2 orientation)
-    {
-        animator.SetFloat("moveX", orientation.x);
-        animator.SetFloat("moveY", orientation.y);
-    }
-
-    /// <summary>
-    ///     Moves the NavMeshAgent according to the preset path, and changes the animator states 
-    ///     accordingly.
-    /// </summary>
-    /// <returns>Coroutine to be run.</returns>
-    private IEnumerator Move()
-    {
-        state = State.Moving;
-        animator.SetBool("isMoving", true);
-
-        while (navMeshAgent.hasPath)
-        {
-            Vector2 nextPos = navMeshAgent.nextPosition;
-            Vector2 diff = nextPos - (Vector2)transform.position;
-            transform.position = nextPos;
-            // Set the animator to the relative movement vector
-            animator.SetFloat("moveX", diff.x);
-            animator.SetFloat("moveY", diff.y);
-
-            yield return null;
-        }
-
-        animator.SetBool("isMoving", false);
-        // Set the final position exactly to the destination, with the z=0 
-        // due to some bug that causes it to be non-zero.
-        transform.position = new Vector3(navMeshAgent.destination.x, navMeshAgent.destination.y, 0f);
-        // Change states.
-        moveEvent.RaiseOnChange();
-    }
-
-    private IEnumerator Move(Vector3 targetPosition)
-    {
-        state = State.Moving;
-        animator.SetBool("isMoving", true);
-
-        float sqdRemainingDistance = (transform.position - targetPosition).sqrMagnitude;
-
-        while (sqdRemainingDistance > navMeshAgent.speed * Time.deltaTime)
-        {
-            Vector3 nextPos = Vector3.MoveTowards(transform.position, targetPosition, navMeshAgent.speed * Time.deltaTime);
-            Vector2 diff = nextPos - transform.position;
-            transform.position = nextPos;
-            // navMeshAgent.Move(diff);
-            // Offset required for moving an agent directly through code
-            // nextPos.y -= navMeshAgent.baseOffset;
-            // navMeshAgent.Warp(nextPos);
-            // Set the difference for our animator
-            animator.SetFloat("moveX", diff.x);
-            animator.SetFloat("moveY", diff.y);
-
-            sqdRemainingDistance = (transform.position - targetPosition).sqrMagnitude;
-            yield return null;
-        }
-
-        // Set the final positions exactly
-        transform.position = targetPosition;
-        // target.y -= navMeshAgent.baseOffset;
-        // navMeshAgent.Warp(target);
-        //navMeshAgent.destination = transform.position;
-        animator.SetBool("isMoving", false);
-        // Change states
-        moveEvent.RaiseOnChange();
     }
 
     /// <summary>

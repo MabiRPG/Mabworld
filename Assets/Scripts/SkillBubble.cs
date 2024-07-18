@@ -64,7 +64,7 @@ public class SkillBubble : MonoBehaviour
         // If the skill bubble is visible, interrupt action.
         if (spriteRenderer.color.a == 1)
         {
-            Player.Instance.InterruptAction();
+            Player.Instance.controller.Interrupt();
         }
     }
 

@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
 
@@ -91,6 +90,10 @@ public class MapResource : MonoBehaviour
         {
             return;
         }
+        else if (!GameManager.Instance.isCanvasEmptyUnderMouse)
+        {
+            return;
+        }
 
         Skill playerSkill = Player.Instance.skillManager.Get(skillID);
 
@@ -101,45 +104,9 @@ public class MapResource : MonoBehaviour
 
         resultHandler.SetResource(playerSkill, lootTableID, resource.Value);
 
-        // Player.Instance.AddToQueue(new List<Action>{
-        //     () => Player.Instance.MoveToPosition(transform.TransformPoint(Vector2.left * 0.5f)),
-        //     () => {Player.Instance.Orientate(new Vector2(1, 0)); Player.Instance.AdvanceQueue();},
-        //     () => Player.Instance.LoadSkill(playerSkill),
-        //     () => Player.Instance.UseSkill(resultHandler)
-        // });
-
-        StartCoroutine(Interact(playerSkill));
-    }
-
-    private IEnumerator Interact(Skill playerSkill)
-    {
-        // Player.Instance.movementController.PauseUpdate = true;
-
-        MoveState moveState = new MoveState(Player.Instance.movementController);
-        SkillLoadState loadState = new SkillLoadState(Player.Instance.skillController, playerSkill);
-        moveState.exitAction += () =>
-        {
-            Player.Instance.Orientate(new Vector2(1, 0));
-            Player.Instance.skillController.SetResultHandler(resultHandler);
-            Player.Instance.skillController.SetState(loadState);
-        };
-
-        Player.Instance.movementController.PathToPosition(transform.TransformPoint(Vector2.left * 0.5f));
-
-        while (!Player.Instance.navMeshAgent.hasPath)
-        {
-            yield return null;
-        }
-
-        Player.Instance.movementController.SetState(moveState);
-
-        while (Player.Instance.movementController.State is not IdleState 
-            && Player.Instance.skillController.State is not IdleState)
-        {
-            yield return null;
-        } 
-
-        // Player.Instance.movementController.PauseUpdate = false;
+        Vector3 position = transform.TransformPoint(Vector3.zero);
+        IEnumerator task = Player.Instance.controller.HarvestResource(position, playerSkill, resultHandler);
+        Player.Instance.controller.SetTask(task);
     }
 
     /// <summary>

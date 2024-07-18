@@ -5,19 +5,18 @@ using UnityEngine;
 /// <summary>
 ///     Handles all mob (non-NPC and non-Player) processing.
 /// </summary>
-class Mob : Actor
+public class Mob : Actor
 {
-    private Vector2 origin;
+    public Vector2 origin;
 
     // Traversal radius is the maximum range in world units that 
     // a mob can wander around its origin.
-    [SerializeField]
-    private float traversalRadius = 3;
+    public float traversalRadius = 3;
     // Minimum and maximum idle times after a movement is complete to delay movement again.
-    [SerializeField]
-    private float minimumIdleTime = 3;
-    [SerializeField]
-    private float maximumIdleTime = 15;
+    public float minimumIdleTime = 3;
+    public float maximumIdleTime = 15;
+
+    public MobController controller;
 
     /// <summary>
     ///     Initializes the object.
@@ -26,90 +25,63 @@ class Mob : Actor
     {
         base.Awake();
         origin = transform.position;
+
+        controller = gameObject.AddComponent<MobController>();
+        controller.Init(this);
     }
 
     /// <summary>
     ///     Called on every frame.
     /// </summary>
-    private void Update()
-    {
-        if (state != State.Idle)
-        {
-            return;
-        }
+    // private void Update()
+    // {
+    //     if (state != State.Idle)
+    //     {
+    //         return;
+    //     }
 
-        if (!navMeshAgent.pathPending && !navMeshAgent.hasPath)
-        {
-            Vector3 target = origin + UnityEngine.Random.insideUnitCircle * traversalRadius;
-            target.z = 0;
-            // SetDestination is async call so hasPath conditional=true after a few frames.
-            navMeshAgent.SetDestination(target);
-        }
-        // Once SetDestination is done, we call the path here.
-        else if (navMeshAgent.hasPath)
-        {
-            actorCoroutine = Move();
-            StartCoroutine(actorCoroutine);
-        }
-    }
+    //     if (!navMeshAgent.pathPending && !navMeshAgent.hasPath)
+    //     {
+    //         Vector3 target = origin + UnityEngine.Random.insideUnitCircle * traversalRadius;
+    //         target.z = 0;
+    //         // SetDestination is async call so hasPath conditional=true after a few frames.
+    //         navMeshAgent.SetDestination(target);
+    //     }
+    //     // Once SetDestination is done, we call the path here.
+    //     else if (navMeshAgent.hasPath)
+    //     {
+    //         actorCoroutine = Move();
+    //         StartCoroutine(actorCoroutine);
+    //     }
+    // }
 
-    /// <summary>
-    ///     Moves the NavMeshAgent according to the preset path, and changes the animator states 
-    ///     accordingly.
-    /// </summary>
-    /// <returns>Coroutine to be run.</returns>
-    private IEnumerator Move()
-    {
-        state = State.Moving;
-        animator.SetBool("isMoving", true);
-        //List<Vector2> positionStore = new List<Vector2>();
+    // /// <summary>
+    // ///     Moves the NavMeshAgent according to the preset path, and changes the animator states 
+    // ///     accordingly.
+    // /// </summary>
+    // /// <returns>Coroutine to be run.</returns>
+    // private IEnumerator Move()
+    // {
+    //     state = State.Moving;
+    //     animator.SetBool("isMoving", true);
 
-        while (navMeshAgent.hasPath)
-        {
-            Vector2 nextPos = navMeshAgent.nextPosition;
-            Vector2 diff = nextPos - (Vector2)transform.position;
-            transform.position = nextPos;
-            // Set the animator to the relative movement vector
-            animator.SetFloat("moveX", diff.x);
-            animator.SetFloat("moveY", diff.y);
+    //     while (navMeshAgent.hasPath)
+    //     {
+    //         Vector2 nextPos = navMeshAgent.nextPosition;
+    //         Vector2 diff = nextPos - (Vector2)transform.position;
+    //         transform.position = nextPos;
+    //         // Set the animator to the relative movement vector
+    //         animator.SetFloat("moveX", diff.x);
+    //         animator.SetFloat("moveY", diff.y);
 
-            // TODO : Update collision reset on stuck.
-            // if (positionStore.Count < 5)
-            // {
-            //     positionStore.Add(nextPos);
-            // }
-            // else
-            // {
-            //     positionStore.Add(nextPos);
-            //     positionStore.RemoveAt(0);
-            // }
+    //         yield return null;
+    //     }
 
-            // float avgDifference = 0f;
-
-            // for (int i = 1; i < positionStore.Count; i++)
-            // {
-            //     avgDifference += positionStore[i].magnitude - positionStore[i - 1].magnitude;
-            // }
-
-            // avgDifference /= positionStore.Count - 1;
-
-            // if (avgDifference > 0f && avgDifference < 0.1f)
-            // {
-            //     animator.SetBool("isMoving", false);
-            //     navMeshAgent.ResetPath();
-            //     transform.position = origin;
-            //     moveEvent.RaiseOnChange();
-            //     yield break;
-            // }
-
-            yield return null;
-        }
-
-        animator.SetBool("isMoving", false);
-        // Set the final position exactly to the destination, with the z=0 
-        // due to some bug that causes it to be non-zero.
-        transform.position = new Vector3(navMeshAgent.destination.x, navMeshAgent.destination.y, 0f);
-        yield return new WaitForSeconds(UnityEngine.Random.Range(minimumIdleTime, maximumIdleTime));
-        moveEvent.RaiseOnChange();
-    }
+    //     animator.SetBool("isMoving", false);
+    //     // Set the final position exactly to the destination, with the z=0 
+    //     // due to some bug that causes it to be non-zero.
+    //     transform.position = new Vector3(navMeshAgent.destination.x, navMeshAgent.destination.y, 0f);
+    //     yield return new WaitForSeconds(UnityEngine.Random.Range(minimumIdleTime, maximumIdleTime));
+    //     moveEvent.RaiseOnChange();
+    // }
 }
