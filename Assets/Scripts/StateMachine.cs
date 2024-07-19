@@ -60,7 +60,11 @@ public abstract class StateMachine : MonoBehaviour
     public virtual void Reset()
     {
         Interrupt();
-        SetState(DefaultState);
+
+        if (State != DefaultState)
+        {
+            SetState(DefaultState);
+        }
     }
 }
 

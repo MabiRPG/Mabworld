@@ -33,6 +33,12 @@ public class MobController : MonoBehaviour
     {
         Vector3 position = FindRandomPointInRadius(mob.origin, mob.traversalRadius);
         movementMachine.PathToPosition(position);
+
+        while (!mob.navMeshAgent.hasPath)
+        {
+            yield return null;
+        }
+
         movementMachine.SetState(new MoveState(movementMachine));
 
         while (movementMachine.State != movementMachine.DefaultState)

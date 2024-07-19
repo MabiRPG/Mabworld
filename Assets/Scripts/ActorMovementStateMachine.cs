@@ -97,8 +97,6 @@ public abstract class MovementStateMachine : StateMachine
 
     public void PathToPosition(Vector2 position)
     {
-        NavMeshPath path = new NavMeshPath();
-        actor.navMeshAgent.CalculatePath(position, path);
-        actor.navMeshAgent.SetPath(path);
+        actor.navMeshAgent.SetDestination(position);
     }
 }

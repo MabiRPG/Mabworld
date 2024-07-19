@@ -13,7 +13,13 @@ public class PlayerMovementMachine : MovementStateMachine
 
         if (LeftClick())
         {
+            Reset();
             PathToCursor();
+            //SetState(new MoveState(this));
+        }
+
+        if (actor.navMeshAgent.hasPath)
+        {
             SetState(new MoveState(this));
         }
     }
@@ -45,6 +51,7 @@ public class PlayerController : MonoBehaviour
 {
     public PlayerMovementMachine movementMachine;
     public PlayerSkillMachine skillMachine;
+    public Player player;
     public IEnumerator Task;
 
     public void Init(Player player)
@@ -54,6 +61,8 @@ public class PlayerController : MonoBehaviour
 
         skillMachine = gameObject.AddComponent<PlayerSkillMachine>();
         skillMachine.SetActor(player);
+
+        this.player = player;
     }
 
     private void Update()
@@ -91,16 +100,22 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator HarvestResource(Vector3 position, Skill skill, ResultHandler handler)
     {
-        NavMesh.SamplePosition(position, out NavMeshHit hit, 5, NavMesh.AllAreas);
-        MoveState moveState = new MoveState(movementMachine);
         SkillLoadState loadState = new SkillLoadState(skillMachine, skill);
+        MoveState moveState = new MoveState(movementMachine);
         moveState.exitAction += () =>
         {
             skillMachine.SetResultHandler(handler);
             skillMachine.SetState(loadState);
         };
 
+        NavMesh.SamplePosition(position, out NavMeshHit hit, 5, NavMesh.AllAreas);
         movementMachine.PathToPosition(hit.position);
+
+        while (player.navMeshAgent.pathPending)
+        {
+            yield return null;
+        }
+
         movementMachine.SetState(moveState);
 
         while (movementMachine.State != movementMachine.DefaultState || 
