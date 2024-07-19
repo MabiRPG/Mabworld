@@ -11,8 +11,6 @@ public class Actor : MonoBehaviour
 {
     [SerializeField]
     protected LayerMask blockingLayer;
-    // protected BoxCollider2D boxCollider;
-    // protected Rigidbody2D rigidBody2d;
     public Animator animator;
     public NavMeshAgent navMeshAgent;
 
@@ -71,8 +69,6 @@ public class Actor : MonoBehaviour
         bubble = obj.GetComponent<SkillBubble>();
         skillManager = new SkillManager(bubble);
 
-        // boxCollider = GetComponent<BoxCollider2D>(); 
-        // rigidBody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.updatePosition = false;
