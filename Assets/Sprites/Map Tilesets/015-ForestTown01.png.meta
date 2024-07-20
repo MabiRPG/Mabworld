@@ -110,7 +110,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 015-ForestTown01_0
+      name: Copper Ore (full)
       rect:
         serializedVersion: 2
         x: 63
@@ -118,7 +118,7 @@ TextureImporter:
         width: 34
         height: 27
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -141,7 +141,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      015-ForestTown01_0: -828279734
+      Copper Ore (full): -828279734
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

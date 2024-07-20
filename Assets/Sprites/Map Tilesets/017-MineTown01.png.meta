@@ -110,15 +110,15 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 017-MineTown01_0
+      name: Copper Ore (empty)
       rect:
         serializedVersion: 2
         x: 0
-        y: 1029
-        width: 31
-        height: 25
+        y: 1025
+        width: 32
+        height: 29
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -131,15 +131,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 017-MineTown01_1
+      name: Iron Ore (empty)
       rect:
         serializedVersion: 2
         x: 66
         y: 1024
-        width: 61
+        width: 30
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -147,6 +147,48 @@ TextureImporter:
       bones: []
       spriteID: 3e5a283ed5abf5e41ae11146dd8a2c60
       internalID: -1001145398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 1024
+        width: 31
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: df1c14194d3fb8a449d62ff28c19a194
+      internalID: 1997647441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Iron Ore (full)
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 1024
+        width: 33
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 397c5a460e0c42749b9e1a652d7fd604
+      internalID: 820202552
       vertices: []
       indices: 
       edges: []
@@ -162,8 +204,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      017-MineTown01_0: -1297416261
-      017-MineTown01_1: -1001145398
+      Copper Ore (empty): -1297416261
+      Iron Ore (empty): -1001145398
+      Iron Ore (full): 820202552
+      Rock: 1997647441
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
