@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 5037639443692287263}
   - component: {fileID: 3183343788068624197}
   - component: {fileID: 3094874293130347785}
-  - component: {fileID: 8248930871979383577}
   - component: {fileID: 6026753649204188726}
+  - component: {fileID: 7172057467922408095}
   m_Layer: 0
   m_Name: Maple Tree
   m_TagString: Untagged
@@ -103,7 +103,24 @@ MonoBehaviour:
   m_Area: 1
   m_IgnoreFromBuild: 0
   m_AffectedAgents: ffffffff
---- !u!60 &8248930871979383577
+--- !u!114 &6026753649204188726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5627580569454332589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9555b2a4385188d4096453a2528124f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 8
+  skillID: 0
+  rankRequired: 
+  successRateModifier: 0
+  sName: 
+--- !u!60 &7172057467922408095
 PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -147,38 +164,23 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0.43855858, y: -1.5687675}
-      - {x: 1.054616, y: -1.7705994}
-      - {x: 0.69712925, y: -2.3528938}
-      - {x: -0.26424026, y: -2.4233131}
-      - {x: -0.98112106, y: -1.8503914}
-      - {x: -0.38717556, y: -1.4378052}
-    - - {x: 0.65625, y: -0.59375}
-      - {x: 0.65625, y: -0.5625}
-      - {x: 0.59375, y: -0.59375}
-    - - {x: 1.3125, y: -0.3125}
-      - {x: 1.25, y: -0.3125}
-      - {x: 1.40625, y: -0.375}
-    - - {x: -1.375, y: 0.15625}
-      - {x: -1.375, y: 0.1875}
-      - {x: -1.46875, y: 0.09375}
-      - {x: -1.46875, y: 0.03125}
-      - {x: -1.40625, y: 0}
+    - - {x: 0.875, y: -2.15625}
+      - {x: 1.03125, y: -1.96875}
+      - {x: 1.03125, y: -1.8125}
+      - {x: 0.90625, y: -1.71875}
+      - {x: 0.46875, y: -1.59375}
+      - {x: 0.46114254, y: -1.3431816}
+      - {x: -0.54389286, y: -1.4139214}
+      - {x: -0.6941042, y: -1.6002274}
+      - {x: -1.0625, y: -1.71875}
+      - {x: -0.96875, y: -2.0625}
+      - {x: -0.6875, y: -2.15625}
+      - {x: -0.59375, y: -2.34375}
+      - {x: -0.53125, y: -2.40625}
+      - {x: -0.46875, y: -2.4375}
+      - {x: -0.25, y: -2.4375}
+      - {x: -0.0625, y: -2.34375}
+      - {x: 0.1875, y: -2.4375}
+      - {x: 0.4375, y: -2.4375}
+      - {x: 0.625, y: -2.34375}
   m_UseDelaunayMesh: 0
---- !u!114 &6026753649204188726
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5627580569454332589}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9555b2a4385188d4096453a2528124f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ID: 8
-  skillID: 0
-  rankRequired: 
-  successRateModifier: 0
-  sName: 
