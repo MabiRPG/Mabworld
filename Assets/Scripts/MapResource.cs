@@ -38,7 +38,6 @@ public class MapResource : MonoBehaviour
     private int resourceRegenInterval;
     // What loot table this resource draws from
     private int lootTableID;
-    private bool isMovable;
 
     private SpriteRenderer spriteRenderer;
     private bool isRegening;
