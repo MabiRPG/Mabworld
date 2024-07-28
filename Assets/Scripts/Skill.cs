@@ -22,9 +22,9 @@ public class Skill
     public AudioClip sfx;
     public AnimationClip animationClip;
     // Starting, first and last ranks that can be reached
-    public char startingRank;
-    public char firstAvailableRank;
-    public char lastAvailableRank;
+    public string startingRank;
+    public string firstAvailableRank;
+    public string lastAvailableRank;
     // Base loading time, use time, and cooldown
     public float baseLoadTime;
     public float baseUseTime;
@@ -104,6 +104,11 @@ public class Skill
             stats.Add(r.ItemArray[statPos].ToString(), 
                 r.ItemArray.Skip(2).Take(ranks.Count).Select(x => float.Parse(x.ToString())).ToArray());
         }
+
+        if (ranks.Contains(startingRank))
+        {
+            index.Value = ranks.IndexOf(startingRank);
+        }
     }
 
     /// <summary>
@@ -112,7 +117,7 @@ public class Skill
     /// <returns>True if can rank up.</returns>
     public bool CanRankUp()
     {
-        return index.Value + 1 < ranks.Count;
+        return index.Value + 1 < ranks.Count && index.Value + 1 < ranks.IndexOf(lastAvailableRank);
     }
 
     /// <summary>
@@ -134,7 +139,7 @@ public class Skill
     /// </summary>
     public void RankDown()
     {
-        if (index.Value - 1 >= 0)
+        if (index.Value - 1 >= ranks.IndexOf(firstAvailableRank))
         {
             index.Value--;
         }
