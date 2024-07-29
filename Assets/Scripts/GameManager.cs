@@ -159,6 +159,13 @@ public class GameManager : MonoBehaviour
         return dt;
     }
 
+    /// <summary>
+    ///     Parses the database row and transforms it into a C# class model
+    ///     with custom parameter mapping.
+    /// </summary>
+    /// <param name="row">DataRow result from querying the database.</param>
+    /// <param name="model"></param>
+    /// <param name="customMap"></param>
     public void ParseDatabaseRow(DataRow row, object model, 
         params (string Key, string FieldName)[] customMap)
     {
@@ -265,12 +272,23 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    ///     Loads the asset through the addressable system.
+    /// </summary>
+    /// <typeparam name="T">Type of asset</typeparam>
+    /// <param name="key">Addressable key of asset</param>
+    /// <returns>Addressable asset to manipulate</returns>
     public T LoadAsset<T>(string key)
     {
         T t = Addressables.LoadAssetAsync<T>(key).WaitForCompletion();
         return t;
     }
 
+    /// <summary>
+    ///     Converts a snake case string to camel case.
+    /// </summary>
+    /// <param name="snakeCase">Snake case string</param>
+    /// <returns>Camel case string equivalent</returns>
     public string ConvertSnakeCaseToCamelCase(string snakeCase)
     {
         if (string.IsNullOrEmpty(snakeCase))
@@ -303,6 +321,11 @@ public class GameManager : MonoBehaviour
         return camelCase.ToString();
     }
 
+    /// <summary>
+    ///     Checks if the canvas is empty at the screen position.
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns>True if empty, False otherwise</returns>
     private bool CanvasEmptyAt(Vector2 position)
     {
         // Stores all the results of our raycasts
@@ -323,6 +346,11 @@ public class GameManager : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    ///     Checks if the scene is empty at the screen position.
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns>True if empty, False otherwise</returns>
     private bool SceneEmptyAt(Vector2 position)
     {
         Ray ray = Camera.main.ScreenPointToRay(position);
@@ -336,6 +364,10 @@ public class GameManager : MonoBehaviour
         return true; 
     }
 
+    /// <summary>
+    ///     Checks if both canvas and scene are empty under the mouse position.
+    /// </summary>
+    /// <returns>True if both empty, False otherwise</returns>
     public bool EmptyAt()
     {
         return isCanvasEmptyUnderMouse && isSceneEmptyUnderMouse;

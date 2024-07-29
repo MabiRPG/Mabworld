@@ -2,47 +2,77 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+///     Default idle state for movement machine. Does nothing.
+/// </summary>
 public class IdleState : State
 {
     private StateMachine machine;
 
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
     public IdleState(StateMachine machine)
     {
         this.machine = machine;
     }
 
+    /// <summary>
+    ///     Called when machine enters state.
+    /// </summary>
     public override void OnEnter()
     {
         machine.State = this;
     }
 
+    /// <summary>
+    ///     Called when machine processes state.
+    /// </summary>
+    /// <returns>Coroutine to be run.</returns>
     public override IEnumerator Main()
     {
+        // Does nothing in idle state
         yield return null;
     }
 
+    /// <summary>
+    ///     Called when machine exits state.
+    /// </summary>
     public override void OnExit()
     {
         machine.Task = null;
     }
 }
 
+/// <summary>
+///     Handles whenever the actor is moving.
+/// </summary>
 public class MoveState : State
 {
     private MovementStateMachine machine;
     private Actor actor;
 
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
     public MoveState(MovementStateMachine machine)
     {
         this.machine = machine;
         actor = machine.actor;
     }
 
+    /// <summary>
+    ///     Called when machine enters state.
+    /// </summary>
     public override void OnEnter()
     {
         machine.State = this;
     }
 
+    /// <summary>
+    ///     Called when machine processes state.
+    /// </summary>
+    /// <returns>Coroutine to be run.</returns>
     public override IEnumerator Main()
     {
         actor.animator.SetBool("isMoving", true);
@@ -69,6 +99,9 @@ public class MoveState : State
         );
     }
 
+    /// <summary>
+    ///     Called when machine exits state.
+    /// </summary>
     public override void OnExit()
     {
         machine.Task = null;
@@ -76,6 +109,9 @@ public class MoveState : State
     }
 }
 
+/// <summary>
+///     Actor movement state machine abstract class to derive machines from.
+/// </summary>
 public abstract class MovementStateMachine : StateMachine
 {
     public Actor actor;
@@ -83,6 +119,10 @@ public abstract class MovementStateMachine : StateMachine
     public IdleState idleState;
     public override State DefaultState { get => idleState; }
 
+    /// <summary>
+    ///     Sets the actor for the machine to control.
+    /// </summary>
+    /// <param name="actor"></param>
     public void SetActor(Actor actor)
     {
         this.actor = actor;
@@ -90,11 +130,19 @@ public abstract class MovementStateMachine : StateMachine
         SetState(DefaultState);
     }
     
+    /// <summary>
+    ///     Calculates a path for the actor.
+    /// </summary>
+    /// <param name="position"></param>
     public void PathToPosition(Vector3 position)
     {
         PathToPosition(new Vector2(position.x, position.y));
     }
 
+    /// <summary>
+    ///     Calculates a path for the actor.
+    /// </summary>
+    /// <param name="position"></param>
     public void PathToPosition(Vector2 position)
     {
         actor.navMeshAgent.SetDestination(position);

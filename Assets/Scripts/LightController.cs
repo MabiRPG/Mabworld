@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
+/// <summary>
+///     Handles the global illumination in the scene (day and night cycles)
+/// </summary>
 public class LightController : MonoBehaviour
 {
+    // Global instance of LightController
     public static LightController Instance { get; private set; }
-
     private Light2D globalLight;
 
+    // Colors of each phase of the day/night cycle
     [Header("Colors")]
     [SerializeField]
     private Color32 dawnColor = new Color32(91, 46, 0, 255);
@@ -19,6 +23,7 @@ public class LightController : MonoBehaviour
     [SerializeField]
     private Color32 nightColor = new Color32(4, 4, 5, 255);
 
+    // Duration of each phase.
     [Header("Timers")]
     [SerializeField]
     private int dawnDurationInSeconds = 10;
@@ -29,6 +34,9 @@ public class LightController : MonoBehaviour
     [SerializeField]
     private int nightDurationInSeconds = 100;
 
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
     private void Awake()
     {
         // Singleton recipe so only one instance is active at a time.
@@ -42,10 +50,21 @@ public class LightController : MonoBehaviour
         }
 
         globalLight = GetComponent<Light2D>();
+    }
 
+    /// <summary>
+    ///     Called after all Awakes.
+    /// </summary>
+    private void Start()
+    {
+        // Begins the day/night cycle.
         StartCoroutine(Clock());
     }
 
+    /// <summary>
+    ///     Cycles through the lighting cycles depending on the time.
+    /// </summary>
+    /// <returns>Coroutine to be run.</returns>
     private IEnumerator Clock()
     {
         while (true)
@@ -61,6 +80,12 @@ public class LightController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    ///     Transitions from the current color to the target color over a duration.
+    /// </summary>
+    /// <param name="duration">Transition time in seconds.</param>
+    /// <param name="targetColor">Final target color.</param>
+    /// <returns>Coroutine to be run.</returns>
     private IEnumerator BeginLightingCycle(int duration, Color32 targetColor)
     {
         Color currentColor = globalLight.color;
