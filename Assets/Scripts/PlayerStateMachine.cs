@@ -2,8 +2,14 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+///     Player state machine for controlling movement.
+/// </summary>
 public class PlayerMovementMachine : MovementStateMachine
 {
+    /// <summary>
+    ///     Default movement function to be called on update.
+    /// </summary>
     public void Move()
     {
         if (!GameManager.Instance.EmptyAt())
@@ -18,12 +24,17 @@ public class PlayerMovementMachine : MovementStateMachine
             //SetState(new MoveState(this));
         }
 
+        // Since the path calculation is async, we call move state whenever it is done.
         if (actor.navMeshAgent.hasPath)
         {
             SetState(new MoveState(this));
         }
     }
 
+    /// <summary>
+    ///     Checks if the left mouse button was pressed.
+    /// </summary>
+    /// <returns></returns>
     private bool LeftClick()
     {
         return Input.GetMouseButton(0);
@@ -38,8 +49,12 @@ public class PlayerMovementMachine : MovementStateMachine
     }
 }
 
+/// <summary>
+///     Player state machine for skills.
+/// </summary>
 public class PlayerSkillMachine : SkillStateMachine
 {
+    // Override behaviour to do skill cancelling when cancelled.
     public override void Reset()
     {
         Interrupt();
@@ -47,6 +62,9 @@ public class PlayerSkillMachine : SkillStateMachine
     }
 }
 
+/// <summary>
+///     Controller for all player state machines 
+/// </summary>
 public class PlayerController : MonoBehaviour
 {
     public PlayerMovementMachine movementMachine;
@@ -54,6 +72,10 @@ public class PlayerController : MonoBehaviour
     public Player player;
     public IEnumerator Task;
 
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
+    /// <param name="player"></param>
     public void Init(Player player)
     {
         movementMachine = gameObject.AddComponent<PlayerMovementMachine>();
@@ -65,6 +87,9 @@ public class PlayerController : MonoBehaviour
         this.player = player;
     }
 
+    /// <summary>
+    ///     Called on every frame.
+    /// </summary>
     private void Update()
     {
         if (Task != null)
@@ -75,6 +100,11 @@ public class PlayerController : MonoBehaviour
         movementMachine.Move();
     }
 
+    /// <summary>
+    ///     Sets a new task that overrides the default behaviour of the controller.
+    /// </summary>
+    /// <param name="task">Coroutine to be run.</param>
+    /// <returns>True if assigned, False otherwise</returns>
     public bool SetTask(IEnumerator task)
     {
         if (Task != null)
@@ -87,6 +117,9 @@ public class PlayerController : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    ///     Interrupts the current task and resets all machines to their default states.
+    /// </summary>
     public void Interrupt()
     {
         if (Task != null)
@@ -98,6 +131,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    ///     Coroutine to harvest a resource. First, move the player to the resource, then
+    ///     run the skill load, skill use states.
+    /// </summary>
+    /// <param name="position">Position of the resource</param>
+    /// <param name="skill">Skill to be used</param>
+    /// <param name="handler"></param>
+    /// <returns>Coroutine to be run.</returns>
     public IEnumerator HarvestResource(Vector3 position, Skill skill, ResultHandler handler)
     {
         SkillLoadState loadState = new SkillLoadState(skillMachine, skill);

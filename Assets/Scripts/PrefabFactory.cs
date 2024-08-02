@@ -57,6 +57,11 @@ public class PrefabFactory : ScriptableObject
         return obj;
     }
 
+    /// <summary>
+    ///     Changes an old key to a new key.
+    /// </summary>
+    /// <param name="oldKey"></param>
+    /// <param name="newKey"></param>
     public void ChangeKey(object oldKey, object newKey)
     {
         GameObject obj = prefabs[oldKey];

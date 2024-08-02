@@ -3,9 +3,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+///     Handles the window for splitting items in the inventory window.
+/// </summary>
 public class WindowInventorySplitStack : Window
 {
+    // Item to be split
     private WindowInventoryItem itemHover;
+    // Value of the input field
     private IntManager quantity = new IntManager(1);
     
     private TMP_InputField quantityInput;
@@ -20,6 +25,9 @@ public class WindowInventorySplitStack : Window
     private Button confirmButton;
     private Action<int> splitItemAction;
 
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
     protected override void Awake()
     {
         base.Awake();
@@ -36,10 +44,16 @@ public class WindowInventorySplitStack : Window
         gameObject.SetActive(false);
     }
 
+    /// <summary>
+    ///     Called when the object becomes enabled and active.
+    /// </summary>
     private void OnEnable()
     {
+        // If the slider changes, change all other quantity fields
         slider.onValueChanged.AddListener(delegate { SetQuantity(slider.value); });
+        // If the input field changes, change all other quantity fields
         quantityInput.onValueChanged.AddListener(delegate {
+            // Parse the input and check if it is float, otherwise assign it to 1.
             if (float.TryParse(quantityInput.text, out float value))
             {
                 SetQuantity(value);
@@ -62,6 +76,9 @@ public class WindowInventorySplitStack : Window
         confirmButton.onClick.AddListener(delegate { CreateItem(quantity.Value); });
     }
 
+    /// <summary>
+    ///     Called when the object becomes disabled and inactive.
+    /// </summary>
     private void OnDisable()
     {
         slider.onValueChanged.RemoveAllListeners();
@@ -75,6 +92,11 @@ public class WindowInventorySplitStack : Window
         confirmButton.onClick.RemoveAllListeners();
     }
 
+    /// <summary>
+    ///     Sets the item to be split
+    /// </summary>
+    /// <param name="itemHover">Item to be split.</param>
+    /// <param name="splitItemAction">Action to be called when confirmed.</param>
     public void SetItem(WindowInventoryItem itemHover, Action<int> splitItemAction)
     {
         this.itemHover = itemHover;
@@ -93,12 +115,20 @@ public class WindowInventorySplitStack : Window
         slider.wholeNumbers = true;
     }
 
+    /// <summary>
+    ///     Creates a new split item based on the input.
+    /// </summary>
+    /// <param name="quantity"></param>
     private void CreateItem(int quantity)
     {
         splitItemAction(quantity);
         CloseWindow();
     }
 
+    /// <summary>
+    ///     Sets the quantity input and reassigns all quantity fields.
+    /// </summary>
+    /// <param name="quantity"></param>
     private void SetQuantity(float quantity)
     {
         if (1f <= quantity && quantity <= itemHover.quantity)
@@ -107,11 +137,17 @@ public class WindowInventorySplitStack : Window
         }
     }
 
+    /// <summary>
+    ///     Updates the text fields.
+    /// </summary>
     private void UpdateText()
     {
         quantityInput.text = quantity.Value.ToString();
     }
 
+    /// <summary>
+    ///     Updates the slider bars.
+    /// </summary>
     private void UpdateSlider()
     {
         slider.value = quantity.Value;

@@ -2,13 +2,22 @@ using System;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+///     Text validators for TMP_Input fields to restrict input to numbers, in a specific range.
+/// </summary>
 [Serializable]
 [CreateAssetMenu(fileName = "NumberRangeValidator.asset", menuName = "TextMeshPro/Input Validators/Number Range", order = 100)]
 public class NumberRangeValidator : TMP_InputValidator
 {
+    // Minimum and maximum range for our number input
     private float minimum = 1;
     private float maximum = 1;
 
+    /// <summary>
+    ///     Sets the validator range
+    /// </summary>
+    /// <param name="minimum"></param>
+    /// <param name="maximum"></param>
     public void SetRange(float minimum, float maximum)
     {
         this.minimum = minimum;
@@ -35,12 +44,14 @@ public class NumberRangeValidator : TMP_InputValidator
 
         float value = float.Parse(text.Insert(pos, ch.ToString()));
 
+        // If the input is less than minimum, overwrite to minimum and move pointer
         if (value < minimum)
         {
             text = minimum.ToString();
             pos = text.Length;
             return text[^1];
         }
+        // Same for maximum
         else if (value > maximum)
         {
             text = maximum.ToString();

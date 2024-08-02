@@ -107,6 +107,9 @@ public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
         rectTransform.SetAsLastSibling();
     }
 
+    /// <summary>
+    ///     Shows the window.
+    /// </summary>
     public void ShowWindow()
     {
         gameObject.SetActive(true);

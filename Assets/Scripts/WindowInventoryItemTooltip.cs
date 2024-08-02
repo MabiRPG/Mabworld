@@ -2,12 +2,18 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+///     Handles rendering the item tooltip when mousing over an item in the inventory window.
+/// </summary>
 public class WindowInventoryItemTooltip : MonoBehaviour
 {
     private TMP_Text tname;
     private TMP_Text description;
     private TMP_Text itemStackSize;
 
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
     private void Awake()
     {
         tname = transform.Find("Item Name").GetComponent<TMP_Text>();
@@ -17,6 +23,10 @@ public class WindowInventoryItemTooltip : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    /// <summary>
+    ///     Sets the item.
+    /// </summary>
+    /// <param name="item"></param>
     public void SetItem(Item item)
     {
         tname.text = item.name;
@@ -28,6 +38,9 @@ public class WindowInventoryItemTooltip : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)gameObject.transform);
     }
 
+    /// <summary>
+    ///     Hides the tooltip.
+    /// </summary>
     public void Clear()
     {
         gameObject.SetActive(false);
