@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -21,13 +22,21 @@ public class PlayerMovementMachine : MovementStateMachine
         {
             Reset();
             PathToCursor();
-            //SetState(new MoveState(this));
         }
+
+        // Debug.Log(actor.navMeshAgent.pathStatus);
 
         // Since the path calculation is async, we call move state whenever it is done.
         if (actor.navMeshAgent.hasPath)
         {
-            SetState(new MoveState(this));
+            if (actor.navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete)
+            {
+                SetState(new MoveState(this));
+            }
+            else
+            {
+                actor.navMeshAgent.ResetPath();
+            }
         }
     }
 
@@ -157,12 +166,19 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
 
-        movementMachine.SetState(moveState);
-
-        while (movementMachine.State != movementMachine.DefaultState || 
-            skillMachine.State != skillMachine.DefaultState)
+        if (player.navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete)
         {
-            yield return null;
+            movementMachine.SetState(moveState);
+
+            while (movementMachine.State != movementMachine.DefaultState ||
+                skillMachine.State != skillMachine.DefaultState)
+            {
+                yield return null;
+            }
+        }
+        else
+        {
+            player.navMeshAgent.ResetPath();
         }
 
         Task = null;

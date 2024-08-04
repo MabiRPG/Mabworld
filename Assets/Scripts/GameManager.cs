@@ -46,6 +46,8 @@ public class GameManager : MonoBehaviour
     private GameObject windowCharacterPrefab;
     [SerializeField]
     private GameObject windowInventoryPrefab;
+    [SerializeField]
+    private GameObject windowCraftingPrefab;
 
     // Cache of database results.
     private Dictionary<string, DataTable> cache = new Dictionary<string, DataTable>();
@@ -88,6 +90,7 @@ public class GameManager : MonoBehaviour
         Instantiate(windowSkillPrefab, canvas.transform);
         Instantiate(windowCharacterPrefab, canvas.transform);
         Instantiate(windowInventoryPrefab, canvas.transform);
+        Instantiate(windowCraftingPrefab, canvas.transform);
     }
 
     /// <summary>
