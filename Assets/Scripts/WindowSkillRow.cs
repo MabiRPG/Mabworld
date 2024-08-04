@@ -36,7 +36,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         skillName = transform.Find("Name Button").GetComponentInChildren<TMP_Text>();
         nameButton = transform.Find("Name Button").GetComponent<Button>();
         icon = transform.Find("Icon").GetComponent<Image>();
-        cooldown = transform.Find("Icon").Find("Cooldown Timer").GetComponent<TMP_Text>();
+        cooldown = transform.Find("Icon/Cooldown Timer").GetComponent<TMP_Text>();
         rank = transform.Find("Rank").GetComponent<TMP_Text>();
         xpBar = transform.Find("XP Bar").gameObject;
         xpBarScript = xpBar.GetComponent<ProgressBar>();

@@ -37,9 +37,9 @@ public class WindowSkillAdvance : Window
         icon = body.transform.Find("Icon Parent").GetComponentInChildren<Image>();
         rank = body.transform.Find("Advance Text").GetComponent<TMP_Text>();
         statTransform = body.transform.Find("Stats");
-        ap = body.transform.Find("AP Text Parent").Find("AP Text").GetComponent<TMP_Text>();
-        advanceButton = body.transform.Find("Button Parent").Find("Advance Button").GetComponent<Button>();
-        cancelButton = body.transform.Find("Button Parent").Find("Cancel Button").GetComponent<Button>();
+        ap = body.transform.Find("AP Text Parent/AP Text").GetComponent<TMP_Text>();
+        advanceButton = body.transform.Find("Button Parent/Advance Button").GetComponent<Button>();
+        cancelButton = body.transform.Find("Button Parent/Cancel Button").GetComponent<Button>();
 
         statPrefabs = ScriptableObject.CreateInstance<PrefabFactory>();
         statPrefabs.SetPrefab(statPrefab);

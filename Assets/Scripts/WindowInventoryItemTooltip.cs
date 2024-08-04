@@ -17,8 +17,8 @@ public class WindowInventoryItemTooltip : MonoBehaviour
     private void Awake()
     {
         tname = transform.Find("Item Name").GetComponent<TMP_Text>();
-        description = transform.Find("Description Parent").Find("Description").GetComponent<TMP_Text>();
-        itemStackSize = transform.Find("Description Parent").Find("Stack Size Limit").GetComponent<TMP_Text>();
+        description = transform.Find("Description Parent/Description").GetComponent<TMP_Text>();
+        itemStackSize = transform.Find("Description Parent/Stack Size Limit").GetComponent<TMP_Text>();
 
         gameObject.SetActive(false);
     }

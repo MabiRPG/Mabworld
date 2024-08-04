@@ -32,14 +32,14 @@ public class WindowInventorySplitStack : Window
     {
         base.Awake();
 
-        quantityInput = body.transform.Find("Quantity Parent").Find("Quantity Input").GetComponent<TMP_InputField>();
+        quantityInput = body.transform.Find("Quantity Parent/Quantity Input").GetComponent<TMP_InputField>();
         rangeValidator = (NumberRangeValidator)quantityInput.inputValidator;
-        maxQuantityText = body.transform.Find("Quantity Parent").Find("Max Quantity Text").GetComponent<TMP_Text>();
-        decreaseButton = body.transform.Find("Slider").Find("Decrease Button").GetComponent<Button>();
+        maxQuantityText = body.transform.Find("Quantity Parent/Max Quantity Text").GetComponent<TMP_Text>();
+        decreaseButton = body.transform.Find("Slider/Decrease Button").GetComponent<Button>();
         slider = body.transform.Find("Slider").GetComponent<Slider>();
-        increaseButton = body.transform.Find("Slider").Find("Increase Button").GetComponent<Button>();
-        cancelButton = body.transform.Find("Button Parent").Find("Cancel Button").GetComponent<Button>();
-        confirmButton = body.transform.Find("Button Parent").Find("Confirm Button").GetComponent<Button>();
+        increaseButton = body.transform.Find("Slider/Increase Button").GetComponent<Button>();
+        cancelButton = body.transform.Find("Button Parent/Cancel Button").GetComponent<Button>();
+        confirmButton = body.transform.Find("Button Parent/Confirm Button").GetComponent<Button>();
 
         gameObject.SetActive(false);
     }

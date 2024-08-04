@@ -48,11 +48,11 @@ public class WindowSkillDetailed : Window
         icon = body.transform.Find("Icon Parent").GetComponentInChildren<Image>();
         statTransform = body.transform.Find("Stats");
         trainingMethodsTransform = body.transform.Find("Training Methods");
-        xpBar = body.transform.Find("Bars Parent").Find("Bars").Find("XP Bar").gameObject;
+        xpBar = body.transform.Find("Bars Parent/Bars/XP Bar").gameObject;
         xpBarScript = xpBar.GetComponent<ProgressBar>();
-        overXpBar = body.transform.Find("Bars Parent").Find("Bars").Find("Overfill XP Bar").gameObject;
+        overXpBar = body.transform.Find("Bars Parent/Bars/Overfill XP Bar").gameObject;
         overXpBarScript = overXpBar.GetComponent<ProgressBar>();
-        advanceButton = body.transform.Find("Advance Parent").Find("Advance Button").GetComponent<Button>();
+        advanceButton = body.transform.Find("Advance Parent/Advance Button").GetComponent<Button>();
         closeButton = body.transform.Find("Close Button").GetComponent<Button>();
 
         statPrefabs = ScriptableObject.CreateInstance<PrefabFactory>();

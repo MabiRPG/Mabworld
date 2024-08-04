@@ -69,9 +69,9 @@ public class WindowCharacter : Window
         actorLuckText = dict["luck"];
 
         // HP and MP
-        actorHPBar = body.transform.Find("Basic Info (L)").Find("Bars Parent").Find("HP Bar Parent").Find("HP Bar").GetComponent<ProgressBar>();
-        actorMPBar = body.transform.Find("Basic Info (L)").Find("Bars Parent").Find("MP Bar Parent").Find("MP Bar").GetComponent<ProgressBar>();
-        actorXPBar = body.transform.Find("Basic Info (L)").Find("Bars Parent").Find("XP Bar Parent").Find("XP Bar").GetComponent<ProgressBar>();
+        actorHPBar = body.transform.Find("Basic Info (L)/Bars Parent/HP Bar Parent/HP Bar").GetComponent<ProgressBar>();
+        actorMPBar = body.transform.Find("Basic Info (L)/Bars Parent/MP Bar Parent/MP Bar").GetComponent<ProgressBar>();
+        actorXPBar = body.transform.Find("Basic Info (L)/Bars Parent/XP Bar Parent/XP Bar").GetComponent<ProgressBar>();
 
         equipmentSlots = body.transform.Find("Equipment Slots").gameObject;
         //dict = CreateComponentMap(equipmentSlots.transform);
