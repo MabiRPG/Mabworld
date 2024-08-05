@@ -6,7 +6,7 @@ public class WindowCraftingRecipeItem : MonoBehaviour
 {
     private Image image;
     private TMP_Text text;
-    public Item product;
+    public CraftingRecipe recipe;
 
     private void Awake()
     {
@@ -14,10 +14,10 @@ public class WindowCraftingRecipeItem : MonoBehaviour
         text = transform.Find("Name Parent/Name").GetComponent<TMP_Text>();
     }
 
-    public void SetRecipe(Item item)
+    public void SetRecipe(CraftingRecipe recipe)
     {
-        product = item;
-        image.sprite = item.icon;
-        text.text = item.name;
+        this.recipe = recipe;
+        image.sprite = recipe.product.icon;
+        text.text = recipe.product.name;
     }
 }

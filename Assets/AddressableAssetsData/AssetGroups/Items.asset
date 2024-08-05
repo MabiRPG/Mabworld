@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Items
+  m_EditorClassIdentifier: 
+  m_GroupName: Items
+  m_Data:
+    m_SerializedData: []
+  m_GUID: c27f640d5dfae724bbd3fc396772cbef
+  m_SerializeEntries:
+  - m_GUID: a33d60c7deb860e419bea41b65bfe154
+    m_Address: Wool
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 949bf71174746ef4d991f37e2a1218a9
+    m_Address: Thread
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: db1aa75baa985ce4c9674f9df14a662f
+    m_Address: Fabric
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c085d248752c2424eb98f4e9aabd25ab
+    m_Address: Iron_Ingot
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7530e9f8c65ddf049a5d41c139d62a68
+    m_Address: Copper_Ingot
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc1c0d408f1736046a4c288896392b89
+    m_Address: Bronze_Ingot
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 90300f635a8a18b4b8bf6c5125043372
+    m_Address: Rock
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70dc893f3c20c4441830f1f2a049100e
+    m_Address: Essence_Herb
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc1b91bc947c5d640849638c78ef5b76
+    m_Address: Copper_Ore
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 254a029fd542e4944971f500f6651821
+    m_Address: Low_Spirit_Herb
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7a05cd9a90140447a5263a63a22b227
+    m_Address: Willow_Log
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a40e65a033b1ba541808a554a92918bc
+    m_Address: Maple_Log
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8365099920500af42a4302490e8cd6d8
+    m_Address: Oak_Log
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc4c5014b80cf834b801ebef3ab2588b
+    m_Address: Foundation_Herb
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0ae824085da600249ae12303ec1dd825
+    m_Address: Wheat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 1e04f432b98b4f94099995e59e4681f1, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: dcae255313a94034b98b5ab22c52033c, type: 2}
+    - {fileID: 11400000, guid: cfbacc678a4850d49845f5c817fd4bd8, type: 2}

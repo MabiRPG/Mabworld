@@ -9,6 +9,7 @@ public class WindowCrafting : Window
     public WindowCraftingDetailForm detailForm;
 
     private List<Skill> skills;
+    private Dictionary<int, List<CraftingRecipe>> recipes;
 
     protected override void Awake()
     {
@@ -31,12 +32,15 @@ public class WindowCrafting : Window
 
     private void Start()
     {
+        detailForm.gameObject.SetActive(false);
         gameObject.SetActive(false);
     }
 
-    public void Init(List<Skill> skills, Dictionary<Item, List<Item>> recipes)
+    public void Init(List<Skill> skills, Dictionary<int, List<CraftingRecipe>> recipes)
     {
         this.skills = skills;
+        this.recipes = recipes;
+
         List<string> names = new List<string>();
 
         foreach (Skill skill in skills)
@@ -44,24 +48,33 @@ public class WindowCrafting : Window
             names.Add(skill.name);
         }
 
-        dropdown.PopulateOptions(names);
-        recipeList.PopulateList(recipes, (product, ingredients) => ExpandDetails(product, ingredients));
+        dropdown.PopulateOptions(names, (option) => UpdateRecipeList(option));
+        //recipeList.PopulateList(recipes, (product, ingredients) => ExpandDetails(product, ingredients));
     }
 
-    public void ExpandDetails(Item product, List<Item> ingredients)
+    public void UpdateRecipeList(string currentSkillName)
+    {
+        Skill currentSkill = FindSkillByName(currentSkillName);
+        recipeList.Populate(recipes[currentSkill.ID], (recipe) => ExpandDetails(recipe));
+    }
+
+    public void ExpandDetails(CraftingRecipe recipe)
     {
         string currentSkillName = dropdown.GetCurrentOption();
-        Skill currentSkill = null;
+        detailForm.gameObject.SetActive(true);
+        detailForm.SetRecipe(FindSkillByName(currentSkillName), recipe);
+    }
 
+    private Skill FindSkillByName(string name)
+    {
         foreach (Skill skill in skills)
         {
-            if (skill.name == currentSkillName)
+            if (skill.name == name)
             {
-                currentSkill = skill;
-                break;
+                return skill;
             }
         }
 
-        detailForm.SetRecipe(currentSkill, product, ingredients);
+        return null;
     }
 }

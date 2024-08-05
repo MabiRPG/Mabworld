@@ -22,53 +22,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a33d60c7deb860e419bea41b65bfe154
-    m_Address: Wool
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9738e0ecab2cb7146ba761b9b92bc9aa
     m_Address: Sheep
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0ae824085da600249ae12303ec1dd825
-    m_Address: Wheat
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: dc4c5014b80cf834b801ebef3ab2588b
-    m_Address: Foundation_Herb
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d7a05cd9a90140447a5263a63a22b227
-    m_Address: Willow_Log
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a40e65a033b1ba541808a554a92918bc
-    m_Address: Maple_Log
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8365099920500af42a4302490e8cd6d8
-    m_Address: Oak_Log
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 254a029fd542e4944971f500f6651821
-    m_Address: Low_Spirit_Herb
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 70dc893f3c20c4441830f1f2a049100e
-    m_Address: Essence_Herb
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fc1b91bc947c5d640849638c78ef5b76
-    m_Address: Copper_Ore
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -79,11 +34,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 08dc6e3b437034b4cb4a4dafdf80f76a
     m_Address: Farm Village Tileset 1
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 90300f635a8a18b4b8bf6c5125043372
-    m_Address: Rock
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -114,16 +64,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5a723078663ce7742803c054353c6bf2
     m_Address: 017-MineTown01
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 949bf71174746ef4d991f37e2a1218a9
-    m_Address: Thread
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ba4892b586beca64abd234742a2af42c
-    m_Address: Weaving
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

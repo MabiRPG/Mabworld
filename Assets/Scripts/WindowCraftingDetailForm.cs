@@ -7,29 +7,43 @@ using UnityEngine.UI;
 public class WindowCraftingDetailForm : MonoBehaviour
 {
     private TMP_Text detailsText;
-    private Image productImage;
-    private Image[] ingredientImages;
+    private Image productItem;
+    private TMP_Text productQuantity;
+    private Transform ingredientParentTransform;
     private TMP_InputField quantityInput;
     private Button craftButton;
+
+    [SerializeField]
+    private GameObject ingredientPrefab;
+    private PrefabFactory ingredientPrefabs;
 
     private void Awake()
     {
         detailsText = transform.Find("Details Text").GetComponent<TMP_Text>();
-        productImage = transform.Find("Item Image Boxes/Product Image").GetComponent<Image>();
-        ingredientImages = transform.Find("Item Image Boxes/Ingredient Parent").GetComponentsInChildren<Image>();
+        productItem = transform.Find("Item Image Boxes/Product Item").GetComponent<Image>();
+        productQuantity = productItem.GetComponentInChildren<TMP_Text>();
+        ingredientParentTransform = transform.Find("Item Image Boxes/Ingredient Parent");
         quantityInput = transform.Find("Production Form/Quantity Input Field").GetComponent<TMP_InputField>();
         craftButton = transform.Find("Production Form/Craft Button").GetComponent<Button>();
+
+        ingredientPrefabs = ScriptableObject.CreateInstance<PrefabFactory>();
+        ingredientPrefabs.SetPrefab(ingredientPrefab);
     }
 
-    public void SetRecipe(Skill skill, Item product, List<Item> ingredients)
+    public void SetRecipe(Skill skill, CraftingRecipe recipe)
     {
-        string details = $"{product.name}\nSkill: Rank {skill.ranks[skill.index.Value]} {skill.name}\nSuccess Rate:?";
+        string details = $"{recipe.product.name} (Rank {recipe.rankRequired} {skill.name})\nSuccess Rate:?";
         detailsText.text = details;
-        productImage.sprite = product.icon;
+        productItem.sprite = recipe.product.icon;
+        productQuantity.text = recipe.product.quantity.ToString();
 
-        for (int i = 0; i < Math.Min(ingredients.Count, ingredientImages.Length); i++)
+        ingredientPrefabs.SetActiveAll(false);
+
+        foreach (Item ingredient in recipe.ingredients)
         {
-            ingredientImages[i].sprite = ingredients[i].icon;
+            GameObject obj = ingredientPrefabs.GetFree(ingredient, ingredientParentTransform);
+            WindowInventoryItem inventoryItem = obj.GetComponentInChildren<WindowInventoryItem>();
+            inventoryItem.SetItem(ingredient, ingredient.quantity);
         }
     }
 }

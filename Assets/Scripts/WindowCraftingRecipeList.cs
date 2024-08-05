@@ -10,8 +10,8 @@ public class WindowCraftingRecipeList : MonoBehaviour
     private GameObject recipePrefab;
     private PrefabFactory recipePrefabs;
 
-    private Dictionary<Item, List<Item>> recipes;
-    private Action<Item, List<Item>> expandDetailsAction;
+    private List<CraftingRecipe> recipes;
+    private Action<CraftingRecipe> expandDetailsAction;
 
     private GraphicRaycaster raycaster;
 
@@ -23,18 +23,18 @@ public class WindowCraftingRecipeList : MonoBehaviour
         recipePrefabs.SetPrefab(recipePrefab);
     }
 
-    public void PopulateList(Dictionary<Item, List<Item>> recipes, Action<Item, List<Item>> expandDetailsAction)
+    public void Populate(List<CraftingRecipe> recipes, Action<CraftingRecipe> expandDetailsAction)
     {
         this.recipes = recipes;
         this.expandDetailsAction = expandDetailsAction;
 
         recipePrefabs.SetActiveAll(false);
 
-        foreach (Item product in recipes.Keys)
+        foreach (CraftingRecipe recipe in recipes)
         {
-            GameObject obj = recipePrefabs.GetFree(product, transform);
+            GameObject obj = recipePrefabs.GetFree(recipe, transform);
             WindowCraftingRecipeItem recipeScript = obj.GetComponent<WindowCraftingRecipeItem>();
-            recipeScript.SetRecipe(product);
+            recipeScript.SetRecipe(recipe);
         }
     }
 
@@ -58,9 +58,8 @@ public class WindowCraftingRecipeList : MonoBehaviour
             {
                 if (hit.gameObject.TryGetComponent(out WindowCraftingRecipeItem recipeScript))
                 {
-                    Item product = recipeScript.product;
-                    List<Item> ingredients = recipes[product];
-                    expandDetailsAction?.Invoke(product, ingredients);
+                    CraftingRecipe recipe = recipeScript.recipe;
+                    expandDetailsAction?.Invoke(recipe);
                     break;
                 }
             }
