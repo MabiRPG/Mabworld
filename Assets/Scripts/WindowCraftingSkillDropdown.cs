@@ -11,18 +11,15 @@ public class WindowCraftingSkillDropdown : MonoBehaviour
         dropdown = GetComponent<TMP_Dropdown>();
     }
 
-    private void Start()
+    public void PopulateOptions(List<string> options)
     {
         dropdown.ClearOptions();
-        List<string> names = new List<string>();
+        options.Sort();
+        dropdown.AddOptions(options);
+    }
 
-        foreach (Skill skill in Player.Instance.skillManager.Skills.Values)
-        {
-            names.Add(skill.name);
-        }
-
-        names.Sort();
-
-        dropdown.AddOptions(names);
+    public string GetCurrentOption()
+    {
+        return dropdown.captionText.text;
     }
 }

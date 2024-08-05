@@ -68,6 +68,7 @@ public class Player : Actor
         skillManager.Learn(2);
         skillManager.Learn(3);
         skillManager.Learn(4);
+        skillManager.Learn(5);
     }
 
     /// <summary>
