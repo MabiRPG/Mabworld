@@ -44,6 +44,11 @@ public class CraftingStation : MonoBehaviour
         //     }
         // }
 
+        if (recipes.Count == 0)
+        {
+            return;
+        }
+
         List<Skill> skills = new List<Skill>();
 
         foreach (int skillID in recipes.Keys)
@@ -54,7 +59,7 @@ public class CraftingStation : MonoBehaviour
             }
         }
 
-        WindowCrafting.Instance.ToggleVisible();
+        WindowCrafting.Instance.ShowWindow();
         WindowCrafting.Instance.Init(skills, recipes);
     }
 }

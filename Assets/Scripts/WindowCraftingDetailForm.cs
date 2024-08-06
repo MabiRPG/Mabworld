@@ -7,8 +7,7 @@ using UnityEngine.UI;
 public class WindowCraftingDetailForm : MonoBehaviour
 {
     private TMP_Text detailsText;
-    private Image productItem;
-    private TMP_Text productQuantity;
+    private WindowInventoryItem productItem;
     private Transform ingredientParentTransform;
     private TMP_InputField quantityInput;
     private Button craftButton;
@@ -20,8 +19,7 @@ public class WindowCraftingDetailForm : MonoBehaviour
     private void Awake()
     {
         detailsText = transform.Find("Details Text").GetComponent<TMP_Text>();
-        productItem = transform.Find("Item Image Boxes/Product Item").GetComponent<Image>();
-        productQuantity = productItem.GetComponentInChildren<TMP_Text>();
+        productItem = transform.Find("Item Image Boxes/Product Item").GetComponent<WindowInventoryItem>();
         ingredientParentTransform = transform.Find("Item Image Boxes/Ingredient Parent");
         quantityInput = transform.Find("Production Form/Quantity Input Field").GetComponent<TMP_InputField>();
         craftButton = transform.Find("Production Form/Craft Button").GetComponent<Button>();
@@ -34,8 +32,7 @@ public class WindowCraftingDetailForm : MonoBehaviour
     {
         string details = $"{recipe.product.name} (Rank {recipe.rankRequired} {skill.name})\nSuccess Rate:?";
         detailsText.text = details;
-        productItem.sprite = recipe.product.icon;
-        productQuantity.text = recipe.product.quantity.ToString();
+        productItem.SetItem(recipe.product, recipe.product.quantity);
 
         ingredientPrefabs.SetActiveAll(false);
 

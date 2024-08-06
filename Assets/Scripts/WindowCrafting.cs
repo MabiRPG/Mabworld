@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WindowCrafting : Window
 {
@@ -49,7 +50,7 @@ public class WindowCrafting : Window
         }
 
         dropdown.PopulateOptions(names, (option) => UpdateRecipeList(option));
-        //recipeList.PopulateList(recipes, (product, ingredients) => ExpandDetails(product, ingredients));
+        detailForm.gameObject.SetActive(false);
     }
 
     public void UpdateRecipeList(string currentSkillName)
@@ -63,6 +64,9 @@ public class WindowCrafting : Window
         string currentSkillName = dropdown.GetCurrentOption();
         detailForm.gameObject.SetActive(true);
         detailForm.SetRecipe(FindSkillByName(currentSkillName), recipe);
+
+        // Resets the content size fitter.
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)detailForm.gameObject.transform);
     }
 
     private Skill FindSkillByName(string name)

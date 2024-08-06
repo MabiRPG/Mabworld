@@ -4,20 +4,20 @@ using UnityEngine.UI;
 
 public class WindowCraftingRecipeItem : MonoBehaviour
 {
-    private Image image;
-    private TMP_Text text;
+    private WindowInventoryItem product;
+    private TMP_Text productName;
     public CraftingRecipe recipe;
 
     private void Awake()
     {
-        image = transform.Find("Image Parent/Image").GetComponent<Image>();
-        text = transform.Find("Name Parent/Name").GetComponent<TMP_Text>();
+        product = GetComponentInChildren<WindowInventoryItem>();
+        productName = transform.Find("Name Parent/Name").GetComponent<TMP_Text>();
     }
 
     public void SetRecipe(CraftingRecipe recipe)
     {
         this.recipe = recipe;
-        image.sprite = recipe.product.icon;
-        text.text = recipe.product.name;
+        product.SetItem(recipe.product, recipe.product.quantity);
+        productName.text = recipe.product.name;
     }
 }
