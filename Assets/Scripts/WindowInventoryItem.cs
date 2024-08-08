@@ -11,7 +11,7 @@ public class WindowInventoryItem : MonoBehaviour
     public int quantity;
 
     private Image icon;
-    private TMP_Text text;
+    private TMP_Text quantityText;
 
     /// <summary>
     ///     Initializes the object.
@@ -19,7 +19,7 @@ public class WindowInventoryItem : MonoBehaviour
     private void Awake()
     {
         icon = GetComponent<Image>();
-        text = transform.Find("Quantity").GetComponent<TMP_Text>();
+        quantityText = transform.Find("Quantity").GetComponent<TMP_Text>();
     }
 
     /// <summary>
@@ -32,6 +32,13 @@ public class WindowInventoryItem : MonoBehaviour
         this.item = item;
         this.quantity = quantity;
         icon.sprite = item.icon;
-        text.text = quantity.ToString();
+        quantityText.text = quantity.ToString();
+    }
+
+    public void SetItem(Item item, string text)
+    {
+        this.item = item;
+        icon.sprite = item.icon;
+        quantityText.text = text;
     }
 }

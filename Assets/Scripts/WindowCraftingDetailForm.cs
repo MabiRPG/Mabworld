@@ -40,7 +40,21 @@ public class WindowCraftingDetailForm : MonoBehaviour
         {
             GameObject obj = ingredientPrefabs.GetFree(ingredient, ingredientParentTransform);
             WindowInventoryItem inventoryItem = obj.GetComponentInChildren<WindowInventoryItem>();
-            inventoryItem.SetItem(ingredient, ingredient.quantity);
+
+            int playerQuantity = Player.Instance.inventoryManager.GetQuantity(ingredient);
+            string quantity;
+
+            if (playerQuantity == 0)
+            {
+                quantity = $"<color=\"red\">{playerQuantity}</color>";
+            }
+            else
+            {
+                quantity = $"{playerQuantity}";
+            }
+
+            quantity += $"/{ingredient.quantity}";
+            inventoryItem.SetItem(ingredient, quantity);
         }
     }
 }

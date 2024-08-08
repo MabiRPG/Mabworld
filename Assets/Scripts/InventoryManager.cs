@@ -9,7 +9,7 @@ public class InventoryManager
     public static int slotWidth = 50;
     public static int slotHeight = 50;
     // Dictionary of all items across all bags.
-    public Dictionary<int, Item> AllItems = new Dictionary<int, Item>();
+    private Dictionary<int, Item> AllItems = new Dictionary<int, Item>();
     // List of all bags.
     public List<InventoryBag> Bags = new List<InventoryBag>();
 
@@ -83,5 +83,15 @@ public class InventoryManager
     /// <param name="item"></param>
     public void AddOverflowItem(Item item)
     {
+    }
+
+    public int GetQuantity(Item item)
+    {
+        if (!AllItems.ContainsKey(item.ID))
+        {
+            return 0;
+        }
+
+        return AllItems[item.ID].quantity;
     }
 }

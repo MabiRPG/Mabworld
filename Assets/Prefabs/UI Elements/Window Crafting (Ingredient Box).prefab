@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6278527127796047529
 CanvasRenderer:
@@ -86,11 +86,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5812488061119977347, guid: d1b833fa6274e464c8238628b515d564, type: 3}
       propertyPath: m_Pivot.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5812488061119977347, guid: d1b833fa6274e464c8238628b515d564, type: 3}
       propertyPath: m_Pivot.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5812488061119977347, guid: d1b833fa6274e464c8238628b515d564, type: 3}
       propertyPath: m_AnchorMax.x
@@ -98,7 +98,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5812488061119977347, guid: d1b833fa6274e464c8238628b515d564, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5812488061119977347, guid: d1b833fa6274e464c8238628b515d564, type: 3}
       propertyPath: m_AnchorMin.x
@@ -106,15 +106,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5812488061119977347, guid: d1b833fa6274e464c8238628b515d564, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5812488061119977347, guid: d1b833fa6274e464c8238628b515d564, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 60
+      value: 55
       objectReference: {fileID: 0}
     - target: {fileID: 5812488061119977347, guid: d1b833fa6274e464c8238628b515d564, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 60
+      value: 55
       objectReference: {fileID: 0}
     - target: {fileID: 5812488061119977347, guid: d1b833fa6274e464c8238628b515d564, type: 3}
       propertyPath: m_LocalPosition.x
@@ -146,11 +146,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5812488061119977347, guid: d1b833fa6274e464c8238628b515d564, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -30
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5812488061119977347, guid: d1b833fa6274e464c8238628b515d564, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 30
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 5812488061119977347, guid: d1b833fa6274e464c8238628b515d564, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
