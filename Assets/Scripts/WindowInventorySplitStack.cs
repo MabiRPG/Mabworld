@@ -72,7 +72,7 @@ public class WindowInventorySplitStack : Window
         quantity.OnChange += UpdateSlider;
         quantity.OnChange += UpdateText;
 
-        cancelButton.onClick.AddListener(CloseWindow);
+        cancelButton.onClick.AddListener(HideWindow);
         confirmButton.onClick.AddListener(delegate { CreateItem(quantity.Value); });
     }
 
@@ -122,7 +122,7 @@ public class WindowInventorySplitStack : Window
     private void CreateItem(int quantity)
     {
         splitItemAction(quantity);
-        CloseWindow();
+        HideWindow();
     }
 
     /// <summary>

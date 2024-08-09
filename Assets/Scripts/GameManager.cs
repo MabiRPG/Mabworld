@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     private InputController inputController;
     private LightController lightController;
     private AudioController audioController;
-    private WindowManager windowManager;
+    public WindowManager windowManager;
 
     [Header("Global Variables")]
     // Name of the game database in Assets/Database folder.

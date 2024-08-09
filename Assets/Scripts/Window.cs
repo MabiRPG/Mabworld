@@ -6,11 +6,18 @@ using TMPro;
 /// <summary>
 ///     This super class handles all basic window UI processing. Uses the Window prefab in unity.
 /// </summary>
-public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
+public class Window : MonoBehaviour, IDragHandler
 {
     // GameObject references to header and body content in window prefab.
     protected GameObject header;
     protected GameObject body;
+
+    private TMP_Text title;
+    private Button minimizeButton;
+    private CanvasGroup minimizeCanvas;
+    private Button maximizeButton;
+    private CanvasGroup maximizeCanvas;
+    private Button closeButton;
 
     private RectTransform rectTransform;
 
@@ -23,15 +30,29 @@ public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
         body = transform.Find("Body").gameObject;
         rectTransform = GetComponent<RectTransform>();
 
+        title = header.GetComponentInChildren<TMP_Text>();
         // Sets up on click listeners for header buttons.
-        Button minimizeButton = header.transform.Find("Minimize Button").GetComponent<Button>();
+        minimizeButton = header.transform.Find("Minimize Button").GetComponent<Button>();
+        minimizeCanvas = header.transform.Find("Minimize Button").GetComponent<CanvasGroup>();
+        maximizeButton = header.transform.Find("Maximize Button").GetComponent<Button>();
+        maximizeCanvas = header.transform.Find("Maximize Button").GetComponent<CanvasGroup>();
+        closeButton = header.transform.Find("Close Button").GetComponent<Button>();
+
+        GameManager.Instance.windowManager.AddWindow(this);
+    }
+
+    private void OnEnable()
+    {
         minimizeButton.onClick.AddListener(MinimizeWindow);
-
-        Button maximizeButton = header.transform.Find("Maximize Button").GetComponent<Button>();
         maximizeButton.onClick.AddListener(MaximizeWindow);
+        closeButton.onClick.AddListener(HideWindow);
+    }
 
-        Button closeButton = header.transform.Find("Close Button").GetComponent<Button>();
-        closeButton.onClick.AddListener(CloseWindow);
+    private void OnDisable()
+    {
+        minimizeButton.onClick.RemoveAllListeners();
+        maximizeButton.onClick.RemoveAllListeners();
+        closeButton.onClick.RemoveAllListeners();
     }
 
     /// <summary>
@@ -47,22 +68,12 @@ public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
     }
 
     /// <summary>
-    ///     OnPointerDown interface implementation to set as focus when clicked.
-    /// </summary>
-    /// <param name="pointerData">Event payload associated with pointer (mouse / touch) events.</param>
-    public virtual void OnPointerDown(PointerEventData pointerData)
-    {
-        Focus();
-    }
-
-    /// <summary>
     ///     Sets the title of the window.
     /// </summary>
     /// <param name="name">New window name.</param>
     protected void SetTitle(string name)
     {
-        TMP_Text windowName = header.transform.Find("Title").GetComponent<TMP_Text>();
-        windowName.text = name;      
+        title.text = name;      
     } 
 
     /// <summary>
@@ -73,11 +84,9 @@ public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
         // Hides the body
         body.SetActive(false);
         // Hides the minimize button and disables clicking.
-        CanvasGroup minimizeCanvas = header.transform.Find("Minimize Button").GetComponent<CanvasGroup>();
         minimizeCanvas.alpha = 0;
         minimizeCanvas.blocksRaycasts = false;
         // Shows the maximize button and allows clicking.
-        CanvasGroup maximizeCanvas = header.transform.Find("Maximize Button").GetComponent<CanvasGroup>();
         maximizeCanvas.alpha = 1;
         maximizeCanvas.blocksRaycasts = true;
     }
@@ -90,11 +99,9 @@ public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
         // Shows the body
         body.SetActive(true);
         // Shows the minimize button
-        CanvasGroup minimizeCanvas = header.transform.Find("Minimize Button").GetComponent<CanvasGroup>();
         minimizeCanvas.alpha = 1;
         minimizeCanvas.blocksRaycasts = true;
         // Hides the maximize button
-        CanvasGroup maximizeCanvas = header.transform.Find("Maximize Button").GetComponent<CanvasGroup>();
         maximizeCanvas.alpha = 0;
         maximizeCanvas.blocksRaycasts = false;
     }
@@ -119,7 +126,7 @@ public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler
     /// <summary>
     ///     Closes (hides) the window.
     /// </summary>
-    public void CloseWindow()
+    public void HideWindow()
     {
         gameObject.SetActive(false);
     }

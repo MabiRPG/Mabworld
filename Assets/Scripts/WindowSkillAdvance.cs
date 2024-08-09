@@ -51,7 +51,7 @@ public class WindowSkillAdvance : Window
     private void OnEnable()
     {
         advanceButton.onClick.AddListener(delegate {AdvanceSkill(skill);});
-        cancelButton.onClick.AddListener(CloseWindow);
+        cancelButton.onClick.AddListener(HideWindow);
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ public class WindowSkillAdvance : Window
         Clear();
 
         advanceButton.onClick.RemoveAllListeners();
-        cancelButton.onClick.RemoveListener(CloseWindow);
+        cancelButton.onClick.RemoveListener(HideWindow);
     }
 
     /// <summary>
@@ -74,7 +74,7 @@ public class WindowSkillAdvance : Window
         Clear();
         
         this.skill = skill;
-        this.skill.index.OnChange += CloseWindow;
+        this.skill.index.OnChange += HideWindow;
 
         Draw();
         ShowWindow();
@@ -89,7 +89,7 @@ public class WindowSkillAdvance : Window
 
         if (skill != null)
         {
-            skill.index.OnChange -= CloseWindow;
+            skill.index.OnChange -= HideWindow;
             skill = null;
         }
     }
@@ -101,7 +101,7 @@ public class WindowSkillAdvance : Window
     private void AdvanceSkill(Skill skill)
     {
         Player.Instance.RankUpSkill(skill);
-        CloseWindow();
+        HideWindow();
     }
 
     /// <summary>

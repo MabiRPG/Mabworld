@@ -67,7 +67,7 @@ public class WindowSkillDetailed : Window
     private void OnEnable()
     {
         advanceButton.onClick.AddListener(delegate {advanceButtonEvent.RaiseOnChange();});
-        closeButton.onClick.AddListener(CloseWindow);
+        closeButton.onClick.AddListener(HideWindow);
     }
 
     /// <summary>
@@ -78,7 +78,7 @@ public class WindowSkillDetailed : Window
         Clear();
 
         advanceButton.onClick.RemoveAllListeners();
-        closeButton.onClick.RemoveListener(CloseWindow);
+        closeButton.onClick.RemoveListener(HideWindow);
     }
 
     /// <summary>
