@@ -106,7 +106,7 @@ Material:
     - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
-    - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+    - _UnderlayColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &11400000
 MonoBehaviour:
@@ -856,6 +856,21 @@ MonoBehaviour:
     m_Scale: 1
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
+  - m_Index: 61
+    m_Metrics:
+      m_Width: 77.21875
+      m_Height: 63.453125
+      m_HorizontalBearingX: 4.859375
+      m_HorizontalBearingY: 58.765625
+      m_HorizontalAdvance: 86.9375
+    m_GlyphRect:
+      m_X: 792
+      m_Y: 191
+      m_Width: 79
+      m_Height: 64
+    m_Scale: 1
+    m_AtlasIndex: 0
+    m_ClassDefinitionType: 0
   - m_Index: 62
     m_Metrics:
       m_Width: 15.75
@@ -1321,24 +1336,13 @@ MonoBehaviour:
     m_Scale: 1
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
-  - m_Index: 61
-    m_Metrics:
-      m_Width: 77.21875
-      m_Height: 63.453125
-      m_HorizontalBearingX: 4.859375
-      m_HorizontalBearingY: 58.765625
-      m_HorizontalAdvance: 86.9375
-    m_GlyphRect:
-      m_X: 792
-      m_Y: 191
-      m_Width: 79
-      m_Height: 64
-    m_Scale: 1
-    m_AtlasIndex: 0
-    m_ClassDefinitionType: 0
   m_CharacterTable:
   - m_ElementType: 1
     m_Unicode: 10
+    m_GlyphIndex: 1
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 13
     m_GlyphIndex: 1
     m_Scale: 1
   - m_ElementType: 1
@@ -1530,6 +1534,10 @@ MonoBehaviour:
     m_GlyphIndex: 60
     m_Scale: 1
   - m_ElementType: 1
+    m_Unicode: 92
+    m_GlyphIndex: 61
+    m_Scale: 1
+  - m_ElementType: 1
     m_Unicode: 93
     m_GlyphIndex: 62
     m_Scale: 1
@@ -1652,14 +1660,6 @@ MonoBehaviour:
   - m_ElementType: 1
     m_Unicode: 8230
     m_GlyphIndex: 106
-    m_Scale: 1
-  - m_ElementType: 1
-    m_Unicode: 92
-    m_GlyphIndex: 61
-    m_Scale: 1
-  - m_ElementType: 1
-    m_Unicode: 13
-    m_GlyphIndex: 1
     m_Scale: 1
   m_AtlasTextures:
   - {fileID: 6529427877720678585}

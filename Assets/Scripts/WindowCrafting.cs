@@ -6,6 +6,7 @@ public class WindowCrafting : Window
 {
     public static WindowCrafting Instance { get; private set; }
     public WindowCraftingSkillDropdown dropdown;
+    public WindowCraftingItemSearchField searchField;
     public WindowCraftingRecipeList recipeList;
     public WindowCraftingDetailForm detailForm;
 
@@ -27,6 +28,7 @@ public class WindowCrafting : Window
         }
 
         dropdown = GetComponentInChildren<WindowCraftingSkillDropdown>();
+        searchField = GetComponentInChildren<WindowCraftingItemSearchField>();
         recipeList = GetComponentInChildren<WindowCraftingRecipeList>();
         detailForm = GetComponentInChildren<WindowCraftingDetailForm>();
     }
@@ -50,6 +52,7 @@ public class WindowCrafting : Window
         }
 
         dropdown.PopulateOptions(names, (option) => UpdateRecipeList(option));
+        searchField.SetSearchAction((input) => SearchRecipeList(input));
         detailForm.gameObject.SetActive(false);
     }
 
@@ -57,6 +60,22 @@ public class WindowCrafting : Window
     {
         Skill currentSkill = FindSkillByName(currentSkillName);
         recipeList.Populate(recipes[currentSkill.ID], (recipe) => ExpandDetails(recipe));
+    }
+
+    public void SearchRecipeList(string recipeName)
+    {
+        Skill currentSkill = FindSkillByName(dropdown.GetCurrentOption());
+        List<CraftingRecipe> newRecipeList = new List<CraftingRecipe>();
+
+        foreach (CraftingRecipe recipe in recipes[currentSkill.ID])
+        {
+            if (recipe.product.name.StartsWith(recipeName))
+            {
+                newRecipeList.Add(recipe);
+            }
+        }
+
+        recipeList.Populate(newRecipeList, (recipe) => ExpandDetails(recipe));
     }
 
     public void ExpandDetails(CraftingRecipe recipe)

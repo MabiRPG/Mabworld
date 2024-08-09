@@ -68,7 +68,6 @@ public class WindowCraftingDetailForm : MonoBehaviour
             WindowInventoryItem inventoryItem = obj.GetComponentInChildren<WindowInventoryItem>();
 
             int playerQuantity = Player.Instance.inventoryManager.GetQuantity(ingredient);
-            Debug.Log(playerQuantity);
             string text;
 
             if (playerQuantity == 0)
@@ -99,6 +98,9 @@ public class WindowCraftingDetailForm : MonoBehaviour
         quantityInput.interactable = true;
         craftButton.interactable = true;
         rangeValidator.SetRange(1, craftable);
+        quantityInput.text = "1";
+        quantityInput.stringPosition = 1;
+        quantityInput.caretPosition = 1;
     }
 
     private void Craft(Skill skill, CraftingRecipe recipe, int quantity)
