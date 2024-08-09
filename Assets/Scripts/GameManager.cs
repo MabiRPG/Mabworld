@@ -19,13 +19,10 @@ public class GameManager : MonoBehaviour
     // Global instance of GameManager
     public static GameManager Instance {get; private set;}
 
-    [Header("Managers")]
-    [SerializeField]
-    private GameObject inputManager;
-    [SerializeField]
-    private GameObject lightManager;
-    [SerializeField]
-    private GameObject audioManager;
+    private InputController inputController;
+    private LightController lightController;
+    private AudioController audioController;
+    private WindowManager windowManager;
 
     [Header("Global Variables")]
     // Name of the game database in Assets/Database folder.
@@ -76,6 +73,10 @@ public class GameManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
+        inputController = GetComponent<InputController>();
+        lightController = GetComponent<LightController>();
+        audioController = GetComponent<AudioController>();
+        windowManager = GetComponent<WindowManager>();
         raycaster = canvas.GetComponent<GraphicRaycaster>();
     }
 
@@ -84,9 +85,6 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        Instantiate(inputManager);
-        Instantiate(lightManager);
-        Instantiate(audioManager);
         Instantiate(windowSkillPrefab, canvas.transform);
         Instantiate(windowCharacterPrefab, canvas.transform);
         Instantiate(windowInventoryPrefab, canvas.transform);

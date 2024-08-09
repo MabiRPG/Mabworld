@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -76,6 +77,8 @@ public class WindowCrafting : Window
         }
 
         recipeList.Populate(newRecipeList, (recipe) => ExpandDetails(recipe));
+        // Resets the content size fitter.
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)transform);
     }
 
     public void ExpandDetails(CraftingRecipe recipe)
@@ -99,5 +102,25 @@ public class WindowCrafting : Window
         }
 
         return null;
+    }
+
+    public void Update()
+    {
+        Debug.Log(TypingInField());
+    }
+
+    public bool TypingInField()
+    {
+        TMP_InputField[] inputFields = GetComponentsInChildren<TMP_InputField>();
+
+        foreach (TMP_InputField inputField in inputFields)
+        {
+            if (inputField.isFocused)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
