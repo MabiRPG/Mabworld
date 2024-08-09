@@ -12,6 +12,7 @@ public class InventoryManager
     private Dictionary<int, Item> AllItems = new Dictionary<int, Item>();
     // List of all bags.
     public List<InventoryBag> Bags = new List<InventoryBag>();
+    public EventManager changeEvent = new EventManager();
 
     /// <summary>
     ///     Initializes the object.
@@ -65,6 +66,7 @@ public class InventoryManager
         }
 
         item.quantity += quantity - remainingQuantity;
+        changeEvent.RaiseOnChange();
 
         // TODO : Handle overflow inventory
     }
@@ -73,8 +75,29 @@ public class InventoryManager
     ///     Removes an item from anywhere.
     /// </summary>
     /// <param name="item"></param>
-    public void RemoveItem(WindowInventoryItem item)
+    public void RemoveItem(int itemID, int quantity)
     {
+        if (!AllItems.ContainsKey(itemID))
+        {
+            return;
+        }
+
+        int remainingQuantity = quantity;
+        Item item = AllItems[itemID];
+
+        foreach (InventoryBag bag in Bags)
+        {
+            int removedQuantity = bag.PopItem(item, remainingQuantity);
+            remainingQuantity -= removedQuantity;
+
+            if (remainingQuantity == 0)
+            {
+                break;
+            }
+        }
+
+        item.quantity -= quantity - remainingQuantity;
+        changeEvent.RaiseOnChange();
     }
 
     /// <summary>

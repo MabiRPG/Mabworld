@@ -103,6 +103,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ID: 3
+  skillID: 0
+  rankRequired: 
+  successRateModifier: 0
+  sName: 
 --- !u!61 &9135912883932722249
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -135,10 +139,10 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.033286482, y: -0.07988739}
+  m_Offset: {x: 0.033286482, y: 0.41226864}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.5, y: 0}
     oldSize: {x: 1, y: 1}
     newSize: {x: 0.32, y: 0.32}
     adaptiveTilingThreshold: 0.5
@@ -146,7 +150,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.93342704, y: 0.7337074}
+  m_Size: {x: 0.93342704, y: 0.8743229}
   m_EdgeRadius: 0
 --- !u!50 &537103286795069738
 Rigidbody2D:
@@ -194,7 +198,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 1
-  m_BaseOffset: 0.5
+  m_BaseOffset: 0
   m_WalkableMask: 1
   m_ObstacleAvoidanceType: 2
 --- !u!95 &7430636352707986957
@@ -233,7 +237,11 @@ MonoBehaviour:
   blockingLayer:
     serializedVersion: 2
     m_Bits: 0
-  state: 0
+  animator: {fileID: 0}
+  navMeshAgent: {fileID: 0}
+  bubble: {fileID: 0}
+  origin: {x: 0, y: 0}
   traversalRadius: 3
   minimumIdleTime: 3
   maximumIdleTime: 5
+  controller: {fileID: 0}

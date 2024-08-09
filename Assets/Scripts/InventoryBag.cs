@@ -116,6 +116,45 @@ public class InventoryBag
         return quantity - remainingQuantity;
     }
 
+    public int PopItem(Item item, int quantity)
+    {
+        if (quantity <= 0)
+        {
+            return 0;
+        }
+
+        int remainingQuantity = quantity;
+        List<InventoryItem> itemsToRemove = new List<InventoryItem>();
+
+        foreach (InventoryItem inventoryItem in items.Values)
+        {
+            if (item == inventoryItem.item)
+            {
+                int diff = remainingQuantity;
+
+                if (inventoryItem.quantity > remainingQuantity)
+                {
+                    inventoryItem.quantity -= remainingQuantity;
+                    remainingQuantity -= diff;
+                    break;
+                }
+                else
+                {
+                    remainingQuantity -= inventoryItem.quantity;
+                    itemsToRemove.Add(inventoryItem);
+                }
+            }
+        }
+
+        foreach (InventoryItem inventoryItem in itemsToRemove)
+        {
+            RemoveItemAt(inventoryItem.origin.row, inventoryItem.origin.column);
+        }
+
+        changeEvent.RaiseOnChange();
+        return quantity - remainingQuantity;
+    }
+
     /// <summary>
     ///     Inserts an item at a specific row and column.
     /// </summary>

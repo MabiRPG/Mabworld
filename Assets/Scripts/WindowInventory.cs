@@ -31,6 +31,8 @@ public class MovableItem
         item = inventoryItem.item;
         rectTransform = windowItem.gameObject.GetComponent<RectTransform>();
         image = windowItem.gameObject.GetComponent<Image>();
+
+        windowItem.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -548,15 +550,10 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     /// </summary>
     private void Draw()
     {
-        List<InventoryItem> itemsAdded = new List<InventoryItem>();
+        itemPrefabs.SetActiveAll(false);
 
         foreach (InventoryItem inventoryItem in bag.items.Values)
         {
-            if (itemsAdded.Contains(inventoryItem))
-            {
-                continue;
-            }
-
             GameObject obj = itemPrefabs.GetFree(inventoryItem, body.transform.Find("Item Canvas"));
             WindowInventoryItem windowItem = obj.GetComponent<WindowInventoryItem>();
             windowItem.SetItem(inventoryItem.item, inventoryItem.quantity);
@@ -568,8 +565,6 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
                 inventoryItem.origin.column * slotWidth, 
                 -inventoryItem.origin.row * slotHeight
             );
-
-            itemsAdded.Add(inventoryItem); 
         }
     }
 }
