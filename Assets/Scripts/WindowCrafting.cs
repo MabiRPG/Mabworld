@@ -55,12 +55,18 @@ public class WindowCrafting : Window
         dropdown.PopulateOptions(names, (option) => UpdateRecipeList(option));
         searchField.SetSearchAction((input) => SearchRecipeList(input));
         detailForm.gameObject.SetActive(false);
+
+        // Resets the content size fitter.
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)transform);
     }
 
     public void UpdateRecipeList(string currentSkillName)
     {
         Skill currentSkill = FindSkillByName(currentSkillName);
         recipeList.Populate(recipes[currentSkill.ID], (recipe) => ExpandDetails(recipe));
+
+        // Resets the content size fitter.
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)transform);
     }
 
     public void SearchRecipeList(string recipeName)
@@ -77,6 +83,7 @@ public class WindowCrafting : Window
         }
 
         recipeList.Populate(newRecipeList, (recipe) => ExpandDetails(recipe));
+
         // Resets the content size fitter.
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)transform);
     }
@@ -106,7 +113,7 @@ public class WindowCrafting : Window
 
     public void Update()
     {
-        Debug.Log(TypingInField());
+        //Debug.Log(TypingInField());
     }
 
     public bool TypingInField()

@@ -4280,11 +4280,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2847518994728358767, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -262
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2847518994728358767, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -73
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2847518994728358767, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -4435,6 +4435,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc50693b28f7b9c48a7a6dad0ee98068, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  header: {fileID: 0}
+  body: {fileID: 0}
+  rectTransform: {fileID: 0}
   dropdown: {fileID: 0}
   searchField: {fileID: 0}
   recipeList: {fileID: 0}

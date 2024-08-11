@@ -8,12 +8,17 @@ public class WindowManager : MonoBehaviour
 {
     private List<Window> windows = new List<Window>();
     private GraphicRaycaster raycaster;
+    private RectTransform canvasTransform;
+    private Camera canvasCamera;
 
     private Window activeWindow;
+    private bool isDraggingWindow;
 
-    private void Start()
+    private void Awake()
     {
         raycaster = GameManager.Instance.raycaster;
+        canvasTransform = GameManager.Instance.canvas.GetComponent<RectTransform>();
+        canvasCamera = GameManager.Instance.canvas.GetComponent<Canvas>().worldCamera;
     }
 
     public void AddWindow(Window window)
@@ -28,7 +33,7 @@ public class WindowManager : MonoBehaviour
             // Stores all the results of our raycasts
             List<RaycastResult> hits = new List<RaycastResult>();
             // Create a new pointer data for our raycast manipulation
-            PointerEventData pointerData = new PointerEventData(GetComponent<EventSystem>());
+            PointerEventData pointerData = new PointerEventData(EventSystem.current);
             pointerData.position = Input.mousePosition;
             raycaster.Raycast(pointerData, hits);
 
@@ -38,9 +43,25 @@ public class WindowManager : MonoBehaviour
                 {
                     activeWindow = window;
                     window.Focus();
-                    break;
+                }
+
+                if (activeWindow && hit.gameObject == activeWindow.header)
+                {
+                    isDraggingWindow = true;
                 }
             }
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            if (isDraggingWindow)
+            {
+
+                // activeWindow.rectTransform.localPosition = Input.mousePositionDelta / GameManager.Instance.canvas.scaleFactor;
+            }
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            isDraggingWindow = false;
         }
         else if (Input.GetKeyDown(KeyCode.Escape))
         {

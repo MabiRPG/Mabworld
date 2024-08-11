@@ -9,8 +9,8 @@ using TMPro;
 public class Window : MonoBehaviour, IDragHandler
 {
     // GameObject references to header and body content in window prefab.
-    protected GameObject header;
-    protected GameObject body;
+    public GameObject header;
+    public GameObject body;
 
     private TMP_Text title;
     private Button minimizeButton;
@@ -19,7 +19,7 @@ public class Window : MonoBehaviour, IDragHandler
     private CanvasGroup maximizeCanvas;
     private Button closeButton;
 
-    private RectTransform rectTransform;
+    public RectTransform rectTransform;
 
     /// <summary>
     ///     Initializes the object.
@@ -61,10 +61,10 @@ public class Window : MonoBehaviour, IDragHandler
     /// <param name="pointerData">Event payload associated with pointer (mouse / touch) events.</param>
     public virtual void OnDrag(PointerEventData pointerData)
     {
-        if (pointerData.pointerEnter == header)
-        {
-            rectTransform.anchoredPosition += pointerData.delta / GameManager.Instance.canvas.scaleFactor;
-        }
+        // if (pointerData.pointerEnter == header)
+        // {
+        //     rectTransform.anchoredPosition += pointerData.delta / GameManager.Instance.canvas.scaleFactor;
+        // }
     }
 
     /// <summary>

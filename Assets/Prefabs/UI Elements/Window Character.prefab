@@ -9629,11 +9629,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2847518994728358767, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -29
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2847518994728358767, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -36
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2847518994728358767, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -9772,6 +9772,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1fd4afac451fda4a844fc14010a771f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  header: {fileID: 0}
+  body: {fileID: 0}
+  rectTransform: {fileID: 0}
 --- !u!1 &5221166617048909673 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5176545543485359484, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}

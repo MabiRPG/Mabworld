@@ -32,7 +32,7 @@ public class WindowSkillDetailed : Window
     private GameObject overXpBar;
     private ProgressBar overXpBarScript;
     private Button advanceButton;
-    private Button closeButton;
+    private Button closeButtonBody;
 
     // Event handlers
     public EventManager advanceButtonEvent = new EventManager();
@@ -53,7 +53,7 @@ public class WindowSkillDetailed : Window
         overXpBar = body.transform.Find("Bars Parent/Bars/Overfill XP Bar").gameObject;
         overXpBarScript = overXpBar.GetComponent<ProgressBar>();
         advanceButton = body.transform.Find("Advance Parent/Advance Button").GetComponent<Button>();
-        closeButton = body.transform.Find("Close Button").GetComponent<Button>();
+        closeButtonBody = body.transform.Find("Close Button").GetComponent<Button>();
 
         statPrefabs = ScriptableObject.CreateInstance<PrefabFactory>();
         statPrefabs.SetPrefab(statPrefab);
@@ -67,7 +67,7 @@ public class WindowSkillDetailed : Window
     private void OnEnable()
     {
         advanceButton.onClick.AddListener(delegate {advanceButtonEvent.RaiseOnChange();});
-        closeButton.onClick.AddListener(HideWindow);
+        closeButtonBody.onClick.AddListener(HideWindow);
     }
 
     /// <summary>
@@ -78,7 +78,7 @@ public class WindowSkillDetailed : Window
         Clear();
 
         advanceButton.onClick.RemoveAllListeners();
-        closeButton.onClick.RemoveListener(HideWindow);
+        closeButtonBody.onClick.RemoveListener(HideWindow);
     }
 
     /// <summary>

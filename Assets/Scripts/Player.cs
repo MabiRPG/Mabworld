@@ -64,12 +64,13 @@ public class Player : Actor
     {
         // Debug purposes...
         actorName.Value = "Test";
-        skillManager.Learn(1);
-        skillManager.Learn(2);
-        skillManager.Learn(3);
-        skillManager.Learn(4);
-        skillManager.Learn(5);
-        skillManager.Learn(6);
+        int skillLimit = 14;
+
+        for (int i = 1; i < skillLimit; i++)
+        {
+            skillManager.Learn(i);
+        }
+
         inventoryManager.AddItem(1, 100);
     }
 

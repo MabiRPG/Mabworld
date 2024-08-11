@@ -50,11 +50,12 @@ public class WindowCraftingRecipeList : MonoBehaviour
 
         // Resets the content size fitter.
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)transform);
+
         RectTransform rectTransform = obj.GetComponent<RectTransform>();
         // Adjusting the recipe list to be at most 3 rows deep, and shrinking as necessary.
         parentRectTransform.sizeDelta = new Vector2(
             parentRectTransform.sizeDelta.x,
-            rectTransform.sizeDelta.y * Math.Min((recipes.Count % columnConstraint) + 1, 3) + 10);
+            rectTransform.sizeDelta.y * Math.Min((recipes.Count / columnConstraint) + 1, 3) + 10);
     }
 
     private void Update()
