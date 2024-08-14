@@ -13,23 +13,21 @@ public class PlayerMovementMachine : MovementStateMachine
     /// </summary>
     public void Move()
     {
-        if (!GameManager.Instance.EmptyAt())
-        {
-            return;
-        }
+        // if (!GameManager.Instance.EmptyAt())
+        // {
+        //     return;
+        // }
 
-        if (LeftClick())
-        {
-            Reset();
-            PathToCursor();
-        }
+        //Reset();
+        //PathToCursor();
 
         // Debug.Log(actor.navMeshAgent.pathStatus);
 
         // Since the path calculation is async, we call move state whenever it is done.
         if (actor.navMeshAgent.hasPath)
         {
-            if (actor.navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete)
+            if (actor.navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete &&
+                State == DefaultState)
             {
                 SetState(new MoveState(this));
             }
@@ -52,7 +50,7 @@ public class PlayerMovementMachine : MovementStateMachine
     /// <summary>
     ///     Sets the NavMeshAgent destination to the mouse cursor.
     /// </summary>
-    private void PathToCursor()
+    public void PathToCursor()
     {
         PathToPosition(GameManager.Instance.canvas.worldCamera.ScreenToWorldPoint(Input.mousePosition));
     }
@@ -99,15 +97,15 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     ///     Called on every frame.
     /// </summary>
-    private void Update()
-    {
-        if (Task != null)
-        {
-            return;
-        }
+    // private void Update()
+    // {
+    //     if (Task != null)
+    //     {
+    //         return;
+    //     }
 
-        movementMachine.Move();
-    }
+    //     movementMachine.Move();
+    // }
 
     /// <summary>
     ///     Sets a new task that overrides the default behaviour of the controller.

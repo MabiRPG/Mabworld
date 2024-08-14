@@ -7,14 +7,16 @@ using UnityEngine.AI;
 /// </summary>
 public class IdleState : State
 {
-    private StateMachine machine;
+    private MovementStateMachine machine;
+    private Actor actor;
 
     /// <summary>
     ///     Initializes the object.
     /// </summary>
-    public IdleState(StateMachine machine)
+    public IdleState(MovementStateMachine machine)
     {
         this.machine = machine;
+        actor = machine.actor;
     }
 
     /// <summary>
@@ -67,6 +69,7 @@ public class MoveState : State
     public override void OnEnter()
     {
         machine.State = this;
+        actor.animator.SetBool("isMoving", true);
     }
 
     /// <summary>
@@ -75,8 +78,6 @@ public class MoveState : State
     /// <returns>Coroutine to be run.</returns>
     public override IEnumerator Main()
     {
-        actor.animator.SetBool("isMoving", true);
-
         while (actor.navMeshAgent.hasPath)
         {
             Vector2 nextPos = actor.navMeshAgent.nextPosition;
@@ -88,7 +89,13 @@ public class MoveState : State
 
             yield return null;            
         }
+    }
 
+    /// <summary>
+    ///     Called when machine exits state.
+    /// </summary>
+    public override void OnExit()
+    {
         actor.animator.SetBool("isMoving", false);
         // Set the final position exactly to the destination, with the z=0 
         // due to some bug that causes it to be non-zero.
@@ -97,13 +104,7 @@ public class MoveState : State
             actor.navMeshAgent.destination.y, 
             0f
         );
-    }
 
-    /// <summary>
-    ///     Called when machine exits state.
-    /// </summary>
-    public override void OnExit()
-    {
         machine.Task = null;
         machine.SetState(machine.DefaultState);
     }

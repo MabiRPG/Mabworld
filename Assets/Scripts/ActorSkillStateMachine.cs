@@ -2,6 +2,48 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
+///     Default idle state for skill machine. Does nothing.
+/// </summary>
+public class SkillIdleState : State
+{
+    private SkillStateMachine machine;
+
+    /// <summary>
+    ///     Initializes the object.
+    /// </summary>
+    public SkillIdleState(SkillStateMachine machine)
+    {
+        this.machine = machine;
+    }
+
+    /// <summary>
+    ///     Called when machine enters state.
+    /// </summary>
+    public override void OnEnter()
+    {
+        machine.State = this;
+    }
+
+    /// <summary>
+    ///     Called when machine processes state.
+    /// </summary>
+    /// <returns>Coroutine to be run.</returns>
+    public override IEnumerator Main()
+    {
+        // Does nothing in idle state
+        yield return null;
+    }
+
+    /// <summary>
+    ///     Called when machine exits state.
+    /// </summary>
+    public override void OnExit()
+    {
+        machine.Task = null;
+    }
+}
+
+/// <summary>
 ///     State for loading a skill.
 /// </summary>
 public class SkillLoadState : State
@@ -143,7 +185,7 @@ public abstract class SkillStateMachine : StateMachine
     public SkillBubble bubble;
     public ResultHandler handler;
 
-    public IdleState idleState;
+    public SkillIdleState idleState;
     public override State DefaultState { get => idleState; }
 
     /// <summary>
@@ -154,8 +196,7 @@ public abstract class SkillStateMachine : StateMachine
     {
         this.actor = actor;
         bubble = actor.bubble;
-
-        idleState = new IdleState(this);
+        idleState = new SkillIdleState(this);
 
         SetState(DefaultState);
     }

@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
 /// <summary>
 ///     Handles all player & input processing.
@@ -72,6 +73,34 @@ public class Player : Actor
         }
 
         inventoryManager.AddItem(1, 100);
+    }
+
+    public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
+        if (Input.GetMouseButton(0) || Input.GetMouseButtonDown(0))
+        {
+            controller.movementMachine.Reset();
+            controller.movementMachine.PathToCursor();
+        }
+    }
+
+    public void Update()
+    {
+        if (navMeshAgent.hasPath)
+        {
+            Debug.Log($"{navMeshAgent.destination} {navMeshAgent.pathStatus} {controller.movementMachine.State.GetType()}");
+
+            if (navMeshAgent.pathStatus == UnityEngine.AI.NavMeshPathStatus.PathComplete)
+            {
+                controller.movementMachine.SetState(new MoveState(controller.movementMachine));
+            }
+            else
+            {
+                animator.SetBool("isMoving", false);
+                navMeshAgent.SetDestination(transform.position);
+                controller.movementMachine.Reset();
+            }
+        }
     }
 
     /// <summary>

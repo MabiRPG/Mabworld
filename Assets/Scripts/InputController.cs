@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 /// <summary>
 ///     Handles the input control scheme for the player, aside from movement.
@@ -11,6 +12,9 @@ public class InputController : MonoBehaviour
     public static InputController Instance { get; private set; }
     // Dictionary of all button key binds
     public Dictionary<KeyCode, Action> buttonKeybinds = new Dictionary<KeyCode, Action>();
+
+    private Vector2 prevMousePosition;
+    public Vector2 mouseDelta;
 
     /// <summary>
     ///     Initializes the object.
@@ -29,6 +33,7 @@ public class InputController : MonoBehaviour
 
         // Assigns default control scheme
         Reset();
+        prevMousePosition = Input.mousePosition;
     }
 
     /// <summary>
@@ -80,10 +85,13 @@ public class InputController : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (NoButtonPressed())
-        {
-            return;
-        }
+        HandleMouseInput();
+
+
+        // if (NoButtonPressed())
+        // {
+        //     return;
+        // }
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -98,6 +106,50 @@ public class InputController : MonoBehaviour
                 break;
             }
         }
+    }
+
+    private void HandleMouseInput()
+    {
+        List<RaycastResult> graphicHits = GraphicsRaycast(Input.mousePosition);
+        RaycastHit2D sceneHits = SceneRaycast(Input.mousePosition);
+
+        mouseDelta = (Vector2)Input.mousePosition - prevMousePosition;
+
+        if (WindowManager.Instance.GetWindowHit(graphicHits, out Window window))
+        {
+            //Debug.Log("window");
+            WindowManager.Instance.SetActive(window);
+            WindowManager.Instance.HandleMouseInput(graphicHits, sceneHits);
+        }
+        else if (sceneHits.transform != null)
+        {
+            //Debug.Log("scene obj");
+        }
+        else
+        {
+            //Debug.Log("moving");
+            Player.Instance.HandleMouseInput(graphicHits, sceneHits);
+        }
+
+        prevMousePosition = Input.mousePosition;
+    }
+
+    private List<RaycastResult> GraphicsRaycast(Vector2 position)
+    {
+        // Stores all the results of our raycasts
+        List<RaycastResult> hits = new List<RaycastResult>();
+        // Create a new pointer data for our raycast manipulation
+        PointerEventData pointerData = new PointerEventData(GetComponent<EventSystem>());
+        pointerData.position = position;
+        GameManager.Instance.raycaster.Raycast(pointerData, hits);
+        return hits;
+    }
+
+    private RaycastHit2D SceneRaycast(Vector2 position)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(position);
+        RaycastHit2D hits = Physics2D.GetRayIntersection(ray);
+        return hits;
     }
 
     /// <summary>

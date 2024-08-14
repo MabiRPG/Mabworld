@@ -96,8 +96,19 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        isCanvasEmptyUnderMouse = CanvasEmptyAt(Input.mousePosition);
-        isSceneEmptyUnderMouse = SceneEmptyAt(Input.mousePosition);
+        // isCanvasEmptyUnderMouse = CanvasEmptyAt(Input.mousePosition);
+        // isSceneEmptyUnderMouse = SceneEmptyAt(Input.mousePosition);
+
+        // Stores all the results of our raycasts
+        List<RaycastResult> hits = new List<RaycastResult>();
+        // Create a new pointer data for our raycast manipulation
+        PointerEventData pointerData = new PointerEventData(GetComponent<EventSystem>());
+        pointerData.position = Input.mousePosition;
+        raycaster.Raycast(pointerData, hits);
+
+        if (Input.GetMouseButtonDown(0))
+        {
+        }
     }
 
     /// <summary>

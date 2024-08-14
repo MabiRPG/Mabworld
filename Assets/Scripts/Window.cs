@@ -1,12 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using TMPro;
+using System.Collections.Generic;
 
 /// <summary>
 ///     This super class handles all basic window UI processing. Uses the Window prefab in unity.
 /// </summary>
-public class Window : MonoBehaviour, IDragHandler
+public class Window : MonoBehaviour
 {
     // GameObject references to header and body content in window prefab.
     public GameObject header;
@@ -45,18 +45,6 @@ public class Window : MonoBehaviour, IDragHandler
         closeButton.onClick.AddListener(HideWindow);
 
         GameManager.Instance.windowManager.AddWindow(this);
-    }
-
-    /// <summary>
-    ///     OnDrag interface implementation to move window.
-    /// </summary>
-    /// <param name="pointerData">Event payload associated with pointer (mouse / touch) events.</param>
-    public virtual void OnDrag(PointerEventData pointerData)
-    {
-        // if (pointerData.pointerEnter == header)
-        // {
-        //     rectTransform.anchoredPosition += pointerData.delta / GameManager.Instance.canvas.scaleFactor;
-        // }
     }
 
     /// <summary>
