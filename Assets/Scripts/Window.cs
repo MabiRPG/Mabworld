@@ -38,21 +38,13 @@ public class Window : MonoBehaviour, IDragHandler
         maximizeCanvas = header.transform.Find("Maximize Button").GetComponent<CanvasGroup>();
         closeButton = header.transform.Find("Close Button").GetComponent<Button>();
 
-        GameManager.Instance.windowManager.AddWindow(this);
-    }
-
-    private void OnEnable()
-    {
+        // BUG: Not in an OnEnable for some weird bug reason that causes it to not execute
+        // properly...
         minimizeButton.onClick.AddListener(MinimizeWindow);
         maximizeButton.onClick.AddListener(MaximizeWindow);
         closeButton.onClick.AddListener(HideWindow);
-    }
 
-    private void OnDisable()
-    {
-        minimizeButton.onClick.RemoveAllListeners();
-        maximizeButton.onClick.RemoveAllListeners();
-        closeButton.onClick.RemoveAllListeners();
+        GameManager.Instance.windowManager.AddWindow(this);
     }
 
     /// <summary>

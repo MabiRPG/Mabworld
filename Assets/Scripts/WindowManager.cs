@@ -8,17 +8,14 @@ public class WindowManager : MonoBehaviour
 {
     private List<Window> windows = new List<Window>();
     private GraphicRaycaster raycaster;
-    private RectTransform canvasTransform;
-    private Camera canvasCamera;
 
     private Window activeWindow;
     private bool isDraggingWindow;
+    private Vector2 pos;
 
     private void Awake()
     {
         raycaster = GameManager.Instance.raycaster;
-        canvasTransform = GameManager.Instance.canvas.GetComponent<RectTransform>();
-        canvasCamera = GameManager.Instance.canvas.GetComponent<Canvas>().worldCamera;
     }
 
     public void AddWindow(Window window)
@@ -39,31 +36,44 @@ public class WindowManager : MonoBehaviour
 
             foreach (RaycastResult hit in hits)
             {
+                Debug.Log(hit.gameObject.name);
+
                 if (hit.gameObject.TryGetComponent(out Window window))
                 {
                     activeWindow = window;
                     window.Focus();
                 }
+            }
 
+            // Since raycast results yield an unsorted array, there is no guarantee
+            // that the active window will be found first. Therefore, iterate twice over array.
+            // then perform any checks.
+            foreach (RaycastResult hit in hits)
+            {
                 if (activeWindow && hit.gameObject == activeWindow.header)
                 {
+                    pos = Input.mousePosition;
                     isDraggingWindow = true;
                 }
             }
         }
-        else if (Input.GetMouseButton(0))
+
+        if (Input.GetMouseButton(0))
         {
             if (isDraggingWindow)
             {
-
-                // activeWindow.rectTransform.localPosition = Input.mousePositionDelta / GameManager.Instance.canvas.scaleFactor;
+                Vector2 delta = (Vector2)Input.mousePosition - pos;
+                activeWindow.rectTransform.anchoredPosition += delta / GameManager.Instance.canvas.scaleFactor;
+                pos = Input.mousePosition;
             }
         }
-        else if (Input.GetMouseButtonUp(0))
+        
+        if (Input.GetMouseButtonUp(0))
         {
             isDraggingWindow = false;
         }
-        else if (Input.GetKeyDown(KeyCode.Escape))
+        
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (activeWindow != null)
             {
