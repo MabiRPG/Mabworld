@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     // Skill instance
-    private Skill skill;
+    public Skill skill;
 
     // List of prefab object references
     private TMP_Text skillName;
@@ -127,7 +127,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         this.skill.cooldown.OnChange += UpdateCooldown;
 
         this.nameButtonAction = nameButtonAction;
-        nameButton.onClick.AddListener(delegate {nameButtonAction();});
+        //nameButton.onClick.AddListener(delegate {nameButtonAction();});
         advanceButton.onClick.AddListener(delegate {advanceButtonAction();});
     }
 

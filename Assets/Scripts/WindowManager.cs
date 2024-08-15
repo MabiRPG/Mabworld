@@ -4,16 +4,13 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class WindowManager : MonoBehaviour
+public class WindowManager : MonoBehaviour, IInputHandler
 {
     public static WindowManager Instance { get; private set; }
 
     private List<Window> windows = new List<Window>();
-    private GraphicRaycaster raycaster;
-
-    private Window activeWindow;
+    public Window activeWindow;
     private bool isDraggingWindow;
-    private Vector2 pos;
 
     private void Awake()
     {
@@ -26,8 +23,6 @@ public class WindowManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        raycaster = GameManager.Instance.raycaster;
     }
 
     public void AddWindow(Window window)
@@ -128,14 +123,36 @@ public class WindowManager : MonoBehaviour
     public void SetActive(Window window)
     {
         activeWindow = window;
-        activeWindow.Focus();
+
+        if (window != null)
+        {
+            activeWindow.Focus();
+        }
     }
 
-    public void HandleMouseInput(List<RaycastResult> hits, RaycastHit2D sceneHits)
+    public bool AnyWindowsOpen()
     {
+        foreach (Window window in windows)
+        {
+            if (window.isActiveAndEnabled)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
+        if (activeWindow == null)
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
-            foreach (RaycastResult hit in hits)
+            foreach (RaycastResult hit in graphicHits)
             {
                 if (hit.gameObject.GetComponent<Selectable>())
                 {
@@ -161,6 +178,44 @@ public class WindowManager : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             isDraggingWindow = false;
+        }
+
+        IInputHandler[] handlers = activeWindow.gameObject.GetComponents<IInputHandler>();
+
+        foreach (IInputHandler handler in handlers)
+        {
+            handler.HandleMouseInput(graphicHits, sceneHits);
+        }
+    }
+
+    public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (activeWindow != null)
+            {
+                activeWindow.HideWindow();
+                activeWindow = null;
+            }
+            else
+            {
+                int lastSiblingIndex = 0;
+                Window lastWindow = null;
+
+                foreach (Window window in windows)
+                {
+                    if (window.gameObject.activeSelf && lastSiblingIndex < window.transform.GetSiblingIndex())
+                    {
+                        lastSiblingIndex = window.transform.GetSiblingIndex();
+                        lastWindow = window;
+                    }
+                }
+
+                if (lastWindow != null)
+                {
+                    lastWindow.HideWindow();
+                }
+            }            
         }
     }
 }

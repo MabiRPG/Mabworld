@@ -3,30 +3,10 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-// TODO : Switch draggable skill icons to proper monobehaviors without cursor.
-// public class MovableSkillIcon : MonoBehaviour
-// {
-//     public Skill skill;
-//     private Transform rectTransform;
-//     private Image image;
-
-//     private void Awake()
-//     {
-//         rectTransform = GetComponent<RectTransform>();
-//         image = GetComponent<Image>();
-//     }
-
-//     public void SetSkill(Skill skill)
-//     {
-//         this.skill = skill;
-//         image.sprite = skill.icon;
-//     }
-// }
-
 /// <summary>
 ///     This class handles the skill window processing.
 /// </summary>
-public class WindowSkill : Window
+public class WindowSkill : Window, IInputHandler
 {
     // Global reference.
     public static WindowSkill Instance = null;
@@ -87,7 +67,6 @@ public class WindowSkill : Window
     private void OnEnable()
     {
         Player.Instance.actorAP.OnChange += Draw;
-
         skillPrefabs.SetActiveAll(false);
         Draw();
     }
@@ -95,31 +74,8 @@ public class WindowSkill : Window
     private void OnDisable()
     {
         Player.Instance.actorAP.OnChange -= Draw;
+        skillPrefabs.SetActiveAll(false);
     }
-
-    // private void Update()
-    // {
-    //     if (Input.GetMouseButtonDown(0))
-    //     {
-    //         // Stores all the results of our raycasts
-    //         List<RaycastResult> hits = new List<RaycastResult>();
-    //         // Create a new pointer data for our raycast manipulation
-    //         PointerEventData pointerData = new PointerEventData(GetComponent<EventSystem>());
-    //         pointerData.position = Input.mousePosition;
-    //         // Raycast for any windows underneath
-    //         GameManager.Instance.raycaster.Raycast(pointerData, hits);
-
-    //         if (hits.Count == 0)
-    //         {
-    //             return;
-    //         }
-
-    //         if (hits[0].gameObject.name == "Icon")
-    //         {
-    //             Debug.Log("hit icon");
-    //         }
-    //     }
-    // }
 
     /// <summary>
     ///     Draws the window.
@@ -154,7 +110,7 @@ public class WindowSkill : Window
         GameObject obj = advancePrefabs.GetFree(skill, transform.parent);
         WindowSkillAdvance window = obj.GetComponent<WindowSkillAdvance>();
         window.SetSkill(skill);
-        window.Focus();
+        WindowManager.Instance.SetActive(window);
     }
 
     /// <summary>
@@ -166,6 +122,32 @@ public class WindowSkill : Window
         GameObject obj = detailedPrefabs.GetFree(skill, transform.parent);
         WindowSkillDetailed window = obj.GetComponent<WindowSkillDetailed>();
         window.SetSkill(skill, () => CreateAdvanceSkillWindow(skill));
-        window.Focus();
+        WindowManager.Instance.SetActive(window);
+    }
+
+    public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            foreach (RaycastResult hit in graphicHits)
+            {
+                Debug.Log(hit.gameObject.name);
+
+                if (hit.gameObject.GetComponent<Button>() && 
+                    hit.gameObject.transform.parent.TryGetComponent(out WindowSkillRow row))
+                {
+                    GameObject obj = advancePrefabs.GetFree(row.skill, transform.parent);
+                    WindowSkillAdvance window = obj.GetComponent<WindowSkillAdvance>();
+                    window.SetSkill(row.skill);    
+                    WindowManager.Instance.SetActive(window);
+                    break;      
+                }
+            }
+        }
+    }
+
+    public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
+        throw new System.NotImplementedException();
     }
 }

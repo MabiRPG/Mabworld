@@ -3,11 +3,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using UnityEngine.AI;
 
 /// <summary>
 ///     Handles all player & input processing.
 /// </summary>
-public class Player : Actor
+public class Player : Actor, IInputHandler
 {
     // Global instance of player
     public static Player Instance = null;
@@ -79,18 +80,25 @@ public class Player : Actor
     {
         if (Input.GetMouseButton(0) || Input.GetMouseButtonDown(0))
         {
-            controller.movementMachine.Reset();
-            controller.movementMachine.PathToCursor();
+            if (controller.Task == null)
+            {
+                controller.movementMachine.Reset();
+                controller.movementMachine.PathToCursor();
+            }
         }
+    }
+
+    public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
     }
 
     public void Update()
     {
         if (navMeshAgent.hasPath)
         {
-            Debug.Log($"{navMeshAgent.destination} {navMeshAgent.pathStatus} {controller.movementMachine.State.GetType()}");
+            //Debug.Log($"{navMeshAgent.destination} {navMeshAgent.pathEndPosition} {navMeshAgent.pathStatus} {controller.movementMachine.State.GetType()}");
 
-            if (navMeshAgent.pathStatus == UnityEngine.AI.NavMeshPathStatus.PathComplete)
+            if (navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete)
             {
                 controller.movementMachine.SetState(new MoveState(controller.movementMachine));
             }

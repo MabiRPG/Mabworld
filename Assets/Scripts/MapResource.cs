@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 /// <summary>
 ///     Handles all interactable objects in the world.
 /// </summary>
-public class MapResource : MonoBehaviour
+public class MapResource : MonoBehaviour, IInputHandler
 {
     // Primary key for event
     public int ID;
@@ -80,33 +82,33 @@ public class MapResource : MonoBehaviour
         resultHandler.mapEvent.Clear();
     }
 
-    /// <summary>
-    ///     Called when mouse clicked on collider.
-    /// </summary>
-    private void OnMouseDown()
-    {
-        if (resource.Value == 0)
-        {
-            return;
-        }
-        else if (!GameManager.Instance.isCanvasEmptyUnderMouse)
-        {
-            return;
-        }
+    // /// <summary>
+    // ///     Called when mouse clicked on collider.
+    // /// </summary>
+    // private void OnMouseDown()
+    // {
+    //     if (resource.Value == 0)
+    //     {
+    //         return;
+    //     }
+    //     else if (!GameManager.Instance.isCanvasEmptyUnderMouse)
+    //     {
+    //         return;
+    //     }
 
-        Skill playerSkill = Player.Instance.skillManager.Get(skillID);
+    //     Skill playerSkill = Player.Instance.skillManager.Get(skillID);
 
-        if (rankRequired == null || !playerSkill.IsRankOrGreater(rankRequired))
-        {
-            return;
-        }
+    //     if (rankRequired == null || !playerSkill.IsRankOrGreater(rankRequired))
+    //     {
+    //         return;
+    //     }
 
-        resultHandler.SetResource(playerSkill, lootTableID, resource.Value);
+    //     resultHandler.SetResource(playerSkill, lootTableID, resource.Value);
 
-        Vector3 position = transform.TransformPoint(Vector3.zero);
-        IEnumerator task = Player.Instance.controller.HarvestResource(position, playerSkill, resultHandler);
-        Player.Instance.controller.SetTask(task);
-    }
+    //     Vector3 position = transform.TransformPoint(Vector3.zero);
+    //     IEnumerator task = Player.Instance.controller.HarvestResource(position, playerSkill, resultHandler);
+    //     Player.Instance.controller.SetTask(task);
+    // }
 
     /// <summary>
     ///     Changes the sprite state depending on the resource amount.
@@ -168,5 +170,35 @@ public class MapResource : MonoBehaviour
         {
             resource.Value--;
         }
+    }
+
+    public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (resource.Value == 0)
+            {
+                return;
+            }
+
+            Skill playerSkill = Player.Instance.skillManager.Get(skillID);
+
+            if (rankRequired == null || !playerSkill.IsRankOrGreater(rankRequired))
+            {
+                Player.Instance.HandleMouseInput(graphicHits, sceneHits);
+                return;
+            }
+
+            resultHandler.SetResource(playerSkill, lootTableID, resource.Value);
+
+            Vector3 position = transform.TransformPoint(Vector3.zero);
+            IEnumerator task = Player.Instance.controller.HarvestResource(position, playerSkill, resultHandler);
+            Player.Instance.controller.SetTask(task);            
+        }
+    }
+
+    public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
+        throw new NotImplementedException();
     }
 }

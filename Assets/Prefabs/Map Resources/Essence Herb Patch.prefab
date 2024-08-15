@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7386506572289029120}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 9.79, y: -2.31, z: 0.016625872}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
@@ -72,8 +72,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -510946667
-  m_SortingLayer: 2
+  m_SortingLayerID: -1104993555
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: -1907879305, guid: e21d56fdf2315b34a979b836facd9da7, type: 3}
   m_Color: {r: 0, g: 0.46073508, b: 1, a: 1}
@@ -99,6 +99,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ID: 4
+  skillID: 0
+  rankRequired: 
+  successRateModifier: 0
+  sName: 
 --- !u!61 &7607466312845460231
 BoxCollider2D:
   m_ObjectHideFlags: 0

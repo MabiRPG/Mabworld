@@ -95,19 +95,6 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    ///     Called on every frame.
-    /// </summary>
-    // private void Update()
-    // {
-    //     if (Task != null)
-    //     {
-    //         return;
-    //     }
-
-    //     movementMachine.Move();
-    // }
-
-    /// <summary>
     ///     Sets a new task that overrides the default behaviour of the controller.
     /// </summary>
     /// <param name="task">Coroutine to be run.</param>

@@ -85,17 +85,64 @@ public class InputController : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        HandleMouseInput();
+        List<RaycastResult> graphicHits = GraphicsRaycast(Input.mousePosition);
+        RaycastHit2D sceneHits = SceneRaycast(Input.mousePosition);
 
+        mouseDelta = (Vector2)Input.mousePosition - prevMousePosition;
 
-        // if (NoButtonPressed())
-        // {
-        //     return;
-        // }
+        HandleMouseInput(graphicHits, sceneHits);
+        HandleKeyboardInput(graphicHits, sceneHits);
 
+        prevMousePosition = Input.mousePosition;
+    }
+
+    private void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
+        if (Input.GetMouseButton(0) || Input.GetMouseButtonDown(0) || Input.GetMouseButtonUp(0))
+        {
+            // If the user has hit any UI windows...
+            if (WindowManager.Instance.GetWindowHit(graphicHits, out Window window))
+            {
+                WindowManager.Instance.SetActive(window);
+                WindowManager.Instance.HandleMouseInput(graphicHits, sceneHits);
+            }
+            // If the user has hit any scene objects...
+            else if (sceneHits.transform != null)
+            {
+                WindowManager.Instance.SetActive(null);
+                GameObject obj = sceneHits.transform.gameObject;
+                IInputHandler[] handlers = obj.GetComponents<IInputHandler>();
+
+                foreach (IInputHandler handler in handlers)
+                {
+                    handler.HandleMouseInput(graphicHits, sceneHits);
+                }
+            }
+            // Otherwise, default to moving the player
+            else
+            {
+                WindowManager.Instance.SetActive(null);
+                Player.Instance.HandleMouseInput(graphicHits, sceneHits);
+            }
+        }
+    }
+
+    private void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Player.Instance.controller.Interrupt();
+            if (Player.Instance.controller.Task != null)
+            {
+                Player.Instance.controller.Interrupt();
+            }
+            else if (WindowManager.Instance.AnyWindowsOpen())
+            {
+                WindowManager.Instance.HandleKeyboardInput(graphicHits, sceneHits);
+            }
+            else
+            {
+                Debug.Log("hit last escape");
+            }
         }
         
         foreach (KeyValuePair<KeyCode, Action> pair in buttonKeybinds)
@@ -106,32 +153,6 @@ public class InputController : MonoBehaviour
                 break;
             }
         }
-    }
-
-    private void HandleMouseInput()
-    {
-        List<RaycastResult> graphicHits = GraphicsRaycast(Input.mousePosition);
-        RaycastHit2D sceneHits = SceneRaycast(Input.mousePosition);
-
-        mouseDelta = (Vector2)Input.mousePosition - prevMousePosition;
-
-        if (WindowManager.Instance.GetWindowHit(graphicHits, out Window window))
-        {
-            //Debug.Log("window");
-            WindowManager.Instance.SetActive(window);
-            WindowManager.Instance.HandleMouseInput(graphicHits, sceneHits);
-        }
-        else if (sceneHits.transform != null)
-        {
-            //Debug.Log("scene obj");
-        }
-        else
-        {
-            //Debug.Log("moving");
-            Player.Instance.HandleMouseInput(graphicHits, sceneHits);
-        }
-
-        prevMousePosition = Input.mousePosition;
     }
 
     private List<RaycastResult> GraphicsRaycast(Vector2 position)

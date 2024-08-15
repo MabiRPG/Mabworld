@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class CraftingStation : MonoBehaviour
+public class CraftingStation : MonoBehaviour, IInputHandler
 {
     [SerializeField]
     private int ID;
@@ -32,34 +33,31 @@ public class CraftingStation : MonoBehaviour
         }
     }
 
-    private void OnMouseDown()
+    public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
-        // List<Skill> skills = new List<Skill>();
-
-        // foreach (int skillID in availableSkillIDs)
-        // {
-        //     if (Player.Instance.skillManager.IsLearned(skillID))
-        //     {
-        //         skills.Add(Player.Instance.skillManager.Get(skillID));
-        //     }
-        // }
-
-        if (recipes.Count == 0)
+        if (Input.GetMouseButtonDown(0))
         {
-            return;
-        }
-
-        List<Skill> skills = new List<Skill>();
-
-        foreach (int skillID in recipes.Keys)
-        {
-            if (Player.Instance.skillManager.IsLearned(skillID))
+            if (recipes.Count == 0)
             {
-                skills.Add(Player.Instance.skillManager.Get(skillID));
+                return;
             }
-        }
 
-        WindowCrafting.Instance.ShowWindow();
-        WindowCrafting.Instance.Init(skills, recipes);
+            List<Skill> skills = new List<Skill>();
+
+            foreach (int skillID in recipes.Keys)
+            {
+                if (Player.Instance.skillManager.IsLearned(skillID))
+                {
+                    skills.Add(Player.Instance.skillManager.Get(skillID));
+                }
+            }
+
+            WindowCrafting.Instance.ShowWindow();
+            WindowCrafting.Instance.Init(skills, recipes);
+        }
+    }
+
+    public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -8,7 +9,6 @@ using UnityEngine.AI;
 public class IdleState : State
 {
     private MovementStateMachine machine;
-    private Actor actor;
 
     /// <summary>
     ///     Initializes the object.
@@ -16,7 +16,6 @@ public class IdleState : State
     public IdleState(MovementStateMachine machine)
     {
         this.machine = machine;
-        actor = machine.actor;
     }
 
     /// <summary>
