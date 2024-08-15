@@ -73,6 +73,9 @@ public class Player : Actor, IInputHandler
             skillManager.Learn(i);
         }
 
+        skillManager.Skills[1].AddXP(100);
+        skillManager.Skills[2].AddXP(150);
+
         inventoryManager.AddItem(1, 100);
     }
 

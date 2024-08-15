@@ -22,9 +22,9 @@ public class WindowSkill : Window, IInputHandler
     private GameObject windowSkillAdvancePrefab;
     
     // Prefab manager instances.
-    private PrefabFactory skillPrefabs;
-    private PrefabFactory detailedPrefabs;
-    private PrefabFactory advancePrefabs;
+    public PrefabFactory skillPrefabFactory;
+    public PrefabFactory detailedPrefabFactory;
+    public PrefabFactory advancePrefabFactory;
 
     /// <summary>
     ///     Initializes the object.
@@ -43,12 +43,12 @@ public class WindowSkill : Window, IInputHandler
             Destroy(gameObject);
         }
 
-        skillPrefabs = ScriptableObject.CreateInstance<PrefabFactory>();
-        skillPrefabs.SetPrefab(skillPrefab);
-        detailedPrefabs = ScriptableObject.CreateInstance<PrefabFactory>();
-        detailedPrefabs.SetPrefab(windowSkillDetailedPrefab);
-        advancePrefabs = ScriptableObject.CreateInstance<PrefabFactory>();
-        advancePrefabs.SetPrefab(windowSkillAdvancePrefab);
+        skillPrefabFactory = ScriptableObject.CreateInstance<PrefabFactory>();
+        skillPrefabFactory.SetPrefab(skillPrefab);
+        detailedPrefabFactory = ScriptableObject.CreateInstance<PrefabFactory>();
+        detailedPrefabFactory.SetPrefab(windowSkillDetailedPrefab);
+        advancePrefabFactory = ScriptableObject.CreateInstance<PrefabFactory>();
+        advancePrefabFactory.SetPrefab(windowSkillAdvancePrefab);
     }
 
     /// <summary>
@@ -67,14 +67,14 @@ public class WindowSkill : Window, IInputHandler
     private void OnEnable()
     {
         Player.Instance.actorAP.OnChange += Draw;
-        skillPrefabs.SetActiveAll(false);
+        skillPrefabFactory.SetActiveAll(false);
         Draw();
     }
 
     private void OnDisable()
     {
         Player.Instance.actorAP.OnChange -= Draw;
-        skillPrefabs.SetActiveAll(false);
+        skillPrefabFactory.SetActiveAll(false);
     }
 
     /// <summary>
@@ -87,7 +87,7 @@ public class WindowSkill : Window, IInputHandler
         {
             // Instantiates the prefab in the window. Parent window has
             // a vertical layout group to control children components.
-            GameObject obj = skillPrefabs.GetFree(skill.Key, body.transform);
+            GameObject obj = skillPrefabFactory.GetFree(skill.Key, body.transform.Find("Scroll View").Find("Viewport").Find("Content"));
             // Gets the script, sets the skill and button call functions.
             WindowSkillRow row = obj.GetComponent<WindowSkillRow>();
             row.SetSkill(
@@ -107,7 +107,7 @@ public class WindowSkill : Window, IInputHandler
     /// <param name="skill"></param>
     private void CreateAdvanceSkillWindow(Skill skill)
     {
-        GameObject obj = advancePrefabs.GetFree(skill, transform.parent);
+        GameObject obj = advancePrefabFactory.GetFree(skill, transform.parent);
         WindowSkillAdvance window = obj.GetComponent<WindowSkillAdvance>();
         window.SetSkill(skill);
         WindowManager.Instance.SetActive(window);
@@ -119,7 +119,7 @@ public class WindowSkill : Window, IInputHandler
     /// <param name="skill">Skill to populate window.</param>
     private void CreateDetailedSkillWindow(Skill skill)
     {
-        GameObject obj = detailedPrefabs.GetFree(skill, transform.parent);
+        GameObject obj = detailedPrefabFactory.GetFree(skill, transform.parent);
         WindowSkillDetailed window = obj.GetComponent<WindowSkillDetailed>();
         window.SetSkill(skill, () => CreateAdvanceSkillWindow(skill));
         WindowManager.Instance.SetActive(window);
@@ -127,23 +127,19 @@ public class WindowSkill : Window, IInputHandler
 
     public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            foreach (RaycastResult hit in graphicHits)
-            {
-                Debug.Log(hit.gameObject.name);
+        // if (Input.GetMouseButtonDown(0))
+        // {
+        //     foreach (RaycastResult hit in graphicHits)
+        //     {
+        //         Debug.Log(hit.gameObject.name);
 
-                if (hit.gameObject.GetComponent<Button>() && 
-                    hit.gameObject.transform.parent.TryGetComponent(out WindowSkillRow row))
-                {
-                    GameObject obj = advancePrefabs.GetFree(row.skill, transform.parent);
-                    WindowSkillAdvance window = obj.GetComponent<WindowSkillAdvance>();
-                    window.SetSkill(row.skill);    
-                    WindowManager.Instance.SetActive(window);
-                    break;      
-                }
-            }
-        }
+        //         if (hit.gameObject.TryGetComponent(out IInputHandler handler))
+        //         {
+        //             handler.HandleMouseInput(graphicHits, sceneHits);
+        //             break;
+        //         }
+        //     }
+        // }
     }
 
     public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)

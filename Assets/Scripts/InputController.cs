@@ -101,9 +101,8 @@ public class InputController : MonoBehaviour
         if (Input.GetMouseButton(0) || Input.GetMouseButtonDown(0) || Input.GetMouseButtonUp(0))
         {
             // If the user has hit any UI windows...
-            if (WindowManager.Instance.GetWindowHit(graphicHits, out Window window))
+            if (WindowManager.Instance.GetWindowHit(graphicHits, out _))
             {
-                WindowManager.Instance.SetActive(window);
                 WindowManager.Instance.HandleMouseInput(graphicHits, sceneHits);
             }
             // If the user has hit any scene objects...
