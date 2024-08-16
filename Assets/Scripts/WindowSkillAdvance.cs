@@ -101,7 +101,6 @@ public class WindowSkillAdvance : Window
     private void AdvanceSkill(Skill skill)
     {
         Player.Instance.RankUpSkill(skill);
-        Debug.Log(skill.index.Value);
         HideWindow();
     }
 

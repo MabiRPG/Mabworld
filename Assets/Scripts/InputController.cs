@@ -15,6 +15,8 @@ public class InputController : MonoBehaviour
 
     private Vector2 prevMousePosition;
     public Vector2 mouseDelta;
+    private bool blockMouse = false;
+    private bool blockKeyboard = false;
 
     /// <summary>
     ///     Initializes the object.
@@ -33,6 +35,7 @@ public class InputController : MonoBehaviour
 
         // Assigns default control scheme
         Reset();
+
         prevMousePosition = Input.mousePosition;
     }
 
@@ -90,10 +93,27 @@ public class InputController : MonoBehaviour
 
         mouseDelta = (Vector2)Input.mousePosition - prevMousePosition;
 
-        HandleMouseInput(graphicHits, sceneHits);
-        HandleKeyboardInput(graphicHits, sceneHits);
+        if (!blockMouse)
+        {
+            HandleMouseInput(graphicHits, sceneHits);
+        }
+
+        if (!blockKeyboard)
+        {
+            HandleKeyboardInput(graphicHits, sceneHits);
+        }
 
         prevMousePosition = Input.mousePosition;
+    }
+
+    public void SetBlockMouse(bool state)
+    {
+        blockMouse = state;
+    }
+
+    public void SetBlockKeyboard(bool state)
+    {
+        blockKeyboard = state;
     }
 
     private void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
