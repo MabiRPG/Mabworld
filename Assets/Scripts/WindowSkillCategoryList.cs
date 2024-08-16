@@ -10,7 +10,7 @@ public class WindowSkillCategoryList : MonoBehaviour, IInputHandler
     private GameObject categoryButtonPrefab;
     private PrefabFactory buttonPrefabFactory;
 
-    private Dictionary<WindowSkillCategoryButton, int> buttons = new Dictionary<WindowSkillCategoryButton, int>();
+    private Dictionary<Button, int> buttons = new Dictionary<Button, int>();
     public IntManager categoryIndex = new IntManager();
 
     private void Awake()
@@ -24,8 +24,14 @@ public class WindowSkillCategoryList : MonoBehaviour, IInputHandler
         foreach (var pair in Player.Instance.skillManager.Categories.OrderBy(p => p.Key))
         {
             GameObject obj = buttonPrefabFactory.GetFree(pair.Value, transform);
-            WindowSkillCategoryButton button = obj.GetComponent<WindowSkillCategoryButton>();
-            button.SetCategory(pair.Value);
+            
+            WindowSkillCategoryButton script = obj.GetComponent<WindowSkillCategoryButton>();
+            script.SetCategory(pair.Value);
+
+            Button button = obj.GetComponent<Button>();
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(delegate { WindowSkill.Instance.categoryIndex.Value = pair.Key; });
+
             buttons.Add(button, pair.Key);
         }
 
@@ -60,7 +66,7 @@ public class WindowSkillCategoryList : MonoBehaviour, IInputHandler
 
     private void ChangeCategory(int index)
     {
-        foreach (KeyValuePair<WindowSkillCategoryButton, int> button in buttons)
+        foreach (var button in buttons)
         {
             if (!button.Key.isActiveAndEnabled)
             {
@@ -69,11 +75,11 @@ public class WindowSkillCategoryList : MonoBehaviour, IInputHandler
 
             if (button.Value != index)
             {
-                button.Key.GetComponent<Button>().interactable = false;
+                button.Key.interactable = false;
             }
             else
             {
-                button.Key.GetComponent<Button>().interactable = true;
+                button.Key.interactable = true;
             }
         }
     }
@@ -84,10 +90,15 @@ public class WindowSkillCategoryList : MonoBehaviour, IInputHandler
         {
             foreach (RaycastResult hit in graphicHits)
             {
-                if (hit.gameObject.TryGetComponent(out WindowSkillCategoryButton button))
+                if (hit.gameObject.TryGetComponent(out WindowSkillCategoryButton script))
                 {
-                    WindowSkill.Instance.categoryIndex.Value = buttons[button];
-                    break;
+                    Button button = script.gameObject.GetComponent<Button>();
+                    
+                    if (buttons.ContainsKey(button))
+                    {
+                        WindowSkill.Instance.categoryIndex.Value = buttons[button];
+                        break;
+                    }
                 }
             }
         }

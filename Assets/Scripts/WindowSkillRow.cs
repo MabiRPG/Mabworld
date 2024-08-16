@@ -15,7 +15,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     // List of prefab object references
     private TMP_Text skillName;
     // private Button nameButton;
-    private Image icon;
+    // private Image icon;
     private TMP_Text cooldown;
     private TMP_Text rank;
     // private GameObject xpBar;
@@ -24,6 +24,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     private ProgressBar overXpBarScript;
     // private Button advanceButton;
 
+    private WindowSkillRowIcon icon;
     private WindowSkillRowNameButton nameButton;
     private WindowSkillRowUseButton useButton;
     private WindowSkillAdvanceButton advanceButton;
@@ -40,7 +41,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     {
         skillName = transform.Find("Name Button").GetComponentInChildren<TMP_Text>();
         // nameButton = transform.Find("Name Button").GetComponent<Button>();
-        icon = transform.Find("Icon").GetComponent<Image>();
+        // icon = transform.Find("Icon").GetComponent<Image>();
         cooldown = transform.Find("Icon/Cooldown Timer").GetComponent<TMP_Text>();
         rank = transform.Find("Rank").GetComponent<TMP_Text>();
         // xpBar = transform.Find("XP Bar").gameObject;
@@ -49,6 +50,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         overXpBarScript = overXpBar.GetComponent<ProgressBar>();
         // advanceButton = transform.Find("Advance Button").GetComponent<Button>(); 
 
+        icon = GetComponentInChildren<WindowSkillRowIcon>();
         nameButton = GetComponentInChildren<WindowSkillRowNameButton>();
         useButton = GetComponentInChildren<WindowSkillRowUseButton>();
         advanceButton = GetComponentInChildren<WindowSkillAdvanceButton>();
@@ -61,7 +63,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     private void OnDisable()
     {
         // Removes all event listeners
-        Clear();
+        // Clear();
     }
 
     /// <summary>
@@ -123,11 +125,11 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     /// <param name="advanceButtonAction">Function to call when advance button is triggered.</param>
     public void SetSkill(Skill skill, Action nameButtonAction, Action advanceButtonAction)
     {
-        Clear();
+        // Clear();
         this.skill = skill;
 
         //skillName.text = this.skill.name;
-        icon.sprite = this.skill.icon;
+        // icon.sprite = this.skill.icon;
         UpdateRank();
         //UpdateXp();
 
@@ -140,6 +142,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         //nameButton.onClick.AddListener(delegate {nameButtonAction();});
         //advanceButton.onClick.AddListener(delegate {advanceButtonAction();});
 
+        icon.SetSkill(skill);
         nameButton.SetSkill(skill);
         useButton.SetSkill(skill);
         advanceButton.SetSkill(skill);
@@ -150,20 +153,20 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         }
     }
 
-    /// <summary>
-    ///     Clears the window.
-    /// </summary>
-    private void Clear()
-    {
-        if (skill != null)
-        {
-            skill.index.OnChange -= UpdateRank;
-            skill.xp.OnChange -= UpdateXp;
-            skill.xpMax.OnChange -= UpdateXp;
-            skill.cooldown.OnChange -= UpdateCooldown;
-            skill = null;
-        }
-    }
+    // /// <summary>
+    // ///     Clears the window.
+    // /// </summary>
+    // private void Clear()
+    // {
+    //     if (skill != null)
+    //     {
+    //         skill.index.OnChange -= UpdateRank;
+    //         skill.xp.OnChange -= UpdateXp;
+    //         skill.xpMax.OnChange -= UpdateXp;
+    //         skill.cooldown.OnChange -= UpdateCooldown;
+    //         skill = null;
+    //     }
+    // }
 
     /// <summary>
     ///     Updates the rank text.
@@ -218,31 +221,31 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     /// <summary>
     ///     Updates the cooldown timers for the skill.
     /// </summary>
-    private void UpdateCooldown()
-    {
-        if (skill.cooldown.Value > 0)
-        {
-            float iconFillAmount = (skill.GetCooldownTime() - skill.cooldown.Value) / skill.GetCooldownTime();
-            icon.fillAmount = iconFillAmount;
-            cooldown.gameObject.SetActive(true);
+    // private void UpdateCooldown()
+    // {
+    //     if (skill.cooldown.Value > 0)
+    //     {
+    //         float iconFillAmount = (skill.GetCooldownTime() - skill.cooldown.Value) / skill.GetCooldownTime();
+    //         icon.fillAmount = iconFillAmount;
+    //         cooldown.gameObject.SetActive(true);
 
-            if (skill.cooldown.Value > 60)
-            {
-                cooldown.text = string.Format("{0:0}m", (int)skill.cooldown.Value / 60);
-            }
-            else if (skill.cooldown.Value > 10)
-            {
-                cooldown.text = string.Format("{0:0}s", skill.cooldown.Value);
-            }
-            else
-            {
-                cooldown.text = string.Format("{0:0.0}s", skill.cooldown.Value);
-            }
-        }
-        else
-        {
-            icon.fillAmount = 1f;
-            cooldown.gameObject.SetActive(false);
-        }
-    }
+    //         if (skill.cooldown.Value > 60)
+    //         {
+    //             cooldown.text = string.Format("{0:0}m", (int)skill.cooldown.Value / 60);
+    //         }
+    //         else if (skill.cooldown.Value > 10)
+    //         {
+    //             cooldown.text = string.Format("{0:0}s", skill.cooldown.Value);
+    //         }
+    //         else
+    //         {
+    //             cooldown.text = string.Format("{0:0.0}s", skill.cooldown.Value);
+    //         }
+    //     }
+    //     else
+    //     {
+    //         icon.fillAmount = 1f;
+    //         cooldown.gameObject.SetActive(false);
+    //     }
+    // }
 }

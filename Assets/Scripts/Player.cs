@@ -73,6 +73,7 @@ public class Player : Actor, IInputHandler
             skillManager.Learn(i);
         }
 
+        actorAP.Value += 10;
         skillManager.Skills[1].AddXP(100);
         skillManager.Skills[2].AddXP(150);
 

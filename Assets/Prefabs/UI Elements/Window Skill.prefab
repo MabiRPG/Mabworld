@@ -1347,9 +1347,7 @@ MonoBehaviour:
   header: {fileID: 0}
   body: {fileID: 0}
   rectTransform: {fileID: 0}
-  skillPrefab: {fileID: 7447567352734069478, guid: 006017668bb6a1a468ef81b61700f049, type: 3}
   windowSkillDetailedPrefab: {fileID: 5424785417867410102, guid: 2de145aa97a3b8c49a12992dfe15fa9f, type: 3}
   windowSkillAdvancePrefab: {fileID: 5892490131871072717, guid: c887f0053794886489575c67a1e43603, type: 3}
-  skillPrefabFactory: {fileID: 0}
   detailedPrefabFactory: {fileID: 0}
   advancePrefabFactory: {fileID: 0}

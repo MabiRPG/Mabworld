@@ -1,21 +1,30 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class WindowSkillAdvanceButton : MonoBehaviour, IInputHandler
+public class WindowSkillAdvanceButton : MonoBehaviour
 {
     public Skill skill;
+    private Button button;
+
+    private void Awake()
+    {
+        button = GetComponent<Button>();
+    }
 
     public void SetSkill(Skill skill)
     {
         if (this.skill != null)
         {
             this.skill.xp.OnChange -= Draw;
+            this.skill.index.OnChange -= Draw;
+            button.onClick.RemoveAllListeners();
         }
 
         this.skill = skill;
         skill.xp.OnChange += Draw;
+        skill.index.OnChange += Draw;
+
+        button.onClick.AddListener(OpenAdvanceWindow);
         Draw();
     }
 
@@ -24,6 +33,15 @@ public class WindowSkillAdvanceButton : MonoBehaviour, IInputHandler
         if (skill.xp.Value >= 100)
         {
             gameObject.SetActive(true);
+
+            if (HasEnoughAP())
+            {
+                button.interactable = true;
+            }
+            else
+            {
+                button.interactable = false;
+            }
         }
         else
         {
@@ -31,16 +49,16 @@ public class WindowSkillAdvanceButton : MonoBehaviour, IInputHandler
         }
     }
 
-    public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    private bool HasEnoughAP()
     {
-        GameObject obj = WindowSkill.Instance.advancePrefabFactory.GetFree(skill,
-            GameManager.Instance.canvas.transform);
-        WindowSkillAdvance window = obj.GetComponent<WindowSkillAdvance>();
-        window.SetSkill(skill);
-        WindowManager.Instance.SetActive(window);
+        return Player.Instance.actorAP.Value >= skill.GetStatForwardDiff("ap_cost");
     }
 
-    public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    private void OpenAdvanceWindow()
     {
+        if (HasEnoughAP())
+        {
+            WindowSkill.Instance.CreateAdvanceWindow(skill);
+        }
     }
 }
