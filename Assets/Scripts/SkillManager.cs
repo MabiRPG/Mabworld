@@ -113,6 +113,21 @@ public class SkillManager
         return categories;
     }
 
+    public List<Skill> GetLearnedSkillsByCategory(int categoryID)
+    {
+        List<Skill> skills = new List<Skill>();
+
+        foreach (Skill skill in Skills.Values)
+        {
+            if (skill.categoryID == categoryID)
+            {
+                skills.Add(skill);
+            }
+        }
+
+        return skills;
+    }
+
     /// <summary>
     ///     Prepares the skill to be readied (loaded) and gets the coroutine to be run.
     /// </summary>
