@@ -90,7 +90,7 @@ public class Skill
         // Gets the basic skill info
         DataTable dt = GameManager.Instance.QueryDatabase(skillQuery, ("@id", ID));   
         DataRow row = dt.Rows[0];
-        GameManager.Instance.ParseDatabaseRow(row, this);
+        GameManager.Instance.ParseDatabaseRow(row, this, ("category_id", "categoryID"));
 
         // Gets the detailed skill info at every rank.
         dt = GameManager.Instance.QueryDatabase(statsQuery, ("@id", ID));

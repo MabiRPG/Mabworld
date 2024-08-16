@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -12,10 +14,22 @@ public class SkillManager
 
     // Hashmap of skills on (Skill ID, Skill instance)
     public Dictionary<int, Skill> Skills = new Dictionary<int, Skill>();
+    public EventManager learnEvent = new EventManager();
+
+    private const string categoryQuery = @"SELECT * FROM skill_category_type ORDER BY id;";
+    public Dictionary<int, string> Categories = new Dictionary<int, string>();
+    private HashSet<int> learnedCategoryIDs = new HashSet<int>();
 
     public SkillManager(SkillBubble bubble)
     {
         this.bubble = bubble;
+
+        DataTable dt = GameManager.Instance.QueryDatabase(categoryQuery);
+
+        foreach (DataRow row in dt.Rows)
+        {
+            Categories.Add(int.Parse(row["id"].ToString()), row["name"].ToString());
+        }
     }
 
     /// <summary>
@@ -64,7 +78,10 @@ public class SkillManager
             return;
         }
 
-        Skills.Add(ID, new Skill(ID));
+        Skill skill = new Skill(ID);
+        Skills.Add(ID, skill);
+        learnedCategoryIDs.Add(skill.categoryID);
+        learnEvent.RaiseOnChange();
     }
 
     /// <summary>
@@ -79,6 +96,21 @@ public class SkillManager
         }
 
         Skills.Remove(ID);
+    }
+
+    public List<string> GetLearnedCategories()
+    {
+        List<string> categories = new List<string>();
+
+        foreach (int ID in learnedCategoryIDs)
+        {
+            if (Categories.ContainsKey(ID))
+            {
+                categories.Add(Categories[ID]);
+            }
+        }
+
+        return categories;
     }
 
     /// <summary>

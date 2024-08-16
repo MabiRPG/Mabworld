@@ -109,12 +109,12 @@ public class WindowManager : MonoBehaviour, IInputHandler
             isDraggingWindow = false;
         }
 
-        IInputHandler[] handlers = activeWindow.gameObject.GetComponents<IInputHandler>();
+        // IInputHandler[] handlers = activeWindow.gameObject.GetComponents<IInputHandler>();
 
-        foreach (IInputHandler handler in handlers)
-        {
-            handler.HandleMouseInput(graphicHits, sceneHits);
-        }
+        // foreach (IInputHandler handler in handlers)
+        // {
+        //     handler.HandleMouseInput(graphicHits, sceneHits);
+        // }
     }
 
     public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
