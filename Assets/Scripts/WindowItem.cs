@@ -5,15 +5,17 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
-///     Handles all individual item sprites in the inventory window.
+///     Handles all individual item sprites in a window.
 /// </summary>
-public class WindowInventoryItem : MonoBehaviour, IInputHandler
+public class WindowItem : MonoBehaviour, IInputHandler, IPointerMoveHandler, IPointerExitHandler
 {
     public Item item;
     public int quantity;
 
     private Image icon;
     private TMP_Text quantityText;
+
+    private Camera canvasCamera;
 
     /// <summary>
     ///     Initializes the object.
@@ -22,6 +24,7 @@ public class WindowInventoryItem : MonoBehaviour, IInputHandler
     {
         icon = GetComponent<Image>();
         quantityText = transform.Find("Quantity").GetComponent<TMP_Text>();
+        canvasCamera = GameManager.Instance.canvas.GetComponent<Canvas>().worldCamera;
     }
 
     /// <summary>
@@ -46,11 +49,32 @@ public class WindowInventoryItem : MonoBehaviour, IInputHandler
 
     public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
-        WindowInventoryItemTooltip.Instance.SetItem(item);
+        // if (WindowManager.Instance.MouseHovering())
+        // {
+        //     WindowItemTooltip.Instance.SetItem(item);
+        // }
     }
 
     public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
         throw new System.NotImplementedException();
+    }
+
+    public void OnPointerMove(PointerEventData eventData)
+    {
+        WindowItemTooltip.Instance.SetItem(item);
+
+        RectTransform canvasRect = GameManager.Instance.canvas.GetComponent<RectTransform>();
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasRect, eventData.position, canvasCamera, out Vector2 pos);
+        pos.x -= 5;
+        pos.y += 5;
+
+        WindowItemTooltip.Instance.rectTransform.anchoredPosition = pos;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        WindowItemTooltip.Instance.Clear();
     }
 }

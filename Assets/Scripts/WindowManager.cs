@@ -8,7 +8,7 @@ public class WindowManager : MonoBehaviour, IInputHandler
 {
     public static WindowManager Instance { get; private set; }
 
-    private List<Window> windows = new List<Window>();
+    private HashSet<Window> windows = new HashSet<Window>();
     public Window mainWindow;
     private bool isDraggingWindow;
 
@@ -60,23 +60,6 @@ public class WindowManager : MonoBehaviour, IInputHandler
         }
     }
 
-    // public void SetActive(Window window)
-    // {
-    //     activeWindow = window;
-
-    //     if (activeWindow != window)
-    //     {
-    //         activeWindow = window;
-    //         activeWindow.ShowWindow();
-    //         activeWindow.Focus();
-    //     }
-    //     else
-    //     {
-    //         activeWindow.HideWindow();
-    //         SetActive(FindNextOpenWindow());
-    //     }
-    // }
-
     public bool AnyWindowsOpen()
     {
         foreach (Window window in windows)
@@ -116,8 +99,7 @@ public class WindowManager : MonoBehaviour, IInputHandler
     {
         if (Input.GetMouseButtonDown(0))
         {
-            GetWindowHit(graphicHits, out Window foundWindow);
-            mainWindow = foundWindow;
+            GetWindowHit(graphicHits, out mainWindow);
             mainWindow.ShowWindow();
             mainWindow.Focus();
 

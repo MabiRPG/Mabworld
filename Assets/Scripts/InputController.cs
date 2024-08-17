@@ -13,6 +13,9 @@ public class InputController : MonoBehaviour
     // Dictionary of all button key binds
     public Dictionary<KeyCode, Action> buttonKeybinds = new Dictionary<KeyCode, Action>();
 
+    private List<RaycastResult> graphicHits;
+    private RaycastHit2D sceneHits;
+    private GameObject selectedObj;
     private Vector2 prevMousePosition;
     public Vector2 mouseDelta;
     private bool blockMouse = false;
@@ -31,7 +34,7 @@ public class InputController : MonoBehaviour
         else
         {
             Destroy(gameObject);
-        }        
+        }
 
         // Assigns default control scheme
         Reset();
@@ -70,7 +73,7 @@ public class InputController : MonoBehaviour
 
             Debug.Log("Replacing old keybind with new.");
         }
-        
+
         dict[key] = action;
     }
 
@@ -88,8 +91,8 @@ public class InputController : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        List<RaycastResult> graphicHits = GraphicsRaycast(Input.mousePosition);
-        RaycastHit2D sceneHits = SceneRaycast(Input.mousePosition);
+        graphicHits = GraphicsRaycast(Input.mousePosition);
+        sceneHits = SceneRaycast(Input.mousePosition);
 
         mouseDelta = (Vector2)Input.mousePosition - prevMousePosition;
 
@@ -116,8 +119,27 @@ public class InputController : MonoBehaviour
         blockKeyboard = state;
     }
 
+    public void SetSelectedObject(GameObject obj)
+    {
+        selectedObj = obj;
+    }
+
+    private void PassMouseInput(GameObject obj, List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
+        IInputHandler[] handlers = obj.GetComponents<IInputHandler>();
+
+        foreach (IInputHandler handler in handlers)
+        {
+            handler.HandleMouseInput(graphicHits, sceneHits);
+        }
+    }
+
     private void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
+        // if (selectedObj != null && selectedObj.TryGetComponent<IInputHandler>(out _))
+        // {
+        //     PassMouseInput(selectedObj, graphicHits, sceneHits);
+        // }
         // If the user has hit any UI windows...
         if (WindowManager.Instance.GetWindowHit(graphicHits, out _))
         {
@@ -126,19 +148,11 @@ public class InputController : MonoBehaviour
         // If the user has hit any scene objects...
         else if (sceneHits.transform != null)
         {
-            // WindowManager.Instance.SetActive(null);
-            GameObject obj = sceneHits.transform.gameObject;
-            IInputHandler[] handlers = obj.GetComponents<IInputHandler>();
-
-            foreach (IInputHandler handler in handlers)
-            {
-                handler.HandleMouseInput(graphicHits, sceneHits);
-            }
+            PassMouseInput(sceneHits.transform.gameObject, graphicHits, sceneHits);
         }
         // Otherwise, default to moving the player
         else
         {
-            // WindowManager.Instance.SetActive(null);
             Player.Instance.HandleMouseInput(graphicHits, sceneHits);
         }
     }

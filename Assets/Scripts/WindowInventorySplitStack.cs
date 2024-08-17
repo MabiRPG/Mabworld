@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class WindowInventorySplitStack : Window
 {
     // Item to be split
-    private WindowInventoryItem itemHover;
+    private WindowItem itemHover;
     // Value of the input field
     private IntManager quantity = new IntManager(1);
     
@@ -97,7 +97,7 @@ public class WindowInventorySplitStack : Window
     /// </summary>
     /// <param name="itemHover">Item to be split.</param>
     /// <param name="splitItemAction">Action to be called when confirmed.</param>
-    public void SetItem(WindowInventoryItem itemHover, Action<int> splitItemAction)
+    public void SetItem(WindowItem itemHover, Action<int> splitItemAction)
     {
         this.itemHover = itemHover;
         this.splitItemAction = splitItemAction;

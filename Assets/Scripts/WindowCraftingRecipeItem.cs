@@ -4,13 +4,13 @@ using UnityEngine.UI;
 
 public class WindowCraftingRecipeItem : MonoBehaviour
 {
-    private WindowInventoryItem product;
+    private WindowItem product;
     private TMP_Text productName;
     public CraftingRecipe recipe;
 
     private void Awake()
     {
-        product = GetComponentInChildren<WindowInventoryItem>();
+        product = GetComponentInChildren<WindowItem>();
         productName = transform.Find("Name Parent/Name").GetComponent<TMP_Text>();
     }
 

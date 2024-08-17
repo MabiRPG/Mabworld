@@ -11,7 +11,7 @@ using UnityEngine.UI;
 public class MovableItem
 {
     public InventoryItem inventoryItem;
-    public WindowInventoryItem windowItem;
+    public WindowItem windowItem;
     private Transform originTransform;
     public Item item;
     private RectTransform rectTransform;
@@ -23,7 +23,7 @@ public class MovableItem
     /// <param name="inventoryItem"></param>
     /// <param name="windowItem"></param>
     /// <param name="originTransform">Starting Transform component of window item.</param>
-    public MovableItem(InventoryItem inventoryItem, WindowInventoryItem windowItem, Transform originTransform)
+    public MovableItem(InventoryItem inventoryItem, WindowItem windowItem, Transform originTransform)
     {
         this.inventoryItem = inventoryItem;
         this.windowItem = windowItem;
@@ -88,7 +88,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     // Tooltip on hover over item
     [SerializeField]
     private GameObject itemTooltipPrefab;
-    private WindowInventoryItemTooltip tooltip;
+    private WindowItemTooltip tooltip;
     [SerializeField]
     private GameObject splitStackPrefab;
     private WindowInventorySplitStack splitStack;
@@ -128,7 +128,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         canvasCamera = GameManager.Instance.canvas.GetComponent<Canvas>().worldCamera;
         
         GameObject obj = Instantiate(itemTooltipPrefab, transform.parent);
-        tooltip = obj.GetComponent<WindowInventoryItemTooltip>();
+        tooltip = obj.GetComponent<WindowItemTooltip>();
 
         obj = Instantiate(splitStackPrefab, transform.parent);
         splitStack = obj.GetComponent<WindowInventorySplitStack>();
@@ -237,7 +237,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         }
 
         GameObject obj = itemPrefabs.prefabs[inventoryItem];
-        WindowInventoryItem windowItem = obj.GetComponent<WindowInventoryItem>();
+        WindowItem windowItem = obj.GetComponent<WindowItem>();
 
         if (inventoryItem.quantity > 1 && Input.GetKey(KeyCode.LeftShift))
         {
@@ -265,12 +265,12 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     /// <param name="inventoryItem"></param>
     /// <param name="windowItem"></param>
     /// <param name="quantity">Quantity of resulting new split stack.</param>
-    private void OnItemSplit(InventoryItem inventoryItem, WindowInventoryItem windowItem, int quantity)
+    private void OnItemSplit(InventoryItem inventoryItem, WindowItem windowItem, int quantity)
     {
         InventoryItem newInventoryItem = new InventoryItem(inventoryItem.item, quantity, -1, -1);
         
         GameObject obj = itemPrefabs.GetFree(newInventoryItem, body.transform.Find("Item Canvas"));
-        WindowInventoryItem newWindowItem = obj.GetComponent<WindowInventoryItem>();
+        WindowItem newWindowItem = obj.GetComponent<WindowItem>();
         newWindowItem.SetItem(inventoryItem.item, quantity);
 
         RectTransform rectTransform = obj.GetComponent<RectTransform>();
@@ -367,7 +367,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
 
                 itemFound.quantity += diff;
                 obj = itemPrefabs.prefabs[itemFound];
-                WindowInventoryItem windowItem = obj.GetComponent<WindowInventoryItem>();
+                WindowItem windowItem = obj.GetComponent<WindowItem>();
                 windowItem.SetItem(itemFound.item, itemFound.quantity);
 
                 movableItem.inventoryItem.quantity -= diff;
@@ -399,7 +399,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
                 obj = itemPrefabs.prefabs[inventoryItem];
                 movableItem = new MovableItem(
                     inventoryItem,
-                    obj.GetComponent<WindowInventoryItem>(),
+                    obj.GetComponent<WindowItem>(),
                     body.transform.Find("Item Canvas")
                 );
 
@@ -515,7 +515,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
             return;
         }
 
-        WindowInventoryItem itemHover = pointerData.pointerEnter.GetComponent<WindowInventoryItem>();
+        WindowItem itemHover = pointerData.pointerEnter.GetComponent<WindowItem>();
 
         if (itemHover != null && itemHover.item != null)
         {
@@ -555,7 +555,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
         foreach (InventoryItem inventoryItem in bag.items.Values)
         {
             GameObject obj = itemPrefabs.GetFree(inventoryItem, body.transform.Find("Item Canvas"));
-            WindowInventoryItem windowItem = obj.GetComponent<WindowInventoryItem>();
+            WindowItem windowItem = obj.GetComponent<WindowItem>();
             windowItem.SetItem(inventoryItem.item, inventoryItem.quantity);
 
             RectTransform rectTransform = obj.GetComponent<RectTransform>();

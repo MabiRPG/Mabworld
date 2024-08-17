@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class WindowCraftingDetailForm : MonoBehaviour
 {
     private TMP_Text detailsText;
-    private WindowInventoryItem productItem;
+    private WindowItem productItem;
     private Transform ingredientParentTransform;
     private TMP_InputField quantityInput;
     private NumberRangeValidator rangeValidator;
@@ -23,7 +23,7 @@ public class WindowCraftingDetailForm : MonoBehaviour
     private void Awake()
     {
         detailsText = transform.Find("Details Text").GetComponent<TMP_Text>();
-        productItem = transform.Find("Item Image Boxes/Product Item").GetComponent<WindowInventoryItem>();
+        productItem = transform.Find("Item Image Boxes/Product Item").GetComponent<WindowItem>();
         ingredientParentTransform = transform.Find("Item Image Boxes/Ingredient Parent");
         quantityInput = transform.Find("Production Form/Quantity Input Field").GetComponent<TMP_InputField>();
         rangeValidator = (NumberRangeValidator)quantityInput.inputValidator;
@@ -65,7 +65,7 @@ public class WindowCraftingDetailForm : MonoBehaviour
         foreach (Item ingredient in recipe.ingredients)
         {
             GameObject obj = ingredientPrefabs.GetFree(ingredient, ingredientParentTransform);
-            WindowInventoryItem inventoryItem = obj.GetComponentInChildren<WindowInventoryItem>();
+            WindowItem inventoryItem = obj.GetComponentInChildren<WindowItem>();
 
             int playerQuantity = Player.Instance.inventoryManager.GetQuantity(ingredient);
             string text;
