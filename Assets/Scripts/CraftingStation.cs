@@ -52,7 +52,7 @@ public class CraftingStation : MonoBehaviour, IInputHandler
                 }
             }
 
-            WindowCrafting.Instance.ShowWindow();
+            WindowManager.Instance.ToggleWindow(WindowCrafting.Instance);
             WindowCrafting.Instance.Init(skills, recipes);
         }
     }

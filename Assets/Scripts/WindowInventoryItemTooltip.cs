@@ -7,9 +7,9 @@ using UnityEngine.UI;
 /// <summary>
 ///     Handles rendering the item tooltip when mousing over an item.
 /// </summary>
-public class WindowInventoryItemTooltip : MonoBehaviour
+public class WindowInventoryItemTooltip : MonoBehaviour, IInputHandler
 {
-    public WindowInventoryItemTooltip Instance { get; private set; }
+    public static WindowInventoryItemTooltip Instance { get; private set; }
 
     private TMP_Text itemName;
     private TMP_Text description;
@@ -49,37 +49,37 @@ public class WindowInventoryItemTooltip : MonoBehaviour
         canvasGroup.alpha = 0;
     }
 
-    private void Update()
-    {
-        // Stores all the results of our raycasts
-        List<RaycastResult> hits = new List<RaycastResult>();
-        // Create a new pointer data for our raycast manipulation
-        PointerEventData pointerData = new PointerEventData(GetComponent<EventSystem>());
-        pointerData.position = Input.mousePosition;
-        raycaster.Raycast(pointerData, hits);
+    // private void Update()
+    // {
+    //     // Stores all the results of our raycasts
+    //     List<RaycastResult> hits = new List<RaycastResult>();
+    //     // Create a new pointer data for our raycast manipulation
+    //     PointerEventData pointerData = new PointerEventData(GetComponent<EventSystem>());
+    //     pointerData.position = Input.mousePosition;
+    //     raycaster.Raycast(pointerData, hits);
 
-        foreach (RaycastResult hit in hits)
-        {
-            if (hit.gameObject.TryGetComponent(out WindowInventoryItem windowItem))
-            {
-                if (windowItem.item != null)
-                {
-                    SetItem(windowItem.item);
-                }
+    //     foreach (RaycastResult hit in hits)
+    //     {
+    //         if (hit.gameObject.TryGetComponent(out WindowInventoryItem windowItem))
+    //         {
+    //             if (windowItem.item != null)
+    //             {
+    //                 SetItem(windowItem.item);
+    //             }
 
-                RectTransform canvasRect = GameManager.Instance.canvas.GetComponent<RectTransform>();
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    canvasRect, pointerData.position, canvasCamera, out Vector2 pos);
-                pos.x -= 5;
-                pos.y += 5;
-                rectTransform.anchoredPosition = pos;
+    //             RectTransform canvasRect = GameManager.Instance.canvas.GetComponent<RectTransform>();
+    //             RectTransformUtility.ScreenPointToLocalPointInRectangle(
+    //                 canvasRect, pointerData.position, canvasCamera, out Vector2 pos);
+    //             pos.x -= 5;
+    //             pos.y += 5;
+    //             rectTransform.anchoredPosition = pos;
 
-                return;
-            }
-        }
+    //             return;
+    //         }
+    //     }
 
-        Clear();
-    }
+    //     Clear();
+    // }
 
     /// <summary>
     ///     Sets the item.
@@ -102,5 +102,15 @@ public class WindowInventoryItemTooltip : MonoBehaviour
     public void Clear()
     {
         canvasGroup.alpha = 0;
+    }
+
+    public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
+        throw new System.NotImplementedException();
     }
 }

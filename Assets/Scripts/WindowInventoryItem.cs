@@ -1,11 +1,13 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
 ///     Handles all individual item sprites in the inventory window.
 /// </summary>
-public class WindowInventoryItem : MonoBehaviour
+public class WindowInventoryItem : MonoBehaviour, IInputHandler
 {
     public Item item;
     public int quantity;
@@ -40,5 +42,15 @@ public class WindowInventoryItem : MonoBehaviour
         this.item = item;
         icon.sprite = item.icon;
         quantityText.text = text;
+    }
+
+    public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
+        WindowInventoryItemTooltip.Instance.SetItem(item);
+    }
+
+    public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
+        throw new System.NotImplementedException();
     }
 }

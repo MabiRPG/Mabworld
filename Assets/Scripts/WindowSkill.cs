@@ -63,7 +63,8 @@ public class WindowSkill : Window
         GameObject obj = detailedPrefabFactory.GetFree(skill, GameManager.Instance.canvas.transform);
         WindowSkillDetailed window = obj.GetComponent<WindowSkillDetailed>();
         window.SetSkill(skill, () => { });
-        WindowManager.Instance.SetActive(window);        
+        WindowManager.Instance.AddWindow(window);
+        WindowManager.Instance.ToggleWindow(window);        
     }
 
     public void CreateAdvanceWindow(Skill skill)
@@ -71,6 +72,7 @@ public class WindowSkill : Window
         GameObject obj = advancePrefabFactory.GetFree(skill, GameManager.Instance.canvas.transform);
         WindowSkillAdvance window = obj.GetComponent<WindowSkillAdvance>();
         window.SetSkill(skill);
-        WindowManager.Instance.SetActive(window);        
+        WindowManager.Instance.AddWindow(window);
+        WindowManager.Instance.ToggleWindow(window);        
     }
 }

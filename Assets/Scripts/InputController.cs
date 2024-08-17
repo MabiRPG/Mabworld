@@ -118,31 +118,28 @@ public class InputController : MonoBehaviour
 
     private void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
-        if (Input.GetMouseButton(0) || Input.GetMouseButtonDown(0) || Input.GetMouseButtonUp(0))
+        // If the user has hit any UI windows...
+        if (WindowManager.Instance.GetWindowHit(graphicHits, out _))
         {
-            // If the user has hit any UI windows...
-            if (WindowManager.Instance.GetWindowHit(graphicHits, out _))
-            {
-                WindowManager.Instance.HandleMouseInput(graphicHits, sceneHits);
-            }
-            // If the user has hit any scene objects...
-            else if (sceneHits.transform != null)
-            {
-                WindowManager.Instance.SetActive(null);
-                GameObject obj = sceneHits.transform.gameObject;
-                IInputHandler[] handlers = obj.GetComponents<IInputHandler>();
+            WindowManager.Instance.HandleMouseInput(graphicHits, sceneHits);
+        }
+        // If the user has hit any scene objects...
+        else if (sceneHits.transform != null)
+        {
+            // WindowManager.Instance.SetActive(null);
+            GameObject obj = sceneHits.transform.gameObject;
+            IInputHandler[] handlers = obj.GetComponents<IInputHandler>();
 
-                foreach (IInputHandler handler in handlers)
-                {
-                    handler.HandleMouseInput(graphicHits, sceneHits);
-                }
-            }
-            // Otherwise, default to moving the player
-            else
+            foreach (IInputHandler handler in handlers)
             {
-                WindowManager.Instance.SetActive(null);
-                Player.Instance.HandleMouseInput(graphicHits, sceneHits);
+                handler.HandleMouseInput(graphicHits, sceneHits);
             }
+        }
+        // Otherwise, default to moving the player
+        else
+        {
+            // WindowManager.Instance.SetActive(null);
+            Player.Instance.HandleMouseInput(graphicHits, sceneHits);
         }
     }
 
@@ -193,22 +190,13 @@ public class InputController : MonoBehaviour
     }
 
     /// <summary>
-    ///     Checks if any buttons are pressed or held down
-    /// </summary>
-    /// <returns></returns>
-    private bool NoButtonPressed()
-    {
-        return !Input.anyKey && !Input.anyKeyDown;
-    }
-
-    /// <summary>
     ///     Resets the control scheme
     /// </summary>
     public void Reset()
     {
-        AddButtonBind(KeyCode.Z, () => WindowSkill.Instance.ToggleVisible());
-        AddButtonBind(KeyCode.C, () => WindowCharacter.Instance.ToggleVisible());
-        AddButtonBind(KeyCode.I, () => WindowInventory.Instance.ToggleVisible());
+        AddButtonBind(KeyCode.Z, () => WindowManager.Instance.ToggleWindow(WindowSkill.Instance));
+        AddButtonBind(KeyCode.C, () => WindowManager.Instance.ToggleWindow(WindowCharacter.Instance));
+        AddButtonBind(KeyCode.I, () => WindowManager.Instance.ToggleWindow(WindowInventory.Instance));
         AddButtonBind(KeyCode.M, () => Player.Instance.ToggleMap());
     }
 }

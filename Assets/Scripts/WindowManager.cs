@@ -9,7 +9,7 @@ public class WindowManager : MonoBehaviour, IInputHandler
     public static WindowManager Instance { get; private set; }
 
     private List<Window> windows = new List<Window>();
-    public Window activeWindow;
+    public Window mainWindow;
     private bool isDraggingWindow;
 
     private void Awake()
@@ -45,15 +45,37 @@ public class WindowManager : MonoBehaviour, IInputHandler
         return false;
     }
 
-    public void SetActive(Window window)
+    public void ToggleWindow(Window window)
     {
-        activeWindow = window;
-
-        if (window != null)
+        if (!window.isActiveAndEnabled || window != mainWindow)
         {
-            activeWindow.Focus();
+            mainWindow = window;
+            mainWindow.ShowWindow();
+            mainWindow.Focus();
+        }
+        else if (window == mainWindow)
+        {
+            mainWindow.HideWindow();
+            mainWindow = FindNextOpenWindow();
         }
     }
+
+    // public void SetActive(Window window)
+    // {
+    //     activeWindow = window;
+
+    //     if (activeWindow != window)
+    //     {
+    //         activeWindow = window;
+    //         activeWindow.ShowWindow();
+    //         activeWindow.Focus();
+    //     }
+    //     else
+    //     {
+    //         activeWindow.HideWindow();
+    //         SetActive(FindNextOpenWindow());
+    //     }
+    // }
 
     public bool AnyWindowsOpen()
     {
@@ -68,17 +90,41 @@ public class WindowManager : MonoBehaviour, IInputHandler
         return false;
     }
 
+    private Window FindNextOpenWindow()
+    {
+        int lastSiblingIndex = 0;
+        Window lastWindow = null;
+
+        foreach (Window window in windows)
+        {
+            if (window.gameObject.activeSelf && lastSiblingIndex < window.transform.GetSiblingIndex())
+            {
+                lastSiblingIndex = window.transform.GetSiblingIndex();
+                lastWindow = window;
+            }
+        }
+
+        return lastWindow;
+    }
+
+    public bool MouseHovering()
+    {
+        return !Input.GetMouseButtonDown(0) && !Input.GetMouseButton(0) && !Input.GetMouseButtonUp(0);
+    }
+
     public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
         if (Input.GetMouseButtonDown(0))
         {
             GetWindowHit(graphicHits, out Window foundWindow);
-            SetActive(foundWindow);
+            mainWindow = foundWindow;
+            mainWindow.ShowWindow();
+            mainWindow.Focus();
 
             foreach (RaycastResult hit in graphicHits)
             {
                 // This prevents it from calling itself infinitely in stack overflow...
-                if (!hit.gameObject.transform.IsChildOf(activeWindow.transform))
+                if (!hit.gameObject.transform.IsChildOf(mainWindow.transform))
                 {
                     continue;
                 }
@@ -87,64 +133,53 @@ public class WindowManager : MonoBehaviour, IInputHandler
                 {
                     handler.HandleMouseInput(graphicHits, sceneHits);
                 }
-                else if (hit.gameObject == activeWindow.header)
+                else if (hit.gameObject == mainWindow.header)
                 {
                     isDraggingWindow = true;
                     break;
                 }
             }
         }
-
-        if (Input.GetMouseButton(0))
+        else if (Input.GetMouseButton(0))
         {
             if (isDraggingWindow)
             {
-                activeWindow.rectTransform.anchoredPosition += InputController.Instance.mouseDelta
+                mainWindow.rectTransform.anchoredPosition += InputController.Instance.mouseDelta
                     / GameManager.Instance.canvas.scaleFactor;
             }
         }
-
-        if (Input.GetMouseButtonUp(0))
+        else if (Input.GetMouseButtonUp(0))
         {
             isDraggingWindow = false;
         }
+        else if (MouseHovering())
+        {
+            foreach (RaycastResult hit in graphicHits)
+            {
+                // This prevents it from calling itself infinitely in stack overflow...
+                if (!hit.gameObject.transform.IsChildOf(mainWindow.transform))
+                {
+                    continue;
+                }
 
-        // IInputHandler[] handlers = activeWindow.gameObject.GetComponents<IInputHandler>();
-
-        // foreach (IInputHandler handler in handlers)
-        // {
-        //     handler.HandleMouseInput(graphicHits, sceneHits);
-        // }
+                if (hit.gameObject.TryGetComponent(out IInputHandler handler))
+                {
+                    handler.HandleMouseInput(graphicHits, sceneHits);
+                }
+            }
+        }
     }
 
     public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (activeWindow != null)
+            if (mainWindow != null)
             {
-                activeWindow.HideWindow();
-                activeWindow = null;
+                mainWindow.HideWindow();
             }
-            else
-            {
-                int lastSiblingIndex = 0;
-                Window lastWindow = null;
 
-                foreach (Window window in windows)
-                {
-                    if (window.gameObject.activeSelf && lastSiblingIndex < window.transform.GetSiblingIndex())
-                    {
-                        lastSiblingIndex = window.transform.GetSiblingIndex();
-                        lastWindow = window;
-                    }
-                }
-
-                if (lastWindow != null)
-                {
-                    lastWindow.HideWindow();
-                }
-            }            
+            mainWindow = FindNextOpenWindow();
         }
     }
 }

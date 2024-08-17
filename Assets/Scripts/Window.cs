@@ -100,7 +100,6 @@ public class Window : MonoBehaviour
     public void ShowWindow()
     {
         gameObject.SetActive(true);
-        Focus();
     }
 
     /// <summary>
@@ -117,6 +116,5 @@ public class Window : MonoBehaviour
     public virtual void ToggleVisible()
     {
         gameObject.SetActive(!gameObject.activeSelf);
-        Focus();
     }
 }
