@@ -33,7 +33,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 01ebe76718160374e8053730b30a7d81
-    m_Address: Herbalism
+    m_Address: Botany
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -79,6 +79,36 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ba4892b586beca64abd234742a2af42c
     m_Address: Weaving
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24950d84642981d4eb4aba16693afa41
+    m_Address: Medicine_Production
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9159e775a58e95342ac2d59ff742fa4d
+    m_Address: Carpentry
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 670c952ff427fa74c93b26ec09d7bea8
+    m_Address: Magic_Craft
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c60614952482604fb5a79dbfc13e520
+    m_Address: Blacksmithing
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a734f89aeb004414ba417c163a6a6f4f
+    m_Address: Jeweler
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f75fccdde162184b818bf9773d87e00
+    m_Address: Woodcutting
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
