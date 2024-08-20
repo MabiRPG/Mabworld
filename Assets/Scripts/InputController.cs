@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 ///     Handles the input control scheme for the player, aside from movement.
@@ -171,7 +172,7 @@ public class InputController : MonoBehaviour
             }
             else
             {
-                Debug.Log("hit last escape");
+                SceneManager.LoadSceneAsync("Main Menu");
             }
         }
         

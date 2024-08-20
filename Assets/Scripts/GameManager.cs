@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
 
         inputController = GetComponent<InputController>();
         lightController = GetComponent<LightController>();

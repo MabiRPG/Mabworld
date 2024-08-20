@@ -53,7 +53,7 @@ public class Player : Actor, IInputHandler
             Destroy(gameObject);
         }
 
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
 
         controller = gameObject.AddComponent<PlayerController>();
         controller.Init(this);
