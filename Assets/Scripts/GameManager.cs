@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
     public GraphicRaycaster raycaster;
 
     public GameObject mainMenu;
+    public GameObject loadingArt;
     public GameStateMachine gameStateMachine;
 
     /// <summary>
@@ -79,6 +80,7 @@ public class GameManager : MonoBehaviour
         windowManager = GetComponent<WindowManager>();
         raycaster = canvas.GetComponent<GraphicRaycaster>();
         mainMenu = canvas.GetComponentInChildren<MainMenu>(true).gameObject;
+        loadingArt = canvas.GetComponentInChildren<LoadingScreen>(true).gameObject;
     }
 
     /// <summary>

@@ -1,13 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
     private Image splashArt;
-    private Image loadingArt;
 
     [SerializeField]
     private GameObject buttonParent;
@@ -21,8 +17,6 @@ public class MainMenu : MonoBehaviour
     private void Awake()
     {
         splashArt = transform.Find("Splash Art").GetComponent<Image>();
-        loadingArt = transform.Find("Loading Art").GetComponent<Image>();
-
         startButton = buttonParent.transform.Find("Start Button").GetComponent<Button>();
         saveButton = buttonParent.transform.Find("Save Button").GetComponent<Button>();
         loadButton = buttonParent.transform.Find("Load Button").GetComponent<Button>();
@@ -44,7 +38,6 @@ public class MainMenu : MonoBehaviour
     private void Start()
     {
         splashArt.gameObject.SetActive(true);
-        loadingArt.gameObject.SetActive(false);
     }
 
     private void OnDisable()
@@ -77,6 +70,7 @@ public class MainMenu : MonoBehaviour
 
     private void OpenOptions()
     {
+        WindowManager.Instance.ToggleWindow(WindowOptions.Instance);
     }
 
     private void QuitGame()

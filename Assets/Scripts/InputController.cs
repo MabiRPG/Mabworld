@@ -26,7 +26,7 @@ public class InputController : MonoBehaviour
     // Global instance of InputController
     public static InputController Instance { get; private set; }
     // Dictionary of all button key binds
-    private Dictionary<KeyCode, InputSettings> buttonKeybinds = new Dictionary<KeyCode, InputSettings>();
+    public Dictionary<KeyCode, InputSettings> buttonKeybinds = new Dictionary<KeyCode, InputSettings>();
 
     private List<RaycastResult> graphicHits;
     private RaycastHit2D sceneHits;
@@ -202,6 +202,7 @@ public class InputController : MonoBehaviour
         AddButtonBind(KeyCode.Z, new InputSettings("Open Skills", "", OpenWindow<WindowSkill>));
         AddButtonBind(KeyCode.C, new InputSettings("Open Character", "", OpenWindow<WindowCharacter>));
         AddButtonBind(KeyCode.I, new InputSettings("Open Inventory", "", OpenWindow<WindowInventory>));
+        AddButtonBind(KeyCode.O, new InputSettings("Open Options", "", OpenWindow<WindowOptions>));
 
         // AddButtonBind(KeyCode.Z, () => WindowManager.Instance.ToggleWindow(WindowSkill.Instance));
         // AddButtonBind(KeyCode.C, () => WindowManager.Instance.ToggleWindow(WindowCharacter.Instance));

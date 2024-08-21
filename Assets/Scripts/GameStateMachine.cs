@@ -12,10 +12,18 @@ public abstract class GameState : State
         AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, 
             LoadSceneMode.Additive);
 
+        GameManager.Instance.loadingArt.transform.SetAsLastSibling();
+        GameManager.Instance.loadingArt.SetActive(true);
+        LoadingScreen loadingScreen = GameManager.Instance.loadingArt.GetComponent<LoadingScreen>();
+        loadingScreen.SetProgress(0);
+
         while (!asyncOperation.isDone)
         {
+            loadingScreen.SetProgress(asyncOperation.progress);
             yield return null;
         }
+
+        GameManager.Instance.loadingArt.SetActive(false);
     }
 }
 
