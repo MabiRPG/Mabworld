@@ -80,6 +80,14 @@ public class Player : Actor, IInputHandler
         inventoryManager.AddItem(1, 100);
     }
 
+    private void OnEnable()
+    {
+    }
+
+    private void OnDisable()
+    {
+    }
+
     public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
         if (Input.GetMouseButton(0) || Input.GetMouseButtonDown(0))

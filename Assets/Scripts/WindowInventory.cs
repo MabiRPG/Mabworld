@@ -171,7 +171,7 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     private void Start()
     {
         // Hides the object at start
-        gameObject.SetActive(false);
+        // gameObject.SetActive(false);
     }
 
     /// <summary>

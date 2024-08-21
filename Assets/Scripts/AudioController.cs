@@ -32,12 +32,12 @@ public class AudioController : MonoBehaviour
 
     private void OnEnable()
     {
-        Player.Instance.trainingEvent += PlayResultSFX;
+        // Player.Instance.trainingEvent += PlayResultSFX;
     }
 
     private void OnDisable()
     {
-        Player.Instance.trainingEvent -= PlayResultSFX;
+        // Player.Instance.trainingEvent -= PlayResultSFX;
     }
 
     private void PlayResultSFX<T>(T resultHandler) where T : ResultHandler

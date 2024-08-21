@@ -37,24 +37,24 @@ public class GameManager : MonoBehaviour
     
     [Header("Window Prefabs")]
     public Canvas canvas;
-    [SerializeField]
-    private GameObject windowSkillPrefab;
-    [SerializeField]
-    private GameObject windowCharacterPrefab;
-    [SerializeField]
-    private GameObject windowInventoryPrefab;
-    [SerializeField]
-    private GameObject windowCraftingPrefab;
+    // [SerializeField]
+    // private GameObject windowSkillPrefab;
+    // [SerializeField]
+    // private GameObject windowCharacterPrefab;
+    // [SerializeField]
+    // private GameObject windowInventoryPrefab;
+    // [SerializeField]
+    // private GameObject windowCraftingPrefab;
 
     // Cache of database results.
     private Dictionary<string, DataTable> cache = new Dictionary<string, DataTable>();
     // Loot system
     public LootGenerator lootGenerator = new LootGenerator();
+
     public GraphicRaycaster raycaster;
-    [HideInInspector]
-    public bool isCanvasEmptyUnderMouse;
-    [HideInInspector]
-    public bool isSceneEmptyUnderMouse;
+
+    public GameObject mainMenu;
+    public GameStateMachine gameStateMachine;
 
     /// <summary>
     ///     Initializes the object.
@@ -78,6 +78,7 @@ public class GameManager : MonoBehaviour
         audioController = GetComponent<AudioController>();
         windowManager = GetComponent<WindowManager>();
         raycaster = canvas.GetComponent<GraphicRaycaster>();
+        mainMenu = canvas.GetComponentInChildren<MainMenu>(true).gameObject;
     }
 
     /// <summary>
@@ -85,30 +86,12 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        Instantiate(windowSkillPrefab, canvas.transform);
-        Instantiate(windowCharacterPrefab, canvas.transform);
-        Instantiate(windowInventoryPrefab, canvas.transform);
-        Instantiate(windowCraftingPrefab, canvas.transform);
-    }
-
-    /// <summary>
-    ///     Called on every frame.
-    /// </summary>
-    private void Update()
-    {
-        // isCanvasEmptyUnderMouse = CanvasEmptyAt(Input.mousePosition);
-        // isSceneEmptyUnderMouse = SceneEmptyAt(Input.mousePosition);
-
-        // Stores all the results of our raycasts
-        List<RaycastResult> hits = new List<RaycastResult>();
-        // Create a new pointer data for our raycast manipulation
-        PointerEventData pointerData = new PointerEventData(GetComponent<EventSystem>());
-        pointerData.position = Input.mousePosition;
-        raycaster.Raycast(pointerData, hits);
-
-        if (Input.GetMouseButtonDown(0))
-        {
-        }
+        // Instantiate(windowSkillPrefab, canvas.transform);
+        // Instantiate(windowCharacterPrefab, canvas.transform);
+        // Instantiate(windowInventoryPrefab, canvas.transform);
+        // Instantiate(windowCraftingPrefab, canvas.transform);
+        gameStateMachine = gameObject.AddComponent<GameStateMachine>();
+        gameStateMachine.SetState(new MenuState(gameStateMachine, "Base"));
     }
 
     /// <summary>
@@ -331,57 +314,5 @@ public class GameManager : MonoBehaviour
         }
 
         return camelCase.ToString();
-    }
-
-    /// <summary>
-    ///     Checks if the canvas is empty at the screen position.
-    /// </summary>
-    /// <param name="position"></param>
-    /// <returns>True if empty, False otherwise</returns>
-    private bool CanvasEmptyAt(Vector2 position)
-    {
-        // Stores all the results of our raycasts
-        List<RaycastResult> hits = new List<RaycastResult>();
-        // Create a new pointer data for our raycast manipulation
-        PointerEventData pointerData = new PointerEventData(GetComponent<EventSystem>())
-        {
-            position = position
-        };
-
-        raycaster.Raycast(pointerData, hits);
-
-        if (hits.Count > 0)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    /// <summary>
-    ///     Checks if the scene is empty at the screen position.
-    /// </summary>
-    /// <param name="position"></param>
-    /// <returns>True if empty, False otherwise</returns>
-    private bool SceneEmptyAt(Vector2 position)
-    {
-        Ray ray = Camera.main.ScreenPointToRay(position);
-        RaycastHit2D hits = Physics2D.GetRayIntersection(ray);
-
-        if (hits.transform != null)
-        {
-            return false;
-        }
-
-        return true; 
-    }
-
-    /// <summary>
-    ///     Checks if both canvas and scene are empty under the mouse position.
-    /// </summary>
-    /// <returns>True if both empty, False otherwise</returns>
-    public bool EmptyAt()
-    {
-        return isCanvasEmptyUnderMouse && isSceneEmptyUnderMouse;
     }
 }

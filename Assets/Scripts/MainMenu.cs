@@ -59,7 +59,8 @@ public class MainMenu : MonoBehaviour
 
     private void StartGame()
     {
-        StartCoroutine(LoadScene("Test Map"));
+        GameManager.Instance.gameStateMachine.SetState(
+            new PlayState(GameManager.Instance.gameStateMachine, "Test Map"));
     }
 
     private void SaveGame()
@@ -81,22 +82,5 @@ public class MainMenu : MonoBehaviour
     private void QuitGame()
     {
         Application.Quit();
-    }
-
-    private IEnumerator LoadScene(string sceneName)
-    {
-        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName);
-        asyncOperation.allowSceneActivation = false;
-
-        while (!asyncOperation.isDone)
-        {
-            Debug.Log($"{asyncOperation.progress * 100}");
-            yield return null;
-
-            if (asyncOperation.progress >= 0.9f)
-            {
-                asyncOperation.allowSceneActivation = true;
-            }
-        }
     }
 }

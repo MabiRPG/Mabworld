@@ -122,7 +122,7 @@ public class WindowCharacter : Window
     {
         Draw();
         // Hides the object at start
-        gameObject.SetActive(false);
+        // gameObject.SetActive(false);
     }
 
     /// <summary>

@@ -4,6 +4,20 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
+public class InputSettings
+{
+    public readonly Action action;
+    public readonly string name;
+    public readonly string description;
+
+    public InputSettings(string name, string description, Action action)
+    {
+        this.name = name;
+        this.description = description;
+        this.action = action;
+    }
+}
+
 /// <summary>
 ///     Handles the input control scheme for the player, aside from movement.
 /// </summary>
@@ -12,7 +26,7 @@ public class InputController : MonoBehaviour
     // Global instance of InputController
     public static InputController Instance { get; private set; }
     // Dictionary of all button key binds
-    public Dictionary<KeyCode, Action> buttonKeybinds = new Dictionary<KeyCode, Action>();
+    private Dictionary<KeyCode, InputSettings> buttonKeybinds = new Dictionary<KeyCode, InputSettings>();
 
     private List<RaycastResult> graphicHits;
     private RaycastHit2D sceneHits;
@@ -43,39 +57,14 @@ public class InputController : MonoBehaviour
         prevMousePosition = Input.mousePosition;
     }
 
-    /// <summary>
-    ///     Adds a new button and corresponding action to controller.
-    /// </summary>
-    /// <param name="key">KeyCode of button</param>
-    /// <param name="action">Action to trigger when pressed</param>
-    /// <param name="forceReplace">True to replace existing keybind, False otherwise</param>
-    public void AddButtonBind(KeyCode key, Action action, bool forceReplace = true)
+    public void AddButtonBind(KeyCode key, InputSettings settings)
     {
-        Add(key, action, forceReplace, buttonKeybinds);
-    }
-
-    /// <summary>
-    ///     Adds a new button and action to the input dictionary.
-    /// </summary>
-    /// <param name="key">KeyCode of button</param>
-    /// <param name="action">Action to trigger when pressed</param>
-    /// <param name="forceReplace">True to replace existing keybind, False otherwise</param>
-    /// <param name="dict">Dictionary of input keys and actions</param>
-    private void Add(KeyCode key, Action action, bool forceReplace, Dictionary<KeyCode, Action> dict)
-    {
-        if (dict.ContainsKey(key))
+        if (buttonKeybinds.ContainsKey(key))
         {
-            Debug.Log(string.Format("Identical keybind found for {0}", key));
-
-            if (!forceReplace)
-            {
-                return;
-            }
-
-            Debug.Log("Replacing old keybind with new.");
+            buttonKeybinds.Remove(key);
         }
 
-        dict[key] = action;
+        buttonKeybinds.Add(key, settings);
     }
 
     /// <summary>
@@ -172,15 +161,16 @@ public class InputController : MonoBehaviour
             }
             else
             {
-                SceneManager.LoadSceneAsync("Main Menu");
+                // SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+                // SceneManager.LoadSceneAsync("Main Menu", LoadSceneMode.Additive);
             }
         }
         
-        foreach (KeyValuePair<KeyCode, Action> pair in buttonKeybinds)
+        foreach (KeyValuePair<KeyCode, InputSettings> pair in buttonKeybinds)
         {
             if (Input.GetKeyDown(pair.Key))
             {
-                pair.Value.Invoke();
+                pair.Value.action?.Invoke();
                 break;
             }
         }
@@ -209,9 +199,24 @@ public class InputController : MonoBehaviour
     /// </summary>
     public void Reset()
     {
-        AddButtonBind(KeyCode.Z, () => WindowManager.Instance.ToggleWindow(WindowSkill.Instance));
-        AddButtonBind(KeyCode.C, () => WindowManager.Instance.ToggleWindow(WindowCharacter.Instance));
-        AddButtonBind(KeyCode.I, () => WindowManager.Instance.ToggleWindow(WindowInventory.Instance));
-        AddButtonBind(KeyCode.M, () => Player.Instance.ToggleMap());
+        AddButtonBind(KeyCode.Z, new InputSettings("Open Skills", "", OpenWindow<WindowSkill>));
+        AddButtonBind(KeyCode.C, new InputSettings("Open Character", "", OpenWindow<WindowCharacter>));
+        AddButtonBind(KeyCode.I, new InputSettings("Open Inventory", "", OpenWindow<WindowInventory>));
+
+        // AddButtonBind(KeyCode.Z, () => WindowManager.Instance.ToggleWindow(WindowSkill.Instance));
+        // AddButtonBind(KeyCode.C, () => WindowManager.Instance.ToggleWindow(WindowCharacter.Instance));
+        // AddButtonBind(KeyCode.I, () => WindowManager.Instance.ToggleWindow(WindowInventory.Instance));
+        // AddButtonBind(KeyCode.M, () => Player.Instance.ToggleMap());
+    }
+
+    private void OpenWindow<T>() where T : Window
+    {
+        if (typeof(T).GetField("Instance").GetValue(null) == null)
+        {
+            T window = GameManager.Instance.canvas.GetComponentInChildren<T>(true);
+            window.gameObject.SetActive(true);
+        }
+
+        WindowManager.Instance.ToggleWindow((Window)typeof(T).GetField("Instance").GetValue(null));
     }
 }

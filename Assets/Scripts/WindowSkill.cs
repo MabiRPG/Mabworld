@@ -55,7 +55,7 @@ public class WindowSkill : Window
         //Draw();
         categoryIndex.Value = 1;
         // Hides the object at start
-        gameObject.SetActive(false);
+        // gameObject.SetActive(false);
     }
 
     public void CreateDetailedWindow(Skill skill)

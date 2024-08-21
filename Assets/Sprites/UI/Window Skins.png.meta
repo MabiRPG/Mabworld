@@ -134,8 +134,8 @@ TextureImporter:
       name: Button
       rect:
         serializedVersion: 2
-        x: 8
-        y: 30
+        x: 7
+        y: 31
         width: 65
         height: 42
       alignment: 0
@@ -155,8 +155,8 @@ TextureImporter:
       name: Outline
       rect:
         serializedVersion: 2
-        x: 80
-        y: 30
+        x: 79
+        y: 31
         width: 65
         height: 42
       alignment: 0
@@ -176,8 +176,8 @@ TextureImporter:
       name: Minimize
       rect:
         serializedVersion: 2
-        x: 112
-        y: 177
+        x: 111
+        y: 178
         width: 15
         height: 15
       alignment: 0
@@ -197,8 +197,8 @@ TextureImporter:
       name: Close
       rect:
         serializedVersion: 2
-        x: 129
-        y: 177
+        x: 128
+        y: 178
         width: 15
         height: 15
       alignment: 0
@@ -218,8 +218,8 @@ TextureImporter:
       name: Maximize
       rect:
         serializedVersion: 2
-        x: 112
-        y: 160
+        x: 111
+        y: 161
         width: 15
         height: 15
       alignment: 0
@@ -239,8 +239,8 @@ TextureImporter:
       name: Pause
       rect:
         serializedVersion: 2
-        x: 129
-        y: 160
+        x: 128
+        y: 161
         width: 15
         height: 15
       alignment: 0
@@ -260,8 +260,8 @@ TextureImporter:
       name: UpArrow
       rect:
         serializedVersion: 2
-        x: 112
-        y: 143
+        x: 111
+        y: 144
         width: 15
         height: 15
       alignment: 0
@@ -281,8 +281,8 @@ TextureImporter:
       name: RightArrow
       rect:
         serializedVersion: 2
-        x: 129
-        y: 143
+        x: 128
+        y: 144
         width: 15
         height: 15
       alignment: 0
@@ -302,8 +302,8 @@ TextureImporter:
       name: LeftArrow
       rect:
         serializedVersion: 2
-        x: 112
-        y: 126
+        x: 111
+        y: 127
         width: 15
         height: 15
       alignment: 0
@@ -323,8 +323,8 @@ TextureImporter:
       name: DownArrow
       rect:
         serializedVersion: 2
-        x: 129
-        y: 126
+        x: 128
+        y: 127
         width: 15
         height: 15
       alignment: 0

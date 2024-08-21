@@ -37,7 +37,7 @@ public class WindowCrafting : Window
     private void Start()
     {
         detailForm.gameObject.SetActive(false);
-        gameObject.SetActive(false);
+        // gameObject.SetActive(false);
     }
 
     public void Init(List<Skill> skills, Dictionary<int, List<CraftingRecipe>> recipes)
