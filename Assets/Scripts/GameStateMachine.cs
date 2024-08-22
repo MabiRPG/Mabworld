@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,20 +8,42 @@ public abstract class GameState : State
     protected GameStateMachine machine;
     protected string sceneName;
 
-    protected IEnumerator LoadScene()
+    protected IEnumerator UnloadLevel()
     {
-        WindowManager.Instance.CloseAllWindows();
-        GameManager.Instance.minimap.gameObject.SetActive(false);
-        InputController.Instance.SetBlockMouse(true);
-        InputController.Instance.SetBlockKeyboard(true);
+        if (!GameManager.Instance.levelScene.isLoaded)
+        {
+            yield break;
+        }
 
-        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, 
-            LoadSceneMode.Additive);
+        PrepareTransition();
+        AsyncOperation asyncOperation = SceneManager.UnloadSceneAsync(GameManager.Instance.levelScene);
+
+        while (!asyncOperation.isDone)
+        {
+            yield return null;
+        }
+
+        GameManager.Instance.levelScene = default;
+        GameManager.Instance.baseCamera.SetActive(true);
+        GameManager.Instance.canvas.worldCamera = Camera.main;
+    }
+
+    protected IEnumerator LoadLevel()
+    {
+        if (GameManager.Instance.levelScene != default)
+        {
+            yield break;
+        }
+
+        PrepareTransition();
 
         GameManager.Instance.loadingArt.transform.SetAsLastSibling();
         GameManager.Instance.loadingArt.SetActive(true);
         LoadingScreen loadingScreen = GameManager.Instance.loadingArt.GetComponent<LoadingScreen>();
         loadingScreen.SetProgress(0);
+
+        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, 
+            LoadSceneMode.Additive);
 
         while (!asyncOperation.isDone)
         {
@@ -29,6 +52,17 @@ public abstract class GameState : State
         }
 
         GameManager.Instance.loadingArt.SetActive(false);
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+
+        GameManager.Instance.baseCamera.SetActive(false);
+        GameManager.Instance.canvas.worldCamera = Camera.main;
+        GameManager.Instance.minimap.gameObject.SetActive(true);
+    }
+
+    private void PrepareTransition()
+    {
+        WindowManager.Instance.CloseAllWindows();
+        GameManager.Instance.minimap.gameObject.SetActive(false);
     }
 }
 
@@ -48,11 +82,8 @@ public class MenuState : GameState
 
     public override IEnumerator Main()
     {
-        if (SceneManager.GetActiveScene().name != sceneName)
-        {
-            yield return LoadScene();
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
-        }
+        yield return UnloadLevel();
+        GameManager.Instance.baseScene = SceneManager.GetActiveScene();
     }
 
     public override void OnExit()
@@ -77,17 +108,9 @@ public class PlayState : GameState
 
     public override IEnumerator Main()
     {
-        if (SceneManager.GetActiveScene().name != sceneName)
-        {
-            yield return LoadScene();
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
-        }
-
-        InputController.Instance.SetBlockMouse(false);
-        InputController.Instance.SetBlockKeyboard(false);
-        Camera.main.gameObject.SetActive(false);
-        GameManager.Instance.canvas.worldCamera = Camera.main;
-        GameManager.Instance.minimap.gameObject.SetActive(true);
+        yield return UnloadLevel();
+        yield return LoadLevel();
+        GameManager.Instance.levelScene = SceneManager.GetActiveScene();
     }
 
     public override void OnExit()

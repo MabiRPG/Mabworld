@@ -81,6 +81,11 @@ public class InputController : MonoBehaviour
     /// </summary>
     private void Update()
     {
+        if (GameManager.Instance.gameStateMachine.State is not PlayState)
+        {
+            return;
+        }
+
         graphicHits = GraphicsRaycast(Input.mousePosition);
         sceneHits = SceneRaycast(Input.mousePosition);
 
@@ -141,7 +146,7 @@ public class InputController : MonoBehaviour
             PassMouseInput(sceneHits.transform.gameObject, graphicHits, sceneHits);
         }
         // Otherwise, default to moving the player
-        else
+        else if (Player.Instance != null)
         {
             Player.Instance.HandleMouseInput(graphicHits, sceneHits);
         }
@@ -161,8 +166,8 @@ public class InputController : MonoBehaviour
             }
             else
             {
-                // SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
-                // SceneManager.LoadSceneAsync("Main Menu", LoadSceneMode.Additive);
+                GameManager.Instance.gameStateMachine.SetState(
+                    new MenuState(GameManager.Instance.gameStateMachine, "Base"));
             }
         }
         

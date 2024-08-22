@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Globalization;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 ///     This class handles all game-wide processing. Refer to Game.instance for the 
@@ -43,6 +44,10 @@ public class GameManager : MonoBehaviour
 
     public GraphicRaycaster raycaster;
 
+    public Scene baseScene;
+    public GameObject baseCamera;
+    public Scene levelScene;
+
     public Minimap minimap;
     public GameObject mainMenu;
     public GameObject loadingArt;
@@ -70,6 +75,7 @@ public class GameManager : MonoBehaviour
         audioController = GetComponent<AudioController>();
         windowManager = GetComponent<WindowManager>();
 
+        baseCamera = Camera.main.gameObject;
         raycaster = canvas.GetComponent<GraphicRaycaster>();
         minimap = canvas.GetComponentInChildren<Minimap>(true);
         mainMenu = canvas.GetComponentInChildren<MainMenu>(true).gameObject;
