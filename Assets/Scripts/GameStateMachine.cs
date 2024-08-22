@@ -84,7 +84,8 @@ public class PlayState : GameState
         InputController.Instance.SetBlockMouse(false);
         InputController.Instance.SetBlockKeyboard(false);
         Camera.main.gameObject.SetActive(false);
-        GameManager.Instance.canvas.worldCamera = Camera.main;        
+        GameManager.Instance.canvas.worldCamera = Camera.main;
+        GameManager.Instance.minimap.SetActive(true);
     }
 
     public override void OnExit()

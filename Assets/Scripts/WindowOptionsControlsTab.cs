@@ -23,6 +23,6 @@ public class WindowOptionsControlsTab : MonoBehaviour
             script.SetKey(pair.Key, pair.Value);
         }
 
-        // LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)gameObject.transform);
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)gameObject.transform);
     }
 }

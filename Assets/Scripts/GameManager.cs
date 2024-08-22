@@ -52,6 +52,7 @@ public class GameManager : MonoBehaviour
 
     public GraphicRaycaster raycaster;
 
+    public GameObject minimap;
     public GameObject mainMenu;
     public GameObject loadingArt;
     public GameStateMachine gameStateMachine;
@@ -78,6 +79,7 @@ public class GameManager : MonoBehaviour
         audioController = GetComponent<AudioController>();
         windowManager = GetComponent<WindowManager>();
         raycaster = canvas.GetComponent<GraphicRaycaster>();
+        minimap = canvas.GetComponentInChildren<Minimap>(true).gameObject;
         mainMenu = canvas.GetComponentInChildren<MainMenu>(true).gameObject;
         loadingArt = canvas.GetComponentInChildren<LoadingScreen>(true).gameObject;
     }

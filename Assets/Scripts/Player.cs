@@ -33,7 +33,6 @@ public class Player : Actor, IInputHandler
 
     public PlayerController controller;
 
-    public GameObject map;
     public event Action<MapResourceResultHandler> trainingEvent;
 
     /// <summary>
@@ -80,14 +79,6 @@ public class Player : Actor, IInputHandler
         inventoryManager.AddItem(1, 100);
     }
 
-    private void OnEnable()
-    {
-    }
-
-    private void OnDisable()
-    {
-    }
-
     public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
         if (Input.GetMouseButton(0) || Input.GetMouseButtonDown(0))
@@ -121,14 +112,6 @@ public class Player : Actor, IInputHandler
                 controller.movementMachine.Reset();
             }
         }
-    }
-
-    /// <summary>
-    ///     Toggles the minimap.
-    /// </summary>
-    public void ToggleMap()
-    {
-        map.SetActive(!map.activeSelf);
     }
 
     /// <summary>
