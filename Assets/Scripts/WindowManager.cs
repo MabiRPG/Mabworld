@@ -90,6 +90,17 @@ public class WindowManager : MonoBehaviour, IInputHandler
         return lastWindow;
     }
 
+    public void CloseAllWindows()
+    {
+        Window openWindow = FindNextOpenWindow();
+
+        while (openWindow != null)
+        {
+            openWindow.HideWindow();
+            openWindow = FindNextOpenWindow();
+        }
+    }
+
     public bool MouseHovering()
     {
         return !Input.GetMouseButtonDown(0) && !Input.GetMouseButton(0) && !Input.GetMouseButtonUp(0);

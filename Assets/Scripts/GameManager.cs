@@ -36,15 +36,6 @@ public class GameManager : MonoBehaviour
     
     [Header("Window Prefabs")]
     public Canvas canvas;
-    // [SerializeField]
-    // private GameObject windowSkillPrefab;
-    // [SerializeField]
-    // private GameObject windowCharacterPrefab;
-    // [SerializeField]
-    // private GameObject windowInventoryPrefab;
-    // [SerializeField]
-    // private GameObject windowCraftingPrefab;
-
     // Cache of database results.
     private Dictionary<string, DataTable> cache = new Dictionary<string, DataTable>();
     // Loot system
@@ -52,7 +43,7 @@ public class GameManager : MonoBehaviour
 
     public GraphicRaycaster raycaster;
 
-    public GameObject minimap;
+    public Minimap minimap;
     public GameObject mainMenu;
     public GameObject loadingArt;
     public GameStateMachine gameStateMachine;
@@ -78,8 +69,9 @@ public class GameManager : MonoBehaviour
         lightController = GetComponent<LightController>();
         audioController = GetComponent<AudioController>();
         windowManager = GetComponent<WindowManager>();
+
         raycaster = canvas.GetComponent<GraphicRaycaster>();
-        minimap = canvas.GetComponentInChildren<Minimap>(true).gameObject;
+        minimap = canvas.GetComponentInChildren<Minimap>(true);
         mainMenu = canvas.GetComponentInChildren<MainMenu>(true).gameObject;
         loadingArt = canvas.GetComponentInChildren<LoadingScreen>(true).gameObject;
     }

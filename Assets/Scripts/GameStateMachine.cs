@@ -9,6 +9,11 @@ public abstract class GameState : State
 
     protected IEnumerator LoadScene()
     {
+        WindowManager.Instance.CloseAllWindows();
+        GameManager.Instance.minimap.gameObject.SetActive(false);
+        InputController.Instance.SetBlockMouse(true);
+        InputController.Instance.SetBlockKeyboard(true);
+
         AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, 
             LoadSceneMode.Additive);
 
@@ -48,9 +53,6 @@ public class MenuState : GameState
             yield return LoadScene();
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
         }
-
-        InputController.Instance.SetBlockMouse(true);
-        InputController.Instance.SetBlockKeyboard(true);
     }
 
     public override void OnExit()
@@ -85,7 +87,7 @@ public class PlayState : GameState
         InputController.Instance.SetBlockKeyboard(false);
         Camera.main.gameObject.SetActive(false);
         GameManager.Instance.canvas.worldCamera = Camera.main;
-        GameManager.Instance.minimap.SetActive(true);
+        GameManager.Instance.minimap.gameObject.SetActive(true);
     }
 
     public override void OnExit()

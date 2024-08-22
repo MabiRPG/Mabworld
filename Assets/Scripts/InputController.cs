@@ -203,12 +203,7 @@ public class InputController : MonoBehaviour
         AddButtonBind(KeyCode.C, new InputSettings("Open Character", OpenWindow<WindowCharacter>, false));
         AddButtonBind(KeyCode.I, new InputSettings("Open Inventory", OpenWindow<WindowInventory>, false));
         AddButtonBind(KeyCode.O, new InputSettings("Open Options", OpenWindow<WindowOptions>, false));
-        AddButtonBind(KeyCode.M, new InputSettings("Open Minimap", () => GameManager.Instance.minimap.SetActive(!GameManager.Instance.minimap.activeSelf), false));
-
-        // AddButtonBind(KeyCode.Z, () => WindowManager.Instance.ToggleWindow(WindowSkill.Instance));
-        // AddButtonBind(KeyCode.C, () => WindowManager.Instance.ToggleWindow(WindowCharacter.Instance));
-        // AddButtonBind(KeyCode.I, () => WindowManager.Instance.ToggleWindow(WindowInventory.Instance));
-        // AddButtonBind(KeyCode.M, () => Player.Instance.ToggleMap());
+        AddButtonBind(KeyCode.M, new InputSettings("Open Minimap", () => GameManager.Instance.minimap.Toggle(), false));
     }
 
     private void OpenWindow<T>() where T : Window

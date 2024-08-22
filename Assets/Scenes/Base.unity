@@ -364,6 +364,23 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &231484364 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4572479484892075061, guid: 2b109b5424192cd4b86a409df24329f6, type: 3}
+  m_PrefabInstance: {fileID: 7580093307663926247}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &231484366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 231484364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85a9cf8db77c4fd4c91b7b1c5d91c8ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &259931981
 GameObject:
   m_ObjectHideFlags: 0
@@ -2225,6 +2242,7 @@ MonoBehaviour:
   skillBubblePrefab: {fileID: 8385094532266632610, guid: bd522f58a95bad143a834106220d9e05, type: 3}
   canvas: {fileID: 1845714305}
   raycaster: {fileID: 2102367923}
+  minimap: {fileID: 0}
   mainMenu: {fileID: 0}
   loadingArt: {fileID: 0}
   gameStateMachine: {fileID: 0}
@@ -2455,6 +2473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9333936423d90c0439dbaca24ad16524, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  globalAudio: {fileID: 0}
   levelUpSFX: {fileID: 8300000, guid: 6ac3131e3d868524283d1f7d206eab57, type: 3}
   emotionSuccessSFX: {fileID: 8300000, guid: 8389175cd84fe6b46b0fdbfdef37bb50, type: 3}
   emotionFailSFX: {fileID: 8300000, guid: 8c9e8137544f6bc4caf63083ccce5751, type: 3}
@@ -5915,7 +5934,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5305892476397757232, guid: 2b109b5424192cd4b86a409df24329f6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 80951510}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4572479484892075061, guid: 2b109b5424192cd4b86a409df24329f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 231484366}
   m_SourcePrefab: {fileID: 100100000, guid: 2b109b5424192cd4b86a409df24329f6, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
