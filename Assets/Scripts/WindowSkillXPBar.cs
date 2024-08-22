@@ -5,13 +5,13 @@ using UnityEngine.EventSystems;
 public class WindowSkillXPBar : MonoBehaviour, IInputHandler
 {
     private Skill skill;
-    private ProgressBar bar;
+    private UI_ProgressBar bar;
     [SerializeField]
     private bool overflowBar;
 
     private void Awake()
     {
-        bar = GetComponent<ProgressBar>();
+        bar = GetComponent<UI_ProgressBar>();
     }
 
     public void SetSkill(Skill skill)

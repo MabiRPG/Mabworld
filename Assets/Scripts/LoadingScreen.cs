@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class LoadingScreen : MonoBehaviour
 {
-    private ProgressBar progressBar;
+    private UI_ProgressBar progressBar;
     private TMP_Text percentageText;
 
 
     private void Awake()
     {
-        progressBar = GetComponentInChildren<ProgressBar>();
+        progressBar = GetComponentInChildren<UI_ProgressBar>();
         percentageText = GetComponentInChildren<TMP_Text>();
 
         progressBar.SetMaximum(100);

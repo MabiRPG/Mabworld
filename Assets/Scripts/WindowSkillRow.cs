@@ -19,9 +19,9 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     private TMP_Text cooldown;
     private TMP_Text rank;
     // private GameObject xpBar;
-    private ProgressBar xpBarScript;
+    private UI_ProgressBar xpBarScript;
     private GameObject overXpBar;
-    private ProgressBar overXpBarScript;
+    private UI_ProgressBar overXpBarScript;
     // private Button advanceButton;
 
     private WindowSkillRowIcon icon;
@@ -47,7 +47,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         // xpBar = transform.Find("XP Bar").gameObject;
         // xpBarScript = xpBar.GetComponent<ProgressBar>();
         overXpBar = transform.Find("Overfill XP Bar").gameObject;
-        overXpBarScript = overXpBar.GetComponent<ProgressBar>();
+        overXpBarScript = overXpBar.GetComponent<UI_ProgressBar>();
         // advanceButton = transform.Find("Advance Button").GetComponent<Button>(); 
 
         icon = GetComponentInChildren<WindowSkillRowIcon>();

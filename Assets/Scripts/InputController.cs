@@ -212,11 +212,11 @@ public class InputController : MonoBehaviour
 
     private void OpenWindow<T>() where T : Window
     {
-        if (typeof(T).GetField("Instance").GetValue(null) == null)
-        {
-            T window = GameManager.Instance.canvas.GetComponentInChildren<T>(true);
-            window.gameObject.SetActive(true);
-        }
+        // if (typeof(T).GetField("Instance").GetValue(null) == null)
+        // {
+        //     T window = GameManager.Instance.canvas.GetComponentInChildren<T>(true);
+        //     window.gameObject.SetActive(true);
+        // }
 
         WindowManager.Instance.ToggleWindow((Window)typeof(T).GetField("Instance").GetValue(null));
     }

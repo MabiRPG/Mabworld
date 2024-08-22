@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 [Serializable]
 [CreateAssetMenu(fileName = "NumberRangeValidator.asset", menuName = "TextMeshPro/Input Validators/Number Range", order = 100)]
-public class NumberRangeValidator : TMP_InputValidator
+public class UI_NumberRangeValidator : TMP_InputValidator
 {
     // Minimum and maximum range for our number input
     private float minimum = 1;

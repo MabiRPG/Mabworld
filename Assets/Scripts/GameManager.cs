@@ -81,6 +81,9 @@ public class GameManager : MonoBehaviour
         raycaster = canvas.GetComponent<GraphicRaycaster>();
         mainMenu = canvas.GetComponentInChildren<MainMenu>(true).gameObject;
         loadingArt = canvas.GetComponentInChildren<LoadingScreen>(true).gameObject;
+
+        WindowOptions windowOptions = canvas.GetComponentInChildren<WindowOptions>(true);
+        windowOptions.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -88,10 +91,9 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        // Instantiate(windowSkillPrefab, canvas.transform);
-        // Instantiate(windowCharacterPrefab, canvas.transform);
-        // Instantiate(windowInventoryPrefab, canvas.transform);
-        // Instantiate(windowCraftingPrefab, canvas.transform);
+        WindowOptions windowOptions = canvas.GetComponentInChildren<WindowOptions>(true);
+        windowOptions.gameObject.SetActive(false);
+
         gameStateMachine = gameObject.AddComponent<GameStateMachine>();
         gameStateMachine.SetState(new MenuState(gameStateMachine, "Base"));
     }

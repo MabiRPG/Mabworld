@@ -28,9 +28,9 @@ public class WindowSkillDetailed : Window
     private Transform statTransform;
     private Transform trainingMethodsTransform;
     private GameObject xpBar;
-    private ProgressBar xpBarScript;
+    private UI_ProgressBar xpBarScript;
     private GameObject overXpBar;
-    private ProgressBar overXpBarScript;
+    private UI_ProgressBar overXpBarScript;
     private Button advanceButton;
     private Button closeButtonBody;
 
@@ -49,9 +49,9 @@ public class WindowSkillDetailed : Window
         statTransform = body.transform.Find("Stats");
         trainingMethodsTransform = body.transform.Find("Training Methods");
         xpBar = body.transform.Find("Bars Parent/Bars/XP Bar").gameObject;
-        xpBarScript = xpBar.GetComponent<ProgressBar>();
+        xpBarScript = xpBar.GetComponent<UI_ProgressBar>();
         overXpBar = body.transform.Find("Bars Parent/Bars/Overfill XP Bar").gameObject;
-        overXpBarScript = overXpBar.GetComponent<ProgressBar>();
+        overXpBarScript = overXpBar.GetComponent<UI_ProgressBar>();
         advanceButton = body.transform.Find("Advance Parent/Advance Button").GetComponent<Button>();
         closeButtonBody = body.transform.Find("Close Button").GetComponent<Button>();
 

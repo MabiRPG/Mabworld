@@ -10,7 +10,7 @@ public class WindowCraftingDetailForm : MonoBehaviour
     private WindowItem productItem;
     private Transform ingredientParentTransform;
     private TMP_InputField quantityInput;
-    private NumberRangeValidator rangeValidator;
+    private UI_NumberRangeValidator rangeValidator;
     private Button craftButton;
 
     [SerializeField]
@@ -26,7 +26,7 @@ public class WindowCraftingDetailForm : MonoBehaviour
         productItem = transform.Find("Item Image Boxes/Product Item").GetComponent<WindowItem>();
         ingredientParentTransform = transform.Find("Item Image Boxes/Ingredient Parent");
         quantityInput = transform.Find("Production Form/Quantity Input Field").GetComponent<TMP_InputField>();
-        rangeValidator = (NumberRangeValidator)quantityInput.inputValidator;
+        rangeValidator = (UI_NumberRangeValidator)quantityInput.inputValidator;
         craftButton = transform.Find("Production Form/Craft Button").GetComponent<Button>();
 
         ingredientPrefabs = ScriptableObject.CreateInstance<PrefabFactory>();

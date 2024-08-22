@@ -14,7 +14,7 @@ public class WindowInventorySplitStack : Window
     private IntManager quantity = new IntManager(1);
     
     private TMP_InputField quantityInput;
-    private NumberRangeValidator rangeValidator;
+    private UI_NumberRangeValidator rangeValidator;
     private TMP_Text maxQuantityText;
 
     private Button decreaseButton;
@@ -33,7 +33,7 @@ public class WindowInventorySplitStack : Window
         base.Awake();
 
         quantityInput = body.transform.Find("Quantity Parent/Quantity Input").GetComponent<TMP_InputField>();
-        rangeValidator = (NumberRangeValidator)quantityInput.inputValidator;
+        rangeValidator = (UI_NumberRangeValidator)quantityInput.inputValidator;
         maxQuantityText = body.transform.Find("Quantity Parent/Max Quantity Text").GetComponent<TMP_Text>();
         decreaseButton = body.transform.Find("Slider/Decrease Button").GetComponent<Button>();
         slider = body.transform.Find("Slider").GetComponent<Slider>();

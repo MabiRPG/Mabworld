@@ -17,9 +17,9 @@ public class WindowCharacter : Window
     private TMP_Text actorLevelText;
     private TMP_Text actorAPText;
 
-    private ProgressBar actorHPBar;
-    private ProgressBar actorMPBar;
-    private ProgressBar actorXPBar;
+    private UI_ProgressBar actorHPBar;
+    private UI_ProgressBar actorMPBar;
+    private UI_ProgressBar actorXPBar;
 
     // private TMP_Text actorDamageText;
     // private TMP_Text actorInjuryText;
@@ -69,9 +69,9 @@ public class WindowCharacter : Window
         actorLuckText = dict["luck"];
 
         // HP and MP
-        actorHPBar = body.transform.Find("Basic Info (L)/Bars Parent/HP Bar Parent/HP Bar").GetComponent<ProgressBar>();
-        actorMPBar = body.transform.Find("Basic Info (L)/Bars Parent/MP Bar Parent/MP Bar").GetComponent<ProgressBar>();
-        actorXPBar = body.transform.Find("Basic Info (L)/Bars Parent/XP Bar Parent/XP Bar").GetComponent<ProgressBar>();
+        actorHPBar = body.transform.Find("Basic Info (L)/Bars Parent/HP Bar Parent/HP Bar").GetComponent<UI_ProgressBar>();
+        actorMPBar = body.transform.Find("Basic Info (L)/Bars Parent/MP Bar Parent/MP Bar").GetComponent<UI_ProgressBar>();
+        actorXPBar = body.transform.Find("Basic Info (L)/Bars Parent/XP Bar Parent/XP Bar").GetComponent<UI_ProgressBar>();
 
         equipmentSlots = body.transform.Find("Equipment Slots").gameObject;
         //dict = CreateComponentMap(equipmentSlots.transform);
