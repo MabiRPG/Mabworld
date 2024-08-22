@@ -8,7 +8,6 @@ using System.Reflection;
 using System.Text;
 using System.Globalization;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 /// <summary>
 ///     This class handles all game-wide processing. Refer to Game.instance for the 
@@ -90,7 +89,7 @@ public class GameManager : MonoBehaviour
     {
         WindowOptions windowOptions = canvas.GetComponentInChildren<WindowOptions>(true);
         windowOptions.gameObject.SetActive(true);
-        
+
         gameStateMachine = gameObject.AddComponent<GameStateMachine>();
         gameStateMachine.SetState(new MenuState(gameStateMachine, "Base"));
     }

@@ -3,7 +3,10 @@ using UnityEngine;
 public class AudioController : MonoBehaviour
 {
     public static AudioController Instance {get; private set;}
+
+    public AudioSource globalAudio;
     private AudioSource playerAudio;
+
     [Header("SFX")]
     [SerializeField]
     private AudioClip levelUpSFX;
@@ -22,12 +25,14 @@ public class AudioController : MonoBehaviour
         else
         {
             Destroy(gameObject);
-        }        
+        }
+
+        globalAudio = GetComponent<AudioSource>();
     }
 
     private void Start()
     {
-        playerAudio = Player.Instance.gameObject.GetComponent<AudioSource>();
+        // playerAudio = Player.Instance.gameObject.GetComponent<AudioSource>();
     }
 
     private void OnEnable()
