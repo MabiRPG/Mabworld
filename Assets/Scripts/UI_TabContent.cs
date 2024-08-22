@@ -23,7 +23,6 @@ public class UI_TabContent : MonoBehaviour
             gameObject.SetActive(false);
         }
 
-        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)controller.transform);
-        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)controller.transform.parent.transform);
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)gameObject.transform);
     }
 }

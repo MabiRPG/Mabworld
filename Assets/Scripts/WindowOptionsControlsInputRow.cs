@@ -14,7 +14,7 @@ public class WindowOptionsControlsInputRow : MonoBehaviour
     {
         description = transform.Find("Key Action Text").GetComponent<TMP_Text>();
         keyInputField1 = transform.Find("Key Input Field 1").GetComponent<TMP_InputField>();
-        keyInputField2 = transform.Find("Key Input Field 2").GetComponent<TMP_InputField>();
+        // keyInputField2 = transform.Find("Key Input Field 2").GetComponent<TMP_InputField>();
     }
 
     public void SetKey(KeyCode key, InputSettings settings)
@@ -23,5 +23,14 @@ public class WindowOptionsControlsInputRow : MonoBehaviour
         this.settings = settings;
         description.text = settings.name;
         keyInputField1.text = key.ToString();
+
+        if (!settings.canChangeKey)
+        {
+            keyInputField1.interactable = false;
+        }
+        else
+        {
+            keyInputField1.interactable = true;
+        }
     }
 }

@@ -81,9 +81,6 @@ public class GameManager : MonoBehaviour
         raycaster = canvas.GetComponent<GraphicRaycaster>();
         mainMenu = canvas.GetComponentInChildren<MainMenu>(true).gameObject;
         loadingArt = canvas.GetComponentInChildren<LoadingScreen>(true).gameObject;
-
-        WindowOptions windowOptions = canvas.GetComponentInChildren<WindowOptions>(true);
-        windowOptions.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -92,8 +89,8 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         WindowOptions windowOptions = canvas.GetComponentInChildren<WindowOptions>(true);
-        windowOptions.gameObject.SetActive(false);
-
+        windowOptions.gameObject.SetActive(true);
+        
         gameStateMachine = gameObject.AddComponent<GameStateMachine>();
         gameStateMachine.SetState(new MenuState(gameStateMachine, "Base"));
     }

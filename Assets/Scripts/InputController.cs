@@ -8,13 +8,13 @@ public class InputSettings
 {
     public readonly Action action;
     public readonly string name;
-    public readonly string description;
+    public readonly bool canChangeKey;
 
-    public InputSettings(string name, string description, Action action)
+    public InputSettings(string name, Action action, bool canChangeKey)
     {
         this.name = name;
-        this.description = description;
         this.action = action;
+        this.canChangeKey = canChangeKey;
     }
 }
 
@@ -199,10 +199,11 @@ public class InputController : MonoBehaviour
     /// </summary>
     public void Reset()
     {
-        AddButtonBind(KeyCode.Z, new InputSettings("Open Skills", "", OpenWindow<WindowSkill>));
-        AddButtonBind(KeyCode.C, new InputSettings("Open Character", "", OpenWindow<WindowCharacter>));
-        AddButtonBind(KeyCode.I, new InputSettings("Open Inventory", "", OpenWindow<WindowInventory>));
-        AddButtonBind(KeyCode.O, new InputSettings("Open Options", "", OpenWindow<WindowOptions>));
+        AddButtonBind(KeyCode.Z, new InputSettings("Open Skills", OpenWindow<WindowSkill>, false));
+        AddButtonBind(KeyCode.C, new InputSettings("Open Character", OpenWindow<WindowCharacter>, false));
+        AddButtonBind(KeyCode.I, new InputSettings("Open Inventory", OpenWindow<WindowInventory>, false));
+        AddButtonBind(KeyCode.O, new InputSettings("Open Options", OpenWindow<WindowOptions>, false));
+        AddButtonBind(KeyCode.M, new InputSettings("Open Minimap", () => Player.Instance.ToggleMap(), false));
 
         // AddButtonBind(KeyCode.Z, () => WindowManager.Instance.ToggleWindow(WindowSkill.Instance));
         // AddButtonBind(KeyCode.C, () => WindowManager.Instance.ToggleWindow(WindowCharacter.Instance));
@@ -212,11 +213,11 @@ public class InputController : MonoBehaviour
 
     private void OpenWindow<T>() where T : Window
     {
-        // if (typeof(T).GetField("Instance").GetValue(null) == null)
-        // {
-        //     T window = GameManager.Instance.canvas.GetComponentInChildren<T>(true);
-        //     window.gameObject.SetActive(true);
-        // }
+        if (typeof(T).GetField("Instance").GetValue(null) == null)
+        {
+            T window = GameManager.Instance.canvas.GetComponentInChildren<T>(true);
+            window.gameObject.SetActive(true);
+        }
 
         WindowManager.Instance.ToggleWindow((Window)typeof(T).GetField("Instance").GetValue(null));
     }

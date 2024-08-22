@@ -18,4 +18,9 @@ public class WindowOptions : Window
             Destroy(gameObject);
         }
     }
+
+    private void Start()
+    {
+        gameObject.SetActive(false);
+    }
 }

@@ -22,5 +22,7 @@ public class WindowOptionsControlsTab : MonoBehaviour
             WindowOptionsControlsInputRow script = obj.GetComponent<WindowOptionsControlsInputRow>();
             script.SetKey(pair.Key, pair.Value);
         }
+
+        // LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)gameObject.transform);
     }
 }
