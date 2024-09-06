@@ -20,6 +20,8 @@ public class UI_DialogueBox : MonoBehaviour
     private TMP_Text npc2Name;
     private TMP_Text mainText;
 
+    private string overflowText;
+
     private const string dialogueQuery = @"SELECT * FROM quest_dialogue WHERE id = @id
         AND quest_id = @questID LIMIT 1;";
     private const string npcQuery = @"SELECT * FROM npc WHERE id = @id LIMIT 1;";
@@ -44,10 +46,16 @@ public class UI_DialogueBox : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            if (nextID != default)
+            if (overflowText != null)
+            {
+                mainText.text = overflowText;
+            }
+            else if (nextID != default)
             {
                 Load(nextID, questID);
             }
+
+            CheckTextOverflow();
         }
     }
 
@@ -76,5 +84,19 @@ public class UI_DialogueBox : MonoBehaviour
         }
 
         mainText.text = text;
+        mainText.ForceMeshUpdate();
+    }
+
+    private void CheckTextOverflow()
+    {
+        if (mainText.isTextOverflowing)
+        {
+            mainText.text = text[..mainText.firstOverflowCharacterIndex];
+            overflowText = text[mainText.firstOverflowCharacterIndex..];
+        }
+        else
+        {
+            overflowText = null;
+        }
     }
 }
