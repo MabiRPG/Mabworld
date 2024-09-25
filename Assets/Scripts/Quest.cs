@@ -1,13 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 
-public enum QuestState
-{
-    Hidden,
-    Available,
-    InProgress,
-    Completed
-}
+// public enum QuestState
+// {
+//     Hidden,
+//     Available,
+//     InProgress,
+//     Completed
+// }
 
 public abstract class QuestRequirement
 {
@@ -31,9 +32,26 @@ public abstract class QuestTask
     public abstract bool IsCompleted();
 }
 
+public class QuestState
+{
+    public List<QuestTask> tasks = new List<QuestTask>();
+
+    public bool IsCompleted()
+    {
+        foreach (QuestTask task in tasks)
+        {
+            if (!task.IsCompleted())
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
 public abstract class QuestReward
 {
-    public abstract void SetListeners();
     public abstract void GiveReward();
 }
 
