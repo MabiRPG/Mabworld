@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class UI_DialogueBox : MonoBehaviour
 {
+    public static UI_DialogueBox Instance { get; private set; }
+
     public int ID;
     public int questID;
     public int npcID;
@@ -28,18 +30,23 @@ public class UI_DialogueBox : MonoBehaviour
 
     private void Awake()
     {
+        // Singleton recipe so only one instance is active at a time.
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         npc1Image = transform.Find("NPC 1 Image").GetComponent<Image>();
         npc2Image = transform.Find("NPC 2 Image").GetComponent<Image>();
         npc1Name = transform.Find("NPC 1 Image/Image").GetComponentInChildren<TMP_Text>();
         npc2Name = transform.Find("NPC 2 Image/Image").GetComponentInChildren<TMP_Text>();
         mainText = transform.Find("Text Box").GetComponent<TMP_Text>();
 
-        //gameObject.SetActive(false);
-    }
-
-    private void Start()
-    {
-        Load(1, 1);
+        gameObject.SetActive(false);
     }
 
     private void Update()
@@ -50,19 +57,28 @@ public class UI_DialogueBox : MonoBehaviour
             {
                 mainText.text = overflowText;
             }
-            else if (nextID != default)
+            else if (nextID != -1)
             {
-                Load(nextID, questID);
+                Load(nextID);
             }
-
-            CheckTextOverflow();
+            else
+            {
+                gameObject.SetActive(false);
+                return;
+            }
         }
     }
 
-    private void Load(int ID, int questID)
+    public void SetDialogue(int questID)
+    {
+        this.questID = questID;
+        gameObject.SetActive(true);
+        Load(1);
+    }
+
+    private void Load(int ID)
     {
         this.ID = ID;
-        this.questID = questID;
 
         DataTable dt = GameManager.Instance.QueryDatabase(dialogueQuery, 
             ("@id", ID), ("@questID", questID));

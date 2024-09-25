@@ -376,6 +376,7 @@ GameObject:
   - component: {fileID: 170587722}
   - component: {fileID: 170587721}
   - component: {fileID: 170587723}
+  - component: {fileID: 170587724}
   m_Layer: 5
   m_Name: Dialogue Box
   m_TagString: Untagged
@@ -461,6 +462,18 @@ MonoBehaviour:
   text: 
   nextID: 0
   icon: {fileID: 0}
+--- !u!225 &170587724
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 170587719}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &231484364 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4572479484892075061, guid: 2b109b5424192cd4b86a409df24329f6, type: 3}

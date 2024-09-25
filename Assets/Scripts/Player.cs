@@ -18,6 +18,8 @@ public class Player : Actor, IInputHandler
     public StatManager actorXP = new StatManager(0, 100, 100);
     // Inventory
     public InventoryManager inventoryManager = new InventoryManager();
+    // Quests
+    public Dictionary<int, Quest> quests = new Dictionary<int, Quest>();
 
     // How much our life skill success rates scale with dex.
     private int lifeSkillDexFactor = 10;
@@ -197,5 +199,23 @@ public class Player : Actor, IInputHandler
     public void MapResourceRaiseOnChange(MapResourceResultHandler sender)
     {
         trainingEvent(sender);
+    }
+
+    public bool IsQuestStarted(int ID)
+    {
+        if (quests.ContainsKey(ID))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public void AddQuest(int ID)
+    {
+        if (!IsQuestStarted(ID))
+        {
+            quests.Add(ID, new Quest(ID));
+        }
     }
 }
