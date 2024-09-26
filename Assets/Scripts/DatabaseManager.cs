@@ -8,6 +8,56 @@ using Mono.Data.Sqlite;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
+public class SkillModel
+{
+    // Primary key of skill
+    public int ID;
+    // Name of skill and category
+    public string name;
+    public int categoryID;
+    // Skill description, details, skill icon, and sound effect when using
+    public string description;
+    public string details;
+    public Sprite icon;
+    public AudioClip sfx;
+    public AnimationClip animationClip;
+    // Starting, first and last ranks that can be reached
+    public string startingRank;
+    public string firstAvailableRank;
+    public string lastAvailableRank;
+    // Base loading time, use time, and cooldown
+    public float baseLoadTime;
+    public float baseUseTime;
+    public float baseCooldown;
+    // Does player start with skill?
+    public bool isStartingWith;
+    // Learnable? and learn condition
+    public bool isLearnable;
+    public int learnConditionID;
+    // Passive or active
+    public bool isPassive;
+
+    // All ranks in string format
+    public static List<string> ranks = new List<string>
+        {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
+
+    public SkillModel(DatabaseManager database, DataRow row)
+    {
+        database.ParseDatabaseRow(row, this, ("id", "ID"), ("category_id", "categoryID"));
+    }
+}
+
+public class SkillCategoryModel
+{
+    public int ID;
+    public string name;
+
+    public SkillCategoryModel(DatabaseManager database, DataRow row)
+    {
+        database.ParseDatabaseRow(row, this, ("id", "ID"));
+    }
+}
+
 public class DatabaseManager
 {
     private string databaseName;
@@ -157,10 +207,10 @@ public class DatabaseManager
 
                     break;
                 case Type t when t == typeof(Sprite):
-                    value = GameManager.Instance.LoadAsset<Sprite>(s);
+                    value = LoadAsset<Sprite>(s);
                     break;
                 case Type t when t == typeof(AudioClip):
-                    value = GameManager.Instance.LoadAsset<AudioClip>(s);
+                    value = LoadAsset<AudioClip>(s);
                     break;
                 case Type t when t == typeof(IntManager):
                     value = new IntManager(int.Parse(s));
@@ -190,6 +240,18 @@ public class DatabaseManager
             // Sets the class field to the value.
             field.SetValue(model, value);
         }
+    }
+
+    /// <summary>
+    ///     Loads the asset through the addressable system.
+    /// </summary>
+    /// <typeparam name="T">Type of asset</typeparam>
+    /// <param name="key">Addressable key of asset</param>
+    /// <returns>Addressable asset to manipulate</returns>
+    public T LoadAsset<T>(string key)
+    {
+        T t = Addressables.LoadAssetAsync<T>(key).WaitForCompletion();
+        return t;
     }
 
     /// <summary>
