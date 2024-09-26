@@ -10,7 +10,8 @@ public class SimpleEditorWindow : EditorWindow
     private VisualElement rightPane;
 
     private List<SkillModel> skills;
-    private List<SkillCategoryModel> skillCategories;
+    private List<SkillTypeModel> skillTypes;
+    private List<SkillStatTypeModel> skillStatTypes;
 
     [SerializeField]
     private VisualTreeAsset m_VisualTreeAsset = default;
@@ -22,7 +23,7 @@ public class SimpleEditorWindow : EditorWindow
         wnd.titleContent = new GUIContent("SimpleEditorWindow");
     }
 
-    public void CreateGUI()
+    private void Initialize()
     {
         DatabaseManager database = new DatabaseManager("mabinogi.db");
         DataTable dt = database.QueryDatabase("SELECT * FROM skill;");
@@ -35,13 +36,28 @@ public class SimpleEditorWindow : EditorWindow
         }
 
         dt = database.QueryDatabase("SELECT * FROM skill_category_type;");
-        skillCategories = new List<SkillCategoryModel>();
+        skillTypes = new List<SkillTypeModel>();
 
         foreach (DataRow row in dt.Rows)
         {
-            SkillCategoryModel skillCategory = new SkillCategoryModel(database, row);
-            skillCategories.Add(skillCategory);
+            SkillTypeModel skillType = new SkillTypeModel(database, row);
+            skillTypes.Add(skillType);
         }
+
+        dt = database.QueryDatabase("SELECT * FROM skill_stat_type;");
+        skillStatTypes = new List<SkillStatTypeModel>();
+
+        foreach (DataRow row in dt.Rows)
+        {
+            SkillStatTypeModel skillStatType = new SkillStatTypeModel(database, row);
+            skillStatTypes.Add(skillStatType);
+        }
+
+    }
+
+    public void CreateGUI()
+    {
+        Initialize();
 
         // // Create a two-pane view with the left pane being fixed.
         // var splitView = new TwoPaneSplitView(0, 250, TwoPaneSplitViewOrientation.Horizontal);
@@ -69,7 +85,6 @@ public class SimpleEditorWindow : EditorWindow
         // leftPane.columns.Add(new Column { name = "name", title = "Name", width = 150 });
         leftPane.columns["name"].makeCell = () => new Label();
         leftPane.columns["name"].bindCell = (item, index) => { (item as Label).text = skills[index].name; };
-
         
         leftPane.selectedIndicesChanged += OnSkillSelectionChange;
     }
@@ -91,7 +106,7 @@ public class SimpleEditorWindow : EditorWindow
             DropdownField selectedCategory = rootVisualElement.Q<DropdownField>("selectedCategory");
             List<string> names = new List<string>();
 
-            foreach (SkillCategoryModel category in skillCategories)
+            foreach (SkillTypeModel category in skillTypes)
             {
                 names.Add(category.name);
 
@@ -137,7 +152,61 @@ public class SimpleEditorWindow : EditorWindow
             selectedIsLearnable.value = skills[index].isLearnable; 
 
             Toggle selectedIsPassive = rootVisualElement.Q<Toggle>("selectedIsPassive");
-            selectedIsPassive.value = skills[index].isPassive; 
+            selectedIsPassive.value = skills[index].isPassive;
+
+            // var items = new List<TreeViewItemData<string>>(110);
+            // for (var i = 0; i < 10; i++)
+            // {
+            //     var itemIndex = i * 10 + i;
+
+            //     var treeViewSubItemsData = new List<TreeViewItemData<string>>(10);
+
+            //     for (var j = 0; j < 10; j++)
+            //         treeViewSubItemsData.Add(new TreeViewItemData<string>(itemIndex + j + 1, (j+1).ToString()));
+
+            //     var treeViewItemData = new TreeViewItemData<string>(itemIndex, (i+1).ToString(), treeViewSubItemsData);
+            //     items.Add(treeViewItemData);
+            // };
+
+            List<TreeViewItemData<string>> items = new List<TreeViewItemData<string>>();
+
+
+            for (int i = 0; i < SkillModel.ranks.Count; i++)
+            {
+                int itemIndex = i * 100;
+
+                List<TreeViewItemData<string>> subData = new List<TreeViewItemData<string>>(100);
+
+                for (int j = 0; j < skills[index].stats.Count; j++)
+                {
+                    SkillStatModel stat = skills[index].stats[j];
+                    string s_stat = stat.values[i].ToString();
+
+                    foreach (SkillStatTypeModel statType in skillStatTypes)
+                    {
+                        if (statType.ID == stat.statID)
+                        {
+                            s_stat = statType.name + " " + s_stat;
+                            break;
+                        }
+                    }
+
+                    subData.Add(new TreeViewItemData<string>(itemIndex + j + 1, s_stat));
+                }
+
+                items.Add(new TreeViewItemData<string>(itemIndex, SkillModel.ranks[i], subData));
+            }
+
+            TreeView selectedRanks = rootVisualElement.Q<TreeView>("selectedRanks");
+            selectedRanks.SetRootItems(items);
+            selectedRanks.makeItem = () => new Label();
+            selectedRanks.bindItem = (item, index) =>
+            {
+                var i = selectedRanks.GetItemDataForIndex<string>(index);
+                (item as Label).text = i;
+            };
+
+            selectedRanks.Rebuild();
         }
     }
 

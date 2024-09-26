@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using Mono.Data.Sqlite;
@@ -41,18 +42,68 @@ public class SkillModel
     public static List<string> ranks = new List<string>
         {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
 
+    public List<SkillStatModel> stats = new List<SkillStatModel>();
+
     public SkillModel(DatabaseManager database, DataRow row)
     {
         database.ParseDatabaseRow(row, this, ("id", "ID"), ("category_id", "categoryID"));
+
+        string statsQuery = @"SELECT skill_stat.*, skill_stat_type.name
+                FROM skill
+                JOIN skill_stat
+                ON skill.id = skill_stat.skill_id
+                JOIN skill_stat_type
+                ON skill_stat.skill_stat_id = skill_stat_type.id
+                WHERE skill.id = @id;";
+
+        DataTable dt = database.QueryDatabase(statsQuery, ("@id", ID));
+
+        foreach (DataRow r in dt.Rows)
+        {
+            SkillStatModel stat = new SkillStatModel(database, r);
+            stats.Add(stat);
+        }
     }
 }
 
-public class SkillCategoryModel
+public class SkillTypeModel
 {
     public int ID;
     public string name;
 
-    public SkillCategoryModel(DatabaseManager database, DataRow row)
+    public SkillTypeModel(DatabaseManager database, DataRow row)
+    {
+        database.ParseDatabaseRow(row, this, ("id", "ID"));
+
+        name = name.Replace("_", " ");
+    }
+}
+
+public class SkillStatModel
+{
+    public int skillID;
+    public int statID;
+    public List<float> values = new List<float>(SkillModel.ranks.Count);
+
+    public SkillStatModel(DatabaseManager database, DataRow row)
+    {
+        // Stat position field is the last column.
+        int statPos = row.ItemArray.Length - 1;
+        // Set the key to be the stat name, then slice the row by length of ranks
+        // converting to string then float and back to array for the value.
+        values.AddRange(
+            row.ItemArray.Skip(2).Take(SkillModel.ranks.Count).Select(x => float.Parse(x.ToString())).ToArray());
+
+        database.ParseDatabaseRow(row, this, ("skill_id", "skillID"), ("skill_stat_id", "statID"));
+    }
+}
+
+public class SkillStatTypeModel
+{
+    public int ID;
+    public string name;
+
+    public SkillStatTypeModel(DatabaseManager database, DataRow row)
     {
         database.ParseDatabaseRow(row, this, ("id", "ID"));
     }

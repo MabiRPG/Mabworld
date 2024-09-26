@@ -27,6 +27,7 @@
             <ui:Toggle label="Does the player start with this?:" name="selectedIsStartingWith" style="align-items: auto; justify-content: space-between; align-self: auto;" />
             <ui:Toggle label="Can the player learn this?:" name="selectedIsLearnable" style="align-items: auto; justify-content: space-between; align-self: auto;" />
             <ui:Toggle label="Is the skill passive?:" name="selectedIsPassive" style="align-items: auto; justify-content: space-between; align-self: auto;" />
+            <ui:TreeView name="selectedRanks" />
         </ui:ScrollView>
     </ui:TwoPaneSplitView>
 </ui:UXML>
