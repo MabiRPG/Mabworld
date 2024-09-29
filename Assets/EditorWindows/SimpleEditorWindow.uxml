@@ -2,7 +2,7 @@
     <Style src="project://database/Assets/EditorWindows/SimpleEditorWindow.uss?fileID=7433441132597879392&amp;guid=53ab6b972b0753147bced9c4349665e5&amp;type=3#SimpleEditorWindow" />
     <ui:TwoPaneSplitView fixed-pane-initial-dimension="250">
         <ui:VisualElement>
-            <ui:MultiColumnListView name="leftPane" fixed-item-height="20" reorderable="false">
+            <ui:MultiColumnListView name="leftPane" fixed-item-height="20" reorderable="false" show-add-remove-footer="false" show-foldout-header="false">
                 <ui:Columns>
                     <ui:Column name="icon" title="Icon" width="40" />
                     <ui:Column name="name" title="Name" width="150" />
@@ -27,7 +27,27 @@
             <ui:Toggle label="Does the player start with this?:" name="selectedIsStartingWith" style="align-items: auto; justify-content: space-between; align-self: auto;" />
             <ui:Toggle label="Can the player learn this?:" name="selectedIsLearnable" style="align-items: auto; justify-content: space-between; align-self: auto;" />
             <ui:Toggle label="Is the skill passive?:" name="selectedIsPassive" style="align-items: auto; justify-content: space-between; align-self: auto;" />
-            <ui:TreeView name="selectedRanks" />
+            <!-- <ui:TreeView name="selectedRanks" style="display: flex; visibility: visible;" /> -->
+            <ui:MultiColumnListView name="selectedStats" fixed-item-height="20" reorderable="false" show-add-remove-footer="false" show-foldout-header="false">
+                <ui:Columns>
+                    <ui:Column name="stat" title="Stat" width="150" />
+                    <ui:Column name="F" title="F" width="40" />
+                    <ui:Column name="E" title="E" width="40" />
+                    <ui:Column name="D" title="D" width="40" />
+                    <ui:Column name="C" title="C" width="40" />
+                    <ui:Column name="B" title="B" width="40" />
+                    <ui:Column name="A" title="A" width="40" />
+                    <ui:Column name="9" title="9" width="40" />
+                    <ui:Column name="8" title="8" width="40" />
+                    <ui:Column name="7" title="7" width="40" />
+                    <ui:Column name="6" title="6" width="40" />
+                    <ui:Column name="5" title="5" width="40" />
+                    <ui:Column name="4" title="4" width="40" />
+                    <ui:Column name="3" title="3" width="40" />
+                    <ui:Column name="2" title="2" width="40" />
+                    <ui:Column name="1" title="1" width="40" />
+                </ui:Columns>
+            </ui:MultiColumnListView>
         </ui:ScrollView>
     </ui:TwoPaneSplitView>
 </ui:UXML>
