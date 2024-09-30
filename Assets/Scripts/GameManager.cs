@@ -91,13 +91,13 @@ public class GameManager : MonoBehaviour
 
     public DataTable QueryDatabase(string query, params (string Key, object Value)[] args)
     {
-        return Database.QueryDatabase(query, args);
+        return Database.Query(query, args);
     }
 
     public void ParseDatabaseRow(DataRow row, object model,
         params (string Key, string FieldName)[] customMap)
     {
-        Database.ParseDatabaseRow(row, model, customMap);
+        Database.ParseRow(row, model, customMap);
     }
 
     /// <summary>

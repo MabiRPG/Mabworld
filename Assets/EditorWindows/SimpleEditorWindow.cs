@@ -13,6 +13,7 @@ public class SimpleEditorWindow : EditorWindow
     private List<SkillModel> skills;
     private List<SkillTypeModel> skillTypes;
     private List<SkillStatTypeModel> skillStatTypes;
+    private List<TrainingMethodTypeModel> trainingMethodTypes;
 
     [SerializeField]
     private VisualTreeAsset m_VisualTreeAsset = default;
@@ -27,7 +28,7 @@ public class SimpleEditorWindow : EditorWindow
     private void Initialize()
     {
         DatabaseManager database = new DatabaseManager("mabinogi.db");
-        DataTable dt = database.QueryDatabase("SELECT * FROM skill;");
+        DataTable dt = database.Query("SELECT * FROM skill;");
         skills = new List<SkillModel>();
 
         foreach (DataRow row in dt.Rows)
@@ -36,7 +37,7 @@ public class SimpleEditorWindow : EditorWindow
             skills.Add(skill);
         }
 
-        dt = database.QueryDatabase("SELECT * FROM skill_category_type;");
+        dt = database.Query("SELECT * FROM skill_category_type;");
         skillTypes = new List<SkillTypeModel>();
 
         foreach (DataRow row in dt.Rows)
@@ -45,7 +46,7 @@ public class SimpleEditorWindow : EditorWindow
             skillTypes.Add(skillType);
         }
 
-        dt = database.QueryDatabase("SELECT * FROM skill_stat_type;");
+        dt = database.Query("SELECT * FROM skill_stat_type;");
         skillStatTypes = new List<SkillStatTypeModel>();
 
         foreach (DataRow row in dt.Rows)
@@ -54,6 +55,14 @@ public class SimpleEditorWindow : EditorWindow
             skillStatTypes.Add(skillStatType);
         }
 
+        dt = database.Query("SELECT * FROM training_method_type;");
+        trainingMethodTypes = new List<TrainingMethodTypeModel>();
+
+        foreach (DataRow row in dt.Rows)
+        {
+            TrainingMethodTypeModel trainingMethodType = new TrainingMethodTypeModel(database, row);
+            trainingMethodTypes.Add(trainingMethodType);
+        }
     }
 
     public void CreateGUI()
@@ -90,29 +99,81 @@ public class SimpleEditorWindow : EditorWindow
         leftPane.selectedIndicesChanged += OnSkillSelectionChange;
 
         MultiColumnListView statView = rootVisualElement.Q<MultiColumnListView>("selectedStats");
-        statView.columns["stat"].makeCell = () => new Label();
+
+        statView.columns["stat"].makeCell = () => new DropdownField();
         statView.columns["stat"].bindCell = (item, j) => {
+            List<string> names = new List<string>();
+
             foreach (SkillStatTypeModel statType in skillStatTypes)
             {
                 if (statType.ID == (statView.itemsSource[j] as SkillStatModel).statID)
                 {
-                    string statName = statType.name.Replace("_", " ");
-                    (item as Label).text = statName;
-                    return;
+                    // string statName = statType.name.Replace("_", " ");
+                    (item as DropdownField).value = statType.name;
                 }
+
+                names.Add(statType.name);
             }
+
+            (item as DropdownField).choices = names;
         };
 
-        for (int i = 15; i > 0; i--)
+        for (int i = 1; i <= 15; i++)
         {
             int j = i; // For local purposes.
             string hex = j.ToString("X");
 
-            statView.columns[hex].makeCell = () => new Label();
+            statView.columns[hex].makeCell = () => new FloatField();
             statView.columns[hex].bindCell = (item, k) => {
-                (item as Label).text = (statView.itemsSource[k] as SkillStatModel).values[j - 1].ToString(); 
+                (item as FloatField).value = (statView.itemsSource[k] as SkillStatModel).values[15 - j]; 
             };
-        }        
+        }
+
+        // statView.columns["delete"].makeCell = () => new Button();
+        // statView.columns["delete"].bindCell = (item, j) =>
+        // {
+        //     (item as Button).text = "X";
+        //     (item as Button).clicked += () =>
+        //     {
+        //         statView.itemsSource.RemoveAt(j);
+        //         statView.Rebuild();
+        //     };
+        // };
+
+        MultiColumnListView trainingView = rootVisualElement.Q<MultiColumnListView>("selectedTraining");
+
+        trainingView.columns["name"].makeCell = () => new Label();
+        trainingView.columns["name"].bindCell = (item, j) =>
+        {
+            List<string> names = new List<string>();
+
+            foreach (TrainingMethodTypeModel trainingMethod in trainingMethodTypes)
+            {
+                if (trainingMethod.ID == (trainingView.itemsSource[j] as TrainingMethodModel).trainingMethodID)
+                {
+                    (item as Label).text = trainingMethod.name;
+                    break;
+                }
+            }
+        };
+
+        trainingView.columns["rank"].makeCell = () => new Label();
+        trainingView.columns["rank"].bindCell = (item, j) =>
+        {
+            (item as Label).text = (trainingView.itemsSource[j] as TrainingMethodModel).rank;
+        };
+
+        trainingView.columns["xpGainEach"].makeCell = () => new Label();
+        trainingView.columns["xpGainEach"].bindCell = (item, j) =>
+        {
+            (item as Label).text = (trainingView.itemsSource[j] as TrainingMethodModel).xpGainEach.ToString();
+        };
+
+        trainingView.columns["countMax"].makeCell = () => new Label();
+        trainingView.columns["countMax"].bindCell = (item, j) =>
+        {
+            (item as Label).text = (trainingView.itemsSource[j] as TrainingMethodModel).countMax.ToString();
+        };
     }
 
     private void OnSkillSelectionChange(IEnumerable<int> selectedIndex)
@@ -240,6 +301,11 @@ public class SimpleEditorWindow : EditorWindow
         List<SkillStatModel> stats = skills[index].stats;
         statView.itemsSource = stats;
         statView.Rebuild();
+
+        MultiColumnListView trainingView = rootVisualElement.Q<MultiColumnListView>("selectedTraining");
+        List<TrainingMethodModel> trainingMethods = skills[index].trainingMethods;
+        trainingView.itemsSource = trainingMethods;
+        trainingView.Rebuild();
     }
 
     private void ChangeIcon()

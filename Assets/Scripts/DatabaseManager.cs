@@ -43,10 +43,11 @@ public class SkillModel
         {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
 
     public List<SkillStatModel> stats = new List<SkillStatModel>();
+    public List<TrainingMethodModel> trainingMethods = new List<TrainingMethodModel>();
 
     public SkillModel(DatabaseManager database, DataRow row)
     {
-        database.ParseDatabaseRow(row, this, ("id", "ID"), ("category_id", "categoryID"));
+        database.ParseRow(row, this, ("id", "ID"), ("category_id", "categoryID"));
 
         string statsQuery = @"SELECT skill_stat.*, skill_stat_type.name
                 FROM skill
@@ -56,12 +57,24 @@ public class SkillModel
                 ON skill_stat.skill_stat_id = skill_stat_type.id
                 WHERE skill.id = @id;";
 
-        DataTable dt = database.QueryDatabase(statsQuery, ("@id", ID));
+        DataTable dt = database.Query(statsQuery, ("@id", ID));
 
         foreach (DataRow r in dt.Rows)
         {
             SkillStatModel stat = new SkillStatModel(database, r);
             stats.Add(stat);
+        }
+
+        string trainingQuery = @"SELECT *
+            FROM training_method
+            WHERE skill_id = @id;";
+
+        dt = database.Query(trainingQuery, ("@id", ID));
+
+        foreach (DataRow r in dt.Rows)
+        {
+            TrainingMethodModel trainingMethod = new TrainingMethodModel(database, r);
+            trainingMethods.Add(trainingMethod);
         }
     }
 }
@@ -73,9 +86,7 @@ public class SkillTypeModel
 
     public SkillTypeModel(DatabaseManager database, DataRow row)
     {
-        database.ParseDatabaseRow(row, this, ("id", "ID"));
-
-        name = name.Replace("_", " ");
+        database.ParseRow(row, this, ("id", "ID"));
     }
 }
 
@@ -94,7 +105,7 @@ public class SkillStatModel
         values.AddRange(
             row.ItemArray.Skip(2).Take(SkillModel.ranks.Count).Select(x => float.Parse(x.ToString())).ToArray());
 
-        database.ParseDatabaseRow(row, this, ("skill_id", "skillID"), ("skill_stat_id", "statID"));
+        database.ParseRow(row, this, ("skill_id", "skillID"), ("skill_stat_id", "statID"));
     }
 }
 
@@ -105,9 +116,35 @@ public class SkillStatTypeModel
 
     public SkillStatTypeModel(DatabaseManager database, DataRow row)
     {
-        database.ParseDatabaseRow(row, this, ("id", "ID"));
+        database.ParseRow(row, this, ("id", "ID"));
     }
 }
+
+public class TrainingMethodModel
+{
+    public int skillID;
+    public string rank;
+    public int trainingMethodID;
+    public float xpGainEach;
+    public int countMax;
+
+    public TrainingMethodModel(DatabaseManager database, DataRow row)
+    {
+        database.ParseRow(row, this, ("skill_id", "skillID"), ("training_method_id", "trainingMethodID"));
+    }
+}
+
+public class TrainingMethodTypeModel
+{
+    public int ID;
+    public string name;
+
+    public TrainingMethodTypeModel(DatabaseManager database, DataRow row)
+    {
+        database.ParseRow(row, this, ("id", "ID"));
+    }
+}
+
 
 public class DatabaseManager
 {
@@ -126,7 +163,7 @@ public class DatabaseManager
     /// <param name="query">SQL query string to be executed.</param>
     /// <param name="args">Variable argument list for SQL parameters.</param>
     /// <returns>DataTable result of SQL query.</returns>
-    public DataTable QueryDatabase(string query, params (string Key, object Value)[] args)
+    public DataTable Query(string query, params (string Key, object Value)[] args)
     {
         // Construct a cache key from parameters and sql string.
         string cacheKey = query;
@@ -187,7 +224,7 @@ public class DatabaseManager
     /// <param name="row">DataRow result from querying the database.</param>
     /// <param name="model"></param>
     /// <param name="customMap"></param>
-    public void ParseDatabaseRow(DataRow row, object model, 
+    public void ParseRow(DataRow row, object model, 
         params (string Key, string FieldName)[] customMap)
     {
         foreach(DataColumn column in row.Table.Columns)

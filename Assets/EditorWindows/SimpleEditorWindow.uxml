@@ -10,7 +10,7 @@
             </ui:MultiColumnListView>
         </ui:VisualElement>
         <ui:ScrollView style="align-items: auto; align-self: auto;">
-            <ui:TextField picking-mode="Ignore" label="Name:" keyboard-type="ASCIICapable" max-length="-1" name="selectedName" />
+            <ui:TextField picking-mode="Ignore" label="Name:" keyboard-type="ASCIICapable" max-length="-1" name="selectedName" style="justify-content: flex-start; align-self: auto; align-items: auto;" />
             <ui:DropdownField label="Category:" name="selectedCategory" />
             <ui:TextField picking-mode="Ignore" label="Description:" multiline="true" name="selectedDescription" keyboard-type="ASCIICapable" hide-mobile-input="false" style="height: auto; flex-wrap: wrap; white-space: normal; flex-grow: 0;" />
             <ui:TextField picking-mode="Ignore" label="Details:" multiline="true" name="selectedDetails" keyboard-type="ASCIICapable" hide-mobile-input="false" style="height: auto; flex-wrap: wrap; white-space: normal; justify-content: space-around;" />
@@ -27,8 +27,7 @@
             <ui:Toggle label="Does the player start with this?:" name="selectedIsStartingWith" style="align-items: auto; justify-content: space-between; align-self: auto;" />
             <ui:Toggle label="Can the player learn this?:" name="selectedIsLearnable" style="align-items: auto; justify-content: space-between; align-self: auto;" />
             <ui:Toggle label="Is the skill passive?:" name="selectedIsPassive" style="align-items: auto; justify-content: space-between; align-self: auto;" />
-            <!-- <ui:TreeView name="selectedRanks" style="display: flex; visibility: visible;" /> -->
-            <ui:MultiColumnListView name="selectedStats" fixed-item-height="20" reorderable="false" show-add-remove-footer="false" show-foldout-header="false">
+            <ui:MultiColumnListView name="selectedStats" fixed-item-height="20" reorderable="false" show-add-remove-footer="false" show-foldout-header="false" sorting-enabled="false" show-alternating-row-backgrounds="ContentOnly" virtualization-method="FixedHeight" style="padding-top: 30px; padding-bottom: 30px;">
                 <ui:Columns>
                     <ui:Column name="stat" title="Stat" width="150" />
                     <ui:Column name="F" title="F" width="40" />
@@ -46,6 +45,15 @@
                     <ui:Column name="3" title="3" width="40" />
                     <ui:Column name="2" title="2" width="40" />
                     <ui:Column name="1" title="1" width="40" />
+                    <ui:Column name="delete" title="Delete?" width="60" />
+                </ui:Columns>
+            </ui:MultiColumnListView>
+            <ui:MultiColumnListView name="selectedTraining" fixed-item-height="20" reorderable="false" show-add-remove-footer="false" show-foldout-header="false" sorting-enabled="false" show-alternating-row-backgrounds="ContentOnly" virtualization-method="FixedHeight" style="padding-top: 30px; padding-bottom: 30px;">
+                <ui:Columns>
+                    <ui:Column name="name" title="Training Method" width="150" />
+                    <ui:Column name="rank" title="Rank" width="50" />
+                    <ui:Column name="xpGainEach" title="XP Gain Each" width="50" />
+                    <ui:Column name="countMax" title="Counts" width="50" />
                 </ui:Columns>
             </ui:MultiColumnListView>
         </ui:ScrollView>
