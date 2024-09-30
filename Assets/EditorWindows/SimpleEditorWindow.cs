@@ -69,18 +69,6 @@ public class SimpleEditorWindow : EditorWindow
     {
         Initialize();
 
-        // // Create a two-pane view with the left pane being fixed.
-        // var splitView = new TwoPaneSplitView(0, 250, TwoPaneSplitViewOrientation.Horizontal);
-
-        // // Add the view to the visual tree by adding it as a child to the root element.
-        // rootVisualElement.Add(splitView);
-
-        // // A TwoPaneSplitView needs exactly two child elements.
-        // leftPane = new MultiColumnListView();
-        // splitView.Add(leftPane);
-        // rightPane = new VisualElement();
-        // splitView.Add(rightPane);
-
         m_VisualTreeAsset.CloneTree(rootVisualElement);
 
         var splitView = rootVisualElement.Q<TwoPaneSplitView>();
@@ -142,7 +130,7 @@ public class SimpleEditorWindow : EditorWindow
 
         MultiColumnListView trainingView = rootVisualElement.Q<MultiColumnListView>("selectedTraining");
 
-        trainingView.columns["name"].makeCell = () => new Label();
+        trainingView.columns["name"].makeCell = () => new DropdownField();
         trainingView.columns["name"].bindCell = (item, j) =>
         {
             List<string> names = new List<string>();
@@ -151,28 +139,40 @@ public class SimpleEditorWindow : EditorWindow
             {
                 if (trainingMethod.ID == (trainingView.itemsSource[j] as TrainingMethodModel).trainingMethodID)
                 {
-                    (item as Label).text = trainingMethod.name;
-                    break;
+                    (item as DropdownField).value = trainingMethod.name;
                 }
+
+                names.Add(trainingMethod.name);
             }
+
+            (item as DropdownField).choices = names;
         };
 
-        trainingView.columns["rank"].makeCell = () => new Label();
+        trainingView.columns["rank"].makeCell = () => new DropdownField();
         trainingView.columns["rank"].bindCell = (item, j) =>
         {
-            (item as Label).text = (trainingView.itemsSource[j] as TrainingMethodModel).rank;
+            (item as DropdownField).value = (trainingView.itemsSource[j] as TrainingMethodModel).rank;
+            (item as DropdownField).choices = SkillModel.ranks;
         };
 
-        trainingView.columns["xpGainEach"].makeCell = () => new Label();
+        trainingView.columns["xpGainEach"].makeCell = () => new FloatField();
         trainingView.columns["xpGainEach"].bindCell = (item, j) =>
         {
-            (item as Label).text = (trainingView.itemsSource[j] as TrainingMethodModel).xpGainEach.ToString();
+            (item as FloatField).value = (trainingView.itemsSource[j] as TrainingMethodModel).xpGainEach;
         };
 
-        trainingView.columns["countMax"].makeCell = () => new Label();
+        trainingView.columns["countMax"].makeCell = () => new IntegerField();
         trainingView.columns["countMax"].bindCell = (item, j) =>
         {
-            (item as Label).text = (trainingView.itemsSource[j] as TrainingMethodModel).countMax.ToString();
+            (item as IntegerField).value = (trainingView.itemsSource[j] as TrainingMethodModel).countMax;
+        };
+
+        trainingView.columns["total"].makeCell = () => new Label();
+        trainingView.columns["total"].bindCell = (item, j) =>
+        {
+            float totalXP = (trainingView.itemsSource[j] as TrainingMethodModel).xpGainEach;
+            totalXP *= (trainingView.itemsSource[j] as TrainingMethodModel).countMax;
+            (item as Label).text = totalXP.ToString();
         };
     }
 
@@ -220,82 +220,29 @@ public class SimpleEditorWindow : EditorWindow
 
         DropdownField selectedStartRank = rootVisualElement.Q<DropdownField>("selectedStartRank");
         selectedStartRank.value = skills[index].startingRank;
-        selectedStartRank.choices = SkillModel.ranks;       
-        
+        selectedStartRank.choices = SkillModel.ranks;
+
         DropdownField selectedLastRank = rootVisualElement.Q<DropdownField>("selectedLastRank");
         selectedLastRank.value = skills[index].lastAvailableRank;
         selectedLastRank.choices = SkillModel.ranks;
 
         FloatField selectedBaseLoadTime = rootVisualElement.Q<FloatField>("selectedBaseLoadTime");
-        selectedBaseLoadTime.value = skills[index].baseLoadTime;           
+        selectedBaseLoadTime.value = skills[index].baseLoadTime;
 
         FloatField selectedBaseUseTime = rootVisualElement.Q<FloatField>("selectedBaseUseTime");
-        selectedBaseUseTime.value = skills[index].baseLoadTime;    
+        selectedBaseUseTime.value = skills[index].baseLoadTime;
 
         FloatField selectedBaseCooldownTime = rootVisualElement.Q<FloatField>("selectedBaseCooldownTime");
         selectedBaseCooldownTime.value = skills[index].baseLoadTime;
 
         Toggle selectedIsStartingWith = rootVisualElement.Q<Toggle>("selectedIsStartingWith");
-        selectedIsStartingWith.value = skills[index].isStartingWith; 
+        selectedIsStartingWith.value = skills[index].isStartingWith;
 
         Toggle selectedIsLearnable = rootVisualElement.Q<Toggle>("selectedIsLearnable");
-        selectedIsLearnable.value = skills[index].isLearnable; 
+        selectedIsLearnable.value = skills[index].isLearnable;
 
         Toggle selectedIsPassive = rootVisualElement.Q<Toggle>("selectedIsPassive");
         selectedIsPassive.value = skills[index].isPassive;
-
-        // var items = new List<TreeViewItemData<string>>(110);
-        // for (var i = 0; i < 10; i++)
-        // {
-        //     var itemIndex = i * 10 + i;
-
-        //     var treeViewSubItemsData = new List<TreeViewItemData<string>>(10);
-
-        //     for (var j = 0; j < 10; j++)
-        //         treeViewSubItemsData.Add(new TreeViewItemData<string>(itemIndex + j + 1, (j+1).ToString()));
-
-        //     var treeViewItemData = new TreeViewItemData<string>(itemIndex, (i+1).ToString(), treeViewSubItemsData);
-        //     items.Add(treeViewItemData);
-        // };
-
-        // List<TreeViewItemData<string>> items = new List<TreeViewItemData<string>>();
-
-        // for (int i = 0; i < SkillModel.ranks.Count; i++)
-        // {
-        //     int itemIndex = i * 100;
-
-        //     List<TreeViewItemData<string>> subData = new List<TreeViewItemData<string>>(100);
-
-        //     for (int j = 0; j < skills[index].stats.Count; j++)
-        //     {
-        //         SkillStatModel stat = skills[index].stats[j];
-        //         string s_stat = stat.values[i].ToString();
-
-        //         foreach (SkillStatTypeModel statType in skillStatTypes)
-        //         {
-        //             if (statType.ID == stat.statID)
-        //             {
-        //                 s_stat = statType.name + " " + s_stat;
-        //                 break;
-        //             }
-        //         }
-
-        //         subData.Add(new TreeViewItemData<string>(itemIndex + j + 1, s_stat));
-        //     }
-
-        //     items.Add(new TreeViewItemData<string>(itemIndex, SkillModel.ranks[i], subData));
-        // }
-
-        // TreeView selectedRanks = rootVisualElement.Q<TreeView>("selectedRanks");
-        // selectedRanks.SetRootItems(items);
-        // selectedRanks.makeItem = () => new Label();
-        // selectedRanks.bindItem = (item, index) =>
-        // {
-        //     var i = selectedRanks.GetItemDataForIndex<string>(index);
-        //     (item as Label).text = i;
-        // };
-
-        // selectedRanks.Rebuild();
 
         MultiColumnListView statView = rootVisualElement.Q<MultiColumnListView>("selectedStats");
         List<SkillStatModel> stats = skills[index].stats;
