@@ -96,6 +96,14 @@ public class SkillStatModel
     public int statID;
     public List<float> values = new List<float>(SkillModel.ranks.Count);
 
+    public SkillStatModel()
+    {
+        for (int i = 0; i < values.Capacity; i++)
+        {
+            values.Add(0);
+        }
+    }
+
     public SkillStatModel(DatabaseManager database, DataRow row)
     {
         // Stat position field is the last column.

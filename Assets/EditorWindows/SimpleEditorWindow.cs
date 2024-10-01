@@ -10,6 +10,9 @@ public class SimpleEditorWindow : EditorWindow
     private MultiColumnListView leftPane;
     private VisualElement rightPane;
 
+    private string firstAvailableRank;
+    private string lastAvailableRank;
+
     private List<SkillModel> skills;
     private List<SkillTypeModel> skillTypes;
     private List<SkillStatTypeModel> skillStatTypes;
@@ -96,7 +99,6 @@ public class SimpleEditorWindow : EditorWindow
             {
                 if (statType.ID == (statView.itemsSource[j] as SkillStatModel).statID)
                 {
-                    // string statName = statType.name.Replace("_", " ");
                     (item as DropdownField).value = statType.name;
                 }
 
@@ -113,20 +115,39 @@ public class SimpleEditorWindow : EditorWindow
 
             statView.columns[hex].makeCell = () => new FloatField();
             statView.columns[hex].bindCell = (item, k) => {
+                // Truncate ranks that are not available in skill.
+                if (j > int.Parse(firstAvailableRank, System.Globalization.NumberStyles.HexNumber) ||
+                    j < int.Parse(lastAvailableRank, System.Globalization.NumberStyles.HexNumber))
+                {
+                    statView.columns[hex].visible = false;
+                    return;
+                }
+
+                statView.columns[hex].visible = true;
                 (item as FloatField).value = (statView.itemsSource[k] as SkillStatModel).values[15 - j]; 
             };
         }
 
-        // statView.columns["delete"].makeCell = () => new Button();
-        // statView.columns["delete"].bindCell = (item, j) =>
-        // {
-        //     (item as Button).text = "X";
-        //     (item as Button).clicked += () =>
-        //     {
-        //         statView.itemsSource.RemoveAt(j);
-        //         statView.Rebuild();
-        //     };
-        // };
+        statView.columns["delete"].makeCell = () =>
+        {
+            Button button = new Button();
+            // Must use a callback here to prevent duplicating click events in bind.
+            button.RegisterCallback<ClickEvent>(e => RemoveStatAt(statView, button));
+            return button;
+        };
+
+        statView.columns["delete"].bindCell = (item, j) =>
+        {
+            (item as Button).text = "X";
+            (item as Button).userData = j;
+        };
+
+        Button statAddButton = rootVisualElement.Q<Button>("statAddButton");
+        statAddButton.clicked += () =>
+        {
+            statView.itemsSource.Add(new SkillStatModel());
+            statView.RefreshItems();
+        };
 
         MultiColumnListView trainingView = rootVisualElement.Q<MultiColumnListView>("selectedTraining");
 
@@ -176,6 +197,12 @@ public class SimpleEditorWindow : EditorWindow
         };
     }
 
+    private void RemoveStatAt(MultiColumnListView statView, Button button)
+    {
+        statView.itemsSource.RemoveAt((int)button.userData);
+        statView.RefreshItems();
+    }
+
     private void OnSkillSelectionChange(IEnumerable<int> selectedIndex)
     {
         var enumerator = selectedIndex.GetEnumerator();
@@ -186,6 +213,7 @@ public class SimpleEditorWindow : EditorWindow
         }
 
         int index = enumerator.Current;
+
         Button selectedIcon = rootVisualElement.Q<Button>("selectedIcon");
         selectedIcon.style.backgroundImage = new StyleBackground(skills[index].icon);
         //selectedIcon.clicked += ChangeIcon;
@@ -216,6 +244,7 @@ public class SimpleEditorWindow : EditorWindow
 
         DropdownField selectedFirstRank = rootVisualElement.Q<DropdownField>("selectedFirstRank");
         selectedFirstRank.value = skills[index].firstAvailableRank;
+        firstAvailableRank = skills[index].firstAvailableRank;
         selectedFirstRank.choices = SkillModel.ranks;
 
         DropdownField selectedStartRank = rootVisualElement.Q<DropdownField>("selectedStartRank");
@@ -224,6 +253,7 @@ public class SimpleEditorWindow : EditorWindow
 
         DropdownField selectedLastRank = rootVisualElement.Q<DropdownField>("selectedLastRank");
         selectedLastRank.value = skills[index].lastAvailableRank;
+        lastAvailableRank = skills[index].lastAvailableRank;
         selectedLastRank.choices = SkillModel.ranks;
 
         FloatField selectedBaseLoadTime = rootVisualElement.Q<FloatField>("selectedBaseLoadTime");
@@ -245,14 +275,14 @@ public class SimpleEditorWindow : EditorWindow
         selectedIsPassive.value = skills[index].isPassive;
 
         MultiColumnListView statView = rootVisualElement.Q<MultiColumnListView>("selectedStats");
-        List<SkillStatModel> stats = skills[index].stats;
+        List<SkillStatModel> stats = new List<SkillStatModel>(skills[index].stats);
         statView.itemsSource = stats;
-        statView.Rebuild();
+        statView.RefreshItems();
 
         MultiColumnListView trainingView = rootVisualElement.Q<MultiColumnListView>("selectedTraining");
-        List<TrainingMethodModel> trainingMethods = skills[index].trainingMethods;
+        List<TrainingMethodModel> trainingMethods = new List<TrainingMethodModel>(skills[index].trainingMethods);
         trainingView.itemsSource = trainingMethods;
-        trainingView.Rebuild();
+        trainingView.RefreshItems();
     }
 
     private void ChangeIcon()
