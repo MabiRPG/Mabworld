@@ -11,6 +11,7 @@ public class SimpleEditorWindow : EditorWindow
 
     private MultiColumnListView leftPane;
 
+    private int index;
     private SkillModel selectedSkill;
     private Button selectedIcon;
     private TextField selectedName;
@@ -53,7 +54,7 @@ public class SimpleEditorWindow : EditorWindow
     private void Initialize()
     {
         DatabaseManager database = new DatabaseManager("mabinogi.db");
-        DataTable dt = database.Query("SELECT * FROM skill;");
+        DataTable dt = database.Read("SELECT * FROM skill;");
         skills = new List<SkillModel>();
 
         foreach (DataRow row in dt.Rows)
@@ -62,7 +63,7 @@ public class SimpleEditorWindow : EditorWindow
             skills.Add(skill);
         }
 
-        dt = database.Query("SELECT * FROM skill_category_type;");
+        dt = database.Read("SELECT * FROM skill_category_type;");
         skillTypes = new List<SkillTypeModel>();
 
         foreach (DataRow row in dt.Rows)
@@ -71,7 +72,7 @@ public class SimpleEditorWindow : EditorWindow
             skillTypes.Add(skillType);
         }
 
-        dt = database.Query("SELECT * FROM skill_stat_type;");
+        dt = database.Read("SELECT * FROM skill_stat_type;");
         skillStatTypes = new List<SkillStatTypeModel>();
 
         foreach (DataRow row in dt.Rows)
@@ -80,7 +81,7 @@ public class SimpleEditorWindow : EditorWindow
             skillStatTypes.Add(skillStatType);
         }
 
-        dt = database.Query("SELECT * FROM training_method_type;");
+        dt = database.Read("SELECT * FROM training_method_type;");
         trainingMethodTypes = new List<TrainingMethodTypeModel>();
 
         foreach (DataRow row in dt.Rows)
@@ -99,6 +100,10 @@ public class SimpleEditorWindow : EditorWindow
         refreshButton = rootVisualElement.Q<Button>("refreshButton");
         refreshButton.RegisterCallback<ClickEvent>(e => { 
             Initialize();
+
+            selectedSkill = skills[index];
+            DisplaySkillInfo();
+            
             leftPane.RefreshItems();
         });
 
@@ -117,22 +122,56 @@ public class SimpleEditorWindow : EditorWindow
 
         selectedIcon = rootVisualElement.Q<Button>("selectedIcon");
         selectedName = rootVisualElement.Q<TextField>("selectedName");
-        selectedName.RegisterValueChangedCallback(e => {
+        selectedName.RegisterValueChangedCallback(e => 
+        {
             selectedSkill.name = e.newValue;
             leftPane.RefreshItems();
         });
         selectedCategory = rootVisualElement.Q<DropdownField>("selectedCategory");
         selectedDescription = rootVisualElement.Q<TextField>("selectedDescription");
+        selectedDescription.RegisterValueChangedCallback(e => 
+        {
+            selectedSkill.description = e.newValue;
+        });
         selectedDetails = rootVisualElement.Q<TextField>("selectedDetails");
+        selectedDetails.RegisterValueChangedCallback(e =>
+        {
+            selectedSkill.details = e.newValue;
+        });
         selectedFirstRank = rootVisualElement.Q<DropdownField>("selectedFirstRank");
         selectedStartRank = rootVisualElement.Q<DropdownField>("selectedStartRank");
         selectedLastRank = rootVisualElement.Q<DropdownField>("selectedLastRank");
         selectedBaseLoadTime = rootVisualElement.Q<FloatField>("selectedBaseLoadTime");
+        selectedBaseLoadTime.RegisterValueChangedCallback(e =>
+        {
+            selectedSkill.baseLoadTime = e.newValue;
+        });
         selectedBaseUseTime = rootVisualElement.Q<FloatField>("selectedBaseUseTime");
+        selectedBaseUseTime.RegisterValueChangedCallback(e =>
+        {
+            selectedSkill.baseUseTime = e.newValue;
+        });
         selectedBaseCooldownTime = rootVisualElement.Q<FloatField>("selectedBaseCooldownTime");
+        selectedBaseCooldownTime.RegisterValueChangedCallback(e =>
+        {
+            selectedSkill.baseCooldown = e.newValue;
+        });
         selectedIsStartingWith = rootVisualElement.Q<Toggle>("selectedIsStartingWith");
+        selectedIsStartingWith.RegisterValueChangedCallback(e =>
+        {
+            selectedSkill.isStartingWith = e.newValue;
+        });
         selectedIsLearnable = rootVisualElement.Q<Toggle>("selectedIsLearnable");
+        selectedIsLearnable.RegisterValueChangedCallback(e =>
+        {
+            selectedSkill.isLearnable = e.newValue;
+        });
         selectedIsPassive = rootVisualElement.Q<Toggle>("selectedIsPassive");
+        selectedIsPassive.RegisterValueChangedCallback(e =>
+        {
+            selectedSkill.isPassive = e.newValue;
+        });
+
         statView = rootVisualElement.Q<MultiColumnListView>("selectedStats");
         trainingView = rootVisualElement.Q<MultiColumnListView>("selectedTraining");
 
@@ -289,9 +328,13 @@ public class SimpleEditorWindow : EditorWindow
             return;
         }
 
-        int index = enumerator.Current;
+        index = enumerator.Current;
         selectedSkill = skills[index];
+        DisplaySkillInfo();
+    }
 
+    private void DisplaySkillInfo()
+    {
         selectedIcon.style.backgroundImage = new StyleBackground(selectedSkill.icon);
         //selectedIcon.clicked += ChangeIcon;
         selectedName.value = selectedSkill.name;
@@ -311,27 +354,30 @@ public class SimpleEditorWindow : EditorWindow
         selectedCategory.choices = names;
         selectedDescription.value = selectedSkill.description;
         selectedDetails.value = selectedSkill.details;
+
         selectedFirstRank.value = selectedSkill.firstAvailableRank;
         firstAvailableRank = selectedSkill.firstAvailableRank;
         selectedFirstRank.choices = SkillModel.ranks;
+
         selectedStartRank.value = selectedSkill.startingRank;
         selectedStartRank.choices = SkillModel.ranks;  
+
         selectedLastRank.value = selectedSkill.lastAvailableRank;
         lastAvailableRank = selectedSkill.lastAvailableRank;
         selectedLastRank.choices = SkillModel.ranks;
+
         selectedBaseLoadTime.value = selectedSkill.baseLoadTime;
-        selectedBaseUseTime.value = selectedSkill.baseLoadTime;
-        selectedBaseCooldownTime.value = selectedSkill.baseLoadTime;
+        selectedBaseUseTime.value = selectedSkill.baseUseTime;
+        selectedBaseCooldownTime.value = selectedSkill.baseCooldown;
+
         selectedIsStartingWith.value = selectedSkill.isStartingWith;
         selectedIsLearnable.value = selectedSkill.isLearnable;
         selectedIsPassive.value = selectedSkill.isPassive;
         
-        List<SkillStatModel> stats = new List<SkillStatModel>(selectedSkill.stats);
-        statView.itemsSource = stats;
+        statView.itemsSource = selectedSkill.stats;
         statView.RefreshItems();
 
-        List<TrainingMethodModel> trainingMethods = new List<TrainingMethodModel>(selectedSkill.trainingMethods);
-        trainingView.itemsSource = trainingMethods;
+        trainingView.itemsSource = selectedSkill.trainingMethods;
         trainingView.RefreshItems();
     }
 

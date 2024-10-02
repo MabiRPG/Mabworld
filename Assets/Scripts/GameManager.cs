@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour
 
     public DataTable QueryDatabase(string query, params (string Key, object Value)[] args)
     {
-        return Database.Query(query, args);
+        return Database.Read(query, args);
     }
 
     public void ParseDatabaseRow(DataRow row, object model,

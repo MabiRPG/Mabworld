@@ -57,7 +57,7 @@ public class SkillModel
                 ON skill_stat.skill_stat_id = skill_stat_type.id
                 WHERE skill.id = @id;";
 
-        DataTable dt = database.Query(statsQuery, ("@id", ID));
+        DataTable dt = database.Read(statsQuery, ("@id", ID));
 
         foreach (DataRow r in dt.Rows)
         {
@@ -69,7 +69,7 @@ public class SkillModel
             FROM training_method
             WHERE skill_id = @id;";
 
-        dt = database.Query(trainingQuery, ("@id", ID));
+        dt = database.Read(trainingQuery, ("@id", ID));
 
         foreach (DataRow r in dt.Rows)
         {
@@ -175,7 +175,7 @@ public class DatabaseManager
     /// <param name="query">SQL query string to be executed.</param>
     /// <param name="args">Variable argument list for SQL parameters.</param>
     /// <returns>DataTable result of SQL query.</returns>
-    public DataTable Query(string query, params (string Key, object Value)[] args)
+    public DataTable Read(string query, params (string Key, object Value)[] args)
     {
         // Construct a cache key from parameters and sql string.
         string cacheKey = query;
