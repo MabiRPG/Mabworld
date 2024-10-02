@@ -7,8 +7,30 @@ using UnityEngine.UIElements;
 
 public class SimpleEditorWindow : EditorWindow
 {
+    private Button refreshButton;
+
     private MultiColumnListView leftPane;
-    private VisualElement rightPane;
+
+    private SkillModel selectedSkill;
+    private Button selectedIcon;
+    private TextField selectedName;
+    private DropdownField selectedCategory;
+    private TextField selectedDescription;
+    private TextField selectedDetails;
+    private DropdownField selectedFirstRank;
+    private DropdownField selectedStartRank;
+    private DropdownField selectedLastRank;
+    private FloatField selectedBaseLoadTime;
+    private FloatField selectedBaseUseTime;
+    private FloatField selectedBaseCooldownTime;
+    private Toggle selectedIsStartingWith;
+    private Toggle selectedIsLearnable;
+    private Toggle selectedIsPassive;
+
+    private MultiColumnListView statView;
+    private Button statAddButton;
+    private MultiColumnListView trainingView;
+    private Button methodAddButton;
 
     private string firstAvailableRank;
     private string lastAvailableRank;
@@ -74,9 +96,13 @@ public class SimpleEditorWindow : EditorWindow
 
         m_VisualTreeAsset.CloneTree(rootVisualElement);
 
-        var splitView = rootVisualElement.Q<TwoPaneSplitView>();
-        leftPane = rootVisualElement.Q<MultiColumnListView>();
+        refreshButton = rootVisualElement.Q<Button>("refreshButton");
+        refreshButton.RegisterCallback<ClickEvent>(e => { 
+            Initialize();
+            leftPane.RefreshItems();
+        });
 
+        leftPane = rootVisualElement.Q<MultiColumnListView>();
         leftPane.itemsSource = skills;
 
         // leftPane.columns.Add(new Column { name = "icon", title = "Icon", width = 40 });
@@ -89,8 +115,33 @@ public class SimpleEditorWindow : EditorWindow
         
         leftPane.selectedIndicesChanged += OnSkillSelectionChange;
 
-        MultiColumnListView statView = rootVisualElement.Q<MultiColumnListView>("selectedStats");
+        selectedIcon = rootVisualElement.Q<Button>("selectedIcon");
+        selectedName = rootVisualElement.Q<TextField>("selectedName");
+        selectedName.RegisterValueChangedCallback(e => {
+            selectedSkill.name = e.newValue;
+            leftPane.RefreshItems();
+        });
+        selectedCategory = rootVisualElement.Q<DropdownField>("selectedCategory");
+        selectedDescription = rootVisualElement.Q<TextField>("selectedDescription");
+        selectedDetails = rootVisualElement.Q<TextField>("selectedDetails");
+        selectedFirstRank = rootVisualElement.Q<DropdownField>("selectedFirstRank");
+        selectedStartRank = rootVisualElement.Q<DropdownField>("selectedStartRank");
+        selectedLastRank = rootVisualElement.Q<DropdownField>("selectedLastRank");
+        selectedBaseLoadTime = rootVisualElement.Q<FloatField>("selectedBaseLoadTime");
+        selectedBaseUseTime = rootVisualElement.Q<FloatField>("selectedBaseUseTime");
+        selectedBaseCooldownTime = rootVisualElement.Q<FloatField>("selectedBaseCooldownTime");
+        selectedIsStartingWith = rootVisualElement.Q<Toggle>("selectedIsStartingWith");
+        selectedIsLearnable = rootVisualElement.Q<Toggle>("selectedIsLearnable");
+        selectedIsPassive = rootVisualElement.Q<Toggle>("selectedIsPassive");
+        statView = rootVisualElement.Q<MultiColumnListView>("selectedStats");
+        trainingView = rootVisualElement.Q<MultiColumnListView>("selectedTraining");
 
+        CreateStatView();
+        CreateTrainingView();
+    }
+
+    private void CreateStatView()
+    {
         statView.columns["stat"].makeCell = () => new DropdownField();
         statView.columns["stat"].bindCell = (item, j) => {
             List<string> names = new List<string>();
@@ -116,12 +167,12 @@ public class SimpleEditorWindow : EditorWindow
             statView.columns[hex].makeCell = () => new FloatField();
             statView.columns[hex].bindCell = (item, k) => {
                 // Truncate ranks that are not available in skill.
-                if (j > int.Parse(firstAvailableRank, System.Globalization.NumberStyles.HexNumber) ||
-                    j < int.Parse(lastAvailableRank, System.Globalization.NumberStyles.HexNumber))
-                {
-                    statView.columns[hex].visible = false;
-                    return;
-                }
+                // if (j > int.Parse(firstAvailableRank, System.Globalization.NumberStyles.HexNumber) ||
+                //     j < int.Parse(lastAvailableRank, System.Globalization.NumberStyles.HexNumber))
+                // {
+                //     statView.columns[hex].visible = false;
+                //     return;
+                // }
 
                 statView.columns[hex].visible = true;
                 (item as FloatField).value = (statView.itemsSource[k] as SkillStatModel).values[15 - j]; 
@@ -142,15 +193,22 @@ public class SimpleEditorWindow : EditorWindow
             (item as Button).userData = j;
         };
 
-        Button statAddButton = rootVisualElement.Q<Button>("statAddButton");
+        statAddButton = rootVisualElement.Q<Button>("statAddButton");
         statAddButton.clicked += () =>
         {
             statView.itemsSource.Add(new SkillStatModel());
             statView.RefreshItems();
         };
+    }
 
-        MultiColumnListView trainingView = rootVisualElement.Q<MultiColumnListView>("selectedTraining");
+    private void RemoveStatAt(MultiColumnListView statView, Button button)
+    {
+        statView.itemsSource.RemoveAt((int)button.userData);
+        statView.RefreshItems();
+    }
 
+    private void CreateTrainingView()
+    {
         trainingView.columns["name"].makeCell = () => new DropdownField();
         trainingView.columns["name"].bindCell = (item, j) =>
         {
@@ -195,12 +253,31 @@ public class SimpleEditorWindow : EditorWindow
             totalXP *= (trainingView.itemsSource[j] as TrainingMethodModel).countMax;
             (item as Label).text = totalXP.ToString();
         };
+
+        trainingView.columns["delete"].makeCell = () =>
+        {
+            Button button = new Button();
+            button.RegisterCallback<ClickEvent>(e => RemoveMethodAt(trainingView, button));
+            return button;
+        };
+        trainingView.columns["delete"].bindCell = (item, j) =>
+        {
+            (item as Button).text = "X";
+            (item as Button).userData = j;
+        };
+
+        methodAddButton = rootVisualElement.Q<Button>("methodAddButton");
+        methodAddButton.clicked += () =>
+        {
+            trainingView.itemsSource.Add(new TrainingMethodModel());
+            trainingView.RefreshItems();
+        };
     }
 
-    private void RemoveStatAt(MultiColumnListView statView, Button button)
+    private void RemoveMethodAt(MultiColumnListView trainingView, Button button)
     {
-        statView.itemsSource.RemoveAt((int)button.userData);
-        statView.RefreshItems();
+        trainingView.itemsSource.RemoveAt((int)button.userData);
+        trainingView.RefreshItems();
     }
 
     private void OnSkillSelectionChange(IEnumerable<int> selectedIndex)
@@ -213,74 +290,47 @@ public class SimpleEditorWindow : EditorWindow
         }
 
         int index = enumerator.Current;
+        selectedSkill = skills[index];
 
-        Button selectedIcon = rootVisualElement.Q<Button>("selectedIcon");
-        selectedIcon.style.backgroundImage = new StyleBackground(skills[index].icon);
+        selectedIcon.style.backgroundImage = new StyleBackground(selectedSkill.icon);
         //selectedIcon.clicked += ChangeIcon;
-
-        TextField selectedName = rootVisualElement.Q<TextField>("selectedName");
-        selectedName.value = skills[index].name;
-
-        DropdownField selectedCategory = rootVisualElement.Q<DropdownField>("selectedCategory");
+        selectedName.value = selectedSkill.name;
+        
         List<string> names = new List<string>();
 
         foreach (SkillTypeModel category in skillTypes)
         {
             names.Add(category.name);
 
-            if (category.ID == skills[index].categoryID)
+            if (category.ID == selectedSkill.categoryID)
             {
                 selectedCategory.value = category.name;
             }
         }
 
         selectedCategory.choices = names;
-
-        TextField selectedDescription = rootVisualElement.Q<TextField>("selectedDescription");
-        selectedDescription.value = skills[index].description;
-
-        TextField selectedDetails = rootVisualElement.Q<TextField>("selectedDetails");
-        selectedDetails.value = skills[index].details;
-
-        DropdownField selectedFirstRank = rootVisualElement.Q<DropdownField>("selectedFirstRank");
-        selectedFirstRank.value = skills[index].firstAvailableRank;
-        firstAvailableRank = skills[index].firstAvailableRank;
+        selectedDescription.value = selectedSkill.description;
+        selectedDetails.value = selectedSkill.details;
+        selectedFirstRank.value = selectedSkill.firstAvailableRank;
+        firstAvailableRank = selectedSkill.firstAvailableRank;
         selectedFirstRank.choices = SkillModel.ranks;
-
-        DropdownField selectedStartRank = rootVisualElement.Q<DropdownField>("selectedStartRank");
-        selectedStartRank.value = skills[index].startingRank;
-        selectedStartRank.choices = SkillModel.ranks;
-
-        DropdownField selectedLastRank = rootVisualElement.Q<DropdownField>("selectedLastRank");
-        selectedLastRank.value = skills[index].lastAvailableRank;
-        lastAvailableRank = skills[index].lastAvailableRank;
+        selectedStartRank.value = selectedSkill.startingRank;
+        selectedStartRank.choices = SkillModel.ranks;  
+        selectedLastRank.value = selectedSkill.lastAvailableRank;
+        lastAvailableRank = selectedSkill.lastAvailableRank;
         selectedLastRank.choices = SkillModel.ranks;
-
-        FloatField selectedBaseLoadTime = rootVisualElement.Q<FloatField>("selectedBaseLoadTime");
-        selectedBaseLoadTime.value = skills[index].baseLoadTime;
-
-        FloatField selectedBaseUseTime = rootVisualElement.Q<FloatField>("selectedBaseUseTime");
-        selectedBaseUseTime.value = skills[index].baseLoadTime;
-
-        FloatField selectedBaseCooldownTime = rootVisualElement.Q<FloatField>("selectedBaseCooldownTime");
-        selectedBaseCooldownTime.value = skills[index].baseLoadTime;
-
-        Toggle selectedIsStartingWith = rootVisualElement.Q<Toggle>("selectedIsStartingWith");
-        selectedIsStartingWith.value = skills[index].isStartingWith;
-
-        Toggle selectedIsLearnable = rootVisualElement.Q<Toggle>("selectedIsLearnable");
-        selectedIsLearnable.value = skills[index].isLearnable;
-
-        Toggle selectedIsPassive = rootVisualElement.Q<Toggle>("selectedIsPassive");
-        selectedIsPassive.value = skills[index].isPassive;
-
-        MultiColumnListView statView = rootVisualElement.Q<MultiColumnListView>("selectedStats");
-        List<SkillStatModel> stats = new List<SkillStatModel>(skills[index].stats);
+        selectedBaseLoadTime.value = selectedSkill.baseLoadTime;
+        selectedBaseUseTime.value = selectedSkill.baseLoadTime;
+        selectedBaseCooldownTime.value = selectedSkill.baseLoadTime;
+        selectedIsStartingWith.value = selectedSkill.isStartingWith;
+        selectedIsLearnable.value = selectedSkill.isLearnable;
+        selectedIsPassive.value = selectedSkill.isPassive;
+        
+        List<SkillStatModel> stats = new List<SkillStatModel>(selectedSkill.stats);
         statView.itemsSource = stats;
         statView.RefreshItems();
 
-        MultiColumnListView trainingView = rootVisualElement.Q<MultiColumnListView>("selectedTraining");
-        List<TrainingMethodModel> trainingMethods = new List<TrainingMethodModel>(skills[index].trainingMethods);
+        List<TrainingMethodModel> trainingMethods = new List<TrainingMethodModel>(selectedSkill.trainingMethods);
         trainingView.itemsSource = trainingMethods;
         trainingView.RefreshItems();
     }

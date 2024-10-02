@@ -136,6 +136,10 @@ public class TrainingMethodModel
     public float xpGainEach;
     public int countMax;
 
+    public TrainingMethodModel()
+    {
+    }
+
     public TrainingMethodModel(DatabaseManager database, DataRow row)
     {
         database.ParseRow(row, this, ("skill_id", "skillID"), ("training_method_id", "trainingMethodID"));

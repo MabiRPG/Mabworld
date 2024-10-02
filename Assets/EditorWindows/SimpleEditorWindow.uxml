@@ -1,6 +1,11 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/EditorWindows/SimpleEditorWindow.uss?fileID=7433441132597879392&amp;guid=53ab6b972b0753147bced9c4349665e5&amp;type=3#SimpleEditorWindow" />
-    <ui:TwoPaneSplitView fixed-pane-initial-dimension="250" style="align-items: auto; justify-content: flex-start;">
+    <ui:GroupBox style="align-items: auto; flex-direction: row; justify-content: flex-start; margin-top: 2px;">
+        <ui:Button text="Refresh" parse-escape-sequences="true" display-tooltip-when-elided="true" name="refreshButton" style="background-image: none;" />
+        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+    </ui:GroupBox>
+    <ui:TwoPaneSplitView fixed-pane-initial-dimension="250" style="align-items: auto; justify-content: flex-start; -unity-text-outline-width: 0; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; border-left-color: rgba(255, 255, 255, 0); border-right-color: rgba(255, 255, 255, 0); border-top-color: rgba(255, 255, 255, 0); border-bottom-color: rgba(255, 255, 255, 0);">
         <ui:VisualElement>
             <ui:MultiColumnListView name="leftPane" fixed-item-height="20" reorderable="false" show-add-remove-footer="false" show-foldout-header="false">
                 <ui:Columns>
@@ -45,7 +50,7 @@
                     <ui:Column name="3" title="3" width="40" />
                     <ui:Column name="2" title="2" width="40" />
                     <ui:Column name="1" title="1" width="40" />
-                    <ui:Column name="delete" width="40" />
+                    <ui:Column name="delete" width="30" />
                 </ui:Columns>
             </ui:MultiColumnListView>
             <ui:Button text="Add new stat" parse-escape-sequences="true" display-tooltip-when-elided="true" name="statAddButton" style="align-items: flex-start; flex-basis: auto;" />
@@ -56,6 +61,7 @@
                     <ui:Column name="xpGainEach" title="XP Gain Each" width="50" />
                     <ui:Column name="countMax" title="Counts" width="50" />
                     <ui:Column name="total" title="Total XP" width="50" />
+                    <ui:Column name="delete" width="30" />
                 </ui:Columns>
             </ui:MultiColumnListView>
             <ui:Button text="Add new method" parse-escape-sequences="true" display-tooltip-when-elided="true" name="methodAddButton" style="align-items: flex-start; flex-basis: auto;" />
