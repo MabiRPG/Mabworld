@@ -229,6 +229,32 @@ public class DatabaseManager
         return dt;
     }
 
+    public int Write(string query, params (string Key, object Value)[] args)
+    {
+        // Creates the database uri location
+        string dbUri = "URI=file:" + Application.streamingAssetsPath + "/" + databaseName;
+
+        // Opens a connection
+        IDbConnection dbConnection = new SqliteConnection(dbUri);
+
+        // Creates a sql query command
+        IDbCommand dbCommand = dbConnection.CreateCommand();
+
+        dbCommand.CommandText = query;
+
+        // Adds a parameterized field for each in args.
+        foreach (var (Key, Value) in args)
+        {
+            var parameter = dbCommand.CreateParameter();
+            parameter.ParameterName = Key;
+            parameter.Value = Value;
+            dbCommand.Parameters.Add(parameter);
+        }
+
+        dbConnection.Open();
+        return dbCommand.ExecuteNonQuery();
+    }
+
     /// <summary>
     ///     Parses the database row and transforms it into a C# class model
     ///     with custom parameter mapping.

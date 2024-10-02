@@ -8,6 +8,7 @@ using UnityEngine.UIElements;
 public class SimpleEditorWindow : EditorWindow
 {
     private Button refreshButton;
+    private Button commitButton;
 
     private MultiColumnListView leftPane;
 
@@ -36,6 +37,7 @@ public class SimpleEditorWindow : EditorWindow
     private string firstAvailableRank;
     private string lastAvailableRank;
 
+    private DatabaseManager database;
     private List<SkillModel> skills;
     private List<SkillTypeModel> skillTypes;
     private List<SkillStatTypeModel> skillStatTypes;
@@ -53,7 +55,7 @@ public class SimpleEditorWindow : EditorWindow
 
     private void Initialize()
     {
-        DatabaseManager database = new DatabaseManager("mabinogi.db");
+        database = new DatabaseManager("mabinogi.db");
         DataTable dt = database.Read("SELECT * FROM skill;");
         skills = new List<SkillModel>();
 
@@ -98,13 +100,78 @@ public class SimpleEditorWindow : EditorWindow
         m_VisualTreeAsset.CloneTree(rootVisualElement);
 
         refreshButton = rootVisualElement.Q<Button>("refreshButton");
-        refreshButton.RegisterCallback<ClickEvent>(e => { 
+        refreshButton.RegisterCallback<ClickEvent>(e => 
+        { 
             Initialize();
 
             selectedSkill = skills[index];
             DisplaySkillInfo();
             
             leftPane.RefreshItems();
+        });
+
+        commitButton = rootVisualElement.Q<Button>("commitButton");
+        commitButton.RegisterCallback<ClickEvent>(e =>
+        {
+            foreach (SkillModel skill in skills)
+            {
+                string commit = @"INSERT INTO skill
+                    (
+                        id, 
+                        name, 
+                        category_id,
+                        description,
+                        details,
+                        starting_rank,
+                        first_available_rank,
+                        last_available_rank,
+                        base_load_time,
+                        base_use_time,
+                        base_cooldown
+                    ) 
+                    Values
+                    (
+                        @ID, 
+                        @name, 
+                        @categoryID,
+                        @description,
+                        @details,
+                        @startingRank,
+                        @firstAvailableRank,
+                        @lastAvailableRank,
+                        @baseLoadTime,
+                        @baseUseTime,
+                        @baseCooldown
+                    )
+                    ON CONFLICT(id) DO UPDATE 
+                    SET 
+                        name=@name,
+                        description=@description,
+                        details=@details,
+                        starting_rank=@startingRank,
+                        first_available_rank=@firstAvailableRank,
+                        last_available_rank=@lastAvailableRank,
+                        base_load_time=@baseLoadTime,
+                        base_use_time=@baseUseTime,
+                        base_cooldown=@baseCooldown
+                    ;";
+
+                int rowsChanged = database.Write(commit, 
+                    ("@ID", skill.ID), 
+                    ("@name", skill.name),
+                    ("@categoryID", skill.categoryID),
+                    ("@description", skill.description),
+                    ("@details", skill.details),
+                    ("@firstAvailableRank", skill.firstAvailableRank),
+                    ("@startingRank", skill.startingRank),
+                    ("@lastAvailableRank", skill.lastAvailableRank),
+                    ("@baseLoadTime", skill.baseLoadTime),
+                    ("@baseUseTime", skill.baseUseTime),
+                    ("@baseCooldown", skill.baseCooldown)
+                );
+
+                Debug.Log(rowsChanged);
+            }
         });
 
         leftPane = rootVisualElement.Q<MultiColumnListView>();
@@ -139,8 +206,20 @@ public class SimpleEditorWindow : EditorWindow
             selectedSkill.details = e.newValue;
         });
         selectedFirstRank = rootVisualElement.Q<DropdownField>("selectedFirstRank");
+        selectedFirstRank.RegisterValueChangedCallback(e =>
+        {
+            selectedSkill.firstAvailableRank = e.newValue;
+        });
         selectedStartRank = rootVisualElement.Q<DropdownField>("selectedStartRank");
+        selectedStartRank.RegisterValueChangedCallback(e =>
+        {
+            selectedSkill.startingRank = e.newValue;
+        });
         selectedLastRank = rootVisualElement.Q<DropdownField>("selectedLastRank");
+        selectedLastRank.RegisterValueChangedCallback(e =>
+        {
+            selectedSkill.lastAvailableRank = e.newValue;
+        });
         selectedBaseLoadTime = rootVisualElement.Q<FloatField>("selectedBaseLoadTime");
         selectedBaseLoadTime.RegisterValueChangedCallback(e =>
         {
