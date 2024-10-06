@@ -16,9 +16,11 @@
         <ui:ScrollView style="align-items: center; align-self: auto; justify-content: center;">
             <ui:TextField picking-mode="Ignore" label="Name:" keyboard-type="ASCIICapable" max-length="-1" name="selectedName" style="justify-content: flex-start; align-self: auto; align-items: auto;" />
             <ui:DropdownField label="Category:" name="selectedCategory" />
+            <uie:ObjectField label="Icon:" type="UnityEngine.Sprite, UnityEngine.CoreModule" name="selectedIcon" />
+            <uie:ObjectField label="SFX:" type="UnityEngine.AudioClip, UnityEngine.AudioModule" name="selectedSFX" />
             <ui:TextField picking-mode="Ignore" label="Description:" multiline="true" name="selectedDescription" keyboard-type="ASCIICapable" hide-mobile-input="false" style="height: auto; flex-wrap: wrap; white-space: normal; flex-grow: 0;" />
             <ui:TextField picking-mode="Ignore" label="Details:" multiline="true" name="selectedDetails" keyboard-type="ASCIICapable" hide-mobile-input="false" style="height: auto; flex-wrap: wrap; white-space: normal; justify-content: space-around;" />
-            <ui:VisualElement style="flex-grow: 0; flex-shrink: 0; align-items: center; justify-content: space-between; flex-direction: row;">
+            <ui:VisualElement name="VisualElement" style="flex-grow: 0; flex-shrink: 0; align-items: center; justify-content: space-between; flex-direction: row; display: none;">
                 <ui:Label tabindex="-1" text="Icon:" parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-top: 2px; margin-left: 4px;" />
                 <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="selectedIcon" style="width: 50px; height: 50px; position: relative; left: 0; top: 0; background-color: rgba(188, 188, 188, 0); right: 0; bottom: 0; flex-wrap: wrap-reverse; justify-content: center; align-self: center; align-items: center; -unity-text-align: middle-center; flex-direction: column; flex-shrink: 0; transform-origin: left top;" />
             </ui:VisualElement>
