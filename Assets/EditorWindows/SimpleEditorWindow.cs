@@ -152,6 +152,10 @@ public class SimpleEditorWindow : EditorWindow
             selectedSkill.sfx = (AudioClip)e.newValue;
         });
         selectedCategory = rootVisualElement.Q<DropdownField>("selectedCategory");
+        selectedCategory.RegisterValueChangedCallback(e =>
+        {
+            selectedSkill.categoryID = ConvertSkillCategoryNameToID(e.newValue);
+        });
         selectedDescription = rootVisualElement.Q<TextField>("selectedDescription");
         selectedDescription.RegisterValueChangedCallback(e => 
         {
@@ -444,6 +448,20 @@ public class SimpleEditorWindow : EditorWindow
         return settings.FindAssetEntry(assetGUID).address;
     }
 
+    private int ConvertSkillCategoryNameToID(string name)
+    {
+        foreach (SkillTypeModel skillType in skillTypes)
+        {
+            if (name == skillType.name)
+            {
+                return skillType.ID;
+            }
+        }
+
+        // Default to Foundation if cannot be found.
+        return 1;
+    }
+
     private int SaveSkills()
     {
         int rowsChanged = 0;
@@ -494,6 +512,7 @@ public class SimpleEditorWindow : EditorWindow
                 ON CONFLICT(id) DO UPDATE 
                 SET 
                     name=@name,
+                    category_id=@categoryID,
                     description=@description,
                     details=@details,
                     icon=@icon,
