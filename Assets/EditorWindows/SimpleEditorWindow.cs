@@ -44,9 +44,6 @@ public class SimpleEditorWindow : EditorWindow
 
     private DatabaseManager database;
     private List<SkillModel> skills;
-    private List<SkillTypeModel> skillTypes;
-    private List<SkillStatTypeModel> skillStatTypes;
-    private List<TrainingMethodTypeModel> trainingMethodTypes;
 
     [SerializeField]
     private VisualTreeAsset m_VisualTreeAsset = default;
@@ -61,40 +58,44 @@ public class SimpleEditorWindow : EditorWindow
     private void Initialize()
     {
         database = new DatabaseManager("mabinogi.db");
-        DataTable dt = database.Read("SELECT * FROM skill;");
+
+        DataTable dt = database.Read("SELECT id FROM skill;");
         skills = new List<SkillModel>();
 
         foreach (DataRow row in dt.Rows)
         {
-            SkillModel skill = new SkillModel(database, row);
+            int ID = int.Parse(row["id"].ToString());
+            SkillModel skill = new SkillModel(database, ID);
             skills.Add(skill);
         }
 
-        dt = database.Read("SELECT * FROM skill_category_type;");
-        skillTypes = new List<SkillTypeModel>();
+        dt = database.Read("SELECT id FROM skill_category_type;");
 
         foreach (DataRow row in dt.Rows)
         {
-            SkillTypeModel skillType = new SkillTypeModel(database, row);
-            skillTypes.Add(skillType);
+            int ID = int.Parse(row["id"].ToString());
+            new SkillTypeModel(database, ID);
         }
 
-        dt = database.Read("SELECT * FROM skill_stat_type;");
-        skillStatTypes = new List<SkillStatTypeModel>();
-
-        foreach (DataRow row in dt.Rows)
+        foreach ((int ID, string name) in SkillTypeModel.types)
         {
-            SkillStatTypeModel skillStatType = new SkillStatTypeModel(database, row);
-            skillStatTypes.Add(skillStatType);
+            Debug.Log($"{ID} {name}");
         }
 
-        dt = database.Read("SELECT * FROM training_method_type;");
-        trainingMethodTypes = new List<TrainingMethodTypeModel>();
+        dt = database.Read("SELECT id FROM skill_stat_type;");
 
         foreach (DataRow row in dt.Rows)
         {
-            TrainingMethodTypeModel trainingMethodType = new TrainingMethodTypeModel(database, row);
-            trainingMethodTypes.Add(trainingMethodType);
+            int ID = int.Parse(row["id"].ToString());
+            new SkillStatTypeModel(database, ID);
+        }
+
+        dt = database.Read("SELECT id FROM training_method_type;");
+
+        foreach (DataRow row in dt.Rows)
+        {
+            int ID = int.Parse(row["id"].ToString());
+            new TrainingMethodTypeModel(database, ID);
         }
     }
 
@@ -225,14 +226,14 @@ public class SimpleEditorWindow : EditorWindow
         statView.columns["stat"].bindCell = (item, j) => {
             List<string> names = new List<string>();
 
-            foreach (SkillStatTypeModel statType in skillStatTypes)
+            foreach ((int ID, string name) in SkillStatTypeModel.types)
             {
-                if (statType.ID == (statView.itemsSource[j] as SkillStatModel).statID)
+                if (ID == (statView.itemsSource[j] as SkillStatModel).statID)
                 {
-                    (item as DropdownField).value = statType.name;
+                    (item as DropdownField).value = name;
                 }
 
-                names.Add(statType.name);
+                names.Add(name);
             }
 
             (item as DropdownField).choices = names;
@@ -275,7 +276,7 @@ public class SimpleEditorWindow : EditorWindow
         statAddButton = rootVisualElement.Q<Button>("statAddButton");
         statAddButton.clicked += () =>
         {
-            statView.itemsSource.Add(new SkillStatModel());
+            // statView.itemsSource.Add(new SkillStatModel());
             statView.RefreshItems();
         };
     }
@@ -293,14 +294,14 @@ public class SimpleEditorWindow : EditorWindow
         {
             List<string> names = new List<string>();
 
-            foreach (TrainingMethodTypeModel trainingMethod in trainingMethodTypes)
+            foreach ((int ID, string name) in TrainingMethodTypeModel.types)
             {
-                if (trainingMethod.ID == (trainingView.itemsSource[j] as TrainingMethodModel).trainingMethodID)
+                if (ID == (trainingView.itemsSource[j] as TrainingMethodModel).trainingMethodID)
                 {
-                    (item as DropdownField).value = trainingMethod.name;
+                    (item as DropdownField).value = name;
                 }
 
-                names.Add(trainingMethod.name);
+                names.Add(name);
             }
 
             (item as DropdownField).choices = names;
@@ -348,7 +349,7 @@ public class SimpleEditorWindow : EditorWindow
         methodAddButton = rootVisualElement.Q<Button>("methodAddButton");
         methodAddButton.clicked += () =>
         {
-            trainingView.itemsSource.Add(new TrainingMethodModel());
+            // trainingView.itemsSource.Add(new TrainingMethodModel());
             trainingView.RefreshItems();
         };
     }
@@ -381,14 +382,14 @@ public class SimpleEditorWindow : EditorWindow
         
         List<string> names = new List<string>();
 
-        foreach (SkillTypeModel category in skillTypes)
+        foreach ((int ID, string name) in SkillTypeModel.types)
         {
-            names.Add(category.name);
-
-            if (category.ID == selectedSkill.categoryID)
+            if (ID == selectedSkill.categoryID)
             {
-                selectedCategory.value = category.name;
+                selectedCategory.value = name;
             }
+
+            names.Add(name);
         }
 
         selectedCategory.choices = names;
@@ -450,11 +451,11 @@ public class SimpleEditorWindow : EditorWindow
 
     private int ConvertSkillCategoryNameToID(string name)
     {
-        foreach (SkillTypeModel skillType in skillTypes)
+        foreach ((int ID, string categoryName) in SkillTypeModel.types)
         {
-            if (name == skillType.name)
+            if (categoryName == name)
             {
-                return skillType.ID;
+                return ID;
             }
         }
 

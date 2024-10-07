@@ -77,6 +77,86 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f102b1c7a1dd4174cb1e57f8eb60d1aa
+    m_Address: Mining
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 02d087ced2e56a14a9f3c58af6bab96c
+    m_Address: Pickaxe
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 01ebe76718160374e8053730b30a7d81
+    m_Address: Botany
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c9a561d5ae9adfe409a7eca0b464dd0d
+    m_Address: Sickle
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0ec1b02c182cae42bc24491d918743c
+    m_Address: Sheep_Shearing
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f75fccdde162184b818bf9773d87e00
+    m_Address: Woodcutting
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 899622703511b2342adbdb994c0893b2
+    m_Address: Woodcut
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba4892b586beca64abd234742a2af42c
+    m_Address: Weaving
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5dd8323425a6a634b803b65d5c79767b
+    m_Address: Smelting
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9159e775a58e95342ac2d59ff742fa4d
+    m_Address: Carpentry
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c60614952482604fb5a79dbfc13e520
+    m_Address: Blacksmithing
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a734f89aeb004414ba417c163a6a6f4f
+    m_Address: Jeweler
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 670c952ff427fa74c93b26ec09d7bea8
+    m_Address: Magic_Craft
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24950d84642981d4eb4aba16693afa41
+    m_Address: Medicine_Production
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf4bd25674bf7564a8a6d93e7984d60e
+    m_Address: Assets/Sprites/Grass Tilesets 2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a9cd50f73cf79c04bb375a5437925cb9
+    m_Address: Assets/Addressables/Sounds/SE/rock_run01.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1e04f432b98b4f94099995e59e4681f1, type: 2}
   m_SchemaSet:
