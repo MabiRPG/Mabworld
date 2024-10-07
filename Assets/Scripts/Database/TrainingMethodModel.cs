@@ -6,11 +6,12 @@ public class TrainingMethodModel : BaseModel
     public float xpGainEach;
     public int countMax;
 
-    public TrainingMethodModel(DatabaseManager database, int skillID, int trainingMethodID) 
+    public TrainingMethodModel(DatabaseManager database, int skillID, int trainingMethodID, string rank) 
         : base(database)
     {
         this.skillID = skillID;
         this.trainingMethodID = trainingMethodID;
+        this.rank = rank;
 
         fieldMap.Add("skill_id", new ModelFieldReference(this, nameof(skillID)));
         fieldMap.Add("rank", new ModelFieldReference(this, nameof(rank)));
@@ -19,7 +20,7 @@ public class TrainingMethodModel : BaseModel
         fieldMap.Add("count_max", new ModelFieldReference(this, nameof(countMax)));
 
         readString = @"SELECT * FROM training_method WHERE
-            skill_id = @skill_id AND training_method_id = @training_method_id;";
+            skill_id = @skill_id AND training_method_id = @training_method_id AND rank = @rank;";
 
         ReadRow();
     }

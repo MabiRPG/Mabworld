@@ -35,8 +35,9 @@ public class SkillModel : BaseModel
     public static List<string> ranks = new List<string>
         {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
 
-    public List<SkillStatModel> stats = new List<SkillStatModel>();
-    public List<TrainingMethodModel> trainingMethods = new List<TrainingMethodModel>();
+    public Dictionary<int, SkillStatModel> stats = new Dictionary<int, SkillStatModel>();
+    public Dictionary<(int, string), TrainingMethodModel> trainingMethods = 
+        new Dictionary<(int, string), TrainingMethodModel>();
 
     public SkillModel(DatabaseManager database, int ID) : base(database)
     {
@@ -78,13 +79,13 @@ public class SkillModel : BaseModel
         {
             int statID = int.Parse(row["skill_stat_id"].ToString());
             SkillStatModel stat = new SkillStatModel(database, ID, statID);
-            stats.Add(stat);
+            stats.Add(statID, stat);
         }
     }
 
     private void ReadTrainingMethods()
     {
-        string trainingQuery = @"SELECT training_method_id
+        string trainingQuery = @"SELECT training_method_id, rank
             FROM training_method
             WHERE skill_id = @id;";
 
@@ -93,8 +94,9 @@ public class SkillModel : BaseModel
         foreach (DataRow row in table.Rows)
         {
             int methodID = int.Parse(row["training_method_id"].ToString());
-            TrainingMethodModel method = new TrainingMethodModel(database, ID, methodID);
-            trainingMethods.Add(method);
+            string rank = row["rank"].ToString();
+            TrainingMethodModel method = new TrainingMethodModel(database, ID, methodID, rank);
+            trainingMethods.Add((methodID, method.rank), method);
         }
     }
 }

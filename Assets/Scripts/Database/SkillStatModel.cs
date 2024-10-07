@@ -8,6 +8,16 @@ public class SkillStatModel : BaseModel
     public int statID;
     public List<float> values = new List<float>(SkillModel.ranks.Count);
 
+    public SkillStatModel(DatabaseManager database, int skillID) : base(database)
+    {
+        this.skillID = skillID;
+        
+        for (int i = 0; i < values.Capacity; i++)
+        {
+            values.Add(0);
+        }
+    }
+
     public SkillStatModel(DatabaseManager database, int skillID, int statID) : base(database)
     {
         this.skillID = skillID;

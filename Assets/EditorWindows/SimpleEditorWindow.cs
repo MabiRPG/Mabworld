@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
@@ -44,6 +45,8 @@ public class SimpleEditorWindow : EditorWindow
 
     private DatabaseManager database;
     private List<SkillModel> skills;
+    private List<int> usedStatIDs;
+    private List<int> usedTrainingMethodIDs;
 
     [SerializeField]
     private VisualTreeAsset m_VisualTreeAsset = default;
@@ -76,12 +79,7 @@ public class SimpleEditorWindow : EditorWindow
             int ID = int.Parse(row["id"].ToString());
             new SkillTypeModel(database, ID);
         }
-
-        foreach ((int ID, string name) in SkillTypeModel.types)
-        {
-            Debug.Log($"{ID} {name}");
-        }
-
+        
         dt = database.Read("SELECT id FROM skill_stat_type;");
 
         foreach (DataRow row in dt.Rows)
@@ -233,7 +231,10 @@ public class SimpleEditorWindow : EditorWindow
                     (item as DropdownField).value = name;
                 }
 
-                names.Add(name);
+                if (!usedStatIDs.Contains(ID))
+                {
+                    names.Add(name);
+                }
             }
 
             (item as DropdownField).choices = names;
@@ -276,13 +277,16 @@ public class SimpleEditorWindow : EditorWindow
         statAddButton = rootVisualElement.Q<Button>("statAddButton");
         statAddButton.clicked += () =>
         {
-            // statView.itemsSource.Add(new SkillStatModel());
+            statView.itemsSource.Add(new SkillStatModel(database, selectedSkill.ID));
             statView.RefreshItems();
         };
     }
 
     private void RemoveStatAt(MultiColumnListView statView, Button button)
     {
+        // int ID = (int)statView.itemsSource[(int)button.userData];
+        
+
         statView.itemsSource.RemoveAt((int)button.userData);
         statView.RefreshItems();
     }
@@ -371,6 +375,8 @@ public class SimpleEditorWindow : EditorWindow
 
         index = enumerator.Current;
         selectedSkill = skills[index];
+        usedStatIDs = new List<int>(selectedSkill.stats.Keys);
+        usedTrainingMethodIDs = new List<int>(selectedSkill.trainingMethods.Keys.Select(x => x.Item1));
         DisplaySkillInfo();
     }
 
@@ -416,11 +422,11 @@ public class SimpleEditorWindow : EditorWindow
         selectedIsStartingWith.value = selectedSkill.isStartingWith;
         selectedIsLearnable.value = selectedSkill.isLearnable;
         selectedIsPassive.value = selectedSkill.isPassive;
-        
-        statView.itemsSource = selectedSkill.stats;
+
+        statView.itemsSource = selectedSkill.stats.Values.ToList();
         statView.RefreshItems();
 
-        trainingView.itemsSource = selectedSkill.trainingMethods;
+        trainingView.itemsSource = selectedSkill.trainingMethods.Values.ToList();
         trainingView.RefreshItems();
     }
 
