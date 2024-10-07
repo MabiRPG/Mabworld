@@ -122,11 +122,13 @@ public class SimpleEditorWindow : EditorWindow
 
         // leftPane.columns.Add(new Column { name = "icon", title = "Icon", width = 40 });
         leftPane.columns["icon"].makeCell = () => new Image();
-        leftPane.columns["icon"].bindCell = (item, index) => { (item as Image).sprite = skills[index].icon; };
+        leftPane.columns["icon"].bindCell = 
+            (item, index) => { (item as Image).sprite = skills[index].icon; };
 
         // leftPane.columns.Add(new Column { name = "name", title = "Name", width = 150 });
         leftPane.columns["name"].makeCell = () => new Label();
-        leftPane.columns["name"].bindCell = (item, index) => { (item as Label).text = skills[index].name; };
+        leftPane.columns["name"].bindCell = 
+            (item, index) => { (item as Label).text = skills[index].name; };
         
         leftPane.selectedIndicesChanged += OnSkillSelectionChange;
 
@@ -261,7 +263,8 @@ public class SimpleEditorWindow : EditorWindow
                 // }
 
                 statView.columns[hex].visible = true;
-                (item as FloatField).value = (statView.itemsSource[k] as SkillStatModel).values[15 - j]; 
+                (item as FloatField).value = 
+                    (statView.itemsSource[k] as SkillStatModel).values[15 - j]; 
             };
         }
 
@@ -269,7 +272,9 @@ public class SimpleEditorWindow : EditorWindow
         {
             Button button = new Button();
             // Must use a callback here to prevent duplicating click events in bind.
-            button.RegisterCallback<ClickEvent>(e => RemoveStatAt(statView, (int)button.userData));
+            button.RegisterCallback<ClickEvent>(e => 
+                RemoveStatAt(statView, (int)button.userData)
+            );
             return button;
         };
 
@@ -334,7 +339,8 @@ public class SimpleEditorWindow : EditorWindow
         trainingView.columns["rank"].makeCell = () => new DropdownField();
         trainingView.columns["rank"].bindCell = (item, j) =>
         {
-            (item as DropdownField).value = (trainingView.itemsSource[j] as TrainingMethodModel).rank;
+            (item as DropdownField).value = 
+                (trainingView.itemsSource[j] as TrainingMethodModel).rank;
             (item as DropdownField).choices = SkillModel.ranks;
         };
 
@@ -343,20 +349,37 @@ public class SimpleEditorWindow : EditorWindow
             FloatField floatField = new FloatField();
             floatField.RegisterValueChangedCallback(e =>
             {
-
+                (trainingView.itemsSource[(int)floatField.userData] as TrainingMethodModel).xpGainEach = 
+                    e.newValue;
+                trainingView.RefreshItems();
             });
 
             return floatField;
         };
         trainingView.columns["xpGainEach"].bindCell = (item, j) =>
         {
-            (item as FloatField).value = (trainingView.itemsSource[j] as TrainingMethodModel).xpGainEach;
+            (item as FloatField).SetValueWithoutNotify(
+                (trainingView.itemsSource[j] as TrainingMethodModel).xpGainEach);
+            (item as FloatField).userData = j;
         };
 
-        trainingView.columns["countMax"].makeCell = () => new IntegerField();
+        trainingView.columns["countMax"].makeCell = () =>
+        {
+            IntegerField integerField = new IntegerField();
+            integerField.RegisterValueChangedCallback(e =>
+            {
+                (trainingView.itemsSource[(int)integerField.userData] as TrainingMethodModel).countMax =
+                    e.newValue;
+                trainingView.RefreshItems();
+            });
+
+            return integerField;
+        };
         trainingView.columns["countMax"].bindCell = (item, j) =>
         {
-            (item as IntegerField).value = (trainingView.itemsSource[j] as TrainingMethodModel).countMax;
+            (item as IntegerField).value = 
+                (trainingView.itemsSource[j] as TrainingMethodModel).countMax;
+            (item as IntegerField).userData = j;
         };
 
         trainingView.columns["total"].makeCell = () => new Label();
