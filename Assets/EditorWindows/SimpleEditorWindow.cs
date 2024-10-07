@@ -318,6 +318,8 @@ public class SimpleEditorWindow : EditorWindow
 
     private void CreateTrainingView()
     {
+        trainingView.columnSortingChanged += () => SortMethodColumns();
+
         trainingView.columns["name"].makeCell = () => new DropdownField();
         trainingView.columns["name"].bindCell = (item, j) =>
         {
@@ -405,9 +407,65 @@ public class SimpleEditorWindow : EditorWindow
         methodAddButton = rootVisualElement.Q<Button>("methodAddButton");
         methodAddButton.clicked += () =>
         {
-            // trainingView.itemsSource.Add(new TrainingMethodModel());
+            trainingView.itemsSource.Add(new TrainingMethodModel(database, selectedSkill.ID));
             trainingView.RefreshItems();
         };
+    }
+
+    private void SortMethodColumns()
+    {
+        List<TrainingMethodModel> trainingMethods = 
+            (List<TrainingMethodModel>)trainingView.itemsSource;
+
+        foreach (var column in trainingView.sortedColumns)
+        {
+            switch (column.columnName)
+            {
+                case "name":
+                    break;
+                case "rank":
+                    if (column.direction == SortDirection.Ascending)
+                    {
+                        trainingMethods = 
+                            trainingMethods.OrderBy(v => v.rank).ToList();
+                    }
+                    else
+                    {
+                        trainingMethods = 
+                            trainingMethods.OrderByDescending(v => v.rank).ToList();
+                    }
+                    break;
+                case "xpGainEach":
+                    if (column.direction == SortDirection.Ascending)
+                    {
+                        trainingMethods = 
+                            trainingMethods.OrderBy(v => v.xpGainEach).ToList();
+                    }
+                    else
+                    {
+                        trainingMethods = 
+                            trainingMethods.OrderByDescending(v => v.xpGainEach).ToList();
+                    }
+                    break;
+                case "countMax":
+                    if (column.direction == SortDirection.Ascending)
+                    {
+                        trainingMethods = 
+                            trainingMethods.OrderBy(v => v.countMax).ToList();
+                    }
+                    else
+                    {
+                        trainingMethods = 
+                            trainingMethods.OrderByDescending(v => v.countMax).ToList();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        trainingView.itemsSource = trainingMethods;
+        trainingView.RefreshItems();
     }
 
     private void RemoveMethodAt(MultiColumnListView trainingView, Button button)

@@ -48,6 +48,8 @@ public class TypeModel<T> : BaseModel
 
     public TypeModel(DatabaseManager database) : base(database)
     {
+        fieldMap.Add("id", new ModelFieldReference(this, nameof(ID)));
+        fieldMap.Add("name", new ModelFieldReference(this, nameof(name)));
     }
 
     protected override DataRow ReadRow()

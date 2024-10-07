@@ -55,7 +55,7 @@
                 </ui:Columns>
             </ui:MultiColumnListView>
             <ui:Button text="Add new stat" parse-escape-sequences="true" display-tooltip-when-elided="true" name="statAddButton" style="align-items: flex-start; flex-basis: auto;" />
-            <ui:MultiColumnListView name="selectedTraining" fixed-item-height="20" reorderable="false" show-add-remove-footer="false" show-foldout-header="false" sorting-enabled="false" show-alternating-row-backgrounds="ContentOnly" virtualization-method="FixedHeight" show-border="true" style="padding-top: 15px; padding-bottom: 0; padding-right: 5px; padding-left: 5px;">
+            <ui:MultiColumnListView name="selectedTraining" fixed-item-height="20" reorderable="false" show-add-remove-footer="false" show-foldout-header="false" sorting-enabled="true" show-alternating-row-backgrounds="ContentOnly" virtualization-method="FixedHeight" show-border="true" style="padding-top: 15px; padding-bottom: 0; padding-right: 5px; padding-left: 5px;">
                 <ui:Columns>
                     <ui:Column name="name" title="Training Method" width="150" />
                     <ui:Column name="rank" title="Rank" width="50" />

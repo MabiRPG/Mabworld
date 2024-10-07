@@ -6,6 +6,11 @@ public class TrainingMethodModel : BaseModel
     public float xpGainEach;
     public int countMax;
 
+    public TrainingMethodModel(DatabaseManager database, int skillID) : base(database)
+    {
+        this.skillID = skillID;
+    }
+
     public TrainingMethodModel(DatabaseManager database, int skillID, int trainingMethodID, string rank) 
         : base(database)
     {
