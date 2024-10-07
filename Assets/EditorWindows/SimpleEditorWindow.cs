@@ -107,10 +107,7 @@ public class SimpleEditorWindow : EditorWindow
         refreshButton.RegisterCallback<ClickEvent>(e => 
         { 
             Initialize();
-
-            selectedSkill = skills[index];
-            DisplaySkillInfo();
-            
+            SetSelectedSkill(skills[index]);
             leftPane.RefreshItems();
         });
 
@@ -220,7 +217,14 @@ public class SimpleEditorWindow : EditorWindow
 
     private void CreateStatView()
     {
-        statView.columns["stat"].makeCell = () => new DropdownField();
+        statView.columns["stat"].makeCell = () =>
+        {
+            DropdownField dropdown = new DropdownField();
+            dropdown.RegisterValueChangedCallback(e => 
+                ChangeStatType(statView, (int)dropdown.userData, e.newValue));
+
+            return dropdown;
+        };
         statView.columns["stat"].bindCell = (item, j) => {
             List<string> names = new List<string>();
 
@@ -228,7 +232,7 @@ public class SimpleEditorWindow : EditorWindow
             {
                 if (ID == (statView.itemsSource[j] as SkillStatModel).statID)
                 {
-                    (item as DropdownField).value = name;
+                    (item as DropdownField).SetValueWithoutNotify(name);
                 }
 
                 if (!usedStatIDs.Contains(ID))
@@ -237,6 +241,7 @@ public class SimpleEditorWindow : EditorWindow
                 }
             }
 
+            (item as DropdownField).userData = j;
             (item as DropdownField).choices = names;
         };
 
@@ -264,7 +269,7 @@ public class SimpleEditorWindow : EditorWindow
         {
             Button button = new Button();
             // Must use a callback here to prevent duplicating click events in bind.
-            button.RegisterCallback<ClickEvent>(e => RemoveStatAt(statView, button));
+            button.RegisterCallback<ClickEvent>(e => RemoveStatAt(statView, (int)button.userData));
             return button;
         };
 
@@ -282,13 +287,28 @@ public class SimpleEditorWindow : EditorWindow
         };
     }
 
-    private void RemoveStatAt(MultiColumnListView statView, Button button)
+    private void ChangeStatType(MultiColumnListView statView, int index, string newType)
     {
-        // int ID = (int)statView.itemsSource[(int)button.userData];
-        
+        usedStatIDs.Remove((statView.itemsSource[index] as SkillStatModel).statID);
 
-        statView.itemsSource.RemoveAt((int)button.userData);
+        foreach ((int ID, string name) in SkillStatTypeModel.types)
+        {
+            if (name == newType)
+            {
+                (statView.itemsSource[index] as SkillStatModel).statID = ID;
+                usedStatIDs.Add(ID);
+                break;
+            }
+        }
+
         statView.RefreshItems();
+    }
+
+    private void RemoveStatAt(MultiColumnListView statView, int index)
+    {
+        usedStatIDs.Remove((statView.itemsSource[index] as SkillStatModel).statID);
+        statView.itemsSource.RemoveAt(index);
+        statView.Rebuild();
     }
 
     private void CreateTrainingView()
@@ -318,7 +338,16 @@ public class SimpleEditorWindow : EditorWindow
             (item as DropdownField).choices = SkillModel.ranks;
         };
 
-        trainingView.columns["xpGainEach"].makeCell = () => new FloatField();
+        trainingView.columns["xpGainEach"].makeCell = () =>
+        {
+            FloatField floatField = new FloatField();
+            floatField.RegisterValueChangedCallback(e =>
+            {
+
+            });
+
+            return floatField;
+        };
         trainingView.columns["xpGainEach"].bindCell = (item, j) =>
         {
             (item as FloatField).value = (trainingView.itemsSource[j] as TrainingMethodModel).xpGainEach;
@@ -374,7 +403,12 @@ public class SimpleEditorWindow : EditorWindow
         }
 
         index = enumerator.Current;
-        selectedSkill = skills[index];
+        SetSelectedSkill(skills[index]);
+    }
+
+    private void SetSelectedSkill(SkillModel skill)
+    {
+        selectedSkill = skill;
         usedStatIDs = new List<int>(selectedSkill.stats.Keys);
         usedTrainingMethodIDs = new List<int>(selectedSkill.trainingMethods.Keys.Select(x => x.Item1));
         DisplaySkillInfo();
@@ -428,16 +462,6 @@ public class SimpleEditorWindow : EditorWindow
 
         trainingView.itemsSource = selectedSkill.trainingMethods.Values.ToList();
         trainingView.RefreshItems();
-    }
-
-    private void ChangeIcon()
-    {
-        string path = EditorUtility.OpenFilePanel("Select new icon", "Assets/Addressables/Sprites", "png");
-
-        if (path.Length != 0)
-        {
-            Debug.Log(path);
-        }
     }
 
     private string AddToAddressables(UnityEngine.Object asset)
