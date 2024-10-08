@@ -232,14 +232,12 @@ public class SimpleEditorWindow : EditorWindow
         };
         statView.columns["stat"].bindCell = (item, j) => {
             List<string> names = new List<string>();
+            int statID = (statView.itemsSource[j] as SkillStatModel).statID;
+            string statName = SkillStatTypeModel.types[statID];
+            (item as DropdownField).SetValueWithoutNotify(statName);
 
             foreach ((int ID, string name) in SkillStatTypeModel.types)
             {
-                if (ID == (statView.itemsSource[j] as SkillStatModel).statID)
-                {
-                    (item as DropdownField).SetValueWithoutNotify(name);
-                }
-
                 if (!usedStatIDs.Contains(ID))
                 {
                     names.Add(name);
@@ -255,19 +253,22 @@ public class SimpleEditorWindow : EditorWindow
             int j = i; // For local purposes.
             string hex = j.ToString("X");
 
-            statView.columns[hex].makeCell = () => new FloatField();
-            statView.columns[hex].bindCell = (item, k) => {
-                // Truncate ranks that are not available in skill.
-                // if (j > int.Parse(firstAvailableRank, System.Globalization.NumberStyles.HexNumber) ||
-                //     j < int.Parse(lastAvailableRank, System.Globalization.NumberStyles.HexNumber))
-                // {
-                //     statView.columns[hex].visible = false;
-                //     return;
-                // }
+            statView.columns[hex].makeCell = () =>
+            {
+                FloatField floatField = new FloatField();
+                floatField.RegisterValueChangedCallback(e =>
+                {
+                    (statView.itemsSource[(int)floatField.userData] as SkillStatModel)
+                        .values[15 - j] = e.newValue;
+                });
 
+                return floatField;
+            };
+            statView.columns[hex].bindCell = (item, k) => {
                 statView.columns[hex].visible = true;
-                (item as FloatField).value = 
-                    (statView.itemsSource[k] as SkillStatModel).values[15 - j]; 
+                (item as FloatField).SetValueWithoutNotify( 
+                    (statView.itemsSource[k] as SkillStatModel).values[15 - j]);
+                (item as FloatField).userData = k; 
             };
         }
 
@@ -371,30 +372,51 @@ public class SimpleEditorWindow : EditorWindow
     {
         trainingView.columnSortingChanged += () => SortMethodColumns();
 
-        trainingView.columns["name"].makeCell = () => new DropdownField();
+        trainingView.columns["name"].makeCell = () =>
+        {
+            DropdownField dropdown = new DropdownField();
+            dropdown.RegisterValueChangedCallback(e =>
+            {
+                foreach ((int ID, string name) in TrainingMethodTypeModel.types)
+                {
+                    if (name == e.newValue)
+                    {
+                        (trainingView.itemsSource[(int)dropdown.userData] as TrainingMethodModel)
+                            .trainingMethodID = ID;
+                        break;
+                    }
+                }
+            });
+
+            return dropdown;
+        };
         trainingView.columns["name"].bindCell = (item, j) =>
         {
-            List<string> names = new List<string>();
-
-            foreach ((int ID, string name) in TrainingMethodTypeModel.types)
-            {
-                if (ID == (trainingView.itemsSource[j] as TrainingMethodModel).trainingMethodID)
-                {
-                    (item as DropdownField).value = name;
-                }
-
-                names.Add(name);
-            }
-
+            List<string> names = new List<string>(TrainingMethodTypeModel.types.Values);
+            int ID = (trainingView.itemsSource[j] as TrainingMethodModel).trainingMethodID;
+            string name = TrainingMethodTypeModel.types[ID];
+            (item as DropdownField).SetValueWithoutNotify(name);
             (item as DropdownField).choices = names;
+            (item as DropdownField).userData = j;
         };
 
-        trainingView.columns["rank"].makeCell = () => new DropdownField();
+        trainingView.columns["rank"].makeCell = () =>
+        {
+            DropdownField dropdown = new DropdownField();
+            dropdown.RegisterValueChangedCallback(e =>
+            {
+                (trainingView.itemsSource[(int)dropdown.userData] as TrainingMethodModel)
+                    .rank = e.newValue;
+            });
+
+            return dropdown;
+        };
         trainingView.columns["rank"].bindCell = (item, j) =>
         {
-            (item as DropdownField).value = 
-                (trainingView.itemsSource[j] as TrainingMethodModel).rank;
+            (item as DropdownField).SetValueWithoutNotify( 
+                (trainingView.itemsSource[j] as TrainingMethodModel).rank);
             (item as DropdownField).choices = SkillModel.ranks;
+            (item as DropdownField).userData = j;
         };
 
         trainingView.columns["xpGainEach"].makeCell = () =>
@@ -404,7 +426,6 @@ public class SimpleEditorWindow : EditorWindow
             {
                 (trainingView.itemsSource[(int)floatField.userData] as TrainingMethodModel).xpGainEach = 
                     e.newValue;
-                trainingView.RefreshItems();
             });
 
             return floatField;
@@ -423,7 +444,6 @@ public class SimpleEditorWindow : EditorWindow
             {
                 (trainingView.itemsSource[(int)integerField.userData] as TrainingMethodModel).countMax =
                     e.newValue;
-                trainingView.RefreshItems();
             });
 
             return integerField;
