@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
@@ -219,6 +220,8 @@ public class SimpleEditorWindow : EditorWindow
 
     private void CreateStatView()
     {
+        statView.columnSortingChanged += () => SortStatColumns();
+
         statView.columns["stat"].makeCell = () =>
         {
             DropdownField dropdown = new DropdownField();
@@ -290,6 +293,54 @@ public class SimpleEditorWindow : EditorWindow
             statView.itemsSource.Add(new SkillStatModel(database, selectedSkill.ID));
             statView.RefreshItems();
         };
+    }
+
+    private void SortStatColumns()
+    {
+        List<SkillStatModel> stats = (List<SkillStatModel>)statView.itemsSource;
+
+        foreach (var column in statView.sortedColumns)
+        {
+            switch (column.columnName)
+            {
+                case "stat":
+                    if (column.direction == SortDirection.Ascending)
+                    {
+                        stats = stats.OrderBy(v => SkillStatTypeModel.types[v.statID]).ToList();
+                    }
+                    else
+                    {
+                        stats = stats.OrderByDescending(v => SkillStatTypeModel.types[v.statID]).ToList();
+                    }
+
+                    break;
+                default:
+                    if (int.TryParse(column.columnName, NumberStyles.HexNumber,
+                        CultureInfo.CurrentCulture, out int index))
+                    {
+                        index = SkillModel.ranks.Count - index;
+
+                        if (index < 0 || index > SkillModel.ranks.Count - 1)
+                        {
+                            break;
+                        }
+
+                        if (column.direction == SortDirection.Ascending)
+                        {
+                            stats = stats.OrderBy(v => v.values[index]).ToList();
+                        }
+                        else
+                        {
+                            stats = stats.OrderByDescending(v => v.values[index]).ToList();
+                        }
+                    }
+
+                    break;
+            }
+        }
+
+        statView.itemsSource = stats;
+        statView.RefreshItems();
     }
 
     private void ChangeStatType(MultiColumnListView statView, int index, string newType)
@@ -422,6 +473,19 @@ public class SimpleEditorWindow : EditorWindow
             switch (column.columnName)
             {
                 case "name":
+                    if (column.direction == SortDirection.Ascending)
+                    {
+                        trainingMethods = trainingMethods
+                            .OrderBy(v => TrainingMethodTypeModel.types[v.trainingMethodID])
+                            .ToList();
+                    }
+                    else
+                    {
+                        trainingMethods = trainingMethods
+                            .OrderByDescending(v => TrainingMethodTypeModel.types[v.trainingMethodID])
+                            .ToList();
+                    }
+
                     break;
                 case "rank":
                     if (column.direction == SortDirection.Ascending)
@@ -434,6 +498,7 @@ public class SimpleEditorWindow : EditorWindow
                         trainingMethods = 
                             trainingMethods.OrderByDescending(v => v.rank).ToList();
                     }
+
                     break;
                 case "xpGainEach":
                     if (column.direction == SortDirection.Ascending)
@@ -446,6 +511,7 @@ public class SimpleEditorWindow : EditorWindow
                         trainingMethods = 
                             trainingMethods.OrderByDescending(v => v.xpGainEach).ToList();
                     }
+
                     break;
                 case "countMax":
                     if (column.direction == SortDirection.Ascending)
@@ -458,6 +524,7 @@ public class SimpleEditorWindow : EditorWindow
                         trainingMethods = 
                             trainingMethods.OrderByDescending(v => v.countMax).ToList();
                     }
+
                     break;
                 default:
                     break;
