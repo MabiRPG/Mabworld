@@ -23,6 +23,12 @@ public abstract class BaseModel
         }
 
         DataTable table = database.ReadTable(readString, fieldMap);
+
+        if (table.Rows.Count == 0)
+        {
+            return null;
+        }
+
         DataRow row = table.Rows[0];
         database.ParseRow(row, fieldMap);
 

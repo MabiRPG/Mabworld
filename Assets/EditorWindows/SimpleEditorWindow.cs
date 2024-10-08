@@ -46,6 +46,7 @@ public class SimpleEditorWindow : EditorWindow
 
     private DatabaseManager database;
     private List<SkillModel> skills;
+    private int skillCounter;
     private List<int> usedStatIDs;
     private List<int> usedTrainingMethodIDs;
 
@@ -65,6 +66,7 @@ public class SimpleEditorWindow : EditorWindow
 
         DataTable dt = database.Read("SELECT id FROM skill;");
         skills = new List<SkillModel>();
+        skillCounter = dt.Rows.Count;
 
         foreach (DataRow row in dt.Rows)
         {
@@ -121,19 +123,28 @@ public class SimpleEditorWindow : EditorWindow
         leftPane = rootVisualElement.Q<MultiColumnListView>();
         leftPane.itemsSource = skills;
 
-        // leftPane.columns.Add(new Column { name = "icon", title = "Icon", width = 40 });
         leftPane.columns["icon"].makeCell = () => new Image();
         leftPane.columns["icon"].bindCell = 
             (item, index) => { (item as Image).sprite = skills[index].icon; };
 
-        // leftPane.columns.Add(new Column { name = "name", title = "Name", width = 150 });
         leftPane.columns["name"].makeCell = () => new Label();
         leftPane.columns["name"].bindCell = 
             (item, index) => { (item as Label).text = skills[index].name; };
         
         leftPane.selectedIndicesChanged += OnSkillSelectionChange;
 
-        // selectedIcon = rootVisualElement.Q<Button>("selectedIcon");
+        Button skillAddButton = rootVisualElement.Q<Button>("skillAddButton");
+        skillAddButton.RegisterCallback<ClickEvent>(e =>
+        {
+            skillCounter += 1;
+
+            SkillModel newSkill = new SkillModel(database, skillCounter);
+            newSkill.name = $"Placeholder ID {skillCounter}";
+            skills.Add(newSkill);
+
+            leftPane.RefreshItems();
+        });
+
         selectedName = rootVisualElement.Q<TextField>("selectedName");
         selectedName.RegisterValueChangedCallback(e => 
         {
@@ -144,6 +155,7 @@ public class SimpleEditorWindow : EditorWindow
         selectedIcon.RegisterValueChangedCallback(e =>
         {
             selectedSkill.icon = (Sprite)e.newValue;
+            leftPane.RefreshItems();
         });
         selectedSFX = rootVisualElement.Q<ObjectField>("selectedSFX");
         selectedSFX.RegisterValueChangedCallback(e =>
@@ -232,8 +244,15 @@ public class SimpleEditorWindow : EditorWindow
         };
         statView.columns["stat"].bindCell = (item, j) => {
             List<string> names = new List<string>();
+
             int statID = (statView.itemsSource[j] as SkillStatModel).statID;
-            string statName = SkillStatTypeModel.types[statID];
+            string statName = "";
+
+            if (SkillStatTypeModel.types.ContainsKey(statID))
+            {
+                statName = SkillStatTypeModel.types[statID];
+            }
+
             (item as DropdownField).SetValueWithoutNotify(statName);
 
             foreach ((int ID, string name) in SkillStatTypeModel.types)
@@ -393,9 +412,17 @@ public class SimpleEditorWindow : EditorWindow
         trainingView.columns["name"].bindCell = (item, j) =>
         {
             List<string> names = new List<string>(TrainingMethodTypeModel.types.Values);
+
             int ID = (trainingView.itemsSource[j] as TrainingMethodModel).trainingMethodID;
-            string name = TrainingMethodTypeModel.types[ID];
+            string name = "";
+
+            if (TrainingMethodTypeModel.types.ContainsKey(ID))
+            {
+                name = TrainingMethodTypeModel.types[ID];
+            }
+
             (item as DropdownField).SetValueWithoutNotify(name);
+
             (item as DropdownField).choices = names;
             (item as DropdownField).userData = j;
         };
@@ -424,8 +451,9 @@ public class SimpleEditorWindow : EditorWindow
             FloatField floatField = new FloatField();
             floatField.RegisterValueChangedCallback(e =>
             {
-                (trainingView.itemsSource[(int)floatField.userData] as TrainingMethodModel).xpGainEach = 
-                    e.newValue;
+                (trainingView.itemsSource[(int)floatField.userData] as TrainingMethodModel)
+                    .xpGainEach = e.newValue;
+                trainingView.RefreshItems();
             });
 
             return floatField;
@@ -442,16 +470,17 @@ public class SimpleEditorWindow : EditorWindow
             IntegerField integerField = new IntegerField();
             integerField.RegisterValueChangedCallback(e =>
             {
-                (trainingView.itemsSource[(int)integerField.userData] as TrainingMethodModel).countMax =
-                    e.newValue;
+                (trainingView.itemsSource[(int)integerField.userData] as TrainingMethodModel)
+                    .countMax = e.newValue;
+                trainingView.RefreshItems();
             });
 
             return integerField;
         };
         trainingView.columns["countMax"].bindCell = (item, j) =>
         {
-            (item as IntegerField).value = 
-                (trainingView.itemsSource[j] as TrainingMethodModel).countMax;
+            (item as IntegerField).SetValueWithoutNotify(
+                (trainingView.itemsSource[j] as TrainingMethodModel).countMax);
             (item as IntegerField).userData = j;
         };
 
