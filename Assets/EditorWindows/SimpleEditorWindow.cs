@@ -365,13 +365,22 @@ public class SimpleEditorWindow : EditorWindow
 
     private void ChangeStatType(MultiColumnListView statView, int index, string newType)
     {
-        usedStatIDs.Remove((statView.itemsSource[index] as SkillStatModel).statID);
+        SkillStatModel oldStat = (SkillStatModel)statView.itemsSource[index];
+        int oldID = oldStat.statID;
+        
+        if (selectedSkill.stats.ContainsKey(oldID))
+        {
+            selectedSkill.stats.Remove(oldID);
+        }
+
+        usedStatIDs.Remove(oldID);
 
         foreach ((int ID, string name) in SkillStatTypeModel.types)
         {
             if (name == newType)
             {
-                (statView.itemsSource[index] as SkillStatModel).statID = ID;
+                oldStat.statID = ID;
+                selectedSkill.stats.Add(ID, oldStat);
                 usedStatIDs.Add(ID);
                 break;
             }
@@ -396,14 +405,13 @@ public class SimpleEditorWindow : EditorWindow
             DropdownField dropdown = new DropdownField();
             dropdown.RegisterValueChangedCallback(e =>
             {
-                foreach ((int ID, string name) in TrainingMethodTypeModel.types)
+                int index = (int)dropdown.userData;
+                string rank = (trainingView.itemsSource[index] as TrainingMethodModel).rank;
+                bool success = ChangeMethodType(trainingView, index, e.newValue, rank);
+
+                if (!success)
                 {
-                    if (name == e.newValue)
-                    {
-                        (trainingView.itemsSource[(int)dropdown.userData] as TrainingMethodModel)
-                            .trainingMethodID = ID;
-                        break;
-                    }
+                    dropdown.SetValueWithoutNotify(e.previousValue);
                 }
             });
 
@@ -422,7 +430,6 @@ public class SimpleEditorWindow : EditorWindow
             }
 
             (item as DropdownField).SetValueWithoutNotify(name);
-
             (item as DropdownField).choices = names;
             (item as DropdownField).userData = j;
         };
@@ -432,8 +439,15 @@ public class SimpleEditorWindow : EditorWindow
             DropdownField dropdown = new DropdownField();
             dropdown.RegisterValueChangedCallback(e =>
             {
-                (trainingView.itemsSource[(int)dropdown.userData] as TrainingMethodModel)
-                    .rank = e.newValue;
+                int index = (int)dropdown.userData;
+                int ID = (trainingView.itemsSource[index] as TrainingMethodModel).trainingMethodID;
+                string name = TrainingMethodTypeModel.types[ID];
+                bool success = ChangeMethodType(trainingView, index, name, e.newValue);
+
+                if (!success)
+                {
+                    dropdown.SetValueWithoutNotify(e.previousValue);
+                }
             });
 
             return dropdown;
@@ -582,6 +596,42 @@ public class SimpleEditorWindow : EditorWindow
 
         trainingView.itemsSource = trainingMethods;
         trainingView.RefreshItems();
+    }
+
+    private bool ChangeMethodType(MultiColumnListView trainingView, int index, 
+        string newMethodName, string newRank)
+    {
+        TrainingMethodModel oldMethod = (TrainingMethodModel)trainingView.itemsSource[index];
+        int oldID = oldMethod.trainingMethodID;
+        string oldRank = oldMethod.rank;
+
+        if (selectedSkill.trainingMethods.ContainsKey((oldID, oldRank)))
+        {
+            selectedSkill.trainingMethods.Remove((oldID, oldRank));
+        }
+
+        foreach ((int ID, string name) in TrainingMethodTypeModel.types)
+        {
+            if (name == newMethodName)
+            {
+                if (selectedSkill.trainingMethods.ContainsKey((ID, newRank)))
+                {
+                    Debug.Log("Found duplicate...");
+                    selectedSkill.trainingMethods.Add((oldID, oldRank), oldMethod);
+                    return false;
+                }
+                else
+                {
+                    oldMethod.trainingMethodID = ID;
+                    oldMethod.rank = newRank;
+                    selectedSkill.trainingMethods.Add((ID, newRank), oldMethod);
+                    break;
+                }
+            }
+        }
+
+        trainingView.RefreshItems();
+        return true;
     }
 
     private void RemoveMethodAt(MultiColumnListView trainingView, Button button)
