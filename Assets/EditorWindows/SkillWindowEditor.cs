@@ -1,22 +1,18 @@
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using UnityEditor;
-using UnityEditor.AddressableAssets;
-using UnityEditor.AddressableAssets.Settings;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class SimpleEditorWindow : EditorWindow
+public class SkillEditorWindow : EditorWindow
 {
     private Button refreshButton;
     private Button commitButton;
 
-    private MultiColumnListView leftPane;
+    private MultiColumnListView skillView;
 
     private int index;
     private SkillModel selectedSkill;
@@ -54,11 +50,11 @@ public class SimpleEditorWindow : EditorWindow
     [SerializeField]
     private VisualTreeAsset m_VisualTreeAsset = default;
 
-    [MenuItem("Window/UI Toolkit/SimpleEditorWindow")]
+    [MenuItem("MabWorld/Skill Editor")]
     public static void ShowExample()
     {
-        SimpleEditorWindow wnd = GetWindow<SimpleEditorWindow>();
-        wnd.titleContent = new GUIContent("SimpleEditorWindow");
+        SkillEditorWindow wnd = GetWindow<SkillEditorWindow>();
+        wnd.titleContent = new GUIContent("Skill Editor");
     }
 
     private void Initialize()
@@ -112,24 +108,25 @@ public class SimpleEditorWindow : EditorWindow
         { 
             Initialize();
             SetSelectedSkill(skills[index]);
-            leftPane.RefreshItems();
+            skillView.RefreshItems();
         });
 
         commitButton = rootVisualElement.Q<Button>("commitButton");
         commitButton.RegisterCallback<ClickEvent>(e => SaveSkills());
 
-        leftPane = rootVisualElement.Q<MultiColumnListView>();
-        leftPane.itemsSource = skills;
+        skillView = rootVisualElement.Q<MultiColumnListView>();
+        skillView.columnSortingChanged += () => SortSkillColumns();
+        skillView.itemsSource = skills;
 
-        leftPane.columns["icon"].makeCell = () => new Image();
-        leftPane.columns["icon"].bindCell = 
+        skillView.columns["icon"].makeCell = () => new Image();
+        skillView.columns["icon"].bindCell = 
             (item, index) => { (item as Image).sprite = skills[index].icon; };
 
-        leftPane.columns["name"].makeCell = () => new Label();
-        leftPane.columns["name"].bindCell = 
+        skillView.columns["name"].makeCell = () => new Label();
+        skillView.columns["name"].bindCell = 
             (item, index) => { (item as Label).text = skills[index].name; };
         
-        leftPane.selectedIndicesChanged += OnSkillSelectionChange;
+        skillView.selectedIndicesChanged += OnSkillSelectionChange;
 
         Button skillAddButton = rootVisualElement.Q<Button>("skillAddButton");
         skillAddButton.RegisterCallback<ClickEvent>(e =>
@@ -140,20 +137,20 @@ public class SimpleEditorWindow : EditorWindow
             newSkill.name = $"Placeholder ID {skillCounter}";
             skills.Add(newSkill);
 
-            leftPane.RefreshItems();
+            skillView.RefreshItems();
         });
 
         selectedName = rootVisualElement.Q<TextField>("selectedName");
         selectedName.RegisterValueChangedCallback(e => 
         {
             selectedSkill.name = e.newValue;
-            leftPane.RefreshItems();
+            skillView.RefreshItems();
         });
         selectedIcon = rootVisualElement.Q<ObjectField>("selectedIcon");
         selectedIcon.RegisterValueChangedCallback(e =>
         {
             selectedSkill.icon = (Sprite)e.newValue;
-            leftPane.RefreshItems();
+            skillView.RefreshItems();
         });
         selectedSFX = rootVisualElement.Q<ObjectField>("selectedSFX");
         selectedSFX.RegisterValueChangedCallback(e =>
@@ -226,6 +223,32 @@ public class SimpleEditorWindow : EditorWindow
 
         CreateStatView();
         CreateTrainingView();
+    }
+
+    private void SortSkillColumns()
+    {
+        foreach (var column in skillView.sortedColumns)
+        {
+            switch (column.columnName)
+            {
+                case "name":
+                    if (column.direction == SortDirection.Ascending)
+                    {
+                        skills = skills.OrderBy(v => v.name).ToList();
+                    }
+                    else
+                    {
+                        skills = skills.OrderByDescending(v => v.name).ToList();
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        skillView.itemsSource = skills;
+        skillView.RefreshItems();
     }
 
     private void CreateStatView()
@@ -681,8 +704,6 @@ public class SimpleEditorWindow : EditorWindow
 
     private void DisplaySkillInfo()
     {
-        // selectedIcon.style.backgroundImage = new StyleBackground(selectedSkill.icon);
-        //selectedIcon.clicked += ChangeIcon;
         selectedName.value = selectedSkill.name;
         
         List<string> names = new List<string>();
