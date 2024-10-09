@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
@@ -383,14 +384,23 @@ public class SimpleEditorWindow : EditorWindow
             }
         }
 
+        statView.itemsSource = selectedSkill.stats.Values.ToList();
         statView.RefreshItems();
     }
 
     private void RemoveStatAt(MultiColumnListView statView, int index)
     {
-        usedStatIDs.Remove((statView.itemsSource[index] as SkillStatModel).statID);
-        statView.itemsSource.RemoveAt(index);
-        statView.Rebuild();
+        SkillStatModel oldStat = (SkillStatModel)statView.itemsSource[index];
+        int oldID = oldStat.statID;
+
+        if (selectedSkill.stats.ContainsKey(oldID))
+        {
+            selectedSkill.stats.Remove(oldID);
+        }
+
+        usedStatIDs.Remove(oldID);
+        statView.itemsSource = selectedSkill.stats.Values.ToList();
+        statView.RefreshItems();
     }
 
     private void CreateTrainingView()
@@ -506,7 +516,8 @@ public class SimpleEditorWindow : EditorWindow
         trainingView.columns["delete"].makeCell = () =>
         {
             Button button = new Button();
-            button.RegisterCallback<ClickEvent>(e => RemoveMethodAt(trainingView, button));
+            button.RegisterCallback<ClickEvent>(e => 
+                RemoveMethodAt(trainingView, (int)button.userData));
             return button;
         };
         trainingView.columns["delete"].bindCell = (item, j) =>
@@ -627,13 +638,23 @@ public class SimpleEditorWindow : EditorWindow
             }
         }
 
+        trainingView.itemsSource = selectedSkill.trainingMethods.Values.ToList();
         trainingView.RefreshItems();
         return true;
     }
 
-    private void RemoveMethodAt(MultiColumnListView trainingView, Button button)
+    private void RemoveMethodAt(MultiColumnListView trainingView, int index)
     {
-        trainingView.itemsSource.RemoveAt((int)button.userData);
+        TrainingMethodModel oldMethod = (TrainingMethodModel)trainingView.itemsSource[index];
+        int oldID = oldMethod.trainingMethodID;
+        string oldRank = oldMethod.rank;
+
+        if (selectedSkill.trainingMethods.ContainsKey((oldID, oldRank)))
+        {
+            selectedSkill.trainingMethods.Remove((oldID, oldRank));
+        }
+
+        trainingView.itemsSource = selectedSkill.trainingMethods.Values.ToList();
         trainingView.RefreshItems();
     }
 
@@ -724,6 +745,9 @@ public class SimpleEditorWindow : EditorWindow
 
     private void SaveSkills()
     {
+        database.Write("DELETE FROM skill; DELETE FROM skill_stat; DELETE FROM training_method;",
+            new Dictionary<string, ModelFieldReference>());
+
         foreach (SkillModel skill in skills)
         {
             skill.Upsert();
