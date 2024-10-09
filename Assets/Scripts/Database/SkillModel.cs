@@ -36,6 +36,9 @@ public class SkillModel : BaseModel
     public static List<string> ranks = new List<string>
         {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
 
+    private string statTableName;
+    private string trainingMethodTableName;
+
     public Dictionary<int, SkillStatModel> stats = new Dictionary<int, SkillStatModel>();
     public Dictionary<(int, string), TrainingMethodModel> trainingMethods = 
         new Dictionary<(int, string), TrainingMethodModel>();
@@ -43,6 +46,9 @@ public class SkillModel : BaseModel
     public SkillModel(DatabaseManager database, int ID) : base(database)
     {
         this.ID = ID;
+        tableName = "skill";
+        statTableName = "skill_stat";
+        trainingMethodTableName = "training_method";
 
         primaryKeys.Add("id");
 
@@ -63,19 +69,18 @@ public class SkillModel : BaseModel
         fieldMap.Add("is_learnable", new ModelFieldReference(this, nameof(isLearnable)));
         fieldMap.Add("is_passive", new ModelFieldReference(this, nameof(isPassive)));
 
-        readString = $"SELECT * FROM skill WHERE id = @id;";
+        CreateReadQuery();
+        CreateWriteQuery();
 
         ReadRow();
         ReadStats();
         ReadTrainingMethods();
-
-        CreateWriteQuery();
     }
 
     private void ReadStats()
     {
-        string statQuery = @"SELECT skill_stat_id
-            FROM skill_stat
+        string statQuery = @$"SELECT skill_stat_id
+            FROM {statTableName}
             WHERE skill_id = @id;";
 
         DataTable table = database.ReadTable(statQuery, fieldMap);
@@ -90,8 +95,8 @@ public class SkillModel : BaseModel
 
     private void ReadTrainingMethods()
     {
-        string trainingQuery = @"SELECT training_method_id, rank
-            FROM training_method
+        string trainingQuery = @$"SELECT training_method_id, rank
+            FROM {trainingMethodTableName}
             WHERE skill_id = @id;";
 
         DataTable table = database.ReadTable(trainingQuery, fieldMap);
@@ -103,45 +108,5 @@ public class SkillModel : BaseModel
             TrainingMethodModel method = new TrainingMethodModel(database, ID, methodID, rank);
             trainingMethods.Add((methodID, method.rank), method);
         }
-    }
-
-    private void CreateWriteQuery()
-    {
-        StringBuilder write = new StringBuilder();
-        write.Append("INSERT INTO skill (");
-
-        foreach ((string name, ModelFieldReference field) in fieldMap)
-        {
-            write.AppendFormat("{0},", name);
-        }
-
-        write.Remove(write.Length - 1, 1);
-        write.Append(") Values (");
-
-        foreach ((string name, ModelFieldReference field) in fieldMap)
-        {
-            write.AppendFormat("@{0},", name);
-        }
-
-        write.Remove(write.Length - 1, 1);
-        write.Append(") ON CONFLICT(");
-
-        foreach (string key in primaryKeys)
-        {
-            write.AppendFormat("{0},", key);
-        }
-
-        write.Remove(write.Length - 1, 1);
-        write.Append(") DO UPDATE SET ");
-
-        foreach ((string name, ModelFieldReference field) in fieldMap)
-        {
-            write.AppendFormat("{0}=@{0},", name);
-        }
-
-        write.Remove(write.Length - 1, 1);
-        write.Append(";");
-
-        writeString = write.ToString();
     }
 }

@@ -264,7 +264,7 @@ public class SimpleEditorWindow : EditorWindow
             (item as DropdownField).choices = names;
         };
 
-        for (int i = 1; i <= 15; i++)
+        for (int i = 1; i <= SkillModel.ranks.Count; i++)
         {
             int j = i; // For local purposes.
             string hex = j.ToString("X");
@@ -275,7 +275,7 @@ public class SimpleEditorWindow : EditorWindow
                 floatField.RegisterValueChangedCallback(e =>
                 {
                     (statView.itemsSource[(int)floatField.userData] as SkillStatModel)
-                        .values[15 - j] = e.newValue;
+                        .values[SkillModel.ranks.Count - j] = e.newValue;
                 });
 
                 return floatField;
@@ -283,7 +283,7 @@ public class SimpleEditorWindow : EditorWindow
             statView.columns[hex].bindCell = (item, k) => {
                 statView.columns[hex].visible = true;
                 (item as FloatField).SetValueWithoutNotify( 
-                    (statView.itemsSource[k] as SkillStatModel).values[15 - j]);
+                    (statView.itemsSource[k] as SkillStatModel).values[SkillModel.ranks.Count - j]);
                 (item as FloatField).userData = k; 
             };
         }
@@ -727,6 +727,11 @@ public class SimpleEditorWindow : EditorWindow
         foreach (SkillModel skill in skills)
         {
             skill.Upsert();
+
+            foreach (SkillStatModel stat in skill.stats.Values)
+            {
+                stat.Upsert();
+            }
         }
     }
 }

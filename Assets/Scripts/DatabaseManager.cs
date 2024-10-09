@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -252,12 +253,16 @@ public class DatabaseManager
                     }
 
                     break;
+                case Type t when t == typeof(List<float>):
+                    value = float.Parse(s);
+                    break;
                 default:
                     value = s;
                     break;
             }
 
             // Sets the class field to the value.
+            // Debug.Log($"{column.ColumnName}, {value}, {value.GetType()}, {field.Type()}");
             field.Set(value);
         }        
     }

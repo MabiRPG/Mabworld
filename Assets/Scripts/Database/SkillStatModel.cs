@@ -22,27 +22,38 @@ public class SkillStatModel : BaseModel
     {
         this.skillID = skillID;
         this.statID = statID;
+        tableName = "skill_stat";
+
+        primaryKeys.Add("skill_id");
+        primaryKeys.Add("skill_stat_id");
 
         fieldMap.Add("skill_id", new ModelFieldReference(this, nameof(skillID)));
         fieldMap.Add("skill_stat_id", new ModelFieldReference(this, nameof(statID)));
 
-        readString = @"SELECT skill_stat.*, skill_stat_type.name
-            FROM skill
-            JOIN skill_stat
-            ON skill.id = skill_stat.skill_id
-            JOIN skill_stat_type
-            ON skill_stat.skill_stat_id = skill_stat_type.id
-            WHERE skill.id = @skill_id AND skill_stat_id = @skill_stat_id";
+        for (int i = 1; i <= values.Capacity; i++)
+        {
+            string hex = i.ToString("X");
+            int valueIndex = values.Capacity - i;
+
+            fieldMap.Add("r" + hex, new ModelFieldReference(this, nameof(values), valueIndex));
+            values.Add(0);
+        }
+
+        CreateReadQuery();
+        CreateWriteQuery();
+
+        // readString = @"SELECT * FROM skill_stat 
+        //     WHERE skill_id = @skill_id AND skill_stat_id = @skill_stat_id;";
 
         DataRow row = ReadRow();
 
         // Slice the row by length of ranks
         // converting to string then float and back to array for the value.
-        values.AddRange(
-            row.ItemArray
-                .Skip(2)
-                .Take(SkillModel.ranks.Count)
-                .Select(x => float.Parse(x.ToString()))
-                .ToArray());        
+        // values.AddRange(
+        //     row.ItemArray
+        //         .Skip(2)
+        //         .Take(SkillModel.ranks.Count)
+        //         .Select(x => float.Parse(x.ToString()))
+        //         .ToArray());
     }
 }
