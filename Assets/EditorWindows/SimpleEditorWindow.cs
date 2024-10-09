@@ -115,10 +115,7 @@ public class SimpleEditorWindow : EditorWindow
         });
 
         commitButton = rootVisualElement.Q<Button>("commitButton");
-        commitButton.RegisterCallback<ClickEvent>(e =>
-        {
-            SaveSkills();
-        });
+        commitButton.RegisterCallback<ClickEvent>(e => SaveSkills());
 
         leftPane = rootVisualElement.Q<MultiColumnListView>();
         leftPane.itemsSource = skills;
@@ -711,21 +708,6 @@ public class SimpleEditorWindow : EditorWindow
         trainingView.RefreshItems();
     }
 
-    private string AddToAddressables(UnityEngine.Object asset)
-    {
-        if (asset == default)
-        {
-            return "";
-        }
-
-        AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
-        string assetPath = AssetDatabase.GetAssetPath(asset);
-        string assetGUID = AssetDatabase.AssetPathToGUID(assetPath);
-        settings.CreateAssetReference(assetGUID);
-
-        return settings.FindAssetEntry(assetGUID).address;
-    }
-
     private int ConvertSkillCategoryNameToID(string name)
     {
         foreach ((int ID, string categoryName) in SkillTypeModel.types)
@@ -740,92 +722,11 @@ public class SimpleEditorWindow : EditorWindow
         return 1;
     }
 
-    private int SaveSkills()
+    private void SaveSkills()
     {
-        int rowsChanged = 0;
-
         foreach (SkillModel skill in skills)
         {
-            string iconAddress = AddToAddressables(skill.icon);
-            string sfxAddress = AddToAddressables(skill.sfx);
-
-            string commit = @"INSERT INTO skill
-                (
-                    id, 
-                    name, 
-                    category_id,
-                    description,
-                    details,
-                    icon,
-                    sfx,
-                    starting_rank,
-                    first_available_rank,
-                    last_available_rank,
-                    base_load_time,
-                    base_use_time,
-                    base_cooldown,
-                    is_starting_with,
-                    is_learnable,
-                    is_passive
-                ) 
-                Values
-                (
-                    @ID, 
-                    @name, 
-                    @categoryID,
-                    @description,
-                    @details,
-                    @icon,
-                    @sfx,
-                    @startingRank,
-                    @firstAvailableRank,
-                    @lastAvailableRank,
-                    @baseLoadTime,
-                    @baseUseTime,
-                    @baseCooldown,
-                    @isStartingWith,
-                    @isLearnable,
-                    @isPassive
-                )
-                ON CONFLICT(id) DO UPDATE 
-                SET 
-                    name=@name,
-                    category_id=@categoryID,
-                    description=@description,
-                    details=@details,
-                    icon=@icon,
-                    sfx=@sfx,
-                    starting_rank=@startingRank,
-                    first_available_rank=@firstAvailableRank,
-                    last_available_rank=@lastAvailableRank,
-                    base_load_time=@baseLoadTime,
-                    base_use_time=@baseUseTime,
-                    base_cooldown=@baseCooldown,
-                    is_starting_with=@isStartingWith,
-                    is_learnable=@isLearnable,
-                    is_passive=@isPassive
-                ;";
-
-            rowsChanged += database.Write(commit, 
-                ("@ID", skill.ID), 
-                ("@name", skill.name),
-                ("@categoryID", skill.categoryID),
-                ("@description", skill.description),
-                ("@details", skill.details),
-                ("@icon", iconAddress),
-                ("@sfx", sfxAddress),
-                ("@firstAvailableRank", skill.firstAvailableRank),
-                ("@startingRank", skill.startingRank),
-                ("@lastAvailableRank", skill.lastAvailableRank),
-                ("@baseLoadTime", skill.baseLoadTime),
-                ("@baseUseTime", skill.baseUseTime),
-                ("@baseCooldown", skill.baseCooldown),
-                ("@isStartingWith", Convert.ToInt32(skill.isStartingWith)),
-                ("@isLearnable", Convert.ToInt32(skill.isLearnable)),
-                ("@isPassive", Convert.ToInt32(skill.isPassive))
-            );
+            skill.Upsert();
         }
-
-        return rowsChanged;
     }
 }

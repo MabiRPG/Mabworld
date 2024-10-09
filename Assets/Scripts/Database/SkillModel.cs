@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
+using System.Text;
 using UnityEngine;
 
 public class SkillModel : BaseModel
@@ -43,6 +44,8 @@ public class SkillModel : BaseModel
     {
         this.ID = ID;
 
+        primaryKeys.Add("id");
+
         fieldMap.Add("id", new ModelFieldReference(this, nameof(ID)));
         fieldMap.Add("name", new ModelFieldReference(this, nameof(name)));
         fieldMap.Add("category_id", new ModelFieldReference(this, nameof(categoryID)));
@@ -65,6 +68,8 @@ public class SkillModel : BaseModel
         ReadRow();
         ReadStats();
         ReadTrainingMethods();
+
+        CreateWriteQuery();
     }
 
     private void ReadStats()
@@ -98,5 +103,45 @@ public class SkillModel : BaseModel
             TrainingMethodModel method = new TrainingMethodModel(database, ID, methodID, rank);
             trainingMethods.Add((methodID, method.rank), method);
         }
+    }
+
+    private void CreateWriteQuery()
+    {
+        StringBuilder write = new StringBuilder();
+        write.Append("INSERT INTO skill (");
+
+        foreach ((string name, ModelFieldReference field) in fieldMap)
+        {
+            write.AppendFormat("{0},", name);
+        }
+
+        write.Remove(write.Length - 1, 1);
+        write.Append(") Values (");
+
+        foreach ((string name, ModelFieldReference field) in fieldMap)
+        {
+            write.AppendFormat("@{0},", name);
+        }
+
+        write.Remove(write.Length - 1, 1);
+        write.Append(") ON CONFLICT(");
+
+        foreach (string key in primaryKeys)
+        {
+            write.AppendFormat("{0},", key);
+        }
+
+        write.Remove(write.Length - 1, 1);
+        write.Append(") DO UPDATE SET ");
+
+        foreach ((string name, ModelFieldReference field) in fieldMap)
+        {
+            write.AppendFormat("{0}=@{0},", name);
+        }
+
+        write.Remove(write.Length - 1, 1);
+        write.Append(";");
+
+        writeString = write.ToString();
     }
 }

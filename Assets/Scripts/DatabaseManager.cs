@@ -5,6 +5,9 @@ using System.Globalization;
 using System.Reflection;
 using System.Text;
 using Mono.Data.Sqlite;
+using UnityEditor;
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -133,7 +136,7 @@ public class DatabaseManager
         return dt;
     }
 
-    public int Write(string query, params (string Key, object Value)[] args)
+    public int Write(string query, Dictionary<string, ModelFieldReference> fieldMap)
     {
         // Creates the database uri location
         string dbUri = "URI=file:" + Application.streamingAssetsPath + "/" + databaseName;
@@ -147,11 +150,28 @@ public class DatabaseManager
         dbCommand.CommandText = query;
 
         // Adds a parameterized field for each in args.
-        foreach (var (Key, Value) in args)
+        foreach ((string columnName, ModelFieldReference field) in fieldMap)
         {
             var parameter = dbCommand.CreateParameter();
-            parameter.ParameterName = Key;
-            parameter.Value = Value;
+            parameter.ParameterName = "@" + columnName;
+            dynamic value = field.Get();
+
+            switch (field.Type())
+            {
+                case Type t when t == typeof(bool):
+                    value = value ? 1 : 0;
+                    break;
+                case Type t when t == typeof(Sprite):
+                    value = AddToAddressables(value);
+                    break;
+                case Type t when t == typeof(AudioClip):
+                    value = AddToAddressables(value);
+                    break;
+                default:
+                    break;
+            }
+
+            parameter.Value = value;
             dbCommand.Parameters.Add(parameter);
         }
 
@@ -170,7 +190,6 @@ public class DatabaseManager
 
             var field = fieldMap[column.ColumnName];
             
-
             // Gets the value in the table, converts it to a string
             string s = row[column].ToString();
             object value;
@@ -373,7 +392,7 @@ public class DatabaseManager
     /// </summary>
     /// <param name="snakeCase">Snake case string</param>
     /// <returns>Camel case string equivalent</returns>
-    public string ConvertSnakeCaseToCamelCase(string snakeCase)
+    private string ConvertSnakeCaseToCamelCase(string snakeCase)
     {
         if (string.IsNullOrEmpty(snakeCase))
         {
@@ -403,5 +422,20 @@ public class DatabaseManager
         }
 
         return camelCase.ToString();
+    }
+
+    private string AddToAddressables(UnityEngine.Object asset)
+    {
+        if (asset == default)
+        {
+            return "";
+        }
+
+        AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+        string assetPath = AssetDatabase.GetAssetPath(asset);
+        string assetGUID = AssetDatabase.AssetPathToGUID(assetPath);
+        settings.CreateAssetReference(assetGUID);
+
+        return settings.FindAssetEntry(assetGUID).address;
     }
 }

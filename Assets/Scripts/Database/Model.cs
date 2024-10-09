@@ -6,7 +6,9 @@ using System.Reflection;
 public abstract class BaseModel
 {
     protected DatabaseManager database;
-    protected Dictionary<string, ModelFieldReference> fieldMap = new Dictionary<string, ModelFieldReference>();
+    protected List<string> primaryKeys = new List<string>();
+    protected Dictionary<string, ModelFieldReference> fieldMap = 
+        new Dictionary<string, ModelFieldReference>();
     protected string readString;
     protected string writeString;
 
@@ -35,12 +37,15 @@ public abstract class BaseModel
         return row;
     }
 
-    public void Upsert()
+    public virtual bool Upsert()
     {
         if (writeString == default)
         {
-            return;
+            return false;
         }
+
+        database.Write(writeString, fieldMap);
+        return true;
     }
 }
 
