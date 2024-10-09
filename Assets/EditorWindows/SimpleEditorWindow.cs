@@ -732,6 +732,11 @@ public class SimpleEditorWindow : EditorWindow
             {
                 stat.Upsert();
             }
+
+            foreach (TrainingMethodModel trainingMethod in skill.trainingMethods.Values)
+            {
+                trainingMethod.Upsert();
+            }
         }
     }
 }

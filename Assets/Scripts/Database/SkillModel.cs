@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using UnityEngine;
 
 public class SkillModel : BaseModel

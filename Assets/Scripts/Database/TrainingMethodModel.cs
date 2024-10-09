@@ -9,6 +9,20 @@ public class TrainingMethodModel : BaseModel
     public TrainingMethodModel(DatabaseManager database, int skillID) : base(database)
     {
         this.skillID = skillID;
+        tableName = "training_method";
+
+        primaryKeys.Add("skill_id");
+        primaryKeys.Add("training_method_id");
+        primaryKeys.Add("rank");
+
+        fieldMap.Add("skill_id", new ModelFieldReference(this, nameof(skillID)));
+        fieldMap.Add("rank", new ModelFieldReference(this, nameof(rank)));
+        fieldMap.Add("training_method_id", new ModelFieldReference(this, nameof(trainingMethodID)));
+        fieldMap.Add("xp_gain_each", new ModelFieldReference(this, nameof(xpGainEach)));
+        fieldMap.Add("count_max", new ModelFieldReference(this, nameof(countMax)));
+
+        CreateReadQuery();
+        CreateWriteQuery();
     }
 
     public TrainingMethodModel(DatabaseManager database, int skillID, int trainingMethodID, string rank) 
@@ -17,6 +31,11 @@ public class TrainingMethodModel : BaseModel
         this.skillID = skillID;
         this.trainingMethodID = trainingMethodID;
         this.rank = rank;
+        tableName = "training_method";
+
+        primaryKeys.Add("skill_id");
+        primaryKeys.Add("training_method_id");
+        primaryKeys.Add("rank");
 
         fieldMap.Add("skill_id", new ModelFieldReference(this, nameof(skillID)));
         fieldMap.Add("rank", new ModelFieldReference(this, nameof(rank)));
@@ -24,8 +43,8 @@ public class TrainingMethodModel : BaseModel
         fieldMap.Add("xp_gain_each", new ModelFieldReference(this, nameof(xpGainEach)));
         fieldMap.Add("count_max", new ModelFieldReference(this, nameof(countMax)));
 
-        readString = @"SELECT * FROM training_method WHERE
-            skill_id = @skill_id AND training_method_id = @training_method_id AND rank = @rank;";
+        CreateReadQuery();
+        CreateWriteQuery();
 
         ReadRow();
     }

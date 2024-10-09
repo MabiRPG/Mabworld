@@ -112,7 +112,6 @@ public abstract class BaseModel
         write.Append(";");
 
         writeString = write.ToString();
-        // Debug.Log(writeString);
     }
 }
 
@@ -126,6 +125,8 @@ public class TypeModel<T> : BaseModel
 
     public TypeModel(DatabaseManager database) : base(database)
     {
+        primaryKeys.Add("id");
+        
         fieldMap.Add("id", new ModelFieldReference(this, nameof(ID)));
         fieldMap.Add("name", new ModelFieldReference(this, nameof(name)));
     }
