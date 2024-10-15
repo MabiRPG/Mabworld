@@ -160,7 +160,7 @@ public class SkillEditorWindow : EditorWindow
         selectedCategory = rootVisualElement.Q<DropdownField>("selectedCategory");
         selectedCategory.RegisterValueChangedCallback(e =>
         {
-            selectedSkill.categoryID = ConvertSkillCategoryNameToID(e.newValue);
+            selectedSkill.categoryID = SkillTypeModel.FindByName(e.newValue);
         });
         selectedDescription = rootVisualElement.Q<TextField>("selectedDescription");
         selectedDescription.RegisterValueChangedCallback(e => 
@@ -267,13 +267,7 @@ public class SkillEditorWindow : EditorWindow
             List<string> names = new List<string>();
 
             int statID = (statView.itemsSource[j] as SkillStatModel).statID;
-            string statName = "";
-
-            if (SkillStatTypeModel.types.ContainsKey(statID))
-            {
-                statName = SkillStatTypeModel.types[statID];
-            }
-
+            string statName = SkillStatTypeModel.FindByID(statID);
             (item as DropdownField).SetValueWithoutNotify(statName);
 
             foreach ((int ID, string name) in SkillStatTypeModel.types)
@@ -452,12 +446,7 @@ public class SkillEditorWindow : EditorWindow
             List<string> names = new List<string>(TrainingMethodTypeModel.types.Values);
 
             int ID = (trainingView.itemsSource[j] as TrainingMethodModel).trainingMethodID;
-            string name = "";
-
-            if (TrainingMethodTypeModel.types.ContainsKey(ID))
-            {
-                name = TrainingMethodTypeModel.types[ID];
-            }
+            string name = TrainingMethodTypeModel.FindByID(ID);
 
             (item as DropdownField).SetValueWithoutNotify(name);
             (item as DropdownField).choices = names;
@@ -471,7 +460,7 @@ public class SkillEditorWindow : EditorWindow
             {
                 int index = (int)dropdown.userData;
                 int ID = (trainingView.itemsSource[index] as TrainingMethodModel).trainingMethodID;
-                string name = TrainingMethodTypeModel.types[ID];
+                string name = TrainingMethodTypeModel.FindByID(ID);
                 bool success = ChangeMethodType(trainingView, index, name, e.newValue);
 
                 if (!success)
@@ -750,19 +739,19 @@ public class SkillEditorWindow : EditorWindow
         trainingView.RefreshItems();
     }
 
-    private int ConvertSkillCategoryNameToID(string name)
-    {
-        foreach ((int ID, string categoryName) in SkillTypeModel.types)
-        {
-            if (categoryName == name)
-            {
-                return ID;
-            }
-        }
+    // private int ConvertSkillCategoryNameToID(string name)
+    // {
+    //     foreach ((int ID, string categoryName) in SkillTypeModel.types)
+    //     {
+    //         if (categoryName == name)
+    //         {
+    //             return ID;
+    //         }
+    //     }
 
-        // Default to Foundation if cannot be found.
-        return 1;
-    }
+    //     // Default to Foundation if cannot be found.
+    //     return 1;
+    // }
 
     private void SaveSkills()
     {

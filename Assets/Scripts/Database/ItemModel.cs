@@ -30,6 +30,8 @@ public class ItemModel : BaseModel
         fieldMap.Add("height_in_grid", new ModelFieldReference(this, nameof(heightInGrid)));
 
         CreateReadQuery();
+        CreateWriteQuery();
+        
         ReadRow();
     }
 }

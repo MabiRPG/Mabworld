@@ -142,6 +142,29 @@ public class TypeModel<T> : BaseModel
 
         return row;
     }
+
+    public static string FindByID(int id)
+    {
+        if (!types.ContainsKey(id))
+        {
+            return "";
+        }
+
+        return types[id];
+    }
+
+    public static int FindByName(string name)
+    {
+        foreach ((int ID, string value) in types)
+        {
+            if (value == name)
+            {
+                return ID;
+            }
+        }
+
+        return -1;
+    }
 }
 
 public class ModelFieldReference
