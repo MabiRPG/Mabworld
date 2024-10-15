@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="project://database/Assets/EditorWindows/SimpleEditorWindow.uss?fileID=7433441132597879392&amp;guid=53ab6b972b0753147bced9c4349665e5&amp;type=3#SimpleEditorWindow" />
+    <Style src="project://database/Assets/EditorWindows/SkillWindowEditor.uss?fileID=7433441132597879392&amp;guid=53ab6b972b0753147bced9c4349665e5&amp;type=3#SkillWindowEditor" />
     <ui:GroupBox style="align-items: auto; flex-direction: row; justify-content: space-between; margin-top: 2px;">
         <ui:Button text="Refresh" parse-escape-sequences="true" display-tooltip-when-elided="true" name="refreshButton" style="background-image: none;" />
         <ui:Button text="Commit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="commitButton" />
@@ -14,7 +14,7 @@
             </ui:MultiColumnListView>
             <ui:Button text="Add new skill" parse-escape-sequences="true" display-tooltip-when-elided="true" name="skillAddButton" style="justify-content: flex-start; align-items: auto;" />
         </ui:VisualElement>
-        <ui:ScrollView style="align-items: center; align-self: auto; justify-content: center;">
+        <ui:ScrollView style="align-items: stretch; align-self: auto; justify-content: flex-start;">
             <ui:TextField picking-mode="Ignore" label="Name:" keyboard-type="ASCIICapable" max-length="-1" name="selectedName" style="justify-content: flex-start; align-self: auto; align-items: auto;" />
             <ui:DropdownField label="Category:" name="selectedCategory" />
             <uie:ObjectField label="Icon:" type="UnityEngine.Sprite, UnityEngine.CoreModule" name="selectedIcon" />
