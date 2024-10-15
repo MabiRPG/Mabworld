@@ -10,6 +10,7 @@ public class ItemWindowEditor : EditorWindow
     private int index;
     private ItemModel selectedItem;
     private TextField selectedName;
+    private DropdownField selectedCategory;
     private TextField selectedDescription;
     private ObjectField selectedIcon;
     private IntegerField selectedStackSizeLimit;
@@ -42,6 +43,14 @@ public class ItemWindowEditor : EditorWindow
             ItemModel item = new ItemModel(database, ID);
             items.Add(item);
         }
+
+        dt = database.Read("SELECT id FROM item_category_type;");
+
+        foreach (DataRow row in dt.Rows)
+        {
+            int ID = int.Parse(row["id"].ToString());
+            new ItemTypeModel(database, ID);
+        }
     }
 
     public void CreateGUI()
@@ -62,6 +71,7 @@ public class ItemWindowEditor : EditorWindow
         itemPane.RefreshItems();
 
         selectedName = rootVisualElement.Q<TextField>("selectedName");
+        selectedCategory = rootVisualElement.Q<DropdownField>("selectedCategory");
         selectedDescription = rootVisualElement.Q<TextField>("selectedDescription");
         selectedIcon = rootVisualElement.Q<ObjectField>("selectedIcon");
         selectedStackSizeLimit = rootVisualElement.Q<IntegerField>("selectedStackSizeLimit");
@@ -80,7 +90,22 @@ public class ItemWindowEditor : EditorWindow
 
         index = enumerator.Current;
         selectedItem = items[index];
+
         selectedName.value = selectedItem.name;
+
+        List<string> names = new List<string>();
+
+        foreach ((int ID, string name) in ItemTypeModel.types)
+        {
+            if (ID == selectedItem.categoryID)
+            {
+                selectedCategory.value = name;
+            }
+
+            names.Add(name);
+        }
+
+        selectedCategory.choices = names;
         selectedDescription.value = selectedItem.description;
         selectedIcon.value = selectedItem.icon;
         selectedStackSizeLimit.value = selectedItem.stackSizeLimit;

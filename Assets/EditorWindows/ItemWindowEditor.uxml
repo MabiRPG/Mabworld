@@ -3,6 +3,7 @@
         <ui:ListView fixed-item-height="20" name="itemPane" />
         <ui:ScrollView style="flex-wrap: nowrap; align-items: auto; justify-content: flex-start;">
             <ui:TextField picking-mode="Ignore" label="Name:" name="selectedName" keyboard-type="ASCIICapable" />
+            <ui:DropdownField label="Category:" name="selectedCategory" />
             <ui:TextField picking-mode="Ignore" label="Description:" name="selectedDescription" keyboard-type="ASCIICapable" />
             <uie:ObjectField label="Icon:" name="selectedIcon" type="UnityEngine.Sprite, UnityEngine.CoreModule" />
             <ui:IntegerField label="Stack size limit:" value="0" name="selectedStackSizeLimit" />
