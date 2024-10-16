@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
 
-public class SkillModel : BaseModel
+public class SkillModel : Model
 {
     // Primary key of skill
     public int ID;

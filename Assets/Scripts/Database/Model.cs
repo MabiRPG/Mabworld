@@ -1,12 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
 using System.Text;
-using UnityEngine;
 
-public abstract class BaseModel
+public abstract class Model
 {
     protected DatabaseManager database;
 
@@ -18,7 +16,7 @@ public abstract class BaseModel
     protected string readString;
     protected string writeString;
 
-    public BaseModel(DatabaseManager database)
+    public Model(DatabaseManager database)
     {
         this.database = database;
     }
@@ -117,7 +115,7 @@ public abstract class BaseModel
 
 // Generic class to enable each static dictionary type to be inherited by specific
 // subclass implementations.
-public class TypeModel<T> : BaseModel
+public class TypeModel<T> : Model
 {
     public int ID;
     public string name;

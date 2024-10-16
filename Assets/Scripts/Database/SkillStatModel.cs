@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class SkillStatModel : BaseModel
+public class SkillStatModel : Model
 {
     public int skillID;
     public int statID;

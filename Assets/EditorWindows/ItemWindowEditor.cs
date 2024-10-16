@@ -21,6 +21,8 @@ public class ItemWindowEditor : EditorWindow
     private IntegerField selectedWidthInGrid;
     private IntegerField selectedHeightInGrid;
 
+    private MultiColumnListView statView;
+
     private DatabaseManager database;
     private List<ItemModel> items;
 
@@ -54,6 +56,14 @@ public class ItemWindowEditor : EditorWindow
         {
             int ID = int.Parse(row["id"].ToString());
             new ItemTypeModel(database, ID);
+        }
+
+        dt = database.Read("SELECT id from item_stat_type");
+
+        foreach (DataRow row in dt.Rows)
+        {
+            int ID = int.Parse(row["id"].ToString());
+            new ItemStatTypeModel(database, ID);
         }
     }
 
@@ -121,6 +131,26 @@ public class ItemWindowEditor : EditorWindow
         {
             selectedItem.heightInGrid = e.newValue;
         });
+
+        statView = rootVisualElement.Q<MultiColumnListView>("selectedStats");
+        CreateStatView();
+    }
+
+    private void CreateStatView()
+    {
+        statView.columns["stat"].makeCell = () =>
+        {
+            DropdownField dropdown = new DropdownField();
+            return dropdown;
+        };
+        statView.columns["stat"].bindCell = (item, index) =>
+        {
+            List<string> names = new List<string>(ItemStatTypeModel.types.Values);
+            (item as DropdownField).choices = names;
+        };
+
+        statView.columns["min"].makeCell = () => new FloatField();
+        statView.columns["max"].makeCell = () => new FloatField();
     }
 
     private void OnItemSelectionChange(IEnumerable<int> selectedIndex)

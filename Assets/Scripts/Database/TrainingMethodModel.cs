@@ -1,4 +1,4 @@
-public class TrainingMethodModel : BaseModel
+public class TrainingMethodModel : Model
 {
     public int skillID;
     public string rank;

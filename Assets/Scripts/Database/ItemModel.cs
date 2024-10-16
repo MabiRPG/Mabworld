@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ItemModel : BaseModel
+public class ItemModel : Model
 {
     // Internal ID number
     public int ID;
