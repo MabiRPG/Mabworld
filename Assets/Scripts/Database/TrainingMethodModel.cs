@@ -15,7 +15,7 @@ public class TrainingMethodModel : Model
         primaryKeys.Add("training_method_id");
         primaryKeys.Add("rank");
 
-        fieldMap.Add("skill_id", new ModelFieldReference(this, nameof(skillID)));
+        fieldMap.Add("skill_id", new ModelFieldReference(this, nameof(this.skillID)));
         fieldMap.Add("rank", new ModelFieldReference(this, nameof(rank)));
         fieldMap.Add("training_method_id", new ModelFieldReference(this, nameof(trainingMethodID)));
         fieldMap.Add("xp_gain_each", new ModelFieldReference(this, nameof(xpGainEach)));

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -146,11 +147,19 @@ public class ItemWindowEditor : EditorWindow
         statView.columns["stat"].bindCell = (item, index) =>
         {
             List<string> names = new List<string>(ItemStatTypeModel.types.Values);
+            int statID = (statView.itemsSource[index] as ItemStatModel).statID;
+            string statName = ItemStatTypeModel.FindByID(statID);
+
+            (item as DropdownField).SetValueWithoutNotify(statName);
             (item as DropdownField).choices = names;
         };
 
-        statView.columns["min"].makeCell = () => new FloatField();
-        statView.columns["max"].makeCell = () => new FloatField();
+        statView.columns["value"].makeCell = () => new FloatField();
+        statView.columns["value"].bindCell = (item, index) =>
+        {
+            (item as FloatField).SetValueWithoutNotify(
+                (statView.itemsSource[index] as ItemStatModel).value);
+        };
     }
 
     private void OnItemSelectionChange(IEnumerable<int> selectedIndex)
@@ -182,6 +191,8 @@ public class ItemWindowEditor : EditorWindow
         selectedStackSizeLimit.SetValueWithoutNotify(selectedItem.stackSizeLimit);
         selectedWidthInGrid.SetValueWithoutNotify(selectedItem.widthInGrid);
         selectedHeightInGrid.SetValueWithoutNotify(selectedItem.heightInGrid);
+
+        statView.itemsSource = selectedItem.stats.Values.ToList();
     }
 
     private void SaveItems()

@@ -51,7 +51,7 @@ public class SkillModel : Model
 
         primaryKeys.Add("id");
 
-        fieldMap.Add("id", new ModelFieldReference(this, nameof(ID)));
+        fieldMap.Add("id", new ModelFieldReference(this, nameof(this.ID)));
         fieldMap.Add("name", new ModelFieldReference(this, nameof(name)));
         fieldMap.Add("category_id", new ModelFieldReference(this, nameof(categoryID)));
         fieldMap.Add("description", new ModelFieldReference(this, nameof(description)));

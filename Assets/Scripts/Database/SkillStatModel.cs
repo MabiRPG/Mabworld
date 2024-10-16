@@ -14,7 +14,7 @@ public class SkillStatModel : Model
         primaryKeys.Add("skill_id");
         primaryKeys.Add("skill_stat_id");
 
-        fieldMap.Add("skill_id", new ModelFieldReference(this, nameof(skillID)));
+        fieldMap.Add("skill_id", new ModelFieldReference(this, nameof(this.skillID)));
         fieldMap.Add("skill_stat_id", new ModelFieldReference(this, nameof(statID)));
 
         for (int i = 1; i <= values.Capacity; i++)
