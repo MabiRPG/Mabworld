@@ -1,27 +1,30 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <ui:GroupBox style="align-items: auto; flex-direction: row; justify-content: space-between; margin-top: 2px;">
         <ui:Button text="Refresh" parse-escape-sequences="true" display-tooltip-when-elided="true" name="refreshButton" style="background-image: none;" />
         <ui:Button text="Commit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="commitButton" />
     </ui:GroupBox>
     <ui:TwoPaneSplitView>
         <ui:ListView fixed-item-height="20" name="itemPane" />
-        <ui:ScrollView style="flex-wrap: nowrap; align-items: auto; justify-content: flex-start;">
-            <ui:TextField picking-mode="Ignore" label="Name:" name="selectedName" keyboard-type="ASCIICapable" />
-            <ui:DropdownField label="Category:" name="selectedCategory" />
-            <ui:TextField picking-mode="Ignore" label="Description:" multiline="true" name="selectedDescription" keyboard-type="ASCIICapable" hide-mobile-input="false" style="height: auto; flex-wrap: wrap; white-space: normal; flex-grow: 0;" />
-            <uie:ObjectField label="Icon:" name="selectedIcon" type="UnityEngine.Sprite, UnityEngine.CoreModule" />
-            <ui:IntegerField label="Stack size limit:" value="0" name="selectedStackSizeLimit" />
-            <ui:IntegerField label="Width in grid units:" value="0" name="selectedWidthInGrid" />
-            <ui:IntegerField label="Height in grid units:" value="0" name="selectedHeightInGrid" />
-            <ui:MultiColumnListView name="selectedStats" fixed-item-height="20" reorderable="false" show-add-remove-footer="false" show-foldout-header="false" sorting-enabled="true" show-alternating-row-backgrounds="ContentOnly" virtualization-method="FixedHeight" show-border="true" style="padding-top: 15px; padding-bottom: 0; padding-right: 5px; padding-left: 5px;">
-                <ui:Columns>
-                    <ui:Column name="stat" title="Stat" width="150" />
-                    <ui:Column name="min" title="Min" width="40" />
-                    <ui:Column name="max" title="Max" width="40" />
-                    <ui:Column name="delete" width="30" />
-                </ui:Columns>
-            </ui:MultiColumnListView>
-            <ui:Button text="Add new stat" parse-escape-sequences="true" display-tooltip-when-elided="true" name="statAddButton" style="align-items: flex-start; flex-basis: auto;" />
-        </ui:ScrollView>
+        <ui:TwoPaneSplitView name="TwoPaneSplitView" fixed-pane-initial-dimension="350">
+            <ui:ScrollView style="flex-wrap: nowrap; align-items: auto; justify-content: flex-start;">
+                <ui:TextField picking-mode="Ignore" label="Name:" name="selectedName" keyboard-type="ASCIICapable" />
+                <ui:DropdownField label="Category:" name="selectedCategory" />
+                <ui:TextField picking-mode="Ignore" label="Description:" multiline="true" name="selectedDescription" keyboard-type="ASCIICapable" hide-mobile-input="false" style="height: auto; flex-wrap: wrap; white-space: normal; flex-grow: 0;" />
+                <uie:ObjectField label="Icon:" name="selectedIcon" type="UnityEngine.Sprite, UnityEngine.CoreModule" />
+                <ui:IntegerField label="Stack size limit:" value="0" name="selectedStackSizeLimit" />
+                <ui:IntegerField label="Width in grid units:" value="0" name="selectedWidthInGrid" />
+                <ui:IntegerField label="Height in grid units:" value="0" name="selectedHeightInGrid" />
+                <ui:MultiColumnListView name="selectedStats" fixed-item-height="20" reorderable="false" show-add-remove-footer="false" show-foldout-header="false" sorting-enabled="true" show-alternating-row-backgrounds="ContentOnly" virtualization-method="FixedHeight" show-border="true" style="padding-top: 15px; padding-bottom: 0; padding-right: 5px; padding-left: 5px;">
+                    <ui:Columns>
+                        <ui:Column name="stat" title="Rollable stats" width="150" />
+                        <ui:Column name="min" title="Min" width="40" />
+                        <ui:Column name="max" title="Max" width="40" />
+                        <ui:Column name="delete" width="30" />
+                    </ui:Columns>
+                </ui:MultiColumnListView>
+                <ui:Button text="Add new stat" parse-escape-sequences="true" display-tooltip-when-elided="true" name="statAddButton" style="align-items: flex-start; flex-basis: auto;" />
+            </ui:ScrollView>
+            <ui:Image tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="selectedIconPreview" style="background-image: none; flex-grow: 0; width: 100px; height: 100px; align-self: center; -unity-background-scale-mode: scale-to-fit; flex-shrink: 0;" />
+        </ui:TwoPaneSplitView>
     </ui:TwoPaneSplitView>
 </ui:UXML>

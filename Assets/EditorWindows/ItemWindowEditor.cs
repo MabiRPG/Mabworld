@@ -22,6 +22,10 @@ public class ItemWindowEditor : EditorWindow
     private IntegerField selectedWidthInGrid;
     private IntegerField selectedHeightInGrid;
 
+    private int slotWidth = 50;
+    private int slotHeight = 50;
+    private Image selectedIconPreview;
+
     private MultiColumnListView statView;
     private Button statAddButton;
     private List<int> usedStatIDs;
@@ -118,6 +122,7 @@ public class ItemWindowEditor : EditorWindow
         selectedIcon.RegisterValueChangedCallback(e =>
         {
             selectedItem.icon = (Sprite)e.newValue;
+            selectedIconPreview.style.backgroundImage = selectedItem.icon.texture;
         });
         selectedStackSizeLimit = rootVisualElement.Q<IntegerField>("selectedStackSizeLimit");
         selectedStackSizeLimit.RegisterValueChangedCallback(e =>
@@ -128,12 +133,16 @@ public class ItemWindowEditor : EditorWindow
         selectedWidthInGrid.RegisterValueChangedCallback(e =>
         {
             selectedItem.widthInGrid = e.newValue;
+            selectedIconPreview.style.width = slotWidth * e.newValue;
         });
         selectedHeightInGrid = rootVisualElement.Q<IntegerField>("selectedHeightInGrid");
         selectedHeightInGrid.RegisterValueChangedCallback(e =>
         {
             selectedItem.heightInGrid = e.newValue;
+            selectedIconPreview.style.height = slotHeight * e.newValue;
         });
+
+        selectedIconPreview = rootVisualElement.Q<Image>("selectedIconPreview");
 
         statView = rootVisualElement.Q<MultiColumnListView>("selectedStats");
         CreateStatView();
@@ -141,6 +150,8 @@ public class ItemWindowEditor : EditorWindow
 
     private void CreateStatView()
     {
+        statView.columnSortingChanged += () => SortStatColumns();
+
         statView.columns["stat"].makeCell = () =>
         {
             DropdownField dropdown = new DropdownField();
@@ -261,6 +272,60 @@ public class ItemWindowEditor : EditorWindow
         };
     }
 
+    private void SortStatColumns()
+    {
+        List<ItemStatModel> stats = (List<ItemStatModel>)statView.itemsSource;
+
+        foreach (var column in statView.sortedColumns)
+        {
+            switch (column.columnName)
+            {
+                case "stat":
+                    if (column.direction == SortDirection.Ascending)
+                    {
+                        stats = stats
+                            .OrderBy(v => ItemStatTypeModel.FindByID(v.statID))
+                            .ToList();
+                    }
+                    else
+                    {
+                        stats = stats
+                            .OrderByDescending(v => ItemStatTypeModel.FindByID(v.statID))
+                            .ToList();
+                    }
+
+                    break;
+                case "min":
+                    if (column.direction == SortDirection.Ascending)
+                    {
+                        stats = stats.OrderBy(v => v.min).ToList();
+                    }
+                    else
+                    {
+                        stats = stats.OrderByDescending(v => v.min).ToList();
+                    }
+
+                    break;         
+                case "max":
+                    if (column.direction == SortDirection.Ascending)
+                    {
+                        stats = stats.OrderBy(v => v.max).ToList();
+                    }
+                    else
+                    {
+                        stats = stats.OrderByDescending(v => v.max).ToList();
+                    }
+
+                    break;           
+                default:
+                    break;
+            }
+        }
+
+        statView.itemsSource = stats;
+        statView.RefreshItems();
+    }
+
     private void ChangeStatType(MultiColumnListView statView, int index,
         string newStatName)
     {
@@ -337,6 +402,12 @@ public class ItemWindowEditor : EditorWindow
         selectedStackSizeLimit.SetValueWithoutNotify(selectedItem.stackSizeLimit);
         selectedWidthInGrid.SetValueWithoutNotify(selectedItem.widthInGrid);
         selectedHeightInGrid.SetValueWithoutNotify(selectedItem.heightInGrid);
+
+        selectedIconPreview.style.backgroundImage = selectedItem.icon.texture;
+        // Width and height are buggy currently (it shows at full resolution no matter
+        // what setting is put here...)
+        selectedIconPreview.style.width = slotWidth * selectedItem.widthInGrid;
+        selectedIconPreview.style.height = slotHeight * selectedItem.heightInGrid;
 
         statView.itemsSource = selectedItem.stats.Values.ToList();
         statView.RefreshItems();
