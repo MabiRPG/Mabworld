@@ -154,11 +154,32 @@ public class ItemWindowEditor : EditorWindow
             (item as DropdownField).choices = names;
         };
 
-        statView.columns["value"].makeCell = () => new FloatField();
-        statView.columns["value"].bindCell = (item, index) =>
+        statView.columns["min"].makeCell = () => new FloatField();
+        statView.columns["min"].bindCell = (item, index) =>
         {
             (item as FloatField).SetValueWithoutNotify(
-                (statView.itemsSource[index] as ItemStatModel).value);
+                (statView.itemsSource[index] as ItemStatModel).min);
+        };
+
+        statView.columns["max"].makeCell = () => new FloatField();
+        statView.columns["max"].bindCell = (item, index) =>
+        {
+            (item as FloatField).SetValueWithoutNotify(
+                (statView.itemsSource[index] as ItemStatModel).max);
+
+            int statID = (statView.itemsSource[index] as ItemStatModel).statID;
+            bool isRange = ItemStatTypeModel.range[statID];
+
+            if (isRange)
+            {
+                (item as FloatField).SetEnabled(true);
+            }
+            else
+            {
+                (item as FloatField).SetValueWithoutNotify(
+                    (statView.itemsSource[index] as ItemStatModel).min);
+                (item as FloatField).SetEnabled(false);
+            }
         };
     }
 

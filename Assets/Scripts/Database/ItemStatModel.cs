@@ -1,10 +1,9 @@
-using UnityEngine;
-
 public class ItemStatModel : Model
 {
     public int itemID;
     public int statID;
-    public float value;
+    public float min;
+    public float max;
 
     public ItemStatModel(DatabaseManager database, int itemID, int statID) : base(database)
     {
@@ -17,7 +16,8 @@ public class ItemStatModel : Model
 
         fieldMap.Add("item_id", new ModelFieldReference(this, nameof(this.itemID)));
         fieldMap.Add("stat_id", new ModelFieldReference(this, nameof(this.statID)));
-        fieldMap.Add("value", new ModelFieldReference(this, nameof(value)));
+        fieldMap.Add("min", new ModelFieldReference(this, nameof(min)));
+        fieldMap.Add("max", new ModelFieldReference(this, nameof(max)));
 
         CreateReadQuery();
         CreateWriteQuery();
