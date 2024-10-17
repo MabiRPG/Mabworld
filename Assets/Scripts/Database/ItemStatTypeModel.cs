@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public class ItemStatTypeModel : TypeModel<ItemStatTypeModel>
 {
@@ -20,5 +19,15 @@ public class ItemStatTypeModel : TypeModel<ItemStatTypeModel>
         {
             range.Add(ID, isRange);
         }
+    }
+
+    public static bool IsRange(int ID)
+    {
+        if (range.ContainsKey(ID))
+        {
+            return range[ID];
+        }
+
+        return false;
     }
 }

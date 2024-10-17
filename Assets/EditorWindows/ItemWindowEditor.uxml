@@ -21,6 +21,7 @@
                     <ui:Column name="delete" width="30" />
                 </ui:Columns>
             </ui:MultiColumnListView>
+            <ui:Button text="Add new stat" parse-escape-sequences="true" display-tooltip-when-elided="true" name="statAddButton" style="align-items: flex-start; flex-basis: auto;" />
         </ui:ScrollView>
     </ui:TwoPaneSplitView>
 </ui:UXML>

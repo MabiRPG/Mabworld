@@ -23,6 +23,8 @@ public class ItemWindowEditor : EditorWindow
     private IntegerField selectedHeightInGrid;
 
     private MultiColumnListView statView;
+    private Button statAddButton;
+    private List<int> usedStatIDs;
 
     private DatabaseManager database;
     private List<ItemModel> items;
@@ -142,36 +144,91 @@ public class ItemWindowEditor : EditorWindow
         statView.columns["stat"].makeCell = () =>
         {
             DropdownField dropdown = new DropdownField();
+            dropdown.RegisterValueChangedCallback(e =>
+                ChangeStatType(statView, (int)dropdown.userData, e.newValue));
+
             return dropdown;
         };
         statView.columns["stat"].bindCell = (item, index) =>
         {
-            List<string> names = new List<string>(ItemStatTypeModel.types.Values);
+            List<string> names = new List<string>();
+
+            foreach ((int ID, string name) in ItemStatTypeModel.types)
+            {
+                if (!usedStatIDs.Contains(ID))
+                {
+                    names.Add(name);
+                }
+            }
+
             int statID = (statView.itemsSource[index] as ItemStatModel).statID;
             string statName = ItemStatTypeModel.FindByID(statID);
 
             (item as DropdownField).SetValueWithoutNotify(statName);
             (item as DropdownField).choices = names;
+            (item as DropdownField).userData = index;
         };
 
-        statView.columns["min"].makeCell = () => new FloatField();
+        statView.columns["min"].makeCell = () =>
+        {
+            FloatField floatField = new FloatField();
+            floatField.isDelayed = true;
+
+            floatField.RegisterValueChangedCallback(e =>
+            {
+                int index = (int)floatField.userData;
+                ItemStatModel stat = statView.itemsSource[index] as ItemStatModel;
+                bool isRange = ItemStatTypeModel.IsRange(stat.statID);
+
+                if (isRange)
+                {
+                    float value = Mathf.Min(e.newValue, stat.max);
+                    stat.min = value;
+                }
+                else
+                {
+                    stat.min = e.newValue;
+                    stat.max = e.newValue;    
+                }
+
+                statView.RefreshItems();
+            });
+
+            return floatField;
+        };
         statView.columns["min"].bindCell = (item, index) =>
         {
             (item as FloatField).SetValueWithoutNotify(
                 (statView.itemsSource[index] as ItemStatModel).min);
+            (item as FloatField).userData = index;
         };
 
-        statView.columns["max"].makeCell = () => new FloatField();
+        statView.columns["max"].makeCell = () =>
+        {
+            FloatField floatField = new FloatField();
+            floatField.isDelayed = true;
+
+            floatField.RegisterValueChangedCallback(e =>
+            {
+                int index = (int)floatField.userData;
+                ItemStatModel stat = statView.itemsSource[index] as ItemStatModel;
+                float value = Mathf.Max(e.newValue, stat.min);
+                stat.max = value;
+
+                statView.RefreshItems();
+            });
+
+            return floatField;
+        };
         statView.columns["max"].bindCell = (item, index) =>
         {
-            (item as FloatField).SetValueWithoutNotify(
-                (statView.itemsSource[index] as ItemStatModel).max);
-
             int statID = (statView.itemsSource[index] as ItemStatModel).statID;
-            bool isRange = ItemStatTypeModel.range[statID];
+            bool isRange = ItemStatTypeModel.IsRange(statID);
 
             if (isRange)
             {
+                (item as FloatField).SetValueWithoutNotify(
+                    (statView.itemsSource[index] as ItemStatModel).max);
                 (item as FloatField).SetEnabled(true);
             }
             else
@@ -180,7 +237,46 @@ public class ItemWindowEditor : EditorWindow
                     (statView.itemsSource[index] as ItemStatModel).min);
                 (item as FloatField).SetEnabled(false);
             }
+
+            (item as FloatField).userData = index;
         };
+
+        statAddButton = rootVisualElement.Q<Button>("statAddButton");
+        statAddButton.clicked += () =>
+        {
+            statView.itemsSource.Add(new ItemStatModel(database, selectedItem.ID));
+            statView.RefreshItems();
+        };
+    }
+
+    private void ChangeStatType(MultiColumnListView statView, int index,
+        string newStatName)
+    {
+        ItemStatModel oldStat = (ItemStatModel)statView.itemsSource[index];
+        int oldID = oldStat.statID;
+
+        if (selectedItem.stats.ContainsKey(oldID))
+        {
+            selectedItem.stats.Remove(oldID);
+        }
+
+        usedStatIDs.Remove(oldID);
+
+        int newID = ItemStatTypeModel.FindByName(newStatName);
+
+        if (selectedItem.stats.ContainsKey(newID))
+        {
+            selectedItem.stats.Add(oldID, oldStat);
+            usedStatIDs.Add(oldID);
+        }
+        else
+        {
+            oldStat.statID = newID;
+            selectedItem.stats.Add(newID, oldStat);
+            usedStatIDs.Add(newID);
+        }
+
+        statView.RefreshItems();
     }
 
     private void OnItemSelectionChange(IEnumerable<int> selectedIndex)
@@ -199,6 +295,7 @@ public class ItemWindowEditor : EditorWindow
     private void DisplayItemInfo(int index)
     {
         selectedItem = items[index];
+        usedStatIDs = new List<int>(selectedItem.stats.Keys);
 
         selectedName.SetValueWithoutNotify(selectedItem.name);
 
@@ -214,6 +311,7 @@ public class ItemWindowEditor : EditorWindow
         selectedHeightInGrid.SetValueWithoutNotify(selectedItem.heightInGrid);
 
         statView.itemsSource = selectedItem.stats.Values.ToList();
+        statView.RefreshItems();
     }
 
     private void SaveItems()
@@ -223,6 +321,11 @@ public class ItemWindowEditor : EditorWindow
         foreach (ItemModel item in items)
         {
             item.Upsert();
+
+            foreach (ItemStatModel stat in item.stats.Values)
+            {
+                stat.Upsert();
+            }
         }
     }
 }
