@@ -241,6 +241,18 @@ public class ItemWindowEditor : EditorWindow
             (item as FloatField).userData = index;
         };
 
+        statView.columns["delete"].makeCell = () =>
+        {
+            Button button = new Button();
+            button.RegisterCallback<ClickEvent>(e => RemoveStatAt(statView, (int)button.userData));
+            button.text = "X";
+            return button;
+        };
+        statView.columns["delete"].bindCell = (item, index) =>
+        {
+            (item as Button).userData = index;
+        };
+
         statAddButton = rootVisualElement.Q<Button>("statAddButton");
         statAddButton.clicked += () =>
         {
@@ -277,6 +289,22 @@ public class ItemWindowEditor : EditorWindow
         }
 
         statView.RefreshItems();
+    }
+
+    private void RemoveStatAt(MultiColumnListView statView, int index)
+    {
+        ItemStatModel oldStat = (ItemStatModel)statView.itemsSource[index];
+        int oldID = oldStat.statID;
+
+        if (selectedItem.stats.ContainsKey(oldID))
+        {
+            selectedItem.stats.Remove(oldID);
+        }
+
+        usedStatIDs.Remove(oldID);
+
+        statView.itemsSource = selectedItem.stats.Values.ToList();
+        statView.RefreshItems();   
     }
 
     private void OnItemSelectionChange(IEnumerable<int> selectedIndex)
@@ -316,7 +344,8 @@ public class ItemWindowEditor : EditorWindow
 
     private void SaveItems()
     {
-        database.Write("DELETE FROM item;", new Dictionary<string, ModelFieldReference>());
+        database.Write("DELETE FROM item; DELETE FROM item_stat;", 
+            new Dictionary<string, ModelFieldReference>());
 
         foreach (ItemModel item in items)
         {
