@@ -14,6 +14,7 @@ public class ItemWindowEditor : EditorWindow
 
     private TextField nameSearch;
     private MultiColumnListView itemView;
+    private Button itemAddButton;
 
     private int index;
     private ItemModel selectedItem;
@@ -35,6 +36,7 @@ public class ItemWindowEditor : EditorWindow
 
     private DatabaseManager database;
     private List<ItemModel> items;
+    private int itemCounter;
 
     [SerializeField]
     private VisualTreeAsset m_VisualTreeAsset = default;
@@ -52,6 +54,7 @@ public class ItemWindowEditor : EditorWindow
 
         DataTable dt = database.Read("SELECT id FROM item;");
         items = new List<ItemModel>();
+        itemCounter = dt.Rows.Count;
 
         foreach (DataRow row in dt.Rows)
         {
@@ -166,6 +169,17 @@ public class ItemWindowEditor : EditorWindow
         {
             int categoryID = (itemView.itemsSource[index] as ItemModel).categoryID;
             (item as Label).text = ItemTypeModel.FindByID(categoryID);
+        };
+
+        itemAddButton = rootVisualElement.Q<Button>("itemAddButton");
+        itemAddButton.clicked += () =>
+        {
+            itemCounter += 1;
+            ItemModel newItem = new ItemModel(database, itemCounter);
+            newItem.name = $"Placeholder ID {itemCounter}";
+            items.Add(newItem);
+            itemView.selectedIndex = itemView.itemsSource.Count - 1;
+            itemView.RefreshItems();
         };
 
         itemView.itemsSource = items;
@@ -472,12 +486,20 @@ public class ItemWindowEditor : EditorWindow
         selectedWidthInGrid.SetValueWithoutNotify(selectedItem.widthInGrid);
         selectedHeightInGrid.SetValueWithoutNotify(selectedItem.heightInGrid);
 
-        selectedIconPreview.style.backgroundImage = selectedItem.icon.texture;
+        if (selectedItem.icon != default)
+        {
+            selectedIconPreview.style.backgroundImage = selectedItem.icon.texture;
+        }
+        else
+        {
+            selectedIconPreview.style.backgroundImage = null;
+        }
+
         // Width and height are buggy currently (it shows at full resolution no matter
         // what setting is put here...)
         selectedIconPreview.style.width = slotWidth * selectedItem.widthInGrid;
         selectedIconPreview.style.height = slotHeight * selectedItem.heightInGrid;
-
+    
         statView.itemsSource = selectedItem.stats.Values.ToList();
         statView.RefreshItems();
     }

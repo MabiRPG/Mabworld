@@ -12,6 +12,7 @@
                     <ui:Column name="category" title="Category" width="100" />
                 </ui:Columns>
             </ui:MultiColumnListView>
+            <ui:Button text="Add new item" parse-escape-sequences="true" display-tooltip-when-elided="true" name="itemAddButton" style="justify-content: flex-start; align-items: auto;" />
         </ui:VisualElement>
         <ui:TwoPaneSplitView name="TwoPaneSplitView" fixed-pane-initial-dimension="350">
             <ui:ScrollView style="flex-wrap: nowrap; align-items: auto; justify-content: flex-start;">
