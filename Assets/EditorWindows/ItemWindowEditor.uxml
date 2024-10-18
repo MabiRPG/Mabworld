@@ -4,7 +4,15 @@
         <ui:Button text="Commit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="commitButton" />
     </ui:GroupBox>
     <ui:TwoPaneSplitView>
-        <ui:ListView fixed-item-height="20" name="itemPane" />
+        <ui:VisualElement style="flex-grow: 1; width: 250px;">
+            <ui:TextField picking-mode="Ignore" value="Search..." keyboard-type="ASCIICapable" name="nameSearch" />
+            <ui:MultiColumnListView fixed-item-height="20" name="itemView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1;">
+                <ui:Columns>
+                    <ui:Column name="name" title="Name" width="150" />
+                    <ui:Column name="category" title="Category" width="100" />
+                </ui:Columns>
+            </ui:MultiColumnListView>
+        </ui:VisualElement>
         <ui:TwoPaneSplitView name="TwoPaneSplitView" fixed-pane-initial-dimension="350">
             <ui:ScrollView style="flex-wrap: nowrap; align-items: auto; justify-content: flex-start;">
                 <ui:TextField picking-mode="Ignore" label="Name:" name="selectedName" keyboard-type="ASCIICapable" />

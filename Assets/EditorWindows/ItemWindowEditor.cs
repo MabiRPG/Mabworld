@@ -12,6 +12,9 @@ public class ItemWindowEditor : EditorWindow
     private Button refreshButton;
     private Button commitButton;
 
+    private TextField nameSearch;
+    private MultiColumnListView itemView;
+
     private int index;
     private ItemModel selectedItem;
     private TextField selectedName;
@@ -91,22 +94,24 @@ public class ItemWindowEditor : EditorWindow
         commitButton = rootVisualElement.Q<Button>("commitButton");
         commitButton.RegisterCallback<ClickEvent>(e => SaveItems());
 
-        ListView itemPane = rootVisualElement.Q<ListView>("itemPane");
-        itemPane.makeItem = () => new Label();
-        itemPane.bindItem = (item, index) =>
+        nameSearch = rootVisualElement.Q<TextField>("nameSearch");
+        nameSearch.RegisterValueChangedCallback(e =>
         {
-            (item as Label).text = items[index].name;
-        };
+            itemView.itemsSource = items
+                .Where(v => v.name.Contains(e.newValue, StringComparison.OrdinalIgnoreCase))
+                .ToList();
 
-        itemPane.itemsSource = items;
-        itemPane.selectedIndicesChanged += OnItemSelectionChange;
-        itemPane.RefreshItems();
+            itemView.RefreshItems();
+        });
+
+        itemView = rootVisualElement.Q<MultiColumnListView>("itemView");
+        CreateItemView();
 
         selectedName = rootVisualElement.Q<TextField>("selectedName");
         selectedName.RegisterValueChangedCallback(e =>
         {
             selectedItem.name = e.newValue;
-            itemPane.RefreshItems();
+            itemView.RefreshItems();
         });
         selectedCategory = rootVisualElement.Q<DropdownField>("selectedCategory");
         selectedCategory.RegisterValueChangedCallback(e =>
@@ -146,6 +151,70 @@ public class ItemWindowEditor : EditorWindow
 
         statView = rootVisualElement.Q<MultiColumnListView>("selectedStats");
         CreateStatView();
+    }
+
+    private void CreateItemView()
+    {
+        itemView.columns["name"].makeCell = () => new Label();
+        itemView.columns["name"].bindCell = (item, index) =>
+        {
+            (item as Label).text = (itemView.itemsSource[index] as ItemModel).name;
+        };
+
+        itemView.columns["category"].makeCell = () => new Label();
+        itemView.columns["category"].bindCell = (item, index) =>
+        {
+            int categoryID = (itemView.itemsSource[index] as ItemModel).categoryID;
+            (item as Label).text = ItemTypeModel.FindByID(categoryID);
+        };
+
+        itemView.itemsSource = items;
+        itemView.selectedIndicesChanged += OnItemSelectionChange;
+        itemView.columnSortingChanged += () => SortItemColumns();
+        itemView.RefreshItems();
+    }
+
+    private void SortItemColumns()
+    {
+        List<ItemModel> itemList = (List<ItemModel>)itemView.itemsSource;
+
+        foreach (var column in itemView.sortedColumns)
+        {
+            switch (column.columnName)
+            {
+                case "name":
+                    if (column.direction == SortDirection.Ascending)
+                    {
+                        itemList = itemList.OrderBy(v => v.name).ToList();
+                    }
+                    else
+                    {
+                        itemList = itemList.OrderByDescending(v => v.name).ToList();
+                    }
+
+                    break;
+                case "category":
+                    if (column.direction == SortDirection.Ascending)
+                    {
+                        itemList = itemList
+                            .OrderBy(v => ItemTypeModel.FindByID(v.categoryID))
+                            .ToList();
+                    }
+                    else
+                    {
+                        itemList = itemList
+                            .OrderByDescending(v => ItemTypeModel.FindByID(v.categoryID))
+                            .ToList();
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        itemView.itemsSource = itemList;
+        itemView.RefreshItems();
     }
 
     private void CreateStatView()
@@ -387,7 +456,7 @@ public class ItemWindowEditor : EditorWindow
 
     private void DisplayItemInfo(int index)
     {
-        selectedItem = items[index];
+        selectedItem = (ItemModel)itemView.itemsSource[index];
         usedStatIDs = new List<int>(selectedItem.stats.Keys);
 
         selectedName.SetValueWithoutNotify(selectedItem.name);
