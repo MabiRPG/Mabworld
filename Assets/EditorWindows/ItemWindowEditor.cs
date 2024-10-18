@@ -41,7 +41,7 @@ public class ItemWindowEditor : EditorWindow
     [SerializeField]
     private VisualTreeAsset m_VisualTreeAsset = default;
 
-    [MenuItem("Window/UI Toolkit/ItemEditor")]
+    [MenuItem("MabWorld/Item Editor")]
     public static void ShowExample()
     {
         ItemWindowEditor wnd = GetWindow<ItemWindowEditor>();
