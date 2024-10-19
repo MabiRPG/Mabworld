@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Data;
 
 public class CraftingRecipeModel : Model
 {
@@ -32,9 +33,37 @@ public class CraftingRecipeModel : Model
         CreateReadQuery();
 
         ReadRow();
+        ReadIngredients();
+        ReadProducts();
     }
 
     private void ReadIngredients()
     {
+        string query = @$"SELECT item_id
+            FROM {ingredientTableName}
+            WHERE crafting_recipe_id = @id;";
+
+        DataTable table = database.ReadTable(query, fieldMap);
+
+        foreach (DataRow row in table.Rows)
+        {
+            int itemID = int.Parse(row["item_id"].ToString());
+            ingredients.Add(new CraftingRecipeIngredientModel(database, ID, itemID));
+        }
+    }
+
+    private void ReadProducts()
+    {
+        string query = @$"SELECT item_id
+            FROM {productTableName}
+            WHERE crafting_recipe_id = @id;";
+
+        DataTable table = database.ReadTable(query, fieldMap);
+
+        foreach (DataRow row in table.Rows)
+        {
+            int itemID = int.Parse(row["item_id"].ToString());
+            products.Add(new CraftingRecipeProductModel(database, ID, itemID));
+        }
     }
 }

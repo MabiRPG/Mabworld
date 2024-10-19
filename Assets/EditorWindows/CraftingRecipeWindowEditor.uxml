@@ -1,12 +1,25 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <ui:TwoPaneSplitView orientation="vertical">
+    <ui:TwoPaneSplitView>
         <ui:MultiColumnListView fixed-item-height="20" name="recipeView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1;">
             <ui:Columns>
-                <ui:Column name="ingredient" title="Ingredient" width="250" />
-                <ui:Column name="product" title="Product" width="250" />
+                <ui:Column name="product" title="Product" width="100" />
             </ui:Columns>
         </ui:MultiColumnListView>
         <ui:VisualElement>
+            <ui:TwoPaneSplitView>
+                <ui:MultiColumnListView fixed-item-height="20" name="ingredientView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1; margin-top: 5px; margin-left: 5px; margin-bottom: 5px;">
+                    <ui:Columns>
+                        <ui:Column name="ingredient" title="Ingredient" width="250" />
+                        <ui:Column name="quantity" title="Quantity" width="50" />
+                    </ui:Columns>
+                </ui:MultiColumnListView>
+                <ui:MultiColumnListView fixed-item-height="20" name="productView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1; margin-right: 5px; margin-top: 5px; margin-bottom: 5px;">
+                    <ui:Columns>
+                        <ui:Column name="product" title="Product" width="250" />
+                        <ui:Column name="quantity" title="Quantity" width="50" />
+                    </ui:Columns>
+                </ui:MultiColumnListView>
+            </ui:TwoPaneSplitView>
         </ui:VisualElement>
     </ui:TwoPaneSplitView>
 </ui:UXML>
