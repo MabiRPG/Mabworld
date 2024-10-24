@@ -19,6 +19,23 @@ public class ItemModel : Model
 
     public Dictionary<int, ItemStatModel> stats = new Dictionary<int, ItemStatModel>();
 
+    public ItemModel(DatabaseManager database) : base(database)
+    {
+        tableName = "item";
+        statTableName = "item_stat";
+
+        primaryKeys.Add("id");
+
+        fieldMap.Add("id", new ModelFieldReference(this, nameof(this.ID)));
+        fieldMap.Add("name", new ModelFieldReference(this, nameof(name)));
+        fieldMap.Add("category_id", new ModelFieldReference(this, nameof(categoryID)));
+        fieldMap.Add("description", new ModelFieldReference(this, nameof(description)));
+        fieldMap.Add("icon", new ModelFieldReference(this, nameof(icon)));
+        fieldMap.Add("stack_size_limit", new ModelFieldReference(this, nameof(stackSizeLimit)));
+        fieldMap.Add("width_in_grid", new ModelFieldReference(this, nameof(widthInGrid)));
+        fieldMap.Add("height_in_grid", new ModelFieldReference(this, nameof(heightInGrid)));
+    }
+
     public ItemModel(DatabaseManager database, int ID) : base(database)
     {
         this.ID = ID;

@@ -31,6 +31,9 @@ public class CraftingRecipeWindowEditor : EditorWindow
     private List<CraftingRecipeModel> recipes;
     private int recipeCounter;
 
+    private List<int> usedIngredientIDs;
+    private List<int> usedProductIDs;
+
     [SerializeField]
     private VisualTreeAsset m_VisualTreeAsset = default;
 
@@ -175,17 +178,37 @@ public class CraftingRecipeWindowEditor : EditorWindow
         ingredientView.columns["ingredient"].makeCell = () =>
         {
             DropdownField dropdown = new DropdownField();
-            dropdown.choices = items.Select(v => v.name).ToList();
             dropdown.RegisterValueChangedCallback(e =>
             {
-                (ingredientView.itemsSource[(int)dropdown.userData] as CraftingRecipeIngredientModel)
-                    .ChangeItem(items.Where(v => v.name == e.newValue).Select(v => v.ID).First());
+                CraftingRecipeIngredientModel ingredient = 
+                    (CraftingRecipeIngredientModel)ingredientView.itemsSource[(int)dropdown.userData];
+
+                if (usedIngredientIDs.Contains(ingredient.itemID))
+                {
+                    usedIngredientIDs.Remove(ingredient.itemID);
+                }
+
+                if (selectedRecipe.ingredients.ContainsKey(ingredient.itemID))
+                {
+                    selectedRecipe.ingredients.Remove(ingredient.itemID);
+                }
+
+                ingredient.ChangeItem(items.Where(v => v.name == e.newValue).Select(v => v.ID).First());
+                
+                usedIngredientIDs.Add(ingredient.itemID);
+                selectedRecipe.ingredients.Add(ingredient.itemID, ingredient);
+                
+                ingredientView.RefreshItems();
             });
 
             return dropdown;
         };
         ingredientView.columns["ingredient"].bindCell = (item, index) =>
         {
+            List<string> choices = new List<string>(items
+                .Where(v => !usedIngredientIDs.Contains(v.ID)).Select(v => v.name));
+            (item as DropdownField).choices = choices;
+
             CraftingRecipeIngredientModel ingredient = 
                 (CraftingRecipeIngredientModel)ingredientView.itemsSource[index];
             (item as DropdownField).SetValueWithoutNotify(ingredient.item.name);
@@ -226,7 +249,10 @@ public class CraftingRecipeWindowEditor : EditorWindow
         ingredientAddButton = rootVisualElement.Q<Button>("ingredientAddButton");
         ingredientAddButton.clicked += () =>
         {
-            ingredientView.itemsSource.Add(new CraftingRecipeIngredientModel(database, selectedRecipe.ID));
+            CraftingRecipeIngredientModel ingredient =
+                new CraftingRecipeIngredientModel(database, selectedRecipe.ID);
+            ingredient.quantity = 1;
+            ingredientView.itemsSource.Add(ingredient);
             ingredientView.RefreshItems();
         };
     }
@@ -239,14 +265,36 @@ public class CraftingRecipeWindowEditor : EditorWindow
             dropdown.choices = items.Select(v => v.name).ToList();
             dropdown.RegisterValueChangedCallback(e =>
             {
+                CraftingRecipeProductModel product =
+                    (CraftingRecipeProductModel)productView.itemsSource[(int)dropdown.userData];
+
+                if (usedProductIDs.Contains(product.itemID))
+                {
+                    usedProductIDs.Remove(product.itemID);
+                }
+
+                if (selectedRecipe.products.ContainsKey(product.itemID))
+                {
+                    selectedRecipe.products.Remove(product.itemID);
+                }
+
                 (productView.itemsSource[(int)dropdown.userData] as CraftingRecipeProductModel)
                     .ChangeItem(items.Where(v => v.name == e.newValue).Select(v => v.ID).First());
+                
+                usedProductIDs.Add(product.itemID);
+                selectedRecipe.products.Add(product.itemID, product);
+
+                productView.RefreshItems();
             });
 
             return dropdown;
         };
         productView.columns["product"].bindCell = (item, index) =>
         {
+            List<string> choices = new List<string>(items
+                .Where(v => !usedProductIDs.Contains(v.ID)).Select(v => v.name));
+            (item as DropdownField).choices = choices;
+
             CraftingRecipeProductModel product = 
                 (CraftingRecipeProductModel)productView.itemsSource[index];
             (item as DropdownField).SetValueWithoutNotify(product.item.name);
@@ -287,7 +335,10 @@ public class CraftingRecipeWindowEditor : EditorWindow
         productAddButton = rootVisualElement.Q<Button>("productAddButton");
         productAddButton.clicked += () =>
         {
-            productView.itemsSource.Add(new CraftingRecipeProductModel(database, selectedRecipe.ID));
+            CraftingRecipeProductModel product = 
+                new CraftingRecipeProductModel(database, selectedRecipe.ID);
+            product.quantity = 1;
+            productView.itemsSource.Add(product);
             productView.RefreshItems();
         };
     }
@@ -308,6 +359,8 @@ public class CraftingRecipeWindowEditor : EditorWindow
     private void DisplayRecipeInfo(int index)
     {
         selectedRecipe = (CraftingRecipeModel)recipeView.itemsSource[index];
+        usedIngredientIDs = new List<int>(selectedRecipe.ingredients.Values.Select(v => v.itemID));
+        usedProductIDs = new List<int>(selectedRecipe.products.Values.Select(v => v.itemID));
 
         ingredientView.itemsSource = selectedRecipe.ingredients.Values.ToList();
         ingredientView.RefreshItems();

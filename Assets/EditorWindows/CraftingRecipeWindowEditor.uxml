@@ -18,7 +18,7 @@
             <ui:DropdownField label="Crafting rank:" name="selectedCraftingRank" />
             <ui:TwoPaneSplitView fixed-pane-initial-dimension="250" style="flex-grow: 1; flex-shrink: 0;">
                 <ui:VisualElement style="flex-shrink: 1; justify-content: space-between; align-items: stretch; width: auto;">
-                    <ui:MultiColumnListView fixed-item-height="20" name="ingredientView" sorting-enabled="true" style="flex-grow: 1; flex-shrink: 0; margin-top: 5px; margin-left: 5px; margin-bottom: 5px; width: auto;">
+                    <ui:MultiColumnListView fixed-item-height="20" name="ingredientView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1; margin-top: 5px; margin-left: 5px; margin-bottom: 5px; width: auto;">
                         <ui:Columns>
                             <ui:Column name="ingredient" title="Ingredient" width="150" />
                             <ui:Column name="quantity" title="Quantity" width="50" />
@@ -28,7 +28,7 @@
                     <ui:Button text="Add new ingredient" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ingredientAddButton" style="align-items: flex-start; flex-basis: auto;" />
                 </ui:VisualElement>
                 <ui:VisualElement style="flex-shrink: 1; flex-grow: 0; justify-content: space-between;">
-                    <ui:MultiColumnListView fixed-item-height="20" name="productView" sorting-enabled="true" style="flex-grow: 1; flex-shrink: 0; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; width: auto;">
+                    <ui:MultiColumnListView fixed-item-height="20" name="productView" sorting-enabled="true" style="flex-grow: 1; flex-shrink: 1; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; width: auto;">
                         <ui:Columns>
                             <ui:Column name="product" title="Product" width="150" />
                             <ui:Column name="quantity" title="Quantity" width="50" />

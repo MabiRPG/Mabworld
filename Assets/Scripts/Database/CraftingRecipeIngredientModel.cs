@@ -21,6 +21,8 @@ public class CraftingRecipeIngredientModel : Model
 
         CreateReadQuery();
         CreateWriteQuery();
+
+        item = new ItemModel(database);
     }
 
     public CraftingRecipeIngredientModel(DatabaseManager database, int recipeID, int itemID)

@@ -7,7 +7,7 @@ public class CraftingRecipeProductModel : Model
     public ItemModel item;
 
     public CraftingRecipeProductModel(DatabaseManager database, int recipeID)
-    : base(database)
+        : base(database)
     {
         this.recipeID = recipeID;
         tableName = "crafting_recipe_product";
@@ -21,6 +21,8 @@ public class CraftingRecipeProductModel : Model
 
         CreateReadQuery();
         CreateWriteQuery();
+
+        item = new ItemModel(database);
     }
 
     public CraftingRecipeProductModel(DatabaseManager database, int recipeID, int itemID)
