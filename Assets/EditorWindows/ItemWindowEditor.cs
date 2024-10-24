@@ -90,8 +90,9 @@ public class ItemWindowEditor : EditorWindow
         refreshButton.RegisterCallback<ClickEvent>(e =>
         {
             Initialize();
-            selectedItem = items[index];
+            itemView.itemsSource = items;
             DisplayItemInfo(index);
+            itemView.RefreshItems();
         });
 
         commitButton = rootVisualElement.Q<Button>("commitButton");

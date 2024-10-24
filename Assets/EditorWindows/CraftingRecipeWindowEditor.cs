@@ -93,6 +93,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
         refreshButton.RegisterCallback<ClickEvent>(e => 
         { 
             Initialize();
+            recipeView.itemsSource = recipes;
             DisplayRecipeInfo(index);
             recipeView.RefreshItems();
         });
@@ -158,6 +159,12 @@ public class CraftingRecipeWindowEditor : EditorWindow
         {
             DropdownField dropdown = new DropdownField();
             dropdown.choices = items.Select(v => v.name).ToList();
+            dropdown.RegisterValueChangedCallback(e =>
+            {
+                (ingredientView.itemsSource[(int)dropdown.userData] as CraftingRecipeIngredientModel)
+                    .ChangeItem(items.Where(v => v.name == e.newValue).Select(v => v.ID).First());
+            });
+
             return dropdown;
         };
         ingredientView.columns["ingredient"].bindCell = (item, index) =>
@@ -165,14 +172,26 @@ public class CraftingRecipeWindowEditor : EditorWindow
             CraftingRecipeIngredientModel ingredient = 
                 (CraftingRecipeIngredientModel)ingredientView.itemsSource[index];
             (item as DropdownField).SetValueWithoutNotify(ingredient.item.name);
+            (item as DropdownField).userData = index;
         };
 
-        ingredientView.columns["quantity"].makeCell = () => new Label();
+        ingredientView.columns["quantity"].makeCell = () =>
+        {
+            IntegerField integerField = new IntegerField();
+            integerField.RegisterValueChangedCallback(e =>
+            {
+                (ingredientView.itemsSource[(int)integerField.userData] as CraftingRecipeIngredientModel)
+                    .quantity = e.newValue;
+            });
+
+            return integerField;
+        };
         ingredientView.columns["quantity"].bindCell = (item, index) =>
         {
             CraftingRecipeIngredientModel ingredient = 
                 (CraftingRecipeIngredientModel)ingredientView.itemsSource[index];
-            (item as Label).text = ingredient.quantity.ToString();
+            (item as IntegerField).SetValueWithoutNotify(ingredient.quantity);
+            (item as IntegerField).userData = index;
         };
     }
 
@@ -182,6 +201,12 @@ public class CraftingRecipeWindowEditor : EditorWindow
         {
             DropdownField dropdown = new DropdownField();
             dropdown.choices = items.Select(v => v.name).ToList();
+            dropdown.RegisterValueChangedCallback(e =>
+            {
+                (productView.itemsSource[(int)dropdown.userData] as CraftingRecipeProductModel)
+                    .ChangeItem(items.Where(v => v.name == e.newValue).Select(v => v.ID).First());
+            });
+
             return dropdown;
         };
         productView.columns["product"].bindCell = (item, index) =>
@@ -189,14 +214,26 @@ public class CraftingRecipeWindowEditor : EditorWindow
             CraftingRecipeProductModel product = 
                 (CraftingRecipeProductModel)productView.itemsSource[index];
             (item as DropdownField).SetValueWithoutNotify(product.item.name);
+            (item as DropdownField).userData = index;
         };
 
-        productView.columns["quantity"].makeCell = () => new Label();
+        productView.columns["quantity"].makeCell = () =>
+        {
+            IntegerField integerField = new IntegerField();
+            integerField.RegisterValueChangedCallback(e =>
+            {
+                (productView.itemsSource[(int)integerField.userData] as CraftingRecipeProductModel)
+                    .quantity = e.newValue;
+            });
+
+            return integerField;
+        };
         productView.columns["quantity"].bindCell = (item, index) =>
         {
             CraftingRecipeProductModel product = 
                 (CraftingRecipeProductModel)productView.itemsSource[index];
-            (item as Label).text = product.quantity.ToString();
+            (item as IntegerField).SetValueWithoutNotify(product.quantity);
+            (item as IntegerField).userData = index;
         };
     }
 
@@ -234,5 +271,22 @@ public class CraftingRecipeWindowEditor : EditorWindow
 
     private void SaveRecipes()
     {
+        database.Write(@"DELETE FROM crafting_recipe; DELETE FROM crafting_recipe_ingredient; 
+            DELETE FROM crafting_recipe_product;", new Dictionary<string, ModelFieldReference>());
+
+        foreach (CraftingRecipeModel recipe in recipes)
+        {
+            recipe.Upsert();
+
+            foreach (CraftingRecipeIngredientModel ingredient in recipe.ingredients)
+            {
+                ingredient.Upsert();
+            }
+
+            foreach (CraftingRecipeProductModel product in recipe.products)
+            {
+                product.Upsert();
+            }
+        }
     }
 }

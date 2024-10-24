@@ -21,8 +21,15 @@ public class CraftingRecipeProductModel : Model
         fieldMap.Add("item_quantity", new ModelFieldReference(this, nameof(quantity)));
 
         CreateReadQuery();
+        CreateWriteQuery();
 
         ReadRow();
+        item = new ItemModel(database, itemID);
+    }
+
+    public void ChangeItem(int itemID)
+    {
+        this.itemID = itemID;
         item = new ItemModel(database, itemID);
     }
 }

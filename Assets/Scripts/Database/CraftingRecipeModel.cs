@@ -31,6 +31,7 @@ public class CraftingRecipeModel : Model
         fieldMap.Add("rank_required", new ModelFieldReference(this, nameof(rankRequired)));
 
         CreateReadQuery();
+        CreateWriteQuery();
 
         ReadRow();
         ReadIngredients();

@@ -107,6 +107,7 @@ public class SkillEditorWindow : EditorWindow
         refreshButton.RegisterCallback<ClickEvent>(e => 
         { 
             Initialize();
+            skillView.itemsSource = skills;
             SetSelectedSkill(skills[index]);
             skillView.RefreshItems();
         });
