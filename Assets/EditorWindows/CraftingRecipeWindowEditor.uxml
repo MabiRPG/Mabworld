@@ -5,6 +5,7 @@
     </ui:GroupBox>
     <ui:TwoPaneSplitView fixed-pane-initial-dimension="150" focusable="false" style="flex-shrink: 0; justify-content: flex-start;">
         <ui:VisualElement style="width: auto; flex-grow: 1; justify-content: flex-start; flex-basis: auto;">
+            <ui:TextField picking-mode="Ignore" value="Search..." keyboard-type="ASCIICapable" name="nameSearch" />
             <ui:MultiColumnListView fixed-item-height="20" name="recipeView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1; margin-top: 0; margin-left: 0; margin-bottom: 0; width: auto;">
                 <ui:Columns>
                     <ui:Column name="product" title="Product" width="150" />

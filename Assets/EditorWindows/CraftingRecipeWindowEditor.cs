@@ -17,6 +17,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
     private DropdownField selectedCraftingSkill;
     private DropdownField selectedCraftingRank;
 
+    private TextField nameSearch;
     private MultiColumnListView recipeView;
     private MultiColumnListView ingredientView;
     private MultiColumnListView productView;
@@ -111,6 +112,16 @@ public class CraftingRecipeWindowEditor : EditorWindow
         commitButton = rootVisualElement.Q<Button>("commitButton");
         commitButton.RegisterCallback<ClickEvent>(e => SaveRecipes());
 
+        nameSearch = rootVisualElement.Q<TextField>("nameSearch");
+        nameSearch.RegisterValueChangedCallback(e =>
+        {
+            recipeView.itemsSource = recipes
+                .Where(v => ProductStringBuilder(v).Contains(e.newValue, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            recipeView.RefreshItems();
+        });
+
         recipeView = rootVisualElement.Q<MultiColumnListView>("recipeView");
         ingredientView = rootVisualElement.Q<MultiColumnListView>("ingredientView");
         productView = rootVisualElement.Q<MultiColumnListView>("productView");
@@ -144,20 +155,13 @@ public class CraftingRecipeWindowEditor : EditorWindow
 
     private void CreateRecipeView()
     {
+        recipeView.columnSortingChanged += () => SortRecipeColumns();
+
         recipeView.columns["product"].makeCell = () => new Label();
         recipeView.columns["product"].bindCell = (item, index) =>
         {
             CraftingRecipeModel recipe = (CraftingRecipeModel)recipeView.itemsSource[index];
-            string label = "";
-
-            foreach ((int ID, CraftingRecipeProductModel product) in recipe.products)
-            {
-                label += $"{product.item.name}, ";
-            }
-
-            label = label[..^2];
-
-            (item as Label).text = label;
+            (item as Label).text = ProductStringBuilder(recipe);
         };
 
         recipeAddButton = rootVisualElement.Q<Button>("recipeAddButton");
@@ -175,8 +179,53 @@ public class CraftingRecipeWindowEditor : EditorWindow
         recipeView.RefreshItems();
     }
 
+    private string ProductStringBuilder(CraftingRecipeModel recipe)
+    {
+        string label = "";
+
+        foreach ((int ID, CraftingRecipeProductModel product) in recipe.products)
+        {
+            label += $"{product.item.name}, ";
+        }
+
+        label = label[..^2];
+
+        return label;
+    }
+
+    private void SortRecipeColumns()
+    {
+        List<CraftingRecipeModel> recipes =
+            (List<CraftingRecipeModel>)recipeView.itemsSource;
+
+        foreach (var column in recipeView.sortedColumns)
+        {
+            switch (column.columnName)
+            {
+                case "product":
+                    if (column.direction == SortDirection.Ascending)
+                    {
+                        recipes = recipes.OrderBy(v => ProductStringBuilder(v)).ToList();
+                    }
+                    else
+                    {
+                        recipes = recipes.OrderByDescending(v => ProductStringBuilder(v)).ToList();
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        recipeView.itemsSource = recipes;
+        recipeView.RefreshItems();
+    }
+
     private void CreateIngredientView()
     {
+        ingredientView.columnSortingChanged += () => SortIngredientColumns();
+
         ingredientView.columns["ingredient"].makeCell = () =>
         {
             DropdownField dropdown = new DropdownField();
@@ -277,8 +326,50 @@ public class CraftingRecipeWindowEditor : EditorWindow
         };
     }
 
+    private void SortIngredientColumns()
+    {
+        List<CraftingRecipeIngredientModel> ingredients = 
+            (List<CraftingRecipeIngredientModel>)ingredientView.itemsSource;
+
+        foreach (var column in ingredientView.sortedColumns)
+        {
+            switch (column.columnName)
+            {
+                case "ingredient":
+                    if (column.direction == SortDirection.Ascending)
+                    {
+                        ingredients = ingredients.OrderBy(v => v.item.name).ToList();
+                    }
+                    else
+                    {
+                        ingredients = ingredients.OrderByDescending(v => v.item.name).ToList();
+                    }
+
+                    break;
+                case "quantity":
+                    if (column.direction == SortDirection.Ascending)
+                    {
+                        ingredients = ingredients.OrderBy(v => v.quantity).ToList();
+                    }
+                    else
+                    {
+                        ingredients = ingredients.OrderByDescending(v => v.quantity).ToList();
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        ingredientView.itemsSource = ingredients;
+        ingredientView.RefreshItems();
+    }
+
     private void CreateProductView()
     {
+        productView.columnSortingChanged += () => SortProductColumns();
+
         productView.columns["product"].makeCell = () =>
         {
             DropdownField dropdown = new DropdownField();
@@ -382,6 +473,47 @@ public class CraftingRecipeWindowEditor : EditorWindow
             productView.RefreshItems();
         };
     }
+
+    private void SortProductColumns()
+    {
+        List<CraftingRecipeProductModel> products = 
+            (List<CraftingRecipeProductModel>)productView.itemsSource;
+
+        foreach (var column in productView.sortedColumns)
+        {
+            switch (column.columnName)
+            {
+                case "product":
+                    if (column.direction == SortDirection.Ascending)
+                    {
+                        products = products.OrderBy(v => v.item.name).ToList();
+                    }
+                    else
+                    {
+                        products = products.OrderByDescending(v => v.item.name).ToList();
+                    }
+
+                    break;
+                case "quantity":
+                    if (column.direction == SortDirection.Ascending)
+                    {
+                        products = products.OrderBy(v => v.quantity).ToList();
+                    }
+                    else
+                    {
+                        products = products.OrderByDescending(v => v.quantity).ToList();
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        productView.itemsSource = products;
+        productView.RefreshItems();
+    }
+
 
     private void OnRecipeSelectionChange(IEnumerable<int> selectedIndex)
     {
