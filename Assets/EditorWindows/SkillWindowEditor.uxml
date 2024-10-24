@@ -5,7 +5,8 @@
         <ui:Button text="Commit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="commitButton" />
     </ui:GroupBox>
     <ui:TwoPaneSplitView fixed-pane-initial-dimension="250" style="align-items: auto; justify-content: flex-start; -unity-text-outline-width: 0; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; border-left-color: rgba(255, 255, 255, 0); border-right-color: rgba(255, 255, 255, 0); border-top-color: rgba(255, 255, 255, 0); border-bottom-color: rgba(255, 255, 255, 0);">
-        <ui:VisualElement style="align-items: stretch; justify-content: space-between;">
+        <ui:VisualElement style="align-items: stretch; justify-content: flex-start;">
+            <ui:TextField picking-mode="Ignore" value="Search..." keyboard-type="ASCIICapable" name="nameSearch" />
             <ui:MultiColumnListView name="leftPane" fixed-item-height="20" reorderable="false" show-add-remove-footer="false" show-foldout-header="false" sorting-enabled="true" style="justify-content: center;">
                 <ui:Columns>
                     <ui:Column name="icon" title="Icon" width="40" />

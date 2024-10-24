@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -33,6 +34,7 @@ public class SkillEditorWindow : EditorWindow
     private Toggle selectedIsLearnable;
     private Toggle selectedIsPassive;
 
+    private TextField nameSearch;
     private MultiColumnListView statView;
     private Button statAddButton;
     private MultiColumnListView trainingView;
@@ -115,6 +117,16 @@ public class SkillEditorWindow : EditorWindow
 
         commitButton = rootVisualElement.Q<Button>("commitButton");
         commitButton.RegisterCallback<ClickEvent>(e => SaveSkills());
+
+        nameSearch = rootVisualElement.Q<TextField>("nameSearch");
+        nameSearch.RegisterValueChangedCallback(e =>
+        {
+            skillView.itemsSource = skills
+                .Where(v => v.name.Contains(e.newValue, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            skillView.RefreshItems();
+        });
 
         skillView = rootVisualElement.Q<MultiColumnListView>();
         skillView.columnSortingChanged += () => SortSkillColumns();
