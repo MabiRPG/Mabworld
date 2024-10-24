@@ -3,30 +3,41 @@
         <ui:Button text="Refresh" parse-escape-sequences="true" display-tooltip-when-elided="true" name="refreshButton" style="background-image: none;" />
         <ui:Button text="Commit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="commitButton" />
     </ui:GroupBox>
-    <ui:TwoPaneSplitView>
-        <ui:MultiColumnListView fixed-item-height="20" name="recipeView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1; width: 150px;">
-            <ui:Columns>
-                <ui:Column name="product" title="Product" width="150" />
-            </ui:Columns>
-        </ui:MultiColumnListView>
+    <ui:TwoPaneSplitView fixed-pane-initial-dimension="150" focusable="false" style="flex-shrink: 0; justify-content: flex-start;">
+        <ui:VisualElement style="width: auto; flex-grow: 1; justify-content: flex-start; flex-basis: auto;">
+            <ui:MultiColumnListView fixed-item-height="20" name="recipeView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1; margin-top: 0; margin-left: 0; margin-bottom: 0; width: auto;">
+                <ui:Columns>
+                    <ui:Column name="product" title="Product" width="150" />
+                </ui:Columns>
+            </ui:MultiColumnListView>
+            <ui:Button text="Add new recipe" parse-escape-sequences="true" display-tooltip-when-elided="true" name="recipeAddButton" style="align-items: flex-start; flex-basis: auto;" />
+        </ui:VisualElement>
         <ui:VisualElement>
-            <ui:TwoPaneSplitView>
-                <ui:MultiColumnListView fixed-item-height="20" name="ingredientView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1; margin-top: 5px; margin-left: 5px; margin-bottom: 5px; width: 200px;">
-                    <ui:Columns>
-                        <ui:Column name="ingredient" title="Ingredient" width="150" />
-                        <ui:Column name="quantity" title="Quantity" width="50" />
-                    </ui:Columns>
-                </ui:MultiColumnListView>
-                <ui:MultiColumnListView fixed-item-height="20" name="productView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; width: 200px;">
-                    <ui:Columns>
-                        <ui:Column name="product" title="Product" width="150" />
-                        <ui:Column name="quantity" title="Quantity" width="50" />
-                    </ui:Columns>
-                </ui:MultiColumnListView>
-            </ui:TwoPaneSplitView>
             <ui:DropdownField label="Crafting station:" name="selectedCraftingStation" />
             <ui:DropdownField label="Crafting skill:" name="selectedCraftingSkill" />
             <ui:DropdownField label="Crafting rank:" name="selectedCraftingRank" />
+            <ui:TwoPaneSplitView fixed-pane-initial-dimension="250" style="flex-grow: 1; flex-shrink: 0;">
+                <ui:VisualElement style="flex-shrink: 1; justify-content: space-between; align-items: stretch; width: auto;">
+                    <ui:MultiColumnListView fixed-item-height="20" name="ingredientView" sorting-enabled="true" style="flex-grow: 1; flex-shrink: 0; margin-top: 5px; margin-left: 5px; margin-bottom: 5px; width: auto;">
+                        <ui:Columns>
+                            <ui:Column name="ingredient" title="Ingredient" width="150" />
+                            <ui:Column name="quantity" title="Quantity" width="50" />
+                            <ui:Column name="delete" width="30" />
+                        </ui:Columns>
+                    </ui:MultiColumnListView>
+                    <ui:Button text="Add new ingredient" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ingredientAddButton" style="align-items: flex-start; flex-basis: auto;" />
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-shrink: 1; flex-grow: 0; justify-content: space-between;">
+                    <ui:MultiColumnListView fixed-item-height="20" name="productView" sorting-enabled="true" style="flex-grow: 1; flex-shrink: 0; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; width: auto;">
+                        <ui:Columns>
+                            <ui:Column name="product" title="Product" width="150" />
+                            <ui:Column name="quantity" title="Quantity" width="50" />
+                            <ui:Column name="delete" width="30" />
+                        </ui:Columns>
+                    </ui:MultiColumnListView>
+                    <ui:Button text="Add new product" parse-escape-sequences="true" display-tooltip-when-elided="true" name="productAddButton" style="align-items: flex-start; flex-basis: auto;" />
+                </ui:VisualElement>
+            </ui:TwoPaneSplitView>
         </ui:VisualElement>
     </ui:TwoPaneSplitView>
 </ui:UXML>

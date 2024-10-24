@@ -63,7 +63,6 @@ public class SkillEditorWindow : EditorWindow
 
         DataTable dt = database.Read("SELECT id FROM skill;");
         skills = new List<SkillModel>();
-        skillCounter = dt.Rows.Count;
 
         foreach (DataRow row in dt.Rows)
         {
@@ -71,6 +70,8 @@ public class SkillEditorWindow : EditorWindow
             SkillModel skill = new SkillModel(database, ID);
             skills.Add(skill);
         }
+
+        skillCounter = skills.Max(v => v.ID);
 
         dt = database.Read("SELECT id FROM skill_category_type;");
 

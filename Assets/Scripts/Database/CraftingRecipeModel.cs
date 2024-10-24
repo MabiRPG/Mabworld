@@ -11,10 +11,10 @@ public class CraftingRecipeModel : Model
     private string ingredientTableName;
     private string productTableName;
 
-    public List<CraftingRecipeIngredientModel> ingredients = 
-        new List<CraftingRecipeIngredientModel>();
-    public List<CraftingRecipeProductModel> products =
-        new List<CraftingRecipeProductModel>();
+    public Dictionary<int, CraftingRecipeIngredientModel> ingredients = 
+        new Dictionary<int, CraftingRecipeIngredientModel>();
+    public Dictionary<int, CraftingRecipeProductModel> products =
+        new Dictionary<int, CraftingRecipeProductModel>();
 
     public CraftingRecipeModel(DatabaseManager database, int ID) : base(database)
     {
@@ -49,7 +49,7 @@ public class CraftingRecipeModel : Model
         foreach (DataRow row in table.Rows)
         {
             int itemID = int.Parse(row["item_id"].ToString());
-            ingredients.Add(new CraftingRecipeIngredientModel(database, ID, itemID));
+            ingredients.Add(itemID, new CraftingRecipeIngredientModel(database, ID, itemID));
         }
     }
 
@@ -64,7 +64,7 @@ public class CraftingRecipeModel : Model
         foreach (DataRow row in table.Rows)
         {
             int itemID = int.Parse(row["item_id"].ToString());
-            products.Add(new CraftingRecipeProductModel(database, ID, itemID));
+            products.Add(itemID, new CraftingRecipeProductModel(database, ID, itemID));
         }
     }
 }

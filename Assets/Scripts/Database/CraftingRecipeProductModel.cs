@@ -6,6 +6,23 @@ public class CraftingRecipeProductModel : Model
 
     public ItemModel item;
 
+    public CraftingRecipeProductModel(DatabaseManager database, int recipeID)
+    : base(database)
+    {
+        this.recipeID = recipeID;
+        tableName = "crafting_recipe_product";
+
+        primaryKeys.Add("crafting_recipe_id");
+        primaryKeys.Add("item_id");
+
+        fieldMap.Add("crafting_recipe_id", new ModelFieldReference(this, nameof(recipeID)));
+        fieldMap.Add("item_id", new ModelFieldReference(this, nameof(itemID)));
+        fieldMap.Add("item_quantity", new ModelFieldReference(this, nameof(quantity)));
+
+        CreateReadQuery();
+        CreateWriteQuery();
+    }
+
     public CraftingRecipeProductModel(DatabaseManager database, int recipeID, int itemID)
         : base(database)
     {

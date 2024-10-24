@@ -54,7 +54,6 @@ public class ItemWindowEditor : EditorWindow
 
         DataTable dt = database.Read("SELECT id FROM item;");
         items = new List<ItemModel>();
-        itemCounter = dt.Rows.Count;
 
         foreach (DataRow row in dt.Rows)
         {
@@ -62,6 +61,8 @@ public class ItemWindowEditor : EditorWindow
             ItemModel item = new ItemModel(database, ID);
             items.Add(item);
         }
+
+        itemCounter = items.Max(v => v.ID);
 
         dt = database.Read("SELECT id FROM item_category_type;");
 

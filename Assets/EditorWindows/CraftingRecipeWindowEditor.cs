@@ -21,10 +21,15 @@ public class CraftingRecipeWindowEditor : EditorWindow
     private MultiColumnListView ingredientView;
     private MultiColumnListView productView;
 
+    private Button recipeAddButton;
+    private Button ingredientAddButton;
+    private Button productAddButton;
+
     private DatabaseManager database;
     private List<SkillModel> skills;
     private List<ItemModel> items;
     private List<CraftingRecipeModel> recipes;
+    private int recipeCounter;
 
     [SerializeField]
     private VisualTreeAsset m_VisualTreeAsset = default;
@@ -49,6 +54,8 @@ public class CraftingRecipeWindowEditor : EditorWindow
             CraftingRecipeModel recipe = new CraftingRecipeModel(database, ID);
             recipes.Add(recipe);     
         }
+
+        recipeCounter = recipes.Max(v => v.ID);
 
         dt = database.Read("SELECT id FROM crafting_station;");
 
@@ -140,12 +147,22 @@ public class CraftingRecipeWindowEditor : EditorWindow
             CraftingRecipeModel recipe = (CraftingRecipeModel)recipeView.itemsSource[index];
             string label = "";
 
-            foreach (CraftingRecipeProductModel product in recipe.products)
+            foreach ((int ID, CraftingRecipeProductModel product) in recipe.products)
             {
                 label += $"{product.item.name} ";
             }
 
             (item as Label).text = label;
+        };
+
+        recipeAddButton = rootVisualElement.Q<Button>("recipeAddButton");
+        recipeAddButton.clicked += () =>
+        {
+            recipeCounter += 1;
+            CraftingRecipeModel recipe = new CraftingRecipeModel(database, recipeCounter);
+            recipes.Add(recipe);
+            recipeView.selectedIndex = recipeView.itemsSource.Count - 1;
+            recipeView.RefreshItems();
         };
 
         recipeView.itemsSource = recipes;
@@ -193,6 +210,25 @@ public class CraftingRecipeWindowEditor : EditorWindow
             (item as IntegerField).SetValueWithoutNotify(ingredient.quantity);
             (item as IntegerField).userData = index;
         };
+
+        ingredientView.columns["delete"].makeCell = () =>
+        {
+            Button button = new Button();
+            button.text = "X";
+
+            return button;
+        };
+        ingredientView.columns["delete"].bindCell = (item, index) =>
+        {
+            (item as Button).userData = index;
+        };
+
+        ingredientAddButton = rootVisualElement.Q<Button>("ingredientAddButton");
+        ingredientAddButton.clicked += () =>
+        {
+            ingredientView.itemsSource.Add(new CraftingRecipeIngredientModel(database, selectedRecipe.ID));
+            ingredientView.RefreshItems();
+        };
     }
 
     private void CreateProductView()
@@ -235,6 +271,25 @@ public class CraftingRecipeWindowEditor : EditorWindow
             (item as IntegerField).SetValueWithoutNotify(product.quantity);
             (item as IntegerField).userData = index;
         };
+
+        productView.columns["delete"].makeCell = () =>
+        {
+            Button button = new Button();
+            button.text = "X";
+
+            return button;
+        };
+        productView.columns["delete"].bindCell = (item, index) =>
+        {
+            (item as Button).userData = index;
+        };
+
+        productAddButton = rootVisualElement.Q<Button>("productAddButton");
+        productAddButton.clicked += () =>
+        {
+            productView.itemsSource.Add(new CraftingRecipeProductModel(database, selectedRecipe.ID));
+            productView.RefreshItems();
+        };
     }
 
     private void OnRecipeSelectionChange(IEnumerable<int> selectedIndex)
@@ -254,17 +309,17 @@ public class CraftingRecipeWindowEditor : EditorWindow
     {
         selectedRecipe = (CraftingRecipeModel)recipeView.itemsSource[index];
 
-        ingredientView.itemsSource = selectedRecipe.ingredients;
+        ingredientView.itemsSource = selectedRecipe.ingredients.Values.ToList();
         ingredientView.RefreshItems();
 
-        productView.itemsSource = selectedRecipe.products;
+        productView.itemsSource = selectedRecipe.products.Values.ToList();
         productView.RefreshItems();
 
         selectedCraftingStation.SetValueWithoutNotify(
             CraftingStationModel.FindByID(selectedRecipe.craftingStationID));
 
         selectedCraftingSkill.SetValueWithoutNotify(
-            skills.Where(v => v.ID == selectedRecipe.skillID).Select(v => v.name).First());
+            skills.Where(v => v.ID == selectedRecipe.skillID).Select(v => v.name).FirstOrDefault());
 
         selectedCraftingRank.SetValueWithoutNotify(selectedRecipe.rankRequired);
     }
@@ -278,12 +333,12 @@ public class CraftingRecipeWindowEditor : EditorWindow
         {
             recipe.Upsert();
 
-            foreach (CraftingRecipeIngredientModel ingredient in recipe.ingredients)
+            foreach ((int ID, CraftingRecipeIngredientModel ingredient) in recipe.ingredients)
             {
                 ingredient.Upsert();
             }
 
-            foreach (CraftingRecipeProductModel product in recipe.products)
+            foreach ((int ID, CraftingRecipeProductModel product) in recipe.products)
             {
                 product.Upsert();
             }
