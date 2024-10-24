@@ -152,8 +152,10 @@ public class CraftingRecipeWindowEditor : EditorWindow
 
             foreach ((int ID, CraftingRecipeProductModel product) in recipe.products)
             {
-                label += $"{product.item.name} ";
+                label += $"{product.item.name}, ";
             }
+
+            label = label[..^2];
 
             (item as Label).text = label;
         };
@@ -237,6 +239,24 @@ public class CraftingRecipeWindowEditor : EditorWindow
         ingredientView.columns["delete"].makeCell = () =>
         {
             Button button = new Button();
+            button.RegisterCallback<ClickEvent>(e =>
+            {
+                CraftingRecipeIngredientModel ingredient = 
+                    (CraftingRecipeIngredientModel)ingredientView.itemsSource[(int)button.userData];
+
+                if (usedIngredientIDs.Contains(ingredient.itemID))
+                {
+                    usedIngredientIDs.Remove(ingredient.itemID);
+                }
+
+                if (selectedRecipe.ingredients.ContainsKey(ingredient.itemID))
+                {
+                    selectedRecipe.ingredients.Remove(ingredient.itemID);
+                }
+
+                ingredientView.itemsSource.Remove(ingredient);
+                ingredientView.RefreshItems();
+            });
             button.text = "X";
 
             return button;
@@ -284,6 +304,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
                 usedProductIDs.Add(product.itemID);
                 selectedRecipe.products.Add(product.itemID, product);
 
+                recipeView.RefreshItems();
                 productView.RefreshItems();
             });
 
@@ -323,6 +344,25 @@ public class CraftingRecipeWindowEditor : EditorWindow
         productView.columns["delete"].makeCell = () =>
         {
             Button button = new Button();
+            button.RegisterCallback<ClickEvent>(e =>
+            {
+                CraftingRecipeProductModel product = 
+                    (CraftingRecipeProductModel)productView.itemsSource[(int)button.userData];
+
+                if (usedProductIDs.Contains(product.itemID))
+                {
+                    usedProductIDs.Remove(product.itemID);
+                }
+
+                if (selectedRecipe.products.ContainsKey(product.itemID))
+                {
+                    selectedRecipe.products.Remove(product.itemID);
+                }
+
+                productView.itemsSource.Remove(product);
+                recipeView.RefreshItems();
+                productView.RefreshItems();
+            });
             button.text = "X";
 
             return button;
