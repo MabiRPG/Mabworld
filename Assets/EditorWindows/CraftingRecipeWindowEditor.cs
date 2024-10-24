@@ -1,20 +1,29 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class CraftingRecipeWindowEditor : EditorWindow
 {
+    private Button refreshButton;
+    private Button commitButton;
+
     private int index;
     private CraftingRecipeModel selectedRecipe;
+    private DropdownField selectedCraftingStation;
+    private DropdownField selectedCraftingSkill;
+    private DropdownField selectedCraftingRank;
 
     private MultiColumnListView recipeView;
     private MultiColumnListView ingredientView;
     private MultiColumnListView productView;
 
     private DatabaseManager database;
+    private List<SkillModel> skills;
+    private List<ItemModel> items;
     private List<CraftingRecipeModel> recipes;
 
     [SerializeField]
@@ -24,7 +33,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
     public static void ShowExample()
     {
         CraftingRecipeWindowEditor wnd = GetWindow<CraftingRecipeWindowEditor>();
-        wnd.titleContent = new GUIContent("CraftingRecipeWindowEditor");
+        wnd.titleContent = new GUIContent("Crafting Recipe Editor");
     }
 
     private void Initialize()
@@ -40,6 +49,38 @@ public class CraftingRecipeWindowEditor : EditorWindow
             CraftingRecipeModel recipe = new CraftingRecipeModel(database, ID);
             recipes.Add(recipe);     
         }
+
+        dt = database.Read("SELECT id FROM crafting_station;");
+
+        foreach (DataRow row in dt.Rows)
+        {
+            int ID = int.Parse(row["id"].ToString());
+            new CraftingStationModel(database, ID);
+        }
+
+        dt = database.Read("SELECT id FROM skill;");
+        skills = new List<SkillModel>();
+
+        foreach (DataRow row in dt.Rows)
+        {
+            int ID = int.Parse(row["id"].ToString());
+            SkillModel skill = new SkillModel(database, ID);
+            skills.Add(skill);
+        }
+
+        skills = skills.OrderBy(v => v.name).ToList();
+
+        dt = database.Read("SELECT id FROM item;");
+        items = new List<ItemModel>();
+
+        foreach (DataRow row in dt.Rows)
+        {
+            int ID = int.Parse(row["id"].ToString());
+            ItemModel item = new ItemModel(database, ID);
+            items.Add(item);
+        }
+
+        items = items.OrderBy(v => v.name).ToList();
     }
 
     public void CreateGUI()
@@ -48,9 +89,42 @@ public class CraftingRecipeWindowEditor : EditorWindow
 
         m_VisualTreeAsset.CloneTree(rootVisualElement);
 
+        refreshButton = rootVisualElement.Q<Button>("refreshButton");
+        refreshButton.RegisterCallback<ClickEvent>(e => 
+        { 
+            Initialize();
+            DisplayRecipeInfo(index);
+            recipeView.RefreshItems();
+        });
+
+        commitButton = rootVisualElement.Q<Button>("commitButton");
+        commitButton.RegisterCallback<ClickEvent>(e => SaveRecipes());
+
         recipeView = rootVisualElement.Q<MultiColumnListView>("recipeView");
         ingredientView = rootVisualElement.Q<MultiColumnListView>("ingredientView");
         productView = rootVisualElement.Q<MultiColumnListView>("productView");
+
+        selectedCraftingStation = rootVisualElement.Q<DropdownField>("selectedCraftingStation");
+        selectedCraftingStation.RegisterValueChangedCallback(e =>
+        {
+            selectedRecipe.craftingStationID = CraftingStationModel.FindByName(e.newValue);
+        });
+        selectedCraftingStation.choices = new List<string>(CraftingStationModel.types.Values);
+
+        selectedCraftingSkill = rootVisualElement.Q<DropdownField>("selectedCraftingSkill");
+        selectedCraftingSkill.RegisterValueChangedCallback(e =>
+        {
+            selectedRecipe.skillID = skills.Where(v => v.name == e.newValue)
+                .Select(v => v.ID).First();
+        });
+        selectedCraftingSkill.choices = new List<string>(skills.Select(v => v.name));
+
+        selectedCraftingRank = rootVisualElement.Q<DropdownField>("selectedCraftingRank");
+        selectedCraftingRank.RegisterValueChangedCallback(e =>
+        {
+            selectedRecipe.rankRequired = e.newValue;
+        });
+        selectedCraftingRank.choices = SkillModel.ranks;
 
         CreateRecipeView();
         CreateIngredientView();
@@ -80,12 +154,17 @@ public class CraftingRecipeWindowEditor : EditorWindow
 
     private void CreateIngredientView()
     {
-        ingredientView.columns["ingredient"].makeCell = () => new Label();
+        ingredientView.columns["ingredient"].makeCell = () =>
+        {
+            DropdownField dropdown = new DropdownField();
+            dropdown.choices = items.Select(v => v.name).ToList();
+            return dropdown;
+        };
         ingredientView.columns["ingredient"].bindCell = (item, index) =>
         {
             CraftingRecipeIngredientModel ingredient = 
                 (CraftingRecipeIngredientModel)ingredientView.itemsSource[index];
-            (item as Label).text = ingredient.item.name;
+            (item as DropdownField).SetValueWithoutNotify(ingredient.item.name);
         };
 
         ingredientView.columns["quantity"].makeCell = () => new Label();
@@ -99,12 +178,17 @@ public class CraftingRecipeWindowEditor : EditorWindow
 
     private void CreateProductView()
     {
-        productView.columns["product"].makeCell = () => new Label();
+        productView.columns["product"].makeCell = () =>
+        {
+            DropdownField dropdown = new DropdownField();
+            dropdown.choices = items.Select(v => v.name).ToList();
+            return dropdown;
+        };
         productView.columns["product"].bindCell = (item, index) =>
         {
             CraftingRecipeProductModel product = 
                 (CraftingRecipeProductModel)productView.itemsSource[index];
-            (item as Label).text = product.item.name;
+            (item as DropdownField).SetValueWithoutNotify(product.item.name);
         };
 
         productView.columns["quantity"].makeCell = () => new Label();
@@ -115,7 +199,6 @@ public class CraftingRecipeWindowEditor : EditorWindow
             (item as Label).text = product.quantity.ToString();
         };
     }
-
 
     private void OnRecipeSelectionChange(IEnumerable<int> selectedIndex)
     {
@@ -139,5 +222,17 @@ public class CraftingRecipeWindowEditor : EditorWindow
 
         productView.itemsSource = selectedRecipe.products;
         productView.RefreshItems();
+
+        selectedCraftingStation.SetValueWithoutNotify(
+            CraftingStationModel.FindByID(selectedRecipe.craftingStationID));
+
+        selectedCraftingSkill.SetValueWithoutNotify(
+            skills.Where(v => v.ID == selectedRecipe.skillID).Select(v => v.name).First());
+
+        selectedCraftingRank.SetValueWithoutNotify(selectedRecipe.rankRequired);
+    }
+
+    private void SaveRecipes()
+    {
     }
 }

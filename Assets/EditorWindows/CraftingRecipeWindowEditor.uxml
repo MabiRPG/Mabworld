@@ -1,25 +1,32 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:GroupBox style="align-items: auto; flex-direction: row; justify-content: space-between; margin-top: 2px;">
+        <ui:Button text="Refresh" parse-escape-sequences="true" display-tooltip-when-elided="true" name="refreshButton" style="background-image: none;" />
+        <ui:Button text="Commit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="commitButton" />
+    </ui:GroupBox>
     <ui:TwoPaneSplitView>
-        <ui:MultiColumnListView fixed-item-height="20" name="recipeView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1;">
+        <ui:MultiColumnListView fixed-item-height="20" name="recipeView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1; width: 150px;">
             <ui:Columns>
-                <ui:Column name="product" title="Product" width="100" />
+                <ui:Column name="product" title="Product" width="150" />
             </ui:Columns>
         </ui:MultiColumnListView>
         <ui:VisualElement>
             <ui:TwoPaneSplitView>
-                <ui:MultiColumnListView fixed-item-height="20" name="ingredientView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1; margin-top: 5px; margin-left: 5px; margin-bottom: 5px;">
+                <ui:MultiColumnListView fixed-item-height="20" name="ingredientView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1; margin-top: 5px; margin-left: 5px; margin-bottom: 5px; width: 200px;">
                     <ui:Columns>
-                        <ui:Column name="ingredient" title="Ingredient" width="250" />
+                        <ui:Column name="ingredient" title="Ingredient" width="150" />
                         <ui:Column name="quantity" title="Quantity" width="50" />
                     </ui:Columns>
                 </ui:MultiColumnListView>
-                <ui:MultiColumnListView fixed-item-height="20" name="productView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1; margin-right: 5px; margin-top: 5px; margin-bottom: 5px;">
+                <ui:MultiColumnListView fixed-item-height="20" name="productView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; width: 200px;">
                     <ui:Columns>
-                        <ui:Column name="product" title="Product" width="250" />
+                        <ui:Column name="product" title="Product" width="150" />
                         <ui:Column name="quantity" title="Quantity" width="50" />
                     </ui:Columns>
                 </ui:MultiColumnListView>
             </ui:TwoPaneSplitView>
+            <ui:DropdownField label="Crafting station:" name="selectedCraftingStation" />
+            <ui:DropdownField label="Crafting skill:" name="selectedCraftingSkill" />
+            <ui:DropdownField label="Crafting rank:" name="selectedCraftingRank" />
         </ui:VisualElement>
     </ui:TwoPaneSplitView>
 </ui:UXML>
