@@ -21,7 +21,7 @@ public class SkillEditorWindow : EditorWindow
     private TextField selectedName;
     private ObjectField selectedIcon;
     private ObjectField selectedSFX;
-    private DropdownField selectedCategory;
+    private DropdownField selectedCultivationStage;
     private TextField selectedDescription;
     private TextField selectedDetails;
     private DropdownField selectedFirstRank;
@@ -75,12 +75,12 @@ public class SkillEditorWindow : EditorWindow
 
         skillCounter = skills.Max(v => v.ID);
 
-        dt = database.Read("SELECT id FROM skill_category_type;");
+        dt = database.Read("SELECT id FROM cultivation_stage;");
 
         foreach (DataRow row in dt.Rows)
         {
             int ID = int.Parse(row["id"].ToString());
-            new SkillTypeModel(database, ID);
+            new CultivationStageModel(database, ID);
         }
         
         dt = database.Read("SELECT id FROM skill_stat_type;");
@@ -171,10 +171,10 @@ public class SkillEditorWindow : EditorWindow
         {
             selectedSkill.sfx = (AudioClip)e.newValue;
         });
-        selectedCategory = rootVisualElement.Q<DropdownField>("selectedCategory");
-        selectedCategory.RegisterValueChangedCallback(e =>
+        selectedCultivationStage = rootVisualElement.Q<DropdownField>("selectedCultivationStage");
+        selectedCultivationStage.RegisterValueChangedCallback(e =>
         {
-            selectedSkill.categoryID = SkillTypeModel.FindByName(e.newValue);
+            selectedSkill.cultivationStageID = CultivationStageModel.FindByName(e.newValue);
         });
         selectedDescription = rootVisualElement.Q<TextField>("selectedDescription");
         selectedDescription.RegisterValueChangedCallback(e => 
@@ -708,20 +708,9 @@ public class SkillEditorWindow : EditorWindow
     private void DisplaySkillInfo()
     {
         selectedName.value = selectedSkill.name;
-        
-        List<string> names = new List<string>();
 
-        foreach ((int ID, string name) in SkillTypeModel.types)
-        {
-            if (ID == selectedSkill.categoryID)
-            {
-                selectedCategory.value = name;
-            }
-
-            names.Add(name);
-        }
-
-        selectedCategory.choices = names;
+        selectedCultivationStage.value = CultivationStageModel.FindByID(selectedSkill.cultivationStageID);
+        selectedCultivationStage.choices = CultivationStageModel.types.Values.ToList();
         selectedIcon.value = selectedSkill.icon;
         selectedSFX.value = selectedSkill.sfx;
         selectedDescription.value = selectedSkill.description;

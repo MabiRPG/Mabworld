@@ -8,7 +8,7 @@ public class SkillModel : Model
     public int ID;
     // Name of skill and category
     public string name;
-    public int categoryID;
+    public int cultivationStageID;
     // Skill description, details, skill icon, and sound effect when using
     public string description;
     public string details;
@@ -53,7 +53,7 @@ public class SkillModel : Model
 
         fieldMap.Add("id", new ModelFieldReference(this, nameof(this.ID)));
         fieldMap.Add("name", new ModelFieldReference(this, nameof(name)));
-        fieldMap.Add("category_id", new ModelFieldReference(this, nameof(categoryID)));
+        fieldMap.Add("cultivation_stage_id", new ModelFieldReference(this, nameof(cultivationStageID)));
         fieldMap.Add("description", new ModelFieldReference(this, nameof(description)));
         fieldMap.Add("details", new ModelFieldReference(this, nameof(details)));
         fieldMap.Add("icon", new ModelFieldReference(this, nameof(icon)));

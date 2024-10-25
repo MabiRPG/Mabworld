@@ -17,7 +17,7 @@
         </ui:VisualElement>
         <ui:ScrollView style="align-items: stretch; align-self: auto; justify-content: flex-start;">
             <ui:TextField picking-mode="Ignore" label="Name:" keyboard-type="ASCIICapable" max-length="-1" name="selectedName" style="justify-content: flex-start; align-self: auto; align-items: auto;" />
-            <ui:DropdownField label="Category:" name="selectedCategory" />
+            <ui:DropdownField label="Cultivation Stage:" name="selectedCultivationStage" />
             <uie:ObjectField label="Icon:" type="UnityEngine.Sprite, UnityEngine.CoreModule" name="selectedIcon" />
             <uie:ObjectField label="SFX:" type="UnityEngine.AudioClip, UnityEngine.AudioModule" name="selectedSFX" />
             <ui:TextField picking-mode="Ignore" label="Description:" multiline="true" name="selectedDescription" keyboard-type="ASCIICapable" hide-mobile-input="false" style="height: auto; flex-wrap: wrap; white-space: normal; flex-grow: 0;" />

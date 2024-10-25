@@ -19,9 +19,14 @@
             <ui:DropdownField label="Crafting rank:" name="selectedCraftingRank" />
             <ui:MultiColumnListView fixed-item-height="20" name="stepView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1; margin-top: 0; margin-left: 0; margin-bottom: 0; width: auto;">
                 <ui:Columns>
-                    <ui:Column name="step" title="Step" width="150" />
+                    <ui:Column name="step" title="Step #" width="50" />
+                    <ui:Column name="condition" title="Condition" width="150" />
+                    <ui:Column name="param1" title="Parameter 1" width="150" />
                 </ui:Columns>
             </ui:MultiColumnListView>
         </ui:VisualElement>
     </ui:TwoPaneSplitView>
+    <ui:Vector3Field label="Vec3 Field" />
+    <uie:ObjectField label="Object Field" />
+    <uie:PropertyField />
 </ui:UXML>
