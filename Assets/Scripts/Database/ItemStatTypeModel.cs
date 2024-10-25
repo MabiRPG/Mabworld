@@ -11,7 +11,6 @@ public class ItemStatTypeModel : TypeModel<ItemStatTypeModel>
         tableName = "item_stat_type";
 
         fieldMap.Add("is_range", new ModelFieldReference(this, nameof(isRange)));
-
         CreateReadQuery();
         ReadRow();
 

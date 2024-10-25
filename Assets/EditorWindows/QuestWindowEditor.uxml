@@ -22,6 +22,7 @@
                     <ui:Column name="step" title="Step #" width="50" />
                     <ui:Column name="condition" title="Condition" width="150" />
                     <ui:Column name="param1" title="Parameter 1" width="150" />
+                    <ui:Column name="param2" title="Parameter 2" width="150" />
                 </ui:Columns>
             </ui:MultiColumnListView>
         </ui:VisualElement>

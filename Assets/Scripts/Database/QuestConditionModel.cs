@@ -3,7 +3,8 @@ public class QuestConditionModel : Model
     public int questID;
     public int stepID;
     public int conditionID;
-    public int param1;
+    public string param1;
+    public string param2;
 
     public QuestConditionModel(DatabaseManager database, int questID, int stepID) : base(database)
     {
@@ -18,6 +19,7 @@ public class QuestConditionModel : Model
         fieldMap.Add("step_id", new ModelFieldReference(this, nameof(this.stepID)));
         fieldMap.Add("condition_id", new ModelFieldReference(this, nameof(conditionID)));
         fieldMap.Add("param1", new ModelFieldReference(this, nameof(param1)));
+        fieldMap.Add("param2", new ModelFieldReference(this, nameof(param2)));
 
         CreateReadQuery();
         CreateWriteQuery();

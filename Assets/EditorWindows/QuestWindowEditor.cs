@@ -69,6 +69,22 @@ public class QuestWindowEditor : EditorWindow
             SkillModel skill = new SkillModel(database, ID);
             skills.Add(skill);
         }
+
+        dt = database.Read("SELECT id FROM cultivation_stage;");
+
+        foreach (DataRow row in dt.Rows)
+        {
+            int ID = int.Parse(row["id"].ToString());
+            new CultivationStageModel(database, ID);
+        }
+
+        dt = database.Read("SELECT id FROM cultivation_substage;");
+
+        foreach (DataRow row in dt.Rows)
+        {
+            int ID = int.Parse(row["id"].ToString());
+            new CultivationSubstageModel(database, ID);
+        }        
     }
 
     public void CreateGUI()
@@ -133,15 +149,79 @@ public class QuestWindowEditor : EditorWindow
             switch (QuestConditionCategoryTypeModel.FindByID(categoryID))
             {
                 case "Skill":
+                {
+                    DropdownField dropdown = new DropdownField();
+
+                    dropdown.SetValueWithoutNotify(skills
+                            .Where(v => v.ID == int.Parse(condition.param1))
+                            .Select(v => v.name)
+                            .First());
+                    dropdown.choices = skills
+                        .Select(v => v.name)
+                        .OrderBy(v => v)
+                        .ToList();
+
+                    item.Add(dropdown);
+
+                    break;
+                }
+                case "Cultivation stage":
+                {
                     DropdownField dropdown = new DropdownField();
 
                     dropdown.SetValueWithoutNotify(
-                        skills.Where(v => v.ID == condition.param1).Select(v => v.name).First());
-                    dropdown.choices = skills.Select(v => v.name).ToList();
+                        CultivationStageModel.FindByID(int.Parse(condition.param1)));
+                    dropdown.choices = CultivationStageModel.types
+                        .OrderBy(v => v.Key)
+                        .Select(v => v.Value)
+                        .ToList();
 
                     item.Add(dropdown);
-                    
+
                     break;
+                }
+                default:
+                    break;
+            }
+        };
+
+        stepView.columns["param2"].makeCell = () => new VisualElement();
+        stepView.columns["param2"].bindCell = (item, index) =>
+        {
+            item.Clear();
+
+            QuestConditionModel condition = (QuestConditionModel)stepView.itemsSource[index];
+            int categoryID = QuestConditionTypeModel.GetCategory(condition.conditionID);
+
+            switch (QuestConditionCategoryTypeModel.FindByID(categoryID))
+            {
+                case "Skill":
+                {
+                    DropdownField dropdown = new DropdownField();
+
+                    dropdown.SetValueWithoutNotify(condition.param2);
+                    dropdown.choices = SkillModel.ranks;
+
+                    item.Add(dropdown);
+
+                    break;
+                }
+                case "Cultivation stage":
+                {
+                    DropdownField dropdown = new DropdownField();
+
+                    dropdown.SetValueWithoutNotify(CultivationSubstageModel
+                        .substages[(int.Parse(condition.param1), int.Parse(condition.param2))]);
+                    dropdown.choices = CultivationSubstageModel.substages
+                        .Where(v => v.Key.Item1 == int.Parse(condition.param1))
+                        .OrderBy(v => v.Key.Item2)
+                        .Select(v => v.Value)
+                        .ToList();
+
+                    item.Add(dropdown);
+
+                    break;
+                }
                 default:
                     break;
             }
