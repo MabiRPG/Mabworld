@@ -9,10 +9,12 @@ public class QuestModel : Model
     public List<QuestConditionModel> prerequisites = new List<QuestConditionModel>();
     public List<QuestConditionModel> steps = new List<QuestConditionModel>();
     public List<QuestConditionModel> rewards = new List<QuestConditionModel>();
+    public List<QuestDialogueModel> dialogues = new List<QuestDialogueModel>();
 
     private string prerequisitesTableName;
     private string stepsTableName;
     private string rewardsTableName;
+    private string dialogueTableName;
 
     public QuestModel(DatabaseManager database, int ID) : base(database)
     {
@@ -21,6 +23,7 @@ public class QuestModel : Model
         prerequisitesTableName = "quest_prerequisite";
         stepsTableName = "quest_step";
         rewardsTableName = "quest_reward";
+        dialogueTableName = "quest_dialogue";
 
         primaryKeys.Add("id");
 
@@ -35,6 +38,7 @@ public class QuestModel : Model
         ReadInfo(prerequisitesTableName, prerequisites);
         ReadInfo(stepsTableName, steps);
         ReadInfo(rewardsTableName, rewards);
+        ReadDialogue();
     }
 
     private void ReadInfo(string tableName, List<QuestConditionModel> appendList)
@@ -52,5 +56,21 @@ public class QuestModel : Model
             QuestConditionModel step = new QuestConditionModel(database, ID, stepID, tableName);
             appendList.Add(step);
         }            
+    }
+
+    private void ReadDialogue()
+    {
+        string query = @$"SELECT id
+            FROM {dialogueTableName}
+            WHERE quest_id = @id;";
+
+        DataTable table = database.ReadTable(query, fieldMap);
+
+        foreach (DataRow row in table.Rows)
+        {
+            int dialogueID = int.Parse(row["id"].ToString());
+            QuestDialogueModel dialogue = new QuestDialogueModel(database, dialogueID, ID);
+            dialogues.Add(dialogue);
+        }                   
     }
 }

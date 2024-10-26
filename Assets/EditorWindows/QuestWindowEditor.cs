@@ -272,22 +272,30 @@ public class QuestWindowEditor : EditorWindow
                     break;
                 }
                 case "Item":
-                    {
-                        DropdownField dropdown = new DropdownField();
+                {
+                    DropdownField dropdown = new DropdownField();
 
-                        dropdown.SetValueWithoutNotify(items
-                            .Where(v => v.ID == int.Parse(condition.param1))
-                            .Select(v => v.name)
-                            .First());
-                        dropdown.choices = items
-                            .Select(v => v.name)
-                            .OrderBy(v => v)
-                            .ToList();
+                    dropdown.SetValueWithoutNotify(items
+                        .Where(v => v.ID == int.Parse(condition.param1))
+                        .Select(v => v.name)
+                        .First());
+                    dropdown.choices = items
+                        .Select(v => v.name)
+                        .OrderBy(v => v)
+                        .ToList();
 
-                        item.Add(dropdown);
+                    item.Add(dropdown);
 
-                        break;
-                    }
+                    break;
+                }
+                case "Dialogue":
+                {
+                    MultiColumnListView dialogueView = CreateDialogueView();
+                    item.Add(dialogueView);
+                    dialogueView.RefreshItems();
+
+                    break;
+                }
                 default:
                     break;
             }
@@ -342,10 +350,72 @@ public class QuestWindowEditor : EditorWindow
 
                     break;
                 }
+                case "Item":
+                {
+                    IntegerField field = new IntegerField();
+
+                    field.SetValueWithoutNotify(int.Parse(condition.param2));
+                    field.RegisterValueChangedCallback(e =>
+                    {
+                        condition.param2 = e.newValue.ToString();
+                    });
+
+                    item.Add(field);
+
+                    break;
+                }
                 default:
                     break;
             }
         };
+    }
+
+    private MultiColumnListView CreateDialogueView()
+    {
+        MultiColumnListView newView = new MultiColumnListView();
+        Column idColumn = new Column { name = "id", title = "ID", stretchable = true };
+        Column npcColumn = new Column { name = "npc", title = "NPC", stretchable = true };
+        Column textColumn = new Column { name = "text", title = "Text", stretchable = true };
+
+        newView.columns.Add(idColumn);
+        newView.columns.Add(npcColumn);
+        newView.columns.Add(textColumn);
+
+        newView.columns["id"].makeCell = () => new DropdownField();
+        newView.columns["id"].bindCell = (item, index) =>
+        {
+            QuestDialogueModel dialogue = (QuestDialogueModel)newView.itemsSource[index];
+            (item as DropdownField).SetValueWithoutNotify(dialogue.ID.ToString());
+        };
+
+        newView.columns["npc"].makeCell = () => new DropdownField();
+        newView.columns["npc"].bindCell = (item, index) =>
+        {
+            QuestDialogueModel dialogue = (QuestDialogueModel)newView.itemsSource[index];
+            (item as DropdownField).SetValueWithoutNotify(npcs
+                .Where(v => v.ID == dialogue.npcID)
+                .Select(v => v.name)
+                .First());
+        };
+
+        newView.columns["text"].makeCell = () =>
+        {
+            TextField textField = new TextField();
+            textField.multiline = true;
+            textField.style.flexWrap = Wrap.Wrap;
+            textField.style.whiteSpace = WhiteSpace.Normal;
+            return textField;
+        };
+        newView.columns["text"].bindCell = (item, index) =>
+        {
+            QuestDialogueModel dialogue = (QuestDialogueModel)newView.itemsSource[index];
+            (item as TextField).SetValueWithoutNotify(dialogue.text);
+        };
+
+        newView.virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight;
+        newView.itemsSource = selectedQuest.dialogues;
+
+        return newView;
     }
 
     private void CreatePrerequisiteView()
@@ -355,6 +425,8 @@ public class QuestWindowEditor : EditorWindow
 
     private void CreateStepView()
     {
+        stepView.virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight;
+
         stepView.columns["step"].makeCell = () => new Label();
         stepView.columns["step"].bindCell = (item, index) =>
         {
