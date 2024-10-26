@@ -6,11 +6,12 @@ public class QuestConditionModel : Model
     public string param1;
     public string param2;
 
-    public QuestConditionModel(DatabaseManager database, int questID, int stepID) : base(database)
+    public QuestConditionModel(DatabaseManager database, int questID, int stepID, 
+        string tableName) : base(database)
     {
         this.questID = questID;
         this.stepID = stepID;
-        tableName = "quest_step";
+        this.tableName = tableName;
 
         primaryKeys.Add("quest_id");
         primaryKeys.Add("step_id");

@@ -14,11 +14,16 @@ public class QuestWindowEditor : EditorWindow
     private QuestModel selectedQuest;
     private MultiColumnListView questView;
 
+    private TextField selectedName;
+    private MultiColumnListView prerequisiteView;
     private MultiColumnListView stepView;
+    private MultiColumnListView rewardView;
 
     private DatabaseManager database;
     private List<QuestModel> quests;
     private List<SkillModel> skills;
+    private List<NPCModel> npcs;
+    private List<ItemModel> items;
 
     [SerializeField]
     private VisualTreeAsset m_VisualTreeAsset = default;
@@ -70,6 +75,26 @@ public class QuestWindowEditor : EditorWindow
             skills.Add(skill);
         }
 
+        dt = database.Read("SELECT id FROM npc;");
+        npcs = new List<NPCModel>();
+
+        foreach (DataRow row in dt.Rows)
+        {
+            int ID = int.Parse(row["id"].ToString());
+            NPCModel npc = new NPCModel(database, ID);
+            npcs.Add(npc);
+        }
+
+        dt = database.Read("SELECT id FROM item;");
+        items = new List<ItemModel>();
+
+        foreach (DataRow row in dt.Rows)
+        {
+            int ID = int.Parse(row["id"].ToString());
+            ItemModel item = new ItemModel(database, ID);
+            items.Add(item);
+        }
+
         dt = database.Read("SELECT id FROM cultivation_stage;");
 
         foreach (DataRow row in dt.Rows)
@@ -99,8 +124,20 @@ public class QuestWindowEditor : EditorWindow
         questView = rootVisualElement.Q<MultiColumnListView>("questView");
         CreateQuestView();
 
+        selectedName = rootVisualElement.Q<TextField>("selectedName");
+        selectedName.RegisterValueChangedCallback(e =>
+        {
+            selectedQuest.name = e.newValue;
+        });
+
+        prerequisiteView = rootVisualElement.Q<MultiColumnListView>("prerequisiteView");
+        CreatePrerequisiteView();
+
         stepView = rootVisualElement.Q<MultiColumnListView>("stepView");
         CreateStepView();
+
+        rewardView = rootVisualElement.Q<MultiColumnListView>("rewardView");
+        CreateRewardView();
     }
 
     private void CreateQuestView()
@@ -116,34 +153,58 @@ public class QuestWindowEditor : EditorWindow
         questView.RefreshItems();
     }
 
-    private void CreateStepView()
+    private void CreateQuestInfoView(MultiColumnListView listView)
     {
-        stepView.columns["step"].makeCell = () => new Label();
-        stepView.columns["step"].bindCell = (item, index) =>
-        {
-            QuestConditionModel step = (QuestConditionModel)stepView.itemsSource[index];
-            (item as Label).text = step.stepID.ToString();
-        };
-
-        stepView.columns["condition"].makeCell = () =>
+        listView.columns["condition"].makeCell = () =>
         {
             DropdownField dropdown = new DropdownField();
             dropdown.choices = QuestConditionTypeModel.types.Values.ToList();
+            dropdown.RegisterValueChangedCallback(e =>
+            {
+                QuestConditionModel condition = 
+                    (QuestConditionModel)listView.itemsSource[(int)dropdown.userData];
+                condition.conditionID = QuestConditionTypeModel.FindByName(e.newValue);
+                listView.RefreshItems();
+            });
+
             return dropdown;
         };
-        stepView.columns["condition"].bindCell = (item, index) =>
+        listView.columns["condition"].bindCell = (item, index) =>
         {
-            QuestConditionModel condition = (QuestConditionModel)stepView.itemsSource[index];
+            QuestConditionModel condition = (QuestConditionModel)listView.itemsSource[index];
             (item as DropdownField).SetValueWithoutNotify(
                 QuestConditionTypeModel.FindByID(condition.conditionID));
-        };
+            (item as DropdownField).userData = index;
+        };       
 
-        stepView.columns["param1"].makeCell = () => new VisualElement();
-        stepView.columns["param1"].bindCell = (item, index) =>
+        listView.columns["condition"].makeCell = () =>
+        {
+            DropdownField dropdown = new DropdownField();
+            dropdown.choices = QuestConditionTypeModel.types.Values.ToList();
+            dropdown.RegisterValueChangedCallback(e =>
+            {
+                QuestConditionModel condition = 
+                    (QuestConditionModel)listView.itemsSource[(int)dropdown.userData];
+                condition.conditionID = QuestConditionTypeModel.FindByName(e.newValue);
+                listView.RefreshItems();
+            });
+
+            return dropdown;
+        };
+        listView.columns["condition"].bindCell = (item, index) =>
+        {
+            QuestConditionModel condition = (QuestConditionModel)listView.itemsSource[index];
+            (item as DropdownField).SetValueWithoutNotify(
+                QuestConditionTypeModel.FindByID(condition.conditionID));
+            (item as DropdownField).userData = index;
+        }; 
+
+        listView.columns["param1"].makeCell = () => new VisualElement();
+        listView.columns["param1"].bindCell = (item, index) =>
         {
             item.Clear();
 
-            QuestConditionModel condition = (QuestConditionModel)stepView.itemsSource[index];
+            QuestConditionModel condition = (QuestConditionModel)listView.itemsSource[index];
             int categoryID = QuestConditionTypeModel.GetCategory(condition.conditionID);
 
             switch (QuestConditionCategoryTypeModel.FindByID(categoryID))
@@ -157,6 +218,31 @@ public class QuestWindowEditor : EditorWindow
                             .Select(v => v.name)
                             .First());
                     dropdown.choices = skills
+                        .Select(v => v.name)
+                        .OrderBy(v => v)
+                        .ToList();
+                    dropdown.RegisterValueChangedCallback(e =>
+                    {
+                        condition.param1 = skills
+                            .Where(v => v.name == e.newValue)
+                            .Select(v => v.ID)
+                            .First()
+                            .ToString();
+                    });
+
+                    item.Add(dropdown);
+
+                    break;
+                }
+                case "NPC":
+                {
+                    DropdownField dropdown = new DropdownField();
+
+                    dropdown.SetValueWithoutNotify(npcs
+                        .Where(v => v.ID == int.Parse(condition.param1))
+                        .Select(v => v.name)
+                        .First());
+                    dropdown.choices = npcs
                         .Select(v => v.name)
                         .OrderBy(v => v)
                         .ToList();
@@ -175,22 +261,44 @@ public class QuestWindowEditor : EditorWindow
                         .OrderBy(v => v.Key)
                         .Select(v => v.Value)
                         .ToList();
+                    dropdown.RegisterValueChangedCallback(e =>
+                    {
+                        condition.param1 = CultivationStageModel.FindByName(e.newValue).ToString();
+                        listView.RefreshItems();
+                    });
 
                     item.Add(dropdown);
 
                     break;
                 }
+                case "Item":
+                    {
+                        DropdownField dropdown = new DropdownField();
+
+                        dropdown.SetValueWithoutNotify(items
+                            .Where(v => v.ID == int.Parse(condition.param1))
+                            .Select(v => v.name)
+                            .First());
+                        dropdown.choices = items
+                            .Select(v => v.name)
+                            .OrderBy(v => v)
+                            .ToList();
+
+                        item.Add(dropdown);
+
+                        break;
+                    }
                 default:
                     break;
             }
         };
 
-        stepView.columns["param2"].makeCell = () => new VisualElement();
-        stepView.columns["param2"].bindCell = (item, index) =>
+        listView.columns["param2"].makeCell = () => new VisualElement();
+        listView.columns["param2"].bindCell = (item, index) =>
         {
             item.Clear();
 
-            QuestConditionModel condition = (QuestConditionModel)stepView.itemsSource[index];
+            QuestConditionModel condition = (QuestConditionModel)listView.itemsSource[index];
             int categoryID = QuestConditionTypeModel.GetCategory(condition.conditionID);
 
             switch (QuestConditionCategoryTypeModel.FindByID(categoryID))
@@ -201,6 +309,10 @@ public class QuestWindowEditor : EditorWindow
 
                     dropdown.SetValueWithoutNotify(condition.param2);
                     dropdown.choices = SkillModel.ranks;
+                    dropdown.RegisterValueChangedCallback(e =>
+                    {
+                        condition.param2 = e.newValue;
+                    });
 
                     item.Add(dropdown);
 
@@ -217,6 +329,14 @@ public class QuestWindowEditor : EditorWindow
                         .OrderBy(v => v.Key.Item2)
                         .Select(v => v.Value)
                         .ToList();
+                    dropdown.RegisterValueChangedCallback(e =>
+                    {
+                        condition.param2 = CultivationSubstageModel.substages
+                            .Where(v => v.Value == e.newValue)
+                            .Select(v => v.Key.Item2)
+                            .First()
+                            .ToString();
+                    });
 
                     item.Add(dropdown);
 
@@ -226,6 +346,28 @@ public class QuestWindowEditor : EditorWindow
                     break;
             }
         };
+    }
+
+    private void CreatePrerequisiteView()
+    {
+        CreateQuestInfoView(prerequisiteView);
+    }
+
+    private void CreateStepView()
+    {
+        stepView.columns["step"].makeCell = () => new Label();
+        stepView.columns["step"].bindCell = (item, index) =>
+        {
+            QuestConditionModel step = (QuestConditionModel)stepView.itemsSource[index];
+            (item as Label).text = step.stepID.ToString();
+        };
+
+        CreateQuestInfoView(stepView);
+    }
+
+    private void CreateRewardView()
+    {
+        CreateQuestInfoView(rewardView);
     }
 
     private void OnQuestSelectionChange(IEnumerable<int> selectedIndex)
@@ -245,7 +387,15 @@ public class QuestWindowEditor : EditorWindow
     {
         selectedQuest = (QuestModel)questView.itemsSource[index];
 
+        selectedName.SetValueWithoutNotify(selectedQuest.name);
+
+        prerequisiteView.itemsSource = selectedQuest.prerequisites;
+        prerequisiteView.RefreshItems();
+
         stepView.itemsSource = selectedQuest.steps;
         stepView.RefreshItems();
+
+        rewardView.itemsSource = selectedQuest.rewards;
+        rewardView.RefreshItems();
     }
 }
