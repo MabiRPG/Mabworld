@@ -24,6 +24,7 @@ public class QuestWindowEditor : EditorWindow
     private List<SkillModel> skills;
     private List<NPCModel> npcs;
     private List<ItemModel> items;
+    private int conversationID;
 
     [SerializeField]
     private VisualTreeAsset m_VisualTreeAsset = default;
@@ -290,9 +291,21 @@ public class QuestWindowEditor : EditorWindow
                 }
                 case "Dialogue":
                 {
-                    MultiColumnListView dialogueView = CreateDialogueView();
-                    item.Add(dialogueView);
-                    dialogueView.RefreshItems();
+                    DropdownField dropdown = new DropdownField();
+
+                    dropdown.SetValueWithoutNotify(condition.param1.ToString());
+                    dropdown.choices = selectedQuest.dialogues
+                        .Select(v => v.conversationID.ToString())
+                        .Distinct()
+                        .ToList();
+                    dropdown.RegisterValueChangedCallback(e =>
+                    {
+                        condition.param1 = e.newValue;
+                        conversationID = int.Parse(e.newValue);
+                        listView.RefreshItems();
+                    });
+
+                    item.Add(dropdown);
 
                     break;
                 }
@@ -364,6 +377,14 @@ public class QuestWindowEditor : EditorWindow
 
                     break;
                 }
+                case "Dialogue":
+                {
+                    MultiColumnListView dialogueView = CreateDialogueView();
+                    item.Add(dialogueView);
+                    dialogueView.RefreshItems();
+
+                    break;
+                }
                 default:
                     break;
             }
@@ -373,16 +394,16 @@ public class QuestWindowEditor : EditorWindow
     private MultiColumnListView CreateDialogueView()
     {
         MultiColumnListView newView = new MultiColumnListView();
-        Column idColumn = new Column { name = "id", title = "ID", stretchable = true };
+        Column stepColumn = new Column { name = "step", title = "Step", stretchable = true };
         Column npcColumn = new Column { name = "npc", title = "NPC", stretchable = true };
         Column textColumn = new Column { name = "text", title = "Text", stretchable = true };
 
-        newView.columns.Add(idColumn);
+        newView.columns.Add(stepColumn);
         newView.columns.Add(npcColumn);
         newView.columns.Add(textColumn);
 
-        newView.columns["id"].makeCell = () => new DropdownField();
-        newView.columns["id"].bindCell = (item, index) =>
+        newView.columns["step"].makeCell = () => new DropdownField();
+        newView.columns["step"].bindCell = (item, index) =>
         {
             QuestDialogueModel dialogue = (QuestDialogueModel)newView.itemsSource[index];
             (item as DropdownField).SetValueWithoutNotify(dialogue.ID.ToString());
@@ -413,7 +434,9 @@ public class QuestWindowEditor : EditorWindow
         };
 
         newView.virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight;
-        newView.itemsSource = selectedQuest.dialogues;
+        newView.itemsSource = selectedQuest.dialogues
+            .Where(v => v.conversationID == conversationID)
+            .ToList();
 
         return newView;
     }

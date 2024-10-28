@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
+using UnityEngine;
 
 public class QuestModel : Model
 {
@@ -60,7 +61,7 @@ public class QuestModel : Model
 
     private void ReadDialogue()
     {
-        string query = @$"SELECT id
+        string query = @$"SELECT id, conversation_id
             FROM {dialogueTableName}
             WHERE quest_id = @id;";
 
@@ -69,7 +70,9 @@ public class QuestModel : Model
         foreach (DataRow row in table.Rows)
         {
             int dialogueID = int.Parse(row["id"].ToString());
-            QuestDialogueModel dialogue = new QuestDialogueModel(database, dialogueID, ID);
+            int conversationID = int.Parse(row["conversation_id"].ToString());
+            QuestDialogueModel dialogue = 
+                new QuestDialogueModel(database, dialogueID, conversationID, ID);
             dialogues.Add(dialogue);
         }                   
     }
