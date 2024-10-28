@@ -12,10 +12,10 @@ public class QuestModel : Model
     public List<QuestConditionModel> rewards = new List<QuestConditionModel>();
     public List<QuestDialogueModel> dialogues = new List<QuestDialogueModel>();
 
-    private string prerequisitesTableName;
-    private string stepsTableName;
-    private string rewardsTableName;
-    private string dialogueTableName;
+    public static string prerequisitesTableName;
+    public static string stepsTableName;
+    public static string rewardsTableName;
+    public static string dialogueTableName;
 
     public QuestModel(DatabaseManager database, int ID) : base(database)
     {

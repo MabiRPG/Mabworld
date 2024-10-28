@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class QuestDialogueModel : Model
 {
     public int ID;
@@ -30,14 +28,5 @@ public class QuestDialogueModel : Model
         CreateWriteQuery();
 
         ReadRow();
-
-        // if (nextID != -1)
-        // {
-        //     nextText = new QuestDialogueModel(database, nextID, questID);
-        // }
-        // else
-        // {
-        //     nextText = null;
-        // }
     }
 }

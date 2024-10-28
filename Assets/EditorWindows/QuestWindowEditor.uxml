@@ -14,32 +14,37 @@
             <ui:Button text="Add new quest" parse-escape-sequences="true" display-tooltip-when-elided="true" name="recipeAddButton" style="align-items: flex-start; flex-basis: auto;" />
         </ui:VisualElement>
         <ui:VisualElement>
-            <ui:TextField label="Name:" name="selectedName" multiline="false" style="white-space: normal; flex-wrap: wrap;" />
-            <ui:Label tabindex="-1" text="Prerequisites" parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-top: 25px; align-self: center; font-size: 18px;" />
-            <ui:MultiColumnListView fixed-item-height="20" name="prerequisiteView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1; margin-top: 0; margin-left: 0; margin-bottom: 0; width: auto;">
-                <ui:Columns>
-                    <ui:Column name="condition" title="Condition" width="150" />
-                    <ui:Column name="param1" title="Parameter 1" width="150" />
-                    <ui:Column name="param2" title="Parameter 2" width="150" />
-                </ui:Columns>
-            </ui:MultiColumnListView>
-            <ui:Label tabindex="-1" text="Steps" parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-top: 25px; align-self: center; font-size: 18px;" />
-            <ui:MultiColumnListView fixed-item-height="20" name="stepView" sorting-enabled="true" selection-type="None" style="flex-grow: 0; flex-shrink: 1; margin-top: 0; margin-left: 0; margin-bottom: 0; width: auto;">
-                <ui:Columns>
-                    <ui:Column name="step" title="Step #" width="50" />
-                    <ui:Column name="condition" title="Condition" width="150" />
-                    <ui:Column name="param1" title="Parameter 1" width="150" />
-                    <ui:Column name="param2" title="Parameter 2" width="150" />
-                </ui:Columns>
-            </ui:MultiColumnListView>
-            <ui:Label tabindex="-1" text="Rewards" parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-top: 25px; align-self: center; font-size: 18px;" />
-            <ui:MultiColumnListView fixed-item-height="20" name="rewardView" sorting-enabled="true" style="flex-grow: 0; flex-shrink: 1; margin-top: 0; margin-left: 0; margin-bottom: 0; width: auto;">
-                <ui:Columns>
-                    <ui:Column name="condition" title="Reward" width="150" />
-                    <ui:Column name="param1" title="Parameter 1" width="150" />
-                    <ui:Column name="param2" title="Parameter 2" width="150" />
-                </ui:Columns>
-            </ui:MultiColumnListView>
+            <ui:ScrollView>
+                <ui:TextField label="Name:" name="selectedName" multiline="false" style="white-space: normal; flex-wrap: wrap;" />
+                <ui:Label tabindex="-1" text="Prerequisites" parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-top: 25px; align-self: center; font-size: 18px;" />
+                <ui:MultiColumnListView fixed-item-height="20" name="prerequisiteView" sorting-enabled="true" selection-type="None" style="flex-grow: 0; flex-shrink: 1; margin-top: 0; margin-left: 0; margin-bottom: 0; width: auto;">
+                    <ui:Columns>
+                        <ui:Column name="condition" title="Condition" width="150" />
+                        <ui:Column name="param1" title="Parameter 1" width="150" />
+                        <ui:Column name="param2" title="Parameter 2" width="150" />
+                    </ui:Columns>
+                </ui:MultiColumnListView>
+                <ui:Button text="Add new prerequisite" parse-escape-sequences="true" display-tooltip-when-elided="true" name="prerequisiteAddButton" style="align-items: flex-start; flex-basis: auto;" />
+                <ui:Label tabindex="-1" text="Steps" parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-top: 25px; align-self: center; font-size: 18px;" />
+                <ui:MultiColumnListView fixed-item-height="20" name="stepView" sorting-enabled="true" selection-type="None" show-add-remove-footer="false" style="flex-grow: 0; flex-shrink: 1; margin-top: 0; margin-left: 0; margin-bottom: 0; width: auto;">
+                    <ui:Columns>
+                        <ui:Column name="step" title="Step #" width="50" />
+                        <ui:Column name="condition" title="Condition" width="150" />
+                        <ui:Column name="param1" title="Parameter 1" width="150" />
+                        <ui:Column name="param2" title="Parameter 2" width="150" />
+                    </ui:Columns>
+                </ui:MultiColumnListView>
+                <ui:Button text="Add new step" parse-escape-sequences="true" display-tooltip-when-elided="true" name="stepAddButton" style="align-items: flex-start; flex-basis: auto;" />
+                <ui:Label tabindex="-1" text="Rewards" parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-top: 25px; align-self: center; font-size: 18px;" />
+                <ui:MultiColumnListView fixed-item-height="20" name="rewardView" sorting-enabled="true" selection-type="None" style="flex-grow: 0; flex-shrink: 1; margin-top: 0; margin-left: 0; margin-bottom: 0; width: auto;">
+                    <ui:Columns>
+                        <ui:Column name="condition" title="Reward" width="150" />
+                        <ui:Column name="param1" title="Parameter 1" width="150" />
+                        <ui:Column name="param2" title="Parameter 2" width="150" />
+                    </ui:Columns>
+                </ui:MultiColumnListView>
+                <ui:Button text="Add new reward" parse-escape-sequences="true" display-tooltip-when-elided="true" name="rewardAddButton" style="align-items: flex-start; flex-basis: auto;" />
+            </ui:ScrollView>
         </ui:VisualElement>
     </ui:TwoPaneSplitView>
 </ui:UXML>

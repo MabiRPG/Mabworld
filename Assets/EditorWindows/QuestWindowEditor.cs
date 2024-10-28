@@ -19,6 +19,10 @@ public class QuestWindowEditor : EditorWindow
     private MultiColumnListView stepView;
     private MultiColumnListView rewardView;
 
+    private Button prerequisiteAddButton;
+    private Button stepAddButton;
+    private Button rewardAddButton;
+
     private DatabaseManager database;
     private List<QuestModel> quests;
     private List<SkillModel> skills;
@@ -130,6 +134,10 @@ public class QuestWindowEditor : EditorWindow
         {
             selectedQuest.name = e.newValue;
         });
+
+        prerequisiteAddButton = rootVisualElement.Q<Button>("prerequisiteAddButton");
+        stepAddButton = rootVisualElement.Q<Button>("stepAddButton");
+        rewardAddButton = rootVisualElement.Q<Button>("rewardAddButton");
 
         prerequisiteView = rootVisualElement.Q<MultiColumnListView>("prerequisiteView");
         CreatePrerequisiteView();
@@ -247,6 +255,14 @@ public class QuestWindowEditor : EditorWindow
                         .Select(v => v.name)
                         .OrderBy(v => v)
                         .ToList();
+                    dropdown.RegisterValueChangedCallback(e =>
+                    {
+                        condition.param1 = npcs
+                            .Where(v => v.name == e.newValue)
+                            .Select(v => v.ID)
+                            .First()
+                            .ToString();
+                    });
 
                     item.Add(dropdown);
 
@@ -284,6 +300,14 @@ public class QuestWindowEditor : EditorWindow
                         .Select(v => v.name)
                         .OrderBy(v => v)
                         .ToList();
+                    dropdown.RegisterValueChangedCallback(e =>
+                    {
+                        condition.param1 = items
+                            .Where(v => v.name == e.newValue)
+                            .Select(v => v.ID)
+                            .First()
+                            .ToString();
+                    });
 
                     item.Add(dropdown);
 
@@ -294,6 +318,7 @@ public class QuestWindowEditor : EditorWindow
                     DropdownField dropdown = new DropdownField();
 
                     dropdown.SetValueWithoutNotify(condition.param1.ToString());
+                    conversationID = int.Parse(condition.param1);
                     dropdown.choices = selectedQuest.dialogues
                         .Select(v => v.conversationID.ToString())
                         .Distinct()
@@ -303,6 +328,28 @@ public class QuestWindowEditor : EditorWindow
                         condition.param1 = e.newValue;
                         conversationID = int.Parse(e.newValue);
                         listView.RefreshItems();
+                    });
+
+                    item.Add(dropdown);
+
+                    break;
+                }
+                case "Quest":
+                {
+                    DropdownField dropdown = new DropdownField();
+
+                    dropdown.SetValueWithoutNotify(quests
+                        .Where(v => v.ID == int.Parse(condition.param1))
+                        .Select(v => v.name)
+                        .First());
+                    dropdown.choices = quests.Select(v => v.name).ToList();
+                    dropdown.RegisterValueChangedCallback(e =>
+                    {
+                        condition.param1 = quests
+                            .Where(v => v.name == e.newValue)
+                            .Select(v => v.ID)
+                            .First()
+                            .ToString();
                     });
 
                     item.Add(dropdown);
@@ -394,7 +441,7 @@ public class QuestWindowEditor : EditorWindow
     private MultiColumnListView CreateDialogueView()
     {
         MultiColumnListView newView = new MultiColumnListView();
-        Column stepColumn = new Column { name = "step", title = "Step", stretchable = true };
+        Column stepColumn = new Column { name = "step", title = "Step #", stretchable = true };
         Column npcColumn = new Column { name = "npc", title = "NPC", stretchable = true };
         Column textColumn = new Column { name = "text", title = "Text", stretchable = true };
 
@@ -402,11 +449,11 @@ public class QuestWindowEditor : EditorWindow
         newView.columns.Add(npcColumn);
         newView.columns.Add(textColumn);
 
-        newView.columns["step"].makeCell = () => new DropdownField();
+        newView.columns["step"].makeCell = () => new Label();
         newView.columns["step"].bindCell = (item, index) =>
         {
             QuestDialogueModel dialogue = (QuestDialogueModel)newView.itemsSource[index];
-            (item as DropdownField).SetValueWithoutNotify(dialogue.ID.ToString());
+            (item as Label).text = dialogue.ID.ToString();
         };
 
         newView.columns["npc"].makeCell = () => new DropdownField();
@@ -434,6 +481,7 @@ public class QuestWindowEditor : EditorWindow
         };
 
         newView.virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight;
+        newView.selectionType = SelectionType.None;
         newView.itemsSource = selectedQuest.dialogues
             .Where(v => v.conversationID == conversationID)
             .ToList();
@@ -443,7 +491,17 @@ public class QuestWindowEditor : EditorWindow
 
     private void CreatePrerequisiteView()
     {
+        prerequisiteView.virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight;
+
         CreateQuestInfoView(prerequisiteView);
+
+        prerequisiteAddButton.clicked += () =>
+        {
+            QuestConditionModel condition = new QuestConditionModel(database,
+                selectedQuest.ID, QuestModel.prerequisitesTableName);
+            prerequisiteView.itemsSource.Add(condition);
+            prerequisiteView.RefreshItems();
+        };
     }
 
     private void CreateStepView()
@@ -458,11 +516,29 @@ public class QuestWindowEditor : EditorWindow
         };
 
         CreateQuestInfoView(stepView);
+
+        stepAddButton.clicked += () =>
+        {
+            QuestConditionModel condition = new QuestConditionModel(database,
+                selectedQuest.ID, QuestModel.stepsTableName);
+            stepView.itemsSource.Add(condition);
+            stepView.RefreshItems();
+        };
     }
 
     private void CreateRewardView()
     {
+        rewardView.virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight;
+        
         CreateQuestInfoView(rewardView);
+
+        rewardAddButton.clicked += () =>
+        {
+            QuestConditionModel condition = new QuestConditionModel(database,
+                selectedQuest.ID, QuestModel.rewardsTableName);
+            rewardView.itemsSource.Add(condition);
+            rewardView.RefreshItems();
+        };
     }
 
     private void OnQuestSelectionChange(IEnumerable<int> selectedIndex)
