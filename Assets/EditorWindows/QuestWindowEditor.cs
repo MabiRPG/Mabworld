@@ -108,12 +108,13 @@ public class QuestWindowEditor : EditorWindow
             new CultivationStageModel(database, ID);
         }
 
-        dt = database.Read("SELECT id FROM cultivation_substage;");
+        dt = database.Read("SELECT stage_id, id FROM cultivation_substage;");
 
         foreach (DataRow row in dt.Rows)
         {
+            int stageID = int.Parse(row["stage_id"].ToString());
             int ID = int.Parse(row["id"].ToString());
-            new CultivationSubstageModel(database, ID);
+            new CultivationSubstageModel(database, stageID, ID);
         }        
     }
 
@@ -456,7 +457,12 @@ public class QuestWindowEditor : EditorWindow
             (item as Label).text = dialogue.ID.ToString();
         };
 
-        newView.columns["npc"].makeCell = () => new DropdownField();
+        newView.columns["npc"].makeCell = () =>
+        {
+            DropdownField dropdown = new DropdownField();
+            dropdown.choices = npcs.Select(v => v.name).ToList();
+            return dropdown;
+        };
         newView.columns["npc"].bindCell = (item, index) =>
         {
             QuestDialogueModel dialogue = (QuestDialogueModel)newView.itemsSource[index];
