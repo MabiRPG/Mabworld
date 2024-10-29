@@ -32,6 +32,7 @@
                         <ui:Column name="condition" title="Condition" width="150" />
                         <ui:Column name="param1" title="Parameter 1" width="150" />
                         <ui:Column name="param2" title="Parameter 2" width="150" />
+                        <ui:Column name="move" width="100"/>
                     </ui:Columns>
                 </ui:MultiColumnListView>
                 <ui:Button text="Add new step" parse-escape-sequences="true" display-tooltip-when-elided="true" name="stepAddButton" style="align-items: flex-start; flex-basis: auto;" />

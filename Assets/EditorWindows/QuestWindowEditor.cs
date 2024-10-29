@@ -521,12 +521,86 @@ public class QuestWindowEditor : EditorWindow
             (item as Label).text = step.stepID.ToString();
         };
 
+        stepView.columns["move"].makeCell = () =>
+        {
+            VisualElement element = new VisualElement();
+
+            Button moveUpButton = new Button();
+            moveUpButton.text = "↑";
+            moveUpButton.clicked += () =>
+            {
+                int index = (int)element.userData;
+                List<QuestConditionModel> conditions = (List<QuestConditionModel>)stepView.itemsSource;
+
+                if (index >= 1)
+                {
+                    (stepView.itemsSource[index] as QuestConditionModel).stepID--;
+                    (stepView.itemsSource[index - 1] as QuestConditionModel).stepID++;
+
+                    conditions = conditions.OrderBy(v => v.stepID).ToList();
+                    stepView.itemsSource = conditions;
+                    stepView.RefreshItems();
+                }
+            };
+
+            Button moveDownButton = new Button();
+            moveDownButton.text = "↓";
+            moveDownButton.clicked += () =>
+            {
+                int index = (int)element.userData;
+                List<QuestConditionModel> conditions = (List<QuestConditionModel>)stepView.itemsSource;
+
+                if (index <= conditions.Count - 2)
+                {
+                    (stepView.itemsSource[index] as QuestConditionModel).stepID++;
+                    (stepView.itemsSource[index + 1] as QuestConditionModel).stepID--;
+
+                    conditions = conditions.OrderBy(v => v.stepID).ToList();
+                    stepView.itemsSource = conditions;
+                    stepView.RefreshItems();
+                }
+            };
+
+            Button deleteButton = new Button();
+            deleteButton.text = "X";
+            deleteButton.clicked += () =>
+            {
+                int index = (int)element.userData;
+                QuestConditionModel condition = (QuestConditionModel)stepView.itemsSource[index];
+                selectedQuest.steps.Remove(condition);
+
+                foreach (QuestConditionModel con in selectedQuest.steps)
+                {
+                    if (con.stepID > condition.stepID)
+                    {
+                        con.stepID--;
+                    }
+                }
+
+                stepView.RefreshItems();
+            };
+
+            element.Add(moveUpButton);
+            element.Add(moveDownButton);
+            element.Add(deleteButton);
+            element.style.flexDirection = FlexDirection.Row;
+
+            return element;
+        };
+        stepView.columns["move"].bindCell = (item, index) =>
+        {
+            item.userData = index;
+        };
+
         CreateQuestInfoView(stepView);
 
         stepAddButton.clicked += () =>
         {
             QuestConditionModel condition = new QuestConditionModel(database,
                 selectedQuest.ID, QuestModel.stepsTableName);
+            condition.stepID = (stepView.itemsSource as List<QuestConditionModel>)
+                .Max(v => v.stepID) + 1;
+
             stepView.itemsSource.Add(condition);
             stepView.RefreshItems();
         };
