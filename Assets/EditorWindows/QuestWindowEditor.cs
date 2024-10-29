@@ -854,7 +854,7 @@ public class QuestWindowEditor : EditorWindow
     private void SaveQuests()
     {
         database.Write(@"DELETE FROM quest; DELETE FROM quest_prerequisite;
-            DELETE FROM quest_step; DELETE FROM quest_reward;", 
+            DELETE FROM quest_step; DELETE FROM quest_reward; DELETE FROM quest_dialogue;", 
             new Dictionary<string, ModelFieldReference>());
 
         foreach (QuestModel quest in quests)
@@ -874,6 +874,11 @@ public class QuestWindowEditor : EditorWindow
             foreach (QuestConditionModel condition in quest.rewards)
             {
                 condition.Upsert();
+            }
+
+            foreach (QuestDialogueModel dialogue in quest.dialogues)
+            {
+                dialogue.Upsert();
             }
         }
     }
