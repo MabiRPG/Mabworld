@@ -18,6 +18,7 @@ public class QuestWindowEditor : EditorWindow
     private MultiColumnListView prerequisiteView;
     private MultiColumnListView stepView;
     private MultiColumnListView rewardView;
+    private MultiColumnListView dialogueView;
 
     private Button prerequisiteAddButton;
     private Button stepAddButton;
@@ -333,11 +334,36 @@ public class QuestWindowEditor : EditorWindow
                         .Select(v => v.conversationID.ToString())
                         .Distinct()
                         .ToList();
+                    dropdown.choices.Add("Add new dialogue");
                     dropdown.RegisterValueChangedCallback(e =>
                     {
-                        condition.param1 = e.newValue;
-                        conversationID = int.Parse(e.newValue);
+                        if (e.newValue == "Add new dialogue")
+                        {
+                            int max = 0;
+
+                            if (selectedQuest.dialogues.Count > 0)
+                            {
+                                max = selectedQuest.dialogues.Max(v => v.conversationID);
+                            }
+
+                            QuestDialogueModel dialogue = new QuestDialogueModel(database,
+                                1, max + 1, selectedQuest.ID);
+                            dialogue.text = "";
+                            dialogue.npcID = 1;
+                            selectedQuest.dialogues.Add(dialogue);
+
+                            dropdown.value = (max + 1).ToString();
+                            condition.param1 = (max + 1).ToString();
+                            conversationID = max + 1;
+                        }
+                        else
+                        {
+                            condition.param1 = e.newValue;
+                            conversationID = int.Parse(e.newValue);
+                        }
+
                         listView.RefreshItems();
+                        dialogueView.RefreshItems();
                     });
 
                     item.Add(dropdown);
@@ -436,8 +462,29 @@ public class QuestWindowEditor : EditorWindow
                 }
                 case "Dialogue":
                 {
-                    MultiColumnListView dialogueView = CreateDialogueView();
+                    dialogueView = CreateDialogueView();
                     item.Add(dialogueView);
+
+                    Button button = new Button();
+                    button.text = "Add new line";
+                    button.RegisterCallback<ClickEvent>(e =>
+                    {
+                        int max = selectedQuest.dialogues
+                            .Where(v => v.conversationID == conversationID)
+                            .Max(v => v.ID);
+                        QuestDialogueModel dialogue = new QuestDialogueModel(database, max + 1,
+                            conversationID, selectedQuest.ID);
+                        dialogue.text = "";
+                        dialogue.npcID = 1;
+
+                        selectedQuest.dialogues.Add(dialogue);
+                        dialogueView.itemsSource = selectedQuest.dialogues
+                            .Where(v => v.conversationID == conversationID)
+                            .ToList();
+                        dialogueView.RefreshItems();
+                    });
+
+                    item.Add(button);
                     dialogueView.RefreshItems();
 
                     break;
@@ -454,12 +501,19 @@ public class QuestWindowEditor : EditorWindow
         Column stepColumn = new Column { name = "step", title = "Step #", stretchable = true };
         Column npcColumn = new Column { name = "npc", title = "NPC", stretchable = true };
         Column textColumn = new Column { name = "text", title = "Text", stretchable = true };
+        Column moveColumn = new Column { name = "move", stretchable = true };
 
         newView.columns.Add(stepColumn);
         newView.columns.Add(npcColumn);
         newView.columns.Add(textColumn);
+        newView.columns.Add(moveColumn);
 
-        newView.columns["step"].makeCell = () => new Label();
+        newView.columns["step"].makeCell = () =>
+        {
+            Label label = new Label();
+            label.style.unityTextAlign = TextAnchor.MiddleCenter;
+            return label;
+        };
         newView.columns["step"].bindCell = (item, index) =>
         {
             QuestDialogueModel dialogue = (QuestDialogueModel)newView.itemsSource[index];
@@ -470,6 +524,16 @@ public class QuestWindowEditor : EditorWindow
         {
             DropdownField dropdown = new DropdownField();
             dropdown.choices = npcs.Select(v => v.name).ToList();
+            dropdown.RegisterValueChangedCallback(e =>
+            {
+                int index = (int)dropdown.userData;
+                QuestDialogueModel dialogue = (QuestDialogueModel)newView.itemsSource[index];
+                dialogue.npcID = npcs
+                    .Where(v => v.name == e.newValue)
+                    .Select(v => v.ID)
+                    .First();
+            });
+
             return dropdown;
         };
         newView.columns["npc"].bindCell = (item, index) =>
@@ -479,6 +543,7 @@ public class QuestWindowEditor : EditorWindow
                 .Where(v => v.ID == dialogue.npcID)
                 .Select(v => v.name)
                 .First());
+            (item as DropdownField).userData = index;
         };
 
         newView.columns["text"].makeCell = () =>
@@ -487,12 +552,96 @@ public class QuestWindowEditor : EditorWindow
             textField.multiline = true;
             textField.style.flexWrap = Wrap.Wrap;
             textField.style.whiteSpace = WhiteSpace.Normal;
+            textField.RegisterValueChangedCallback(e =>
+            {
+                int index = (int)textField.userData;
+                QuestDialogueModel dialogue = (QuestDialogueModel)newView.itemsSource[index];
+                dialogue.text = e.newValue;
+            });
+
             return textField;
         };
         newView.columns["text"].bindCell = (item, index) =>
         {
             QuestDialogueModel dialogue = (QuestDialogueModel)newView.itemsSource[index];
             (item as TextField).SetValueWithoutNotify(dialogue.text);
+            (item as TextField).userData = index;
+        };
+
+        newView.columns["move"].makeCell = () =>
+        {
+            VisualElement element = new VisualElement();
+
+            Button moveUpButton = new Button();
+            moveUpButton.text = "↑";
+            moveUpButton.clicked += () =>
+            {
+                int index = (int)element.userData;
+                List<QuestDialogueModel> dialogues = (List<QuestDialogueModel>)newView.itemsSource;
+
+                if (index >= 1)
+                {
+                    (newView.itemsSource[index] as QuestDialogueModel).ID--;
+                    (newView.itemsSource[index - 1] as QuestDialogueModel).ID++;
+
+                    dialogues = dialogues.OrderBy(v => v.ID).ToList();
+                    newView.itemsSource = dialogues;
+                    newView.RefreshItems();
+                }
+            };
+
+            Button moveDownButton = new Button();
+            moveDownButton.text = "↓";
+            moveDownButton.clicked += () =>
+            {
+                int index = (int)element.userData;
+                List<QuestDialogueModel> dialogues = (List<QuestDialogueModel>)newView.itemsSource;
+
+                if (index <= dialogues.Count - 2)
+                {
+                    (newView.itemsSource[index] as QuestDialogueModel).ID++;
+                    (newView.itemsSource[index + 1] as QuestDialogueModel).ID--;
+
+                    dialogues = dialogues.OrderBy(v => v.ID).ToList();
+                    newView.itemsSource = dialogues;
+                    newView.RefreshItems();
+                    stepView.RefreshItems();
+                }
+            };
+
+            Button deleteButton = new Button();
+            deleteButton.text = "X";
+            deleteButton.clicked += () =>
+            {
+                int index = (int)element.userData;
+                QuestDialogueModel dialogue = (QuestDialogueModel)newView.itemsSource[index];
+                selectedQuest.dialogues.Remove(dialogue);
+
+                foreach (QuestDialogueModel line in selectedQuest.dialogues)
+                {
+                    if (line.conversationID == dialogue.conversationID && line.ID > dialogue.ID)
+                    {
+                        line.ID--;
+                    }
+                }
+
+                newView.itemsSource = selectedQuest.dialogues
+                    .Where(v => v.conversationID == conversationID)
+                    .ToList();
+                newView.RefreshItems();
+                stepView.RefreshItems();
+            };
+
+            element.Add(moveUpButton);
+            element.Add(moveDownButton);
+            element.Add(deleteButton);
+            element.style.flexDirection = FlexDirection.Row;
+
+            return element;
+        };
+        newView.columns["move"].bindCell = (item, index) =>
+        {
+            item.userData = index;
         };
 
         newView.virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight;
@@ -542,7 +691,12 @@ public class QuestWindowEditor : EditorWindow
     {
         stepView.virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight;
 
-        stepView.columns["step"].makeCell = () => new Label();
+        stepView.columns["step"].makeCell = () =>
+        {
+            Label label = new Label();
+            label.style.unityTextAlign = TextAnchor.MiddleCenter;
+            return label;
+        };
         stepView.columns["step"].bindCell = (item, index) =>
         {
             QuestConditionModel step = (QuestConditionModel)stepView.itemsSource[index];
