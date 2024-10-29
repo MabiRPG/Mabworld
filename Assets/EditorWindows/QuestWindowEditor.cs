@@ -125,7 +125,15 @@ public class QuestWindowEditor : EditorWindow
         m_VisualTreeAsset.CloneTree(rootVisualElement);
 
         refreshButton = rootVisualElement.Q<Button>("refreshButton");
+        refreshButton.RegisterCallback<ClickEvent>(e =>
+        {
+            Initialize();
+            questView.itemsSource = quests;
+            DisplayQuestInfo(index);
+            questView.RefreshItems();
+        });
         commitButton = rootVisualElement.Q<Button>("commitButton");
+        commitButton.RegisterCallback<ClickEvent>(e => SaveQuests());
 
         questView = rootVisualElement.Q<MultiColumnListView>("questView");
         CreateQuestView();
@@ -134,6 +142,7 @@ public class QuestWindowEditor : EditorWindow
         selectedName.RegisterValueChangedCallback(e =>
         {
             selectedQuest.name = e.newValue;
+            questView.RefreshItems();
         });
 
         prerequisiteAddButton = rootVisualElement.Q<Button>("prerequisiteAddButton");
@@ -499,6 +508,25 @@ public class QuestWindowEditor : EditorWindow
     {
         prerequisiteView.virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight;
 
+        prerequisiteView.columns["delete"].makeCell = () =>
+        {
+            Button button = new Button();
+            button.text = "X";
+            button.clicked += () =>
+            {
+                int index = (int)button.userData;
+                QuestConditionModel condition = (QuestConditionModel)prerequisiteView.itemsSource[index];
+                selectedQuest.prerequisites.Remove(condition);
+                prerequisiteView.RefreshItems();
+            };
+
+            return button;
+        };
+        prerequisiteView.columns["delete"].bindCell = (item, index) =>
+        {
+            (item as Button).userData = index;
+        };
+
         CreateQuestInfoView(prerequisiteView);
 
         prerequisiteAddButton.clicked += () =>
@@ -609,6 +637,25 @@ public class QuestWindowEditor : EditorWindow
     private void CreateRewardView()
     {
         rewardView.virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight;
+
+        rewardView.columns["delete"].makeCell = () =>
+        {
+            Button button = new Button();
+            button.text = "X";
+            button.clicked += () =>
+            {
+                int index = (int)button.userData;
+                QuestConditionModel condition = (QuestConditionModel)rewardView.itemsSource[index];
+                selectedQuest.rewards.Remove(condition);
+                rewardView.RefreshItems();
+            };
+
+            return button;
+        };
+        rewardView.columns["delete"].bindCell = (item, index) =>
+        {
+            (item as Button).userData = index;
+        };
         
         CreateQuestInfoView(rewardView);
 
@@ -648,5 +695,32 @@ public class QuestWindowEditor : EditorWindow
 
         rewardView.itemsSource = selectedQuest.rewards;
         rewardView.RefreshItems();
+    }
+
+    private void SaveQuests()
+    {
+        database.Write(@"DELETE FROM quest; DELETE FROM quest_prerequisite;
+            DELETE FROM quest_step; DELETE FROM quest_reward;", 
+            new Dictionary<string, ModelFieldReference>());
+
+        foreach (QuestModel quest in quests)
+        {
+            quest.Upsert();
+
+            foreach (QuestConditionModel condition in quest.prerequisites)
+            {
+                condition.Upsert();
+            }
+
+            foreach (QuestConditionModel condition in quest.steps)
+            {
+                condition.Upsert();
+            }
+
+            foreach (QuestConditionModel condition in quest.rewards)
+            {
+                condition.Upsert();
+            }
+        }
     }
 }

@@ -22,6 +22,7 @@
                         <ui:Column name="condition" title="Condition" width="150" />
                         <ui:Column name="param1" title="Parameter 1" width="150" />
                         <ui:Column name="param2" title="Parameter 2" width="150" />
+                        <ui:Column name="delete" width="40"/>
                     </ui:Columns>
                 </ui:MultiColumnListView>
                 <ui:Button text="Add new prerequisite" parse-escape-sequences="true" display-tooltip-when-elided="true" name="prerequisiteAddButton" style="align-items: flex-start; flex-basis: auto;" />
@@ -42,6 +43,7 @@
                         <ui:Column name="condition" title="Reward" width="150" />
                         <ui:Column name="param1" title="Parameter 1" width="150" />
                         <ui:Column name="param2" title="Parameter 2" width="150" />
+                        <ui:Column name="delete" width="40"/>
                     </ui:Columns>
                 </ui:MultiColumnListView>
                 <ui:Button text="Add new reward" parse-escape-sequences="true" display-tooltip-when-elided="true" name="rewardAddButton" style="align-items: flex-start; flex-basis: auto;" />
