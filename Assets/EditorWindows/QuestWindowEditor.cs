@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -10,9 +11,11 @@ public class QuestWindowEditor : EditorWindow
     private Button refreshButton;
     private Button commitButton;
 
+    private TextField nameSearch;
     private int index;
     private QuestModel selectedQuest;
     private MultiColumnListView questView;
+    private Button questAddButton;
 
     private TextField selectedName;
     private MultiColumnListView prerequisiteView;
@@ -30,6 +33,7 @@ public class QuestWindowEditor : EditorWindow
     private List<NPCModel> npcs;
     private List<ItemModel> items;
     private int conversationID;
+    private int questCounter;
 
     [SerializeField]
     private VisualTreeAsset m_VisualTreeAsset = default;
@@ -47,6 +51,7 @@ public class QuestWindowEditor : EditorWindow
         
         DataTable dt = database.Read("SELECT id FROM quest;");
         quests = new List<QuestModel>();
+        questCounter = dt.Rows.Count;
 
         foreach (DataRow row in dt.Rows)
         {
@@ -136,6 +141,16 @@ public class QuestWindowEditor : EditorWindow
         commitButton = rootVisualElement.Q<Button>("commitButton");
         commitButton.RegisterCallback<ClickEvent>(e => SaveQuests());
 
+        nameSearch = rootVisualElement.Q<TextField>("nameSearch");
+        nameSearch.RegisterValueChangedCallback(e =>
+        {
+            questView.itemsSource = quests
+                .Where(v => v.name.Contains(e.newValue, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            questView.RefreshItems();
+        });
+
         questView = rootVisualElement.Q<MultiColumnListView>("questView");
         CreateQuestView();
 
@@ -168,8 +183,48 @@ public class QuestWindowEditor : EditorWindow
             (item as Label).text = (questView.itemsSource[index] as QuestModel).name;
         };
 
+        questAddButton = rootVisualElement.Q<Button>("questAddButton");
+        questAddButton.RegisterCallback<ClickEvent>(e =>
+        {
+            questCounter += 1;
+            QuestModel newQuest = new QuestModel(database, questCounter);
+            newQuest.name = $"Placeholder ID {questCounter}";
+            quests.Add(newQuest);
+            questView.selectedIndex = questView.itemsSource.Count - 1;
+            questView.RefreshItems();
+        });
+
         questView.itemsSource = quests;
         questView.selectedIndicesChanged += OnQuestSelectionChange;
+        questView.columnSortingChanged += () => SortQuestColumns();
+        questView.RefreshItems();
+    }
+
+    private void SortQuestColumns()
+    {
+        List<QuestModel> questList = (List<QuestModel>)questView.itemsSource;
+
+        foreach (var column in questView.sortedColumns)
+        {
+            switch (column.columnName)
+            {
+                case "quest":
+                    if (column.direction == SortDirection.Ascending)
+                    {
+                        questList = questList.OrderBy(v => v.name).ToList();
+                    }
+                    else
+                    {
+                        questList = questList.OrderByDescending(v => v.name).ToList();
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        questView.itemsSource = questList;
         questView.RefreshItems();
     }
 
@@ -780,8 +835,15 @@ public class QuestWindowEditor : EditorWindow
         {
             QuestConditionModel condition = new QuestConditionModel(database,
                 selectedQuest.ID, QuestModel.stepsTableName);
-            condition.stepID = (stepView.itemsSource as List<QuestConditionModel>)
-                .Max(v => v.stepID) + 1;
+
+            int max = 0;
+
+            if (stepView.itemsSource.Count > 0)
+            {
+                max = (stepView.itemsSource as List<QuestConditionModel>).Max(v => v.stepID);
+            }
+
+            condition.stepID = max + 1;
 
             stepView.itemsSource.Add(condition);
             stepView.RefreshItems();

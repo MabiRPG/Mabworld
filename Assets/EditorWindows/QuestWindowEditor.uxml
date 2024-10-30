@@ -11,7 +11,7 @@
                     <ui:Column name="quest" title="Quest" width="150" />
                 </ui:Columns>
             </ui:MultiColumnListView>
-            <ui:Button text="Add new quest" parse-escape-sequences="true" display-tooltip-when-elided="true" name="recipeAddButton" style="align-items: flex-start; flex-basis: auto;" />
+            <ui:Button text="Add new quest" parse-escape-sequences="true" display-tooltip-when-elided="true" name="questAddButton" style="align-items: flex-start; flex-basis: auto;" />
         </ui:VisualElement>
         <ui:VisualElement>
             <ui:ScrollView>
