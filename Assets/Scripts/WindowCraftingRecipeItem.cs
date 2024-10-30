@@ -1,3 +1,4 @@
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,7 +18,10 @@ public class WindowCraftingRecipeItem : MonoBehaviour
     public void SetRecipe(CraftingRecipe recipe)
     {
         this.recipe = recipe;
-        product.SetItem(recipe.product, recipe.product.quantity);
-        productName.text = recipe.product.name;
+
+        CraftingRecipeProductModel firstProduct = recipe.products.Values.First();
+
+        product.SetItem(new Item(firstProduct.itemID), firstProduct.quantity);
+        productName.text = firstProduct.item.name;
     }
 }

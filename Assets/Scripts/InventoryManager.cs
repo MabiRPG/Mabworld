@@ -117,4 +117,14 @@ public class InventoryManager
 
         return AllItems[item.ID].quantity;
     }
+
+    public int GetQuantity(ItemModel item)
+    {
+        if (!AllItems.ContainsKey(item.ID))
+        {
+            return 0;
+        }
+
+        return AllItems[item.ID].quantity;
+    }
 }

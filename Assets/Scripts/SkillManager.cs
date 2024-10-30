@@ -16,7 +16,7 @@ public class SkillManager
     public Dictionary<int, Skill> Skills = new Dictionary<int, Skill>();
     public EventManager learnEvent = new EventManager();
 
-    private const string categoryQuery = @"SELECT * FROM skill_category_type ORDER BY id;";
+    // private const string categoryQuery = @"SELECT * FROM skill_category_type ORDER BY id;";
     public Dictionary<int, string> Categories = new Dictionary<int, string>();
     private HashSet<int> learnedCategoryIDs = new HashSet<int>();
 
@@ -24,12 +24,22 @@ public class SkillManager
     {
         this.bubble = bubble;
 
-        DataTable dt = GameManager.Instance.QueryDatabase(categoryQuery);
+        // DataTable dt = GameManager.Instance.QueryDatabase(categoryQuery);
+
+        // foreach (DataRow row in dt.Rows)
+        // {
+        //     Categories.Add(int.Parse(row["id"].ToString()), row["name"].ToString());
+        // }
+
+        DataTable dt = GameManager.Instance.Database.Read("SELECT id FROM cultivation_stage;");
 
         foreach (DataRow row in dt.Rows)
         {
-            Categories.Add(int.Parse(row["id"].ToString()), row["name"].ToString());
+            int ID = int.Parse(row["id"].ToString());
+            CultivationStageModel stage = new CultivationStageModel(GameManager.Instance.Database, ID);
         }
+
+        Categories = CultivationStageModel.types;
     }
 
     /// <summary>
@@ -80,7 +90,7 @@ public class SkillManager
 
         Skill skill = new Skill(ID);
         Skills.Add(ID, skill);
-        learnedCategoryIDs.Add(skill.categoryID);
+        learnedCategoryIDs.Add(skill.cultivationStageID);
         learnEvent.RaiseOnChange();
     }
 
@@ -119,7 +129,7 @@ public class SkillManager
 
         foreach (Skill skill in Skills.Values)
         {
-            if (skill.categoryID == categoryID)
+            if (skill.cultivationStageID == categoryID)
             {
                 skills.Add(skill);
             }

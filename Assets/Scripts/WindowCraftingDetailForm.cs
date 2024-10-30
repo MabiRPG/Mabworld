@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -56,18 +58,30 @@ public class WindowCraftingDetailForm : MonoBehaviour
         currentRecipe = recipe;
 
         int craftable = int.MaxValue;
-        string details = $"{recipe.product.name} (Rank {recipe.rankRequired} {skill.name})\nSuccess Rate:?";
+
+        StringBuilder builder = new StringBuilder();
+
+        foreach (CraftingRecipeProductModel product in recipe.products.Values)
+        {
+            builder.Append($"{product.item.name} ");
+        }
+
+        builder.Append($"{recipe.rankRequired} {skill.name}\nSuccess Rate:?");
+        string details = builder.ToString();
         detailsText.text = details;
-        productItem.SetItem(recipe.product, recipe.product.quantity);
+
+        CraftingRecipeProductModel firstProduct = recipe.products.Values.First();
+
+        productItem.SetItem(new Item(firstProduct.itemID), firstProduct.quantity);
 
         ingredientPrefabs.SetActiveAll(false);
 
-        foreach (Item ingredient in recipe.ingredients)
+        foreach (CraftingRecipeIngredientModel ingredient in recipe.ingredients.Values)
         {
             GameObject obj = ingredientPrefabs.GetFree(ingredient, ingredientParentTransform);
             WindowItem inventoryItem = obj.GetComponentInChildren<WindowItem>();
 
-            int playerQuantity = Player.Instance.inventoryManager.GetQuantity(ingredient);
+            int playerQuantity = Player.Instance.inventoryManager.GetQuantity(ingredient.item);
             string text;
 
             if (playerQuantity == 0)
@@ -80,7 +94,7 @@ public class WindowCraftingDetailForm : MonoBehaviour
             }
 
             text += $"/{ingredient.quantity}";
-            inventoryItem.SetItem(ingredient, text);
+            inventoryItem.SetItem(new Item(ingredient.itemID), text);
 
             if (playerQuantity / ingredient.quantity < craftable)
             {
@@ -105,12 +119,21 @@ public class WindowCraftingDetailForm : MonoBehaviour
 
     private void Craft(Skill skill, CraftingRecipe recipe, int quantity)
     {
-        Player.Instance.inventoryManager.AddItem(recipe.product.ID, quantity);
+        foreach (CraftingRecipeProductModel product in recipe.products.Values)
+        {
+            Player.Instance.inventoryManager.AddItem(product.item.ID, quantity);
+        }
 
-        foreach (Item ingredient in recipe.ingredients)
+        // foreach (Item ingredient in recipe.ingredients)
+        // {
+        //     int usedAmount = ingredient.quantity * quantity;
+        //     Player.Instance.inventoryManager.RemoveItem(ingredient.ID, usedAmount);
+        // }
+
+        foreach (CraftingRecipeIngredientModel ingredient in recipe.ingredients.Values)
         {
             int usedAmount = ingredient.quantity * quantity;
-            Player.Instance.inventoryManager.RemoveItem(ingredient.ID, usedAmount);
+            Player.Instance.inventoryManager.RemoveItem(ingredient.itemID, usedAmount);
         }
     }
 }

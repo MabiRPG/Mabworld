@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -76,9 +77,17 @@ public class WindowCrafting : Window
 
         foreach (CraftingRecipe recipe in recipes[currentSkill.ID])
         {
-            if (recipe.product.name.StartsWith(recipeName))
+            // if (recipe.products.name.StartsWith(recipeName))
+            // {
+            //     newRecipeList.Add(recipe);
+            // }
+            foreach ((int ID, CraftingRecipeProductModel product) in recipe.products)
             {
-                newRecipeList.Add(recipe);
+                if (product.item.name.StartsWith(recipeName))
+                {
+                    newRecipeList.Add(recipe);
+                    break;
+                }
             }
         }
 

@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     // Name of the game database in Assets/Database folder.
     [SerializeField]
     private string databaseName;
-    private DatabaseManager Database;
+    public DatabaseManager Database;
     // Base success rate of life skills
     public float lifeSkillBaseSuccessRate;
 

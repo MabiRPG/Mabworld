@@ -33,15 +33,16 @@ public class WindowSkillAdvanceButton : MonoBehaviour
         if (skill.xp.Value >= 100)
         {
             gameObject.SetActive(true);
+            button.interactable = true;
 
-            if (HasEnoughAP())
-            {
-                button.interactable = true;
-            }
-            else
-            {
-                button.interactable = false;
-            }
+            // if (HasEnoughAP())
+            // {
+            //     button.interactable = true;
+            // }
+            // else
+            // {
+            //     button.interactable = false;
+            // }
         }
         else
         {
@@ -49,16 +50,17 @@ public class WindowSkillAdvanceButton : MonoBehaviour
         }
     }
 
-    private bool HasEnoughAP()
-    {
-        return Player.Instance.actorAP.Value >= skill.GetStatForwardDiff("ap_cost");
-    }
+    // private bool HasEnoughAP()
+    // {
+    //     return Player.Instance.actorAP.Value >= skill.GetStatForwardDiff("ap_cost");
+    // }
 
     private void OpenAdvanceWindow()
     {
-        if (HasEnoughAP())
-        {
-            WindowSkill.Instance.CreateAdvanceWindow(skill);
-        }
+        // if (HasEnoughAP())
+        // {
+        //     WindowSkill.Instance.CreateAdvanceWindow(skill);
+        // }
+        WindowSkill.Instance.CreateAdvanceWindow(skill);
     }
 }

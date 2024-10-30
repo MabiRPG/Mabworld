@@ -129,7 +129,7 @@ public class WindowSkillDetailed : Window
     private void UpdateRank()
     {
         // Finds the skill name and reassigns it.
-        skillName.text = "Rank " + skill.ranks[skill.index.Value] + " " + skill.name;
+        skillName.text = "Rank " + Skill.ranks[skill.index.Value] + " " + skill.name;
 
         int index = skill.index.Value;
 
@@ -138,16 +138,19 @@ public class WindowSkillDetailed : Window
         body.transform.Find("Stats").gameObject.SetActive(true);
         int i = 0;
 
-        foreach (KeyValuePair<string, float[]> stat in skill.stats)
+        foreach ((int ID, SkillStatModel stat) in skill.stats)
         {
-            if (stat.Key == "ap_cost" || stat.Value[index] == 0)
+            string statName = SkillStatTypeModel.FindByID(stat.statID);
+
+            if (statName == "ap_cost" || stat.values[index] == 0)
             {
                 continue;
             }
 
-            GameObject obj = statPrefabs.GetFree(stat.Key, statTransform);
+
+            GameObject obj = statPrefabs.GetFree(statName, statTransform);
             WindowSkillStat script = obj.GetComponent<WindowSkillStat>();
-            script.SetText(stat.Key, stat.Value[index]);
+            script.SetText(statName, stat.values[index]);
             i++;
         }
 
@@ -202,17 +205,18 @@ public class WindowSkillDetailed : Window
         if (skill.xp.Value >= 100 && skill.CanRankUp())
         {
             advanceButton.gameObject.SetActive(true);
+            advanceButton.interactable = true;
 
-            int apCost = (int)skill.GetStatForwardDiff("ap_cost");
+            // int apCost = (int)skill.GetStatForwardDiff("ap_cost");
 
-            if (Player.Instance.actorAP.Value >= apCost)
-            {
-                advanceButton.interactable = true;
-            }
-            else
-            {
-                advanceButton.interactable = false;
-            }
+            // if (Player.Instance.actorAP.Value >= apCost)
+            // {
+            //     advanceButton.interactable = true;
+            // }
+            // else
+            // {
+            //     advanceButton.interactable = false;
+            // }
         }
         else
         {

@@ -173,7 +173,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     /// </summary>
     private void UpdateRank()
     {
-        rank.text = "Rank " + skill.ranks[skill.index.Value];
+        rank.text = "Rank " + Skill.ranks[skill.index.Value];
     }
 
     /// <summary>

@@ -112,24 +112,26 @@ public class WindowSkillAdvance : Window
         int index = skill.index.Value + 1;
 
         // Finds the skill name and reassigns it.
-        skillName.text = "Rank " + skill.ranks[skill.index.Value] + " " + skill.name;
+        skillName.text = "Rank " + Skill.ranks[skill.index.Value] + " " + skill.name;
 
         // Finds the skill icon sprite and reassigns it.
         icon.sprite = skill.icon;
 
-        rank.text = string.Format("Advance to Rank {0} available", skill.ranks[index]);
+        rank.text = string.Format("Advance to Rank {0} available", Skill.ranks[index]);
 
         // For every stat, create a new stat field prefab and populate it.
-        foreach (KeyValuePair<string, float[]> stat in skill.stats)
+        foreach ((int ID, SkillStatModel stat) in skill.stats)
         {
-            if (stat.Key == "ap_cost" || stat.Value[index] == 0)
+            string statName = SkillStatTypeModel.FindByID(stat.statID);
+
+            if (statName == "ap_cost" || stat.values[index] == 0)
             {
                 continue;
             }
 
-            GameObject obj = statPrefabs.GetFree(stat.Key, statTransform);
+            GameObject obj = statPrefabs.GetFree(statName, statTransform);
             WindowSkillStat script = obj.GetComponent<WindowSkillStat>();
-            script.SetText(stat.Key, stat.Value[index]);
+            script.SetText(statName, stat.values[index]);
         }
 
         int apCost = (int)skill.GetStatForwardDiff("ap_cost");
