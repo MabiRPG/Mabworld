@@ -29,6 +29,7 @@ public class Skill : SkillModel
     {
         index.OnChange += AudioController.Instance.PlayLevelUpSFX;
         index.OnChange += CreateTrainingMethods;
+        CreateTrainingMethods();
     }
 
     /// <summary>
@@ -155,6 +156,11 @@ public class Skill : SkillModel
         //     return curr - prev;
         // }
 
+        if (!stats.ContainsKey(SkillStatTypeModel.FindByName(key)))
+        {
+            return 0;
+        }
+
         SkillStatModel stat = stats
             .Where(v => SkillStatTypeModel.FindByID(v.Value.statID) == key)
             .Select(v => v.Value).First();
@@ -178,6 +184,11 @@ public class Skill : SkillModel
         //     float curr = stats[key][index.Value];
         //     return next - curr;
         // }
+
+        if (!stats.ContainsKey(SkillStatTypeModel.FindByName(key)))
+        {
+            return 0;
+        }
 
         SkillStatModel stat = stats
             .Where(v => SkillStatTypeModel.FindByID(v.Value.statID) == key)
@@ -223,17 +234,17 @@ public class Skill : SkillModel
     {
         // // Creates a new data table and queries the db.
         // DataTable dt = GameManager.Instance.QueryDatabase(methodsQuery, ("@id", ID), ("@rank", ranks[index.Value]));
-        // // Clears the previous training methods.
-        // foreach (SkillTrainingMethod method in methods)
-        // {
-        //     method.Clear();
-        // }
+        // Clears the previous training methods.
+        foreach (SkillTrainingMethod method in methods)
+        {
+            method.Clear();
+        }
 
-        // methods.Clear();
-        // // Resets the max xp gainable.
-        // xpMax.Value = 0;
+        methods.Clear();
+        // Resets the max xp gainable.
+        xpMax.Value = 0;
 
-        // // For every method, create a new method and insert into list.
+        // For every method, create a new method and insert into list.
         // foreach (DataRow row in dt.Rows)
         // {
         //     SkillTrainingMethod method = new SkillTrainingMethod(this, row);
@@ -242,11 +253,23 @@ public class Skill : SkillModel
 
         //     methods.Add(method);
         // }
+        List<TrainingMethodModel> rankMethods = trainingMethods
+            .Where(v => v.Key.Item2 == ranks[index.Value])
+            .Select(v => v.Value)
+            .ToList();
 
-        // if (!CanRankUp())
-        // {
-        //     xpMax.Clear();
-        // }
+        foreach (TrainingMethodModel methodModel in rankMethods)
+        {
+            SkillTrainingMethod method =
+                new SkillTrainingMethod(this, methodModel.trainingMethodID, methodModel.rank);
+            xpMax.Value += methodModel.xpGainEach * methodModel.countMax;
+            methods.Add(method);
+        }
+
+        if (!CanRankUp())
+        {
+            xpMax.Clear();
+        }
     }
 
     /// <summary>

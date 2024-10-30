@@ -21,6 +21,34 @@ public class DatabaseManager
     public DatabaseManager(string databaseName)
     {
         this.databaseName = databaseName;
+        InitializeTypeModel<CultivationStageModel>("cultivation_stage");
+        InitializeTypeModel<SkillStatTypeModel>("skill_stat_type");
+        InitializeTypeModel<TrainingMethodTypeModel>("training_method_type");
+        InitializeTypeModel<QuestConditionTypeModel>("quest_condition_type");
+        InitializeTypeModel<QuestConditionCategoryTypeModel>("quest_condition_category_type");
+        InitializeTypeModel<ItemTypeModel>("item_category_type");
+        InitializeTypeModel<ItemStatTypeModel>("item_stat_type");
+        InitializeTypeModel<CraftingStationModel>("crafting_station");
+
+        DataTable dt = Read("SELECT stage_id, id FROM cultivation_substage;");
+
+        foreach (DataRow row in dt.Rows)
+        {
+            int stageID = int.Parse(row["stage_id"].ToString());
+            int ID = int.Parse(row["id"].ToString());
+            new CultivationSubstageModel(this, stageID, ID);
+        }  
+    }
+
+    private void InitializeTypeModel<T>(string tableName) where T : TypeModel<T>
+    {
+        DataTable dt = Read($"SELECT id FROM {tableName};");
+
+        foreach (DataRow row in dt.Rows)
+        {
+            int ID = int.Parse(row["id"].ToString());
+            _ = (T)Activator.CreateInstance(typeof(T), this, ID);
+        }
     }
 
     public DataTable ReadTable(string query, Dictionary<string, ModelFieldReference> fieldMap)

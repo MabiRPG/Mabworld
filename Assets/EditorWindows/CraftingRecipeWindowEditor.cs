@@ -61,14 +61,6 @@ public class CraftingRecipeWindowEditor : EditorWindow
 
         recipeCounter = recipes.Max(v => v.ID);
 
-        dt = database.Read("SELECT id FROM crafting_station;");
-
-        foreach (DataRow row in dt.Rows)
-        {
-            int ID = int.Parse(row["id"].ToString());
-            new CraftingStationModel(database, ID);
-        }
-
         dt = database.Read("SELECT id FROM skill;");
         skills = new List<SkillModel>();
 

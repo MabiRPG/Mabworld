@@ -57,6 +57,11 @@ public class AudioController : MonoBehaviour
         }
     }
 
+    public void SetPlayer(Player player)
+    {
+        playerAudio = Player.Instance.gameObject.GetComponent<AudioSource>();
+    }
+
     public void PlayLevelUpSFX()
     {
         playerAudio.PlayOneShot(levelUpSFX);

@@ -63,22 +63,6 @@ public class ItemWindowEditor : EditorWindow
         }
 
         itemCounter = items.Max(v => v.ID);
-
-        dt = database.Read("SELECT id FROM item_category_type;");
-
-        foreach (DataRow row in dt.Rows)
-        {
-            int ID = int.Parse(row["id"].ToString());
-            new ItemTypeModel(database, ID);
-        }
-
-        dt = database.Read("SELECT id from item_stat_type");
-
-        foreach (DataRow row in dt.Rows)
-        {
-            int ID = int.Parse(row["id"].ToString());
-            new ItemStatTypeModel(database, ID);
-        }
     }
 
     public void CreateGUI()

@@ -14,7 +14,7 @@ public class Player : Actor, IInputHandler
     public static Player Instance = null;
 
     // Ability points and experience
-    public IntManager actorAP = new IntManager(0);
+    // public IntManager actorAP = new IntManager(0);
     public StatManager actorXP = new StatManager(0, 100, 100);
     // Inventory
     public InventoryManager inventoryManager = new InventoryManager();
@@ -58,6 +58,7 @@ public class Player : Actor, IInputHandler
 
         controller = gameObject.AddComponent<PlayerController>();
         controller.Init(this);
+        GameManager.Instance.audioController.SetPlayer(this);
     }
 
     /// <summary>
@@ -74,7 +75,7 @@ public class Player : Actor, IInputHandler
             skillManager.Learn(i);
         }
 
-        actorAP.Value += 10;
+        // actorAP.Value += 10;
         skillManager.Skills[1].AddXP(100);
         skillManager.Skills[2].AddXP(150);
 
@@ -134,13 +135,13 @@ public class Player : Actor, IInputHandler
     /// <param name="skill">Skill instance</param>
     public void RankUpSkill(Skill skill)
     {
-        int apCost = (int)skill.GetStatForwardDiff("ap_cost");
+        // int apCost = (int)skill.GetStatForwardDiff("ap_cost");
 
-        if (skillManager.IsLearned(skill) && skill.CanRankUp() && actorAP.Value >= apCost)
+        if (skillManager.IsLearned(skill) && skill.CanRankUp())// && actorAP.Value >= apCost)
         {
-            actorAP.Value -= apCost;
+            // actorAP.Value -= apCost;
             skill.RankUp();
-            actorLevel.Value += apCost;
+            // actorLevel.Value += apCost;
 
             foreach(KeyValuePair<string, StatManager> stat in primaryStats)
             {
@@ -160,7 +161,7 @@ public class Player : Actor, IInputHandler
 
         if (actorXP.Value >= actorXP.Maximum)
         {
-            actorAP.Value++;
+            // actorAP.Value++;
             actorXP.Value -= actorXP.Maximum;
         }
     }

@@ -142,11 +142,10 @@ public class WindowSkillDetailed : Window
         {
             string statName = SkillStatTypeModel.FindByID(stat.statID);
 
-            if (statName == "ap_cost" || stat.values[index] == 0)
+            if (stat.values[index] == 0)
             {
                 continue;
             }
-
 
             GameObject obj = statPrefabs.GetFree(statName, statTransform);
             WindowSkillStat script = obj.GetComponent<WindowSkillStat>();

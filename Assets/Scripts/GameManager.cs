@@ -13,9 +13,9 @@ public class GameManager : MonoBehaviour
     // Global instance of GameManager
     public static GameManager Instance {get; private set;}
 
-    private InputController inputController;
-    private LightController lightController;
-    private AudioController audioController;
+    public InputController inputController;
+    public LightController lightController;
+    public AudioController audioController;
     public WindowManager windowManager;
 
     [Header("Global Variables")]

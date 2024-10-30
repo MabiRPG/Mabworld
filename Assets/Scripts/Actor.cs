@@ -23,10 +23,10 @@ public class Actor : MonoBehaviour
     public StatManager actorMP = new StatManager(100, 100, 100);
 
     // Strength, Intelligence, Dexterity, and Luck
-    public StatManager actorStr = new StatManager(10, 10, 10);
-    public StatManager actorInt = new StatManager(10, 10, 10);
-    public StatManager actorDex = new StatManager(10, 10, 10);
-    public StatManager actorLuck = new StatManager(10, 10, 10);
+    public StatManager actorStr = new StatManager(0, 0, 0);
+    public StatManager actorInt = new StatManager(0, 0, 0);
+    public StatManager actorDex = new StatManager(0, 0, 0);
+    public StatManager actorLuck = new StatManager(0, 0, 0);
 
     // Defense, Protection, Magic Defense, and Magic Protection
     public StatManager actorDefense = new StatManager();
@@ -53,17 +53,17 @@ public class Actor : MonoBehaviour
     /// </summary>
     protected virtual void Awake()
     {
-        primaryStats.Add("hp", actorHP);
-        primaryStats.Add("mp", actorMP);
-        primaryStats.Add("str", actorStr);
-        primaryStats.Add("int", actorInt);
-        primaryStats.Add("dex", actorDex);
-        primaryStats.Add("luck", actorLuck);
+        primaryStats.Add("HP", actorHP);
+        primaryStats.Add("MP", actorMP);
+        primaryStats.Add("STR", actorStr);
+        primaryStats.Add("INT", actorInt);
+        primaryStats.Add("DEX", actorDex);
+        primaryStats.Add("Luck", actorLuck);
 
-        secondaryStats.Add("defense", actorDefense);
-        secondaryStats.Add("protection", actorProt);
-        secondaryStats.Add("m_defense", actorMDefense);
-        secondaryStats.Add("m_protection", actorMProt);
+        secondaryStats.Add("Defense", actorDefense);
+        secondaryStats.Add("Protection", actorProt);
+        secondaryStats.Add("Magic Defense", actorMDefense);
+        secondaryStats.Add("Magic Protection", actorMProt);
 
         GameObject obj = Instantiate(GameManager.Instance.skillBubblePrefab, transform);
         bubble = obj.GetComponent<SkillBubble>();

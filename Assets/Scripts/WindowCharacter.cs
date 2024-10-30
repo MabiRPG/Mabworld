@@ -14,8 +14,8 @@ public class WindowCharacter : Window
     // private TMP_Text actorTitleText;
     // private TMP_Text actorAgeText;
     // private TMP_Text actorRaceText;
-    private TMP_Text actorLevelText;
-    private TMP_Text actorAPText;
+    // private TMP_Text actorLevelText;
+    // private TMP_Text actorAPText;
 
     private UI_ProgressBar actorHPBar;
     private UI_ProgressBar actorMPBar;
@@ -61,8 +61,8 @@ public class WindowCharacter : Window
         basicInfoLeft = body.transform.Find("Basic Info (L)").gameObject;
         Dictionary<string, TMP_Text> dict = CreateComponentMap(basicInfoLeft.transform);
         actorNameText = dict["name"];
-        actorLevelText = dict["level"];
-        actorAPText = dict["ap"];
+        // actorLevelText = dict["level"];
+        // actorAPText = dict["ap"];
         actorStrText = dict["str"];
         actorIntText = dict["int"];
         actorDexText = dict["dex"];
@@ -132,8 +132,8 @@ public class WindowCharacter : Window
     {
         // Basic Details
         Player.Instance.actorName.OnChange += Draw;
-        Player.Instance.actorLevel.OnChange += Draw;
-        Player.Instance.actorAP.OnChange += Draw;
+        // Player.Instance.actorLevel.OnChange += Draw;
+        // Player.Instance.actorAP.OnChange += Draw;
 
         // HP and MP
         Player.Instance.actorHP.OnChange += Draw;
@@ -162,8 +162,8 @@ public class WindowCharacter : Window
     {
         // Basic Details
         Player.Instance.actorName.OnChange -= Draw;
-        Player.Instance.actorLevel.OnChange -= Draw;
-        Player.Instance.actorAP.OnChange -= Draw;
+        // Player.Instance.actorLevel.OnChange -= Draw;
+        // Player.Instance.actorAP.OnChange -= Draw;
 
         // HP and MP
         Player.Instance.actorHP.OnChange -= Draw;
@@ -190,8 +190,8 @@ public class WindowCharacter : Window
     {
         // Basic Details
         actorNameText.text = Player.Instance.actorName.Value.ToString();
-        actorLevelText.text = Player.Instance.actorLevel.Value.ToString();
-        actorAPText.text = Player.Instance.actorAP.Value.ToString();
+        // actorLevelText.text = Player.Instance.actorLevel.Value.ToString();
+        // actorAPText.text = Player.Instance.actorAP.Value.ToString();
 
         // HP and MP
         actorHPBar.SetCurrent(Player.Instance.actorHP.Value);

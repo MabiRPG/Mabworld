@@ -22,7 +22,7 @@ public class WindowSkillAdvance : Window
     private Image icon;
     private TMP_Text rank;
     private Transform statTransform;
-    private TMP_Text ap;
+    // private TMP_Text ap;
     private Button advanceButton;
     private Button cancelButton;
     
@@ -37,7 +37,7 @@ public class WindowSkillAdvance : Window
         icon = body.transform.Find("Icon Parent").GetComponentInChildren<Image>();
         rank = body.transform.Find("Advance Text").GetComponent<TMP_Text>();
         statTransform = body.transform.Find("Stats");
-        ap = body.transform.Find("AP Text Parent/AP Text").GetComponent<TMP_Text>();
+        // ap = body.transform.Find("AP Text Parent/AP Text").GetComponent<TMP_Text>();
         advanceButton = body.transform.Find("Button Parent/Advance Button").GetComponent<Button>();
         cancelButton = body.transform.Find("Button Parent/Cancel Button").GetComponent<Button>();
 
@@ -124,7 +124,7 @@ public class WindowSkillAdvance : Window
         {
             string statName = SkillStatTypeModel.FindByID(stat.statID);
 
-            if (statName == "ap_cost" || stat.values[index] == 0)
+            if (stat.values[index] == 0)
             {
                 continue;
             }
@@ -134,11 +134,11 @@ public class WindowSkillAdvance : Window
             script.SetText(statName, stat.values[index]);
         }
 
-        int apCost = (int)skill.GetStatForwardDiff("ap_cost");
+        // int apCost = (int)skill.GetStatForwardDiff("ap_cost");
 
-        ap.text = string.Format("{0} AP required.\n({1} AP remaining)",
-            apCost.ToString(), 
-            Player.Instance.actorAP.Value.ToString());
+        // ap.text = string.Format("{0} AP required.\n({1} AP remaining)",
+        //     apCost.ToString(), 
+        //     Player.Instance.actorAP.Value.ToString());
 
         // Resets the content size fitter.
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)gameObject.transform);

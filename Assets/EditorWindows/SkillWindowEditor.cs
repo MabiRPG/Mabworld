@@ -74,30 +74,6 @@ public class SkillEditorWindow : EditorWindow
         }
 
         skillCounter = skills.Max(v => v.ID);
-
-        dt = database.Read("SELECT id FROM cultivation_stage;");
-
-        foreach (DataRow row in dt.Rows)
-        {
-            int ID = int.Parse(row["id"].ToString());
-            new CultivationStageModel(database, ID);
-        }
-        
-        dt = database.Read("SELECT id FROM skill_stat_type;");
-
-        foreach (DataRow row in dt.Rows)
-        {
-            int ID = int.Parse(row["id"].ToString());
-            new SkillStatTypeModel(database, ID);
-        }
-
-        dt = database.Read("SELECT id FROM training_method_type;");
-
-        foreach (DataRow row in dt.Rows)
-        {
-            int ID = int.Parse(row["id"].ToString());
-            new TrainingMethodTypeModel(database, ID);
-        }
     }
 
     public void CreateGUI()

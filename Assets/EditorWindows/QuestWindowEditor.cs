@@ -58,23 +58,7 @@ public class QuestWindowEditor : EditorWindow
             int ID = int.Parse(row["id"].ToString());
             QuestModel quest = new QuestModel(database, ID);
             quests.Add(quest);            
-        }
-
-        dt = database.Read("SELECT id FROM quest_condition_type;");
-
-        foreach (DataRow row in dt.Rows)
-        {
-            int ID = int.Parse(row["id"].ToString());
-            new QuestConditionTypeModel(database, ID);
-        }
-
-        dt = database.Read("SELECT id FROM quest_condition_category_type;");
-
-         foreach (DataRow row in dt.Rows)
-        {
-            int ID = int.Parse(row["id"].ToString());
-            new QuestConditionCategoryTypeModel(database, ID);
-        }       
+        }    
 
         dt = database.Read("SELECT id FROM skill;");
         skills = new List<SkillModel>();
@@ -105,23 +89,6 @@ public class QuestWindowEditor : EditorWindow
             ItemModel item = new ItemModel(database, ID);
             items.Add(item);
         }
-
-        dt = database.Read("SELECT id FROM cultivation_stage;");
-
-        foreach (DataRow row in dt.Rows)
-        {
-            int ID = int.Parse(row["id"].ToString());
-            new CultivationStageModel(database, ID);
-        }
-
-        dt = database.Read("SELECT stage_id, id FROM cultivation_substage;");
-
-        foreach (DataRow row in dt.Rows)
-        {
-            int stageID = int.Parse(row["stage_id"].ToString());
-            int ID = int.Parse(row["id"].ToString());
-            new CultivationSubstageModel(database, stageID, ID);
-        }        
     }
 
     public void CreateGUI()
