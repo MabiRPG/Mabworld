@@ -8,44 +8,17 @@ using UnityEngine;
 /// </summary>
 public class SkillTrainingMethod : TrainingMethodModel
 {
-    // ID of method
-    // public int ID;
-    // Name of method
-    public string name;
-    // XP gain for each count of method
-    // public float xpGainEach;
-    // Current method counter
     public IntManager count = new IntManager();
-    // Maximum counts of method
-    // public int countMax;
-    // private int itemID;
-    
+
     // Skill instance
     private Skill skill;
 
-    /// <summary>
-    ///     Initializes the object.
-    /// </summary>
-    /// <param name="skill">Skill instance method belongs to.</param>
-    /// <param name="ID">Method ID in database.</param>
-    /// <param name="row">Database row to construct class.</param>
-    // public SkillTrainingMethod(Skill skill, DataRow row)
-    // {
-    //     GameManager.Instance.ParseDatabaseRow(row, this, 
-    //         ("training_method_id", "ID"), ("item_id", "itemID"));
-    //     // Creates an empty counter for current method.
-    //     count.Value = 0;
-
-    //     this.skill = skill;
-
-    //     Player.Instance.trainingEvent += Update;
-    // }
     public SkillTrainingMethod(Skill skill, int methodID, string rank)
         : base(GameManager.Instance.Database, skill.ID, methodID, rank)
     {
         this.skill = skill;
         count.Value = 0;
-        name = TrainingMethodTypeModel.FindByID(methodID);
+        // name = TrainingMethodTypeModel.FindByID(methodID);
         Player.Instance.trainingEvent += Update;
     }
 
@@ -54,13 +27,10 @@ public class SkillTrainingMethod : TrainingMethodModel
     /// </summary>
     public void Update(MapResourceResultHandler resultHandler)
     {
-        Debug.Log("hit");
-
         if (skill != resultHandler.skill)
         {
             return;
         }
-
 
         if (CheckTraining(resultHandler))
         {
@@ -96,25 +66,18 @@ public class SkillTrainingMethod : TrainingMethodModel
     /// <returns></returns>
     public bool CheckTraining(MapResourceResultHandler resultHandler)
     {
-        if (trainingMethodID == 1)
+        switch (TrainingMethodTypeModel.FindByID(trainingMethodID))
         {
-            return IsSuccess(resultHandler);
-        }
-        else if (trainingMethodID == 2)
-        {
-            return IsFail(resultHandler);
-        }
-        else if (trainingMethodID == 3)
-        {
-            return IsGatherTwoOrMore(resultHandler);
-        }
-        else if (new List<int> { 4, 6, 8, 10, 12, 14, 16, 18, 20 }.Contains(trainingMethodID))
-        {
-            return IsGatherResource(resultHandler);
-        }
-        else if (new List<int> { 5, 7, 9, 11, 13, 15, 17, 19, 21 }.Contains(trainingMethodID))
-        {
-            return IsFullyGatherResource(resultHandler);
+            case "Success":
+                return IsSuccess(resultHandler);
+            case "Fail":
+                return IsFail(resultHandler);
+            case "Gather":
+                return IsGatherResource(resultHandler);
+            case "Fully gather":
+                return IsFullyGatherResource(resultHandler);
+            default:
+                break;
         }
 
         return false;
@@ -155,11 +118,11 @@ public class SkillTrainingMethod : TrainingMethodModel
 
     public bool IsGatherResource(MapResourceResultHandler resultHandler)
     {
-        // if (IsSuccess(resultHandler) && resultHandler.type == ResultHandler.Type.Gather 
-        //         && resultHandler.resourceID == itemID)
-        // {
-        //     return true;
-        // }
+        if (IsSuccess(resultHandler) && resultHandler.type == ResultHandler.Type.Gather 
+                && resultHandler.resourceID == int.Parse(param1))
+        {
+            return true;
+        }
 
         return false;
     }

@@ -34,11 +34,9 @@ public class WindowSkillRowUseButton : MonoBehaviour, IInputHandler
 
     public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
-        throw new System.NotImplementedException();
     }
 
     public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
-        throw new System.NotImplementedException();
     }
 }

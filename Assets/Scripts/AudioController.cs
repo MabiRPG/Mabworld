@@ -42,7 +42,7 @@ public class AudioController : MonoBehaviour
 
     private void OnDisable()
     {
-        // Player.Instance.trainingEvent -= PlayResultSFX;
+        Player.Instance.trainingEvent -= PlayResultSFX;
     }
 
     private void PlayResultSFX<T>(T resultHandler) where T : ResultHandler
@@ -59,7 +59,8 @@ public class AudioController : MonoBehaviour
 
     public void SetPlayer(Player player)
     {
-        playerAudio = Player.Instance.gameObject.GetComponent<AudioSource>();
+        playerAudio = player.gameObject.GetComponent<AudioSource>();
+        player.trainingEvent += PlayResultSFX;
     }
 
     public void PlayLevelUpSFX()
