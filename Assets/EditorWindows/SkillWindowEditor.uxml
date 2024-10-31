@@ -59,8 +59,11 @@
             <ui:Button text="Add new stat" parse-escape-sequences="true" display-tooltip-when-elided="true" name="statAddButton" style="align-items: flex-start; flex-basis: auto;" />
             <ui:MultiColumnListView name="selectedTraining" fixed-item-height="20" reorderable="false" show-add-remove-footer="false" show-foldout-header="false" sorting-enabled="true" show-alternating-row-backgrounds="ContentOnly" virtualization-method="FixedHeight" show-border="true" style="padding-top: 15px; padding-bottom: 0; padding-right: 5px; padding-left: 5px;">
                 <ui:Columns>
-                    <ui:Column name="name" title="Training Method" width="150" />
                     <ui:Column name="rank" title="Rank" width="50" />
+                    <ui:Column name="type" title="Method Type" width="150" />
+                    <ui:Column name="name" title="Name" width="150" />
+                    <ui:Column name="param1" title="Parameter 1" width="150" />
+                    <ui:Column name="param2" title="Parameter 2" width="150" />
                     <ui:Column name="xpGainEach" title="XP Gain Each" width="50" />
                     <ui:Column name="countMax" title="Counts" width="50" />
                     <ui:Column name="total" title="Total XP" width="50" />

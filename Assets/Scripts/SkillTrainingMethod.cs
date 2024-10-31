@@ -55,7 +55,7 @@ public class SkillTrainingMethod : TrainingMethodModel
     public void Update(MapResourceResultHandler resultHandler)
     {
         Debug.Log("hit");
-        
+
         if (skill != resultHandler.skill)
         {
             return;

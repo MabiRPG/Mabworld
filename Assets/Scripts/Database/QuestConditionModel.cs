@@ -16,7 +16,7 @@ public class QuestConditionModel : Model
         primaryKeys.Add("step_id");
 
         fieldMap.Add("quest_id", new ModelFieldReference(this, nameof(this.questID)));
-        fieldMap.Add("step_id", new ModelFieldReference(this, nameof(this.stepID)));
+        fieldMap.Add("step_id", new ModelFieldReference(this, nameof(stepID)));
         fieldMap.Add("condition_id", new ModelFieldReference(this, nameof(conditionID)));
         fieldMap.Add("param1", new ModelFieldReference(this, nameof(param1)));
         fieldMap.Add("param2", new ModelFieldReference(this, nameof(param2)));
