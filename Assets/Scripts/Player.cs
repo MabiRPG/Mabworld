@@ -35,8 +35,6 @@ public class Player : Actor, IInputHandler
 
     public PlayerController controller;
 
-    public event Action<MapResourceResultHandler> trainingEvent;
-
     /// <summary>
     ///     Initializes the object.
     /// </summary>
@@ -195,11 +193,6 @@ public class Player : Actor, IInputHandler
         }
 
         return 1;
-    }
-
-    public void MapResourceRaiseOnChange(MapResourceResultHandler sender)
-    {
-        trainingEvent(sender);
     }
 
     public bool IsQuestStarted(int ID)

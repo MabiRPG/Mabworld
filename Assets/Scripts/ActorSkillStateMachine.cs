@@ -184,7 +184,6 @@ public abstract class SkillStateMachine : StateMachine
 {
     public Actor actor;
     public SkillBubble bubble;
-    public ResultHandler handler;
 
     public SkillIdleState idleState;
     public override State DefaultState { get => idleState; }
@@ -200,14 +199,5 @@ public abstract class SkillStateMachine : StateMachine
         idleState = new SkillIdleState(this);
 
         SetState(DefaultState);
-    }
-
-    /// <summary>
-    ///     Sets the result handler for skill completions.
-    /// </summary>
-    /// <param name="resultHandler"></param>
-    public void SetResultHandler(ResultHandler resultHandler)
-    {
-        handler = resultHandler;
     }
 }

@@ -65,7 +65,11 @@ public class Actor : MonoBehaviour
         secondaryStats.Add("Magic Defense", actorMDefense);
         secondaryStats.Add("Magic Protection", actorMProt);
 
-        GameObject obj = Instantiate(GameManager.Instance.skillBubblePrefab, transform);
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        // Adjust skill bubble so it is slightly above the actor head.
+        float offsetY = spriteRenderer.bounds.size.y / 2 + 1;
+        GameObject obj = Instantiate(GameManager.Instance.skillBubblePrefab, 
+            transform.TransformPoint(new Vector2(0, offsetY)), Quaternion.identity, transform);
         bubble = obj.GetComponent<SkillBubble>();
         skillManager = new SkillManager(bubble);
 

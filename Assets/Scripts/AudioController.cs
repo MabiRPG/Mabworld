@@ -30,24 +30,9 @@ public class AudioController : MonoBehaviour
         globalAudio = GetComponent<AudioSource>();
     }
 
-    private void Start()
+    public void PlayGatherResultSFX(bool isSuccess)
     {
-        // playerAudio = Player.Instance.gameObject.GetComponent<AudioSource>();
-    }
-
-    private void OnEnable()
-    {
-        // Player.Instance.trainingEvent += PlayResultSFX;
-    }
-
-    private void OnDisable()
-    {
-        Player.Instance.trainingEvent -= PlayResultSFX;
-    }
-
-    private void PlayResultSFX<T>(T resultHandler) where T : ResultHandler
-    {
-        if (resultHandler.isSuccess)
+        if (isSuccess)
         {
             playerAudio.PlayOneShot(emotionSuccessSFX);
         }
@@ -60,7 +45,6 @@ public class AudioController : MonoBehaviour
     public void SetPlayer(Player player)
     {
         playerAudio = player.gameObject.GetComponent<AudioSource>();
-        player.trainingEvent += PlayResultSFX;
     }
 
     public void PlayLevelUpSFX()

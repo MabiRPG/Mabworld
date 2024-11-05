@@ -45,7 +45,6 @@ public class MapResource : MonoBehaviour, IInputHandler
     private bool isRegening;
 
     private const string eventQuery = @"SELECT * FROM map_resource WHERE id = @id LIMIT 1;";
-    private MapResourceResultHandler resultHandler = new MapResourceResultHandler();
 
     /// <summary>
     ///     Initializes the object.
@@ -68,7 +67,6 @@ public class MapResource : MonoBehaviour, IInputHandler
     {
         // Add event hook
         resource.OnChange += ChangeSpriteState;
-        resultHandler.mapEvent.OnChange += UpdateResource;
         // Set up initial state.
         ChangeSpriteState();
     }
@@ -79,36 +77,7 @@ public class MapResource : MonoBehaviour, IInputHandler
     private void OnDisable()
     {
         resource.Clear();
-        resultHandler.mapEvent.Clear();
     }
-
-    // /// <summary>
-    // ///     Called when mouse clicked on collider.
-    // /// </summary>
-    // private void OnMouseDown()
-    // {
-    //     if (resource.Value == 0)
-    //     {
-    //         return;
-    //     }
-    //     else if (!GameManager.Instance.isCanvasEmptyUnderMouse)
-    //     {
-    //         return;
-    //     }
-
-    //     Skill playerSkill = Player.Instance.skillManager.Get(skillID);
-
-    //     if (rankRequired == null || !playerSkill.IsRankOrGreater(rankRequired))
-    //     {
-    //         return;
-    //     }
-
-    //     resultHandler.SetResource(playerSkill, lootTableID, resource.Value);
-
-    //     Vector3 position = transform.TransformPoint(Vector3.zero);
-    //     IEnumerator task = Player.Instance.controller.HarvestResource(position, playerSkill, resultHandler);
-    //     Player.Instance.controller.SetTask(task);
-    // }
 
     /// <summary>
     ///     Changes the sprite state depending on the resource amount.
@@ -192,12 +161,6 @@ public class MapResource : MonoBehaviour, IInputHandler
             ActionController actionController = 
                 new ActionController(Player.Instance, ActionHandler.ActionType.Gather, this);
             actionController.Handle();
-
-            // resultHandler.SetResource(playerSkill, lootTableID, resource.Value);
-
-            // Vector3 position = transform.TransformPoint(Vector3.zero);
-            // IEnumerator task = Player.Instance.controller.HarvestResource(position, playerSkill, resultHandler);
-            // Player.Instance.controller.SetTask(task);            
         }
     }
 

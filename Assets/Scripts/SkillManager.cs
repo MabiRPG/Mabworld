@@ -174,10 +174,10 @@ public class SkillManager
     /// <param name="resultHandler">ResultHandler derived class object to handle events</param>
     /// <typeparam name="T"></typeparam>
     /// <returns>Coroutine to be run.</returns>
-    public IEnumerator Use<T>(Skill skill, T resultHandler) where T : ResultHandler
-    {
-        yield return null; //skill.Use(resultHandler);
-    }
+    // public IEnumerator Use<T>(Skill skill, T resultHandler) where T : ResultHandler
+    // {
+    //     yield return null; //skill.Use(resultHandler);
+    // }
 
     /// <summary>
     ///     Puts the skill on cooldown, and gets the coroutine to be run.

@@ -117,76 +117,76 @@ public class SkillTrainingMethod : TrainingMethodModel
     ///     Checks the training requirements against the status.
     /// </summary>
     /// <returns></returns>
-    public bool CheckTraining(MapResourceResultHandler resultHandler)
-    {
-        switch (TrainingMethodTypeModel.FindByID(trainingMethodID))
-        {
-            case "Success":
-                return IsSuccess(resultHandler);
-            case "Fail":
-                return IsFail(resultHandler);
-            case "Gather":
-                return IsGatherResource(resultHandler);
-            case "Fully gather":
-                return IsFullyGatherResource(resultHandler);
-            default:
-                break;
-        }
+    // public bool CheckTraining(MapResourceResultHandler resultHandler)
+    // {
+    //     switch (TrainingMethodTypeModel.FindByID(trainingMethodID))
+    //     {
+    //         case "Success":
+    //             return IsSuccess(resultHandler);
+    //         case "Fail":
+    //             return IsFail(resultHandler);
+    //         case "Gather":
+    //             return IsGatherResource(resultHandler);
+    //         case "Fully gather":
+    //             return IsFullyGatherResource(resultHandler);
+    //         default:
+    //             break;
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 
-    /// <summary>
-    ///     Checks if the action was a success.
-    /// </summary>
-    /// <returns></returns>
-    public bool IsSuccess(MapResourceResultHandler resultHandler)
-    {
-        return resultHandler.isSuccess;
-    }
+    // /// <summary>
+    // ///     Checks if the action was a success.
+    // /// </summary>
+    // /// <returns></returns>
+    // public bool IsSuccess(MapResourceResultHandler resultHandler)
+    // {
+    //     return resultHandler.isSuccess;
+    // }
 
-    /// <summary>
-    ///     Checks if the action was a failure.
-    /// </summary>
-    /// <returns></returns>
-    public bool IsFail(MapResourceResultHandler resultHandler)
-    {
-        return !IsSuccess(resultHandler);
-    }
+    // /// <summary>
+    // ///     Checks if the action was a failure.
+    // /// </summary>
+    // /// <returns></returns>
+    // public bool IsFail(MapResourceResultHandler resultHandler)
+    // {
+    //     return !IsSuccess(resultHandler);
+    // }
 
-    /// <summary>
-    ///     Checks if two or more resources were gathered at once.
-    /// </summary>
-    /// <returns></returns>
-    public bool IsGatherTwoOrMore(MapResourceResultHandler resultHandler)
-    {
-        if (IsSuccess(resultHandler) && resultHandler.type == ResultHandler.Type.Gather
-                && resultHandler.resourceGain > 1)
-        {
-            return true;
-        }
+    // /// <summary>
+    // ///     Checks if two or more resources were gathered at once.
+    // /// </summary>
+    // /// <returns></returns>
+    // public bool IsGatherTwoOrMore(MapResourceResultHandler resultHandler)
+    // {
+    //     if (IsSuccess(resultHandler) && resultHandler.type == ResultHandler.Type.Gather
+    //             && resultHandler.resourceGain > 1)
+    //     {
+    //         return true;
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 
-    public bool IsGatherResource(MapResourceResultHandler resultHandler)
-    {
-        if (IsSuccess(resultHandler) && resultHandler.type == ResultHandler.Type.Gather 
-                && resultHandler.resourceID == int.Parse(param1))
-        {
-            return true;
-        }
+    // public bool IsGatherResource(MapResourceResultHandler resultHandler)
+    // {
+    //     if (IsSuccess(resultHandler) && resultHandler.type == ResultHandler.Type.Gather 
+    //             && resultHandler.resourceID == int.Parse(param1))
+    //     {
+    //         return true;
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 
-    public bool IsFullyGatherResource(MapResourceResultHandler resultHandler)
-    {
-        if (IsGatherResource(resultHandler) && resultHandler.isEmpty)
-        {
-            return true;
-        }
+    // public bool IsFullyGatherResource(MapResourceResultHandler resultHandler)
+    // {
+    //     if (IsGatherResource(resultHandler) && resultHandler.isEmpty)
+    //     {
+    //         return true;
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 }

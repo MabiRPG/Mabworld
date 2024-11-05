@@ -62,7 +62,7 @@ public class WindowSkill : Window
     {
         GameObject obj = detailedPrefabFactory.GetFree(skill, GameManager.Instance.canvas.transform);
         WindowSkillDetailed window = obj.GetComponent<WindowSkillDetailed>();
-        window.SetSkill(skill, () => { });
+        window.SetSkill(skill, () => CreateAdvanceWindow(skill));
         WindowManager.Instance.AddWindow(window);
         WindowManager.Instance.ToggleWindow(window);        
     }
