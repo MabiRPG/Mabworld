@@ -84,7 +84,7 @@ public class SkillLoadState : State
     {
         machine.Task = null;
         // Transition to using the skill immediately.
-        machine.SetState(new SkillUseState(machine, skill));
+        // machine.SetState(new SkillUseState(machine, skill));
     }
 }
 
@@ -95,14 +95,16 @@ public class SkillUseState : State
 {
     private SkillStateMachine machine;
     private Skill skill;
+    private ResultController resultController;
 
     /// <summary>
     ///     Initializes the object.
     /// </summary>
-    public SkillUseState(SkillStateMachine machine, Skill skill)
+    public SkillUseState(SkillStateMachine machine, Skill skill, ResultController resultController)
     {
         this.machine = machine;
         this.skill = skill;
+        this.resultController = resultController;
     }
 
     /// <summary>
@@ -119,8 +121,7 @@ public class SkillUseState : State
     /// <returns>Coroutine to be run.</returns>
     public override IEnumerator Main()
     {
-        yield return skill.Use(machine.handler);
-        yield return skill.Cooldown(skill.GetCooldownTime());
+        yield return skill.Use(resultController);
     }
 
     /// <summary>

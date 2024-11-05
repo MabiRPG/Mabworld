@@ -19,20 +19,35 @@ public class SkillTrainingMethod : TrainingMethodModel
         this.skill = skill;
         count.Value = 0;
         // name = TrainingMethodTypeModel.FindByID(methodID);
-        Player.Instance.trainingEvent += Update;
+        // Player.Instance.trainingEvent += Update;
     }
 
     /// <summary>
     ///     Checks if less than maximum counts, and checks training requirements.
     /// </summary>
-    public void Update(MapResourceResultHandler resultHandler)
-    {
-        if (skill != resultHandler.skill)
-        {
-            return;
-        }
+    // public void Update(MapResourceResultHandler resultHandler)
+    // {
+    //     if (skill != resultHandler.skill)
+    //     {
+    //         return;
+    //     }
 
-        if (CheckTraining(resultHandler))
+    //     if (CheckTraining(resultHandler))
+    //     {
+    //         count.Value += 1;
+    //         skill.AddXP(xpGainEach);
+
+    //         // Clears the event handler when done
+    //         if (IsComplete())
+    //         {
+    //             Clear();
+    //         }
+    //     }
+    // }
+
+    public void Update(ResultController result, object caller, bool isSuccess)
+    {
+        if (CheckTraining(result, caller, isSuccess))
         {
             count.Value += 1;
             skill.AddXP(xpGainEach);
@@ -43,6 +58,44 @@ public class SkillTrainingMethod : TrainingMethodModel
                 Clear();
             }
         }
+    }
+
+    public bool CheckTraining(ResultController result, object caller, bool isSuccess)
+    {
+        switch (TrainingMethodTypeModel.FindByID(trainingMethodID))
+        {
+            case "Success":
+                return isSuccess;
+            case "Fail":
+                return !isSuccess;
+            case "Gather":
+                {
+                    MapResource resource = (MapResource)caller;
+
+                    if (isSuccess && resource.ID == int.Parse(param1))
+                    {
+                        return true;
+                    }
+
+                    break;
+                }
+            case "Fully gather":
+                {
+                    MapResource resource = (MapResource)caller;
+
+                    if (isSuccess && resource.ID == int.Parse(param1) 
+                        && resource.resource.Value == 0)
+                    {
+                        return true;
+                    }
+
+                    break;
+                }
+            default:
+                break;
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -56,7 +109,7 @@ public class SkillTrainingMethod : TrainingMethodModel
 
     public void Clear()
     {
-        Player.Instance.trainingEvent -= Update;
+        // Player.Instance.trainingEvent -= Update;
         count.Clear();
     }
 

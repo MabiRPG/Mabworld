@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Data;
 using UnityEngine.AddressableAssets;
+using System.Collections;
 
 /// <summary>
 ///     This class handles all game-wide processing. Refer to Game.instance for the 
@@ -110,5 +111,15 @@ public class GameManager : MonoBehaviour
     {
         T t = Addressables.LoadAssetAsync<T>(key).WaitForCompletion();
         return t;
+    }
+
+    public void ExecuteCoroutine(IEnumerator fn)
+    {
+        StartCoroutine(fn);
+    }
+
+    public void KillCoroutine(IEnumerator fn)
+    {
+        StopCoroutine(fn);
     }
 }

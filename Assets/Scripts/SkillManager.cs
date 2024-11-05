@@ -176,7 +176,7 @@ public class SkillManager
     /// <returns>Coroutine to be run.</returns>
     public IEnumerator Use<T>(Skill skill, T resultHandler) where T : ResultHandler
     {
-        return skill.Use(resultHandler);
+        yield return null; //skill.Use(resultHandler);
     }
 
     /// <summary>
@@ -186,6 +186,6 @@ public class SkillManager
     /// <returns>Coroutine to be run.</returns>
     public IEnumerator Cooldown(Skill skill)
     {
-        return skill.Cooldown(skill.GetCooldownTime());
+        return skill.StartCooldown(skill.GetCooldownTime());
     }
 }

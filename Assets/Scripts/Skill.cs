@@ -33,35 +33,6 @@ public class Skill : SkillModel
     }
 
     /// <summary>
-    ///     Loads the skill info from the database.
-    /// </summary>
-    // public void LoadSkillInfo() 
-    // {   
-    //     // Gets the basic skill info
-    //     DataTable dt = GameManager.Instance.QueryDatabase(skillQuery, ("@id", ID));   
-    //     DataRow row = dt.Rows[0];
-    //     GameManager.Instance.ParseDatabaseRow(row, this, ("category_id", "categoryID"));
-
-    //     // Gets the detailed skill info at every rank.
-    //     dt = GameManager.Instance.QueryDatabase(statsQuery, ("@id", ID));
-        
-    //     foreach (DataRow r in dt.Rows)
-    //     {
-    //         // Stat position field is the last column.
-    //         int statPos = r.ItemArray.Length - 1;
-    //         // Set the key to be the stat name, then slice the row by length of ranks
-    //         // converting to string then float and back to array for the value.
-    //         stats.Add(r.ItemArray[statPos].ToString(), 
-    //             r.ItemArray.Skip(2).Take(ranks.Count).Select(x => float.Parse(x.ToString())).ToArray());
-    //     }
-
-    //     if (ranks.Contains(startingRank))
-    //     {
-    //         index.Value = ranks.IndexOf(startingRank);
-    //     }
-    // }
-
-    /// <summary>
     ///     Checks if has available ranks to rank up.
     /// </summary>
     /// <returns>True if can rank up.</returns>
@@ -206,7 +177,7 @@ public class Skill : SkillModel
     /// <returns></returns>
     public float GetLoadTime()
     {
-        return baseLoadTime + GetStat("load_time");
+        return baseLoadTime + GetStat("Load Time");
     }
 
     /// <summary>
@@ -215,7 +186,7 @@ public class Skill : SkillModel
     /// <returns></returns>
     public float GetUseTime()
     {
-        return baseUseTime + GetStat("use_time");
+        return baseUseTime + GetStat("Use Time");
     }
 
     /// <summary>
@@ -224,7 +195,12 @@ public class Skill : SkillModel
     /// <returns></returns>
     public float GetCooldownTime()
     {
-        return baseCooldown + GetStat("cooldown_time");
+        return baseCooldown + GetStat("Cooldown Time");
+    }
+
+    public bool CanUse()
+    {
+        return cooldown.Value == 0;
     }
 
     /// <summary>
@@ -232,9 +208,6 @@ public class Skill : SkillModel
     /// </summary>
     public void CreateTrainingMethods()
     {
-        // // Creates a new data table and queries the db.
-        // DataTable dt = GameManager.Instance.QueryDatabase(methodsQuery, ("@id", ID), ("@rank", ranks[index.Value]));
-        // Clears the previous training methods.
         foreach (SkillTrainingMethod method in methods)
         {
             method.Clear();
@@ -245,14 +218,6 @@ public class Skill : SkillModel
         xpMax.Value = 0;
 
         // For every method, create a new method and insert into list.
-        // foreach (DataRow row in dt.Rows)
-        // {
-        //     SkillTrainingMethod method = new SkillTrainingMethod(this, row);
-        //     // Adds the max xp from method to skill.
-        //     xpMax.Value += method.xpGainEach * method.countMax;
-
-        //     methods.Add(method);
-        // }
         List<TrainingMethodModel> rankMethods = trainingMethods
             .Where(v => v.Key.Item2 == ranks[index.Value])
             .Select(v => v.Value)
@@ -278,7 +243,7 @@ public class Skill : SkillModel
     /// <typeparam name="T">Derived class of Type ResultHandler</typeparam>
     /// <param name="resultHandler">ResultHandler instance to manage the success or failure</param>
     /// <returns>Coroutine to be run.</returns>
-    public IEnumerator Use<T>(T resultHandler) where T : ResultHandler
+    public IEnumerator Use(ResultController resultController)
     {
         // Calculates the base use time for the skill.
         float useTime = GetUseTime();
@@ -311,9 +276,10 @@ public class Skill : SkillModel
         // Change to percentage and roll die
         chance /= 100;
         float roll = UnityEngine.Random.Range(0f, 1f);
+        bool isSuccess = chance >= roll;
+        resultController.Handle(isSuccess);
 
-        // Handle success or fail here
-        resultHandler.SetSuccess(chance >= roll);
+        GameManager.Instance.ExecuteCoroutine(StartCooldown(GetCooldownTime()));
     }
 
     /// <summary>
@@ -321,7 +287,7 @@ public class Skill : SkillModel
     /// </summary>
     /// <param name="time">Cooldown time in seconds.</param>
     /// <returns>Coroutine to be run.</returns>
-    public IEnumerator Cooldown(float time)
+    public IEnumerator StartCooldown(float time)
     {
         cooldown.Value = time;
 

@@ -23,6 +23,49 @@ public abstract class ResultHandler
     public abstract void SetSuccess(bool state);
 }
 
+public class ResultController : ActionHandler
+{
+    public int resourceID;
+    public int resourceGain;
+
+    public ResultController(Player player, ActionType type, object caller)
+    {
+        this.player = player;
+        this.type = type;
+        this.caller = caller;
+    }
+
+    public void Handle(bool isSuccess)
+    {
+        switch (type)
+        {
+            case ActionType.Gather:
+            {
+                MapResource resource = (MapResource)caller;
+
+                if (isSuccess)
+                {
+                    GameManager.Instance.lootGenerator.SetLootTable(resource.lootTableID);
+                    (resourceID, resourceGain) = GameManager.Instance.lootGenerator.Generate();
+                    resource.UpdateResource();
+                }
+
+                int skillID = resource.skillID;
+                Skill skill = player.skillManager.Get(skillID);
+
+                foreach (SkillTrainingMethod method in skill.methods)
+                {
+                    method.Update(this, caller, isSuccess);
+                }
+
+                break;
+            }
+            default:
+                break;
+        }
+    }
+}
+
 /// <summary>
 ///     Derived class of ResultHandler specifically for interactable map resources.
 ///     Updates the map resource, and triggers the loot generation as required.

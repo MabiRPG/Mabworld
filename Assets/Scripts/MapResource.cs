@@ -32,14 +32,14 @@ public class MapResource : MonoBehaviour, IInputHandler
     // Sound effect when interacting
     private AudioClip sfx;
     // How much the resource currently has
-    private IntManager resource;
+    public IntManager resource;
     // Maximum capacity of resource
     private int resourceMax;
     // How much it regenerates per interval, and interval duration
     private int resourceRegenPerInterval;
     private int resourceRegenInterval;
     // What loot table this resource draws from
-    private int lootTableID;
+    public int lootTableID;
 
     private SpriteRenderer spriteRenderer;
     private bool isRegening;
@@ -164,12 +164,12 @@ public class MapResource : MonoBehaviour, IInputHandler
         isRegening = false;
     }
 
-    private void UpdateResource()
+    public void UpdateResource()
     {
-        if (resultHandler.isSuccess)
-        {
+        // if (resultHandler.isSuccess)
+        // {
             resource.Value--;
-        }
+        // }
     }
 
     public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
@@ -189,11 +189,15 @@ public class MapResource : MonoBehaviour, IInputHandler
                 return;
             }
 
-            resultHandler.SetResource(playerSkill, lootTableID, resource.Value);
+            ActionController actionController = 
+                new ActionController(Player.Instance, ActionHandler.ActionType.Gather, this);
+            actionController.Handle();
 
-            Vector3 position = transform.TransformPoint(Vector3.zero);
-            IEnumerator task = Player.Instance.controller.HarvestResource(position, playerSkill, resultHandler);
-            Player.Instance.controller.SetTask(task);            
+            // resultHandler.SetResource(playerSkill, lootTableID, resource.Value);
+
+            // Vector3 position = transform.TransformPoint(Vector3.zero);
+            // IEnumerator task = Player.Instance.controller.HarvestResource(position, playerSkill, resultHandler);
+            // Player.Instance.controller.SetTask(task);            
         }
     }
 

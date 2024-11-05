@@ -133,16 +133,44 @@ public class PlayerController : MonoBehaviour
     /// <param name="skill">Skill to be used</param>
     /// <param name="handler"></param>
     /// <returns>Coroutine to be run.</returns>
-    public IEnumerator HarvestResource(Vector3 position, Skill skill, ResultHandler handler)
-    {
-        SkillLoadState loadState = new SkillLoadState(skillMachine, skill);
-        MoveState moveState = new MoveState(movementMachine);
-        moveState.exitAction += () =>
-        {
-            skillMachine.SetResultHandler(handler);
-            skillMachine.SetState(loadState);
-        };
+    // public IEnumerator HarvestResource(Vector3 position, Skill skill, ResultHandler handler)
+    // {
+    //     SkillLoadState loadState = new SkillLoadState(skillMachine, skill);
+    //     MoveState moveState = new MoveState(movementMachine);
+    //     moveState.exitAction += () =>
+    //     {
+    //         skillMachine.SetResultHandler(handler);
+    //         skillMachine.SetState(loadState);
+    //     };
 
+    //     NavMesh.SamplePosition(position, out NavMeshHit hit, 5, NavMesh.AllAreas);
+    //     movementMachine.PathToPosition(hit.position);
+
+    //     while (player.navMeshAgent.pathPending)
+    //     {
+    //         yield return null;
+    //     }
+
+    //     if (player.navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete)
+    //     {
+    //         movementMachine.SetState(moveState);
+
+    //         while (movementMachine.State != movementMachine.DefaultState ||
+    //             skillMachine.State != skillMachine.DefaultState)
+    //         {
+    //             yield return null;
+    //         }
+    //     }
+    //     else
+    //     {
+    //         player.navMeshAgent.ResetPath();
+    //     }
+
+    //     Task = null;
+    // }
+
+    public IEnumerator AttemptSkill(Vector3 position, Skill skill, ResultController resultController)
+    {
         NavMesh.SamplePosition(position, out NavMeshHit hit, 5, NavMesh.AllAreas);
         movementMachine.PathToPosition(hit.position);
 
@@ -153,6 +181,25 @@ public class PlayerController : MonoBehaviour
 
         if (player.navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete)
         {
+            MoveState moveState = new MoveState(movementMachine);
+            moveState.exitAction += () =>
+            {
+                SkillLoadState loadState = new SkillLoadState(skillMachine, skill);
+                SkillUseState useState = new SkillUseState(skillMachine, skill, resultController);
+
+                loadState.exitAction += () =>
+                {
+                    skillMachine.SetState(useState);
+                };
+
+                if (!skill.CanUse())
+                {
+                    return;
+                }
+
+                skillMachine.SetState(loadState);
+            };
+
             movementMachine.SetState(moveState);
 
             while (movementMachine.State != movementMachine.DefaultState ||
@@ -164,6 +211,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             player.navMeshAgent.ResetPath();
+            resultController.Handle(false);
         }
 
         Task = null;
