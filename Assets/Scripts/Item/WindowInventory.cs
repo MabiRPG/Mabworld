@@ -69,7 +69,7 @@ public class MovableItem
 /// <summary>
 ///     Handles all window inventory processing.
 /// </summary>
-public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
+public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPointerExitHandler
 {
     public static WindowInventory Instance = null;
 
@@ -195,7 +195,33 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
     /// <summary>
     ///     Called on every frame.
     /// </summary>
-    public void Update()
+    // public void Update()
+    // {
+    //     // If mouse click, check the item hold state and update
+    //     if (Input.GetMouseButtonDown(0))
+    //     {
+    //         // If we're not holding, then we pick up
+    //         if (!isMovingItem)
+    //         {
+    //             OnItemClick();
+    //         }
+    //         // If we are holding, drop & delete or place back into inventory if possible.
+    //         else
+    //         {
+    //             OnItemDrop();
+    //         }
+    //     }
+    //     // Else if the mouse is moving, move the held item if holding
+    //     else
+    //     {
+    //         if (isMovingItem)
+    //         {
+    //             OnItemMove();
+    //         }
+    //     }
+    // }
+
+    public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
         // If mouse click, check the item hold state and update
         if (Input.GetMouseButtonDown(0))
@@ -219,6 +245,11 @@ public class WindowInventory : Window, IPointerMoveHandler, IPointerExitHandler
                 OnItemMove();
             }
         }
+    }
+
+    public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
+        // throw new NotImplementedException();
     }
 
     /// <summary>

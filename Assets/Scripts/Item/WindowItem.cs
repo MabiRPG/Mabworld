@@ -53,6 +53,12 @@ public class WindowItem : MonoBehaviour, IInputHandler, IPointerMoveHandler, IPo
         // {
         //     WindowItemTooltip.Instance.SetItem(item);
         // }
+        if (Input.GetMouseButtonDown(0))
+        {
+            RectTransform rectTransform = GetComponent<RectTransform>();
+            rectTransform.SetParent(GameManager.Instance.canvas.GetComponent<RectTransform>());
+            rectTransform.SetAsLastSibling();
+        }
     }
 
     public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
