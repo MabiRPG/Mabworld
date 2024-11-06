@@ -243,7 +243,7 @@ public class Skill : SkillModel
     /// <typeparam name="T">Derived class of Type ResultHandler</typeparam>
     /// <param name="resultHandler">ResultHandler instance to manage the success or failure</param>
     /// <returns>Coroutine to be run.</returns>
-    public IEnumerator Use(ResultController resultController)
+    public IEnumerator Use(ResultGatherController resultController)
     {
         // Calculates the base use time for the skill.
         float useTime = GetUseTime();

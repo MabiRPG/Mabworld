@@ -45,7 +45,7 @@ public class SkillTrainingMethod : TrainingMethodModel
     //     }
     // }
 
-    public void Update(ResultController result, object caller, bool isSuccess)
+    public void Update(ResultGatherController result, object caller, bool isSuccess)
     {
         if (CheckTraining(result, caller, isSuccess))
         {
@@ -60,7 +60,7 @@ public class SkillTrainingMethod : TrainingMethodModel
         }
     }
 
-    public bool CheckTraining(ResultController result, object caller, bool isSuccess)
+    public bool CheckTraining<T>(T resultController, object caller, bool isSuccess) where T : ResultHandler
     {
         switch (TrainingMethodTypeModel.FindByID(trainingMethodID))
         {
@@ -69,28 +69,39 @@ public class SkillTrainingMethod : TrainingMethodModel
             case "Fail":
                 return !isSuccess;
             case "Gather":
+            {
+                if (typeof(T) != typeof(ResultGatherController))
                 {
-                    MapResource resource = (MapResource)caller;
-
-                    if (isSuccess && resource.ID == int.Parse(param1))
-                    {
-                        return true;
-                    }
-
                     break;
                 }
+
+                ResultGatherController result = resultController as ResultGatherController;
+
+                if (isSuccess && result.resourceID == int.Parse(param1))
+                {
+                    return true;
+                }
+
+                break;
+            }
             case "Fully gather":
+            {
+                if (typeof(T) != typeof(ResultGatherController))
                 {
-                    MapResource resource = (MapResource)caller;
-
-                    if (isSuccess && resource.ID == int.Parse(param1) 
-                        && resource.resource.Value == 0)
-                    {
-                        return true;
-                    }
-
                     break;
                 }
+
+                MapResource resource = (MapResource)caller;
+                ResultGatherController result = resultController as ResultGatherController;
+
+                if (isSuccess && result.resourceID == int.Parse(param1) 
+                    && resource.resource.Value == 0)
+                {
+                    return true;
+                }
+
+                break;
+            }
             default:
                 break;
         }

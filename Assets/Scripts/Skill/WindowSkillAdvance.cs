@@ -100,7 +100,9 @@ public class WindowSkillAdvance : Window
     /// <param name="skill">Skill to be advanced.</param>
     private void AdvanceSkill(Skill skill)
     {
-        Player.Instance.RankUpSkill(skill);
+        ActionSkillController action = new ActionSkillController(Player.Instance,
+            this, skill, ActionSkillController.ActionType.RankUp);
+        action.Handle();
         HideWindow();
     }
 

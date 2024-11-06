@@ -158,8 +158,8 @@ public class MapResource : MonoBehaviour, IInputHandler
                 return;
             }
 
-            ActionController actionController = 
-                new ActionController(Player.Instance, ActionHandler.ActionType.Gather, this);
+            ActionGatherController actionController = 
+                new ActionGatherController(Player.Instance, this);
             actionController.Handle();
         }
     }

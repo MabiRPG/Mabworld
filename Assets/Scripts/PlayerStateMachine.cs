@@ -169,7 +169,7 @@ public class PlayerController : MonoBehaviour
     //     Task = null;
     // }
 
-    public IEnumerator AttemptSkill(Vector3 position, Skill skill, ResultController resultController)
+    public IEnumerator AttemptSkill(Vector3 position, Skill skill, ResultGatherController resultController)
     {
         NavMesh.SamplePosition(position, out NavMeshHit hit, 5, NavMesh.AllAreas);
         movementMachine.PathToPosition(hit.position);

@@ -1,93 +1,65 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using UnityEngine;
 
-// public enum QuestState
-// {
-//     Hidden,
-//     Available,
-//     InProgress,
-//     Completed
-// }
-
-public abstract class QuestRequirement
+public class Quest : QuestModel
 {
-    public QuestRequirement()
+    public Quest(int ID) : base(GameManager.Instance.Database, ID)
     {
-        SetListeners();
     }
 
-    public abstract void SetListeners();
-    public abstract bool IsCompleted();
-}
-
-public abstract class QuestTask
-{
-    public QuestTask()
+    public void CheckPrereq<T>(T result) where T : ResultHandler
     {
-        SetListeners();
-    }
-
-    public abstract void SetListeners();
-    public abstract bool IsCompleted();
-}
-
-public class QuestState
-{
-    public List<QuestTask> tasks = new List<QuestTask>();
-
-    public bool IsCompleted()
-    {
-        foreach (QuestTask task in tasks)
+        foreach (QuestConditionModel condition in prerequisites.ToList())
         {
-            if (!task.IsCompleted())
+            int categoryID = condition.conditionID;
+            int conditionCategoryID = QuestConditionTypeModel.GetCategory(categoryID);
+
+            switch (QuestConditionCategoryTypeModel.FindByID(conditionCategoryID))
             {
-                return false;
+                case "Skill":
+                {
+                    HandleSkill(result as ResultSkillController, condition);
+                    break;
+                }
+                default:
+                    break;
             }
         }
-
-        return true;
-    }
-}
-
-public abstract class QuestReward
-{
-    public abstract void GiveReward();
-}
-
-public class Quest
-{
-    public int ID;
-    public string name;
-    public int categoryID;
-    public int stateID = -1;
-
-    private const string questQuery = @"SELECT * FROM quest WHERE id = @id LIMIT 1;";
-
-    public Quest(int ID)
-    {
-        this.ID = ID;
-        LoadQuestInfo();
     }
 
-    private void LoadQuestInfo()
+    private void HandleSkill(ResultSkillController result, QuestConditionModel condition)
     {
-        DataTable dt = GameManager.Instance.QueryDatabase(questQuery, ("@id", ID));
-        DataRow row = dt.Rows[0];
-        GameManager.Instance.ParseDatabaseRow(row, this, ("category_id", "categoryID"));
-        stateID = 0;
+        Skill skill = result.skill;
+        ActionSkillController.ActionType actionType = result.type;
 
-        UI_DialogueBox.Instance.SetDialogue(ID);
-    }
-
-    public void Advance(int newStateID)
-    {
-        if (newStateID != stateID + 1)
+        if (int.Parse(condition.param1) != skill.ID)
         {
             return;
         }
 
-        stateID++;
-        UI_DialogueBox.Instance.SetDialogue(ID);
+        switch (QuestConditionTypeModel.FindByID(condition.conditionID))
+        {
+            case "Learn skill":
+                if (actionType == ActionSkillController.ActionType.Learn &&
+                    result.player.skillManager.IsLearned(skill.ID))
+                {
+                    prerequisites.Remove(condition);
+                }
+
+                break;
+            case "Rank up skill":
+                if (actionType == ActionSkillController.ActionType.RankUp &&
+                    skill.IsRankOrGreater(condition.param2))
+                {
+                    prerequisites.Remove(condition);
+                }
+
+                break;
+            default:
+                break;
+        }
     }
 }

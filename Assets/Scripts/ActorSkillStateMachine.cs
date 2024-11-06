@@ -95,12 +95,12 @@ public class SkillUseState : State
 {
     private SkillStateMachine machine;
     private Skill skill;
-    private ResultController resultController;
+    private ResultGatherController resultController;
 
     /// <summary>
     ///     Initializes the object.
     /// </summary>
-    public SkillUseState(SkillStateMachine machine, Skill skill, ResultController resultController)
+    public SkillUseState(SkillStateMachine machine, Skill skill, ResultGatherController resultController)
     {
         this.machine = machine;
         this.skill = skill;

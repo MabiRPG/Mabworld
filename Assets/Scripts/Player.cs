@@ -66,14 +66,18 @@ public class Player : Actor, IInputHandler
     {
         // Debug purposes...
         actorName.Value = "Test";
+
+        Quest quest = new Quest(1);
+        quests.Add(1, quest);
+
         int skillLimit = 14;
 
         for (int i = 1; i < skillLimit; i++)
         {
-            skillManager.Learn(i);
+            ActionSkillController action = new ActionSkillController(this, this, i);
+            action.Handle();
         }
 
-        // actorAP.Value += 10;
         skillManager.Skills[1].AddXP(100);
         skillManager.Skills[2].AddXP(150);
 
