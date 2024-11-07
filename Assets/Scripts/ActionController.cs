@@ -39,7 +39,7 @@ public class ActionSkillController : ActionHandler
 {
     private Skill skill;
     private int skillID;
-    private ActionType type;
+    public ActionType type;
     public enum ActionType
     {
         RankUp,
@@ -63,7 +63,7 @@ public class ActionSkillController : ActionHandler
 
     public override void Handle()
     {
-        ResultSkillController result = new ResultSkillController(player, caller, skill, type);
+        ResultSkillController result = new ResultSkillController(player, caller, skill, this);
 
         switch (type)
         {
@@ -85,6 +85,68 @@ public class ActionSkillController : ActionHandler
                     skill.RankUp();
                     result.Handle(true);
                 }
+
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+public class ActionItemController : ActionHandler
+{
+    public int lootTableID;
+    public int itemID;
+    public int itemPreviousQuantity;
+    public int itemCurrentQuantity;
+    public ActionType type;
+    public enum ActionType
+    {
+        ItemAdd,
+        ItemRemove
+    }
+
+    private int itemAddQuantity;
+
+    public ActionItemController(Player player, object caller, int lootTableID, 
+        ActionType type = ActionType.ItemAdd) : base(player, caller)
+    {
+        this.type = type;
+        this.lootTableID = lootTableID;
+    }
+
+    public ActionItemController(Player player, object caller, int itemID, int itemQuantity,
+        ActionType type = ActionType.ItemAdd) : base(player, caller)
+    {
+        this.itemID = itemID;
+        itemAddQuantity = itemQuantity;
+        this.type = type;
+    }
+
+    public override void Handle()
+    {
+        switch (type)
+        {
+            case ActionType.ItemAdd:
+                if (lootTableID != default)
+                {
+                    LootGenerator lootGen = new LootGenerator(lootTableID);
+                    (int newItemID, int newItemGain) = lootGen.Generate();
+
+                    itemID = newItemID;
+                    itemPreviousQuantity = player.inventoryManager.GetQuantity(itemID);
+                    itemCurrentQuantity = itemPreviousQuantity;
+                    itemCurrentQuantity += player.inventoryManager.AddItem(itemID, newItemGain);
+                }
+                else
+                {
+                    itemPreviousQuantity = player.inventoryManager.GetQuantity(itemID);
+                    itemCurrentQuantity = itemPreviousQuantity;
+                    itemCurrentQuantity += player.inventoryManager.AddItem(itemID, itemAddQuantity);
+                }
+
+                ResultItemController result = new ResultItemController(player, caller, this);
+                result.Handle(true);
 
                 break;
             default:

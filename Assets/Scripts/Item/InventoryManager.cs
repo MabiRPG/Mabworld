@@ -36,7 +36,7 @@ public class InventoryManager
     /// </summary>
     /// <param name="itemID">Item ID in database</param>
     /// <param name="quantity">Quantity of item to add</param>
-    public void AddItem(int itemID, int quantity)
+    public int AddItem(int itemID, int quantity)
     {
         Item item;
 
@@ -69,6 +69,7 @@ public class InventoryManager
         changeEvent.RaiseOnChange();
 
         // TODO : Handle overflow inventory
+        return item.quantity;
     }
 
     /// <summary>
@@ -126,5 +127,15 @@ public class InventoryManager
         }
 
         return AllItems[item.ID].quantity;
+    }
+
+    public int GetQuantity(int itemID)
+    {
+        if (!AllItems.ContainsKey(itemID))
+        {
+            return 0;
+        }
+
+        return AllItems[itemID].quantity;
     }
 }

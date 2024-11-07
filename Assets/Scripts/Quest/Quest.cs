@@ -10,7 +10,7 @@ public class Quest : QuestModel
     {
     }
 
-    public void CheckPrereq<T>(T result) where T : ResultHandler
+    public void CheckPrereq<T>(T result)
     {
         foreach (QuestConditionModel condition in prerequisites.ToList())
         {
@@ -20,10 +20,19 @@ public class Quest : QuestModel
             switch (QuestConditionCategoryTypeModel.FindByID(conditionCategoryID))
             {
                 case "Skill":
-                {
-                    HandleSkill(result as ResultSkillController, condition);
+                    if (typeof(T) == typeof(ResultSkillController))
+                    {
+                        HandleSkill(result as ResultSkillController, condition);
+                    }
+
                     break;
-                }
+                case "Item":
+                    if (typeof(T) == typeof(ResultItemController))
+                    {
+                        HandleItem(result as ResultItemController, condition);
+                    }
+
+                    break;
                 default:
                     break;
             }
@@ -33,7 +42,7 @@ public class Quest : QuestModel
     private void HandleSkill(ResultSkillController result, QuestConditionModel condition)
     {
         Skill skill = result.skill;
-        ActionSkillController.ActionType actionType = result.type;
+        ActionSkillController.ActionType actionType = result.action.type;
 
         if (int.Parse(condition.param1) != skill.ID)
         {
@@ -53,6 +62,30 @@ public class Quest : QuestModel
             case "Rank up skill":
                 if (actionType == ActionSkillController.ActionType.RankUp &&
                     skill.IsRankOrGreater(condition.param2))
+                {
+                    prerequisites.Remove(condition);
+                }
+
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void HandleItem(ResultItemController result, QuestConditionModel condition)
+    {
+        ActionItemController.ActionType actionType = result.action.type;
+
+        if (int.Parse(condition.param1) != result.action.itemID)
+        {
+            return;
+        }
+
+        switch (QuestConditionTypeModel.FindByID(condition.conditionID))
+        {
+            case "Get item":
+                if (actionType == ActionItemController.ActionType.ItemAdd &&
+                    result.action.itemCurrentQuantity >= int.Parse(condition.param2))
                 {
                     prerequisites.Remove(condition);
                 }

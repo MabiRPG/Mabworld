@@ -5,18 +5,26 @@ using System.Data;
 /// </summary>
 public class LootGenerator
 {
+    private int lootTableID;
     private DataTable lootTable;
     private const string lootTableQuery = @"SELECT * FROM loot_table WHERE id = @id;";
+
+    public LootGenerator(int lootTableID)
+    {
+        this.lootTableID = lootTableID;
+        lootTable = GameManager.Instance.QueryDatabase(lootTableQuery, ("@id", this.lootTableID));
+        NormalizeDataTable(lootTable);
+    }
 
     /// <summary>
     ///     Loads the loot table from the database.
     /// </summary>
     /// <param name="lootTableID">Loot Table ID in database.</param>
-    public void SetLootTable(int lootTableID)
-    {
-        lootTable = GameManager.Instance.QueryDatabase(lootTableQuery, ("@id", lootTableID));
-        NormalizeDataTable(lootTable);
-    }
+    // public void SetLootTable(int lootTableID)
+    // {
+    //     lootTable = GameManager.Instance.QueryDatabase(lootTableQuery, ("@id", lootTableID));
+    //     NormalizeDataTable(lootTable);
+    // }
 
     /// <summary>
     ///     Normalizes the cumulative probabilities in the loot table to be 1, if necessary.
@@ -71,8 +79,8 @@ public class LootGenerator
         }
 
         // Multiply the resource gain by the player's lucky multiplier.
-        int resourceGain = 1 * Player.Instance.CalculateLuckyGainMultiplier();
-        Player.Instance.inventoryManager.AddItem(resourceID, resourceGain);
-        return (resourceID, resourceGain);
+        // int resourceGain = 1 * Player.Instance.CalculateLuckyGainMultiplier();
+        // Player.Instance.inventoryManager.AddItem(resourceID, resourceGain);
+        return (resourceID, 1);
     }
 }

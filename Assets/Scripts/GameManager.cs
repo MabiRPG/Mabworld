@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour
     [Header("Window Prefabs")]
     public Canvas canvas;
     // Loot system
-    public LootGenerator lootGenerator = new LootGenerator();
+    // public LootGenerator lootGenerator = new LootGenerator();
 
     public GraphicRaycaster raycaster;
 

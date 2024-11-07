@@ -472,6 +472,11 @@ public class QuestWindowEditor : EditorWindow
                 {
                     IntegerField field = new IntegerField();
 
+                    if (!int.TryParse(condition.param2, out _))
+                    {
+                        condition.param2 = "1";
+                    }
+
                     field.SetValueWithoutNotify(int.Parse(condition.param2));
                     field.RegisterValueChangedCallback(e =>
                     {
@@ -703,7 +708,8 @@ public class QuestWindowEditor : EditorWindow
         prerequisiteAddButton.clicked += () =>
         {
             QuestConditionModel condition = new QuestConditionModel(database,
-                selectedQuest.ID, QuestModel.prerequisitesTableName);
+                selectedQuest.ID, prerequisiteView.itemsSource.Count,
+                QuestModel.prerequisitesTableName);
             prerequisiteView.itemsSource.Add(condition);
             prerequisiteView.RefreshItems();
         };
@@ -801,17 +807,7 @@ public class QuestWindowEditor : EditorWindow
         stepAddButton.clicked += () =>
         {
             QuestConditionModel condition = new QuestConditionModel(database,
-                selectedQuest.ID, QuestModel.stepsTableName);
-
-            int max = 0;
-
-            if (stepView.itemsSource.Count > 0)
-            {
-                max = (stepView.itemsSource as List<QuestConditionModel>).Max(v => v.stepID);
-            }
-
-            condition.stepID = max + 1;
-
+                selectedQuest.ID, stepView.itemsSource.Count, QuestModel.stepsTableName);
             stepView.itemsSource.Add(condition);
             stepView.RefreshItems();
         };
@@ -845,7 +841,7 @@ public class QuestWindowEditor : EditorWindow
         rewardAddButton.clicked += () =>
         {
             QuestConditionModel condition = new QuestConditionModel(database,
-                selectedQuest.ID, QuestModel.rewardsTableName);
+                selectedQuest.ID, rewardView.itemsSource.Count, QuestModel.rewardsTableName);
             rewardView.itemsSource.Add(condition);
             rewardView.RefreshItems();
         };

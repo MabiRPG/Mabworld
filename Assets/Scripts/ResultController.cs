@@ -30,10 +30,12 @@ public class ResultGatherController : ResultHandler
 
         if (isSuccess)
         {
-            GameManager.Instance.lootGenerator.SetLootTable(resource.lootTableID);
-            (resourceID, resourceGain) = GameManager.Instance.lootGenerator.Generate();
+            // GameManager.Instance.lootGenerator.SetLootTable(resource.lootTableID);
+            // (resourceID, resourceGain) = GameManager.Instance.lootGenerator.Generate();
+            ActionItemController action = new ActionItemController(player, caller,
+                resource.lootTableID);
+            action.Handle();
             resource.UpdateResource();
-
             Player.Instance.AddXP(50);
         }
 
@@ -52,13 +54,13 @@ public class ResultGatherController : ResultHandler
 public class ResultSkillController : ResultHandler
 {
     public Skill skill;
-    public ActionSkillController.ActionType type;
+    public ActionSkillController action;
 
     public ResultSkillController(Player player, object caller, Skill skill, 
-        ActionSkillController.ActionType type) : base(player, caller)
+        ActionSkillController action) : base(player, caller)
     {
         this.skill = skill;
-        this.type = type;
+        this.action = action;
     }
 
     public override void Handle(bool isSuccess)
@@ -68,4 +70,23 @@ public class ResultSkillController : ResultHandler
             quest.CheckPrereq(this);
         }
     }    
+}
+
+public class ResultItemController : ResultHandler
+{
+    public ActionItemController action;
+
+    public ResultItemController(Player player, object caller, ActionItemController action) 
+        : base(player, caller)
+    {
+        this.action = action;
+    }
+
+    public override void Handle(bool isSuccess)
+    {
+        foreach (Quest quest in player.quests.Values)
+        {
+            quest.CheckPrereq(this);
+        }
+    }
 }

@@ -81,7 +81,8 @@ public class Player : Actor, IInputHandler
         skillManager.Skills[1].AddXP(100);
         skillManager.Skills[2].AddXP(150);
 
-        inventoryManager.AddItem(1, 100);
+        ActionItemController actionItem = new ActionItemController(this, this, 1, 50);
+        actionItem.Handle(); 
     }
 
     public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
