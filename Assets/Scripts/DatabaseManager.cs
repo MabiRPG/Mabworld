@@ -21,7 +21,6 @@ public class DatabaseManager
     public DatabaseManager(string databaseName)
     {
         this.databaseName = databaseName;
-        InitializeTypeModel<CultivationStageModel>("cultivation_stage");
         InitializeTypeModel<SkillStatTypeModel>("skill_stat_type");
         InitializeTypeModel<TrainingMethodTypeModel>("training_method_type");
         InitializeTypeModel<QuestConditionTypeModel>("quest_condition_type");
@@ -30,13 +29,13 @@ public class DatabaseManager
         InitializeTypeModel<ItemStatTypeModel>("item_stat_type");
         InitializeTypeModel<CraftingStationModel>("crafting_station");
 
-        DataTable dt = Read("SELECT stage_id, id FROM cultivation_substage;");
+        DataTable dt = Read("SELECT id, substage_id FROM cultivation_stage;");
 
         foreach (DataRow row in dt.Rows)
         {
-            int stageID = int.Parse(row["stage_id"].ToString());
             int ID = int.Parse(row["id"].ToString());
-            new CultivationSubstageModel(this, stageID, ID);
+            int substageID = int.Parse(row["substage_id"].ToString());
+            new CultivationStageModel(this, ID, substageID);
         }  
     }
 

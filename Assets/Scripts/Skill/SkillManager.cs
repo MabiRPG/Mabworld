@@ -31,15 +31,21 @@ public class SkillManager
         //     Categories.Add(int.Parse(row["id"].ToString()), row["name"].ToString());
         // }
 
-        DataTable dt = GameManager.Instance.Database.Read("SELECT id FROM cultivation_stage;");
+        // DataTable dt = GameManager.Instance.Database.Read("SELECT id FROM cultivation_stage;");
 
-        foreach (DataRow row in dt.Rows)
+        // foreach (DataRow row in dt.Rows)
+        // {
+        //     int ID = int.Parse(row["id"].ToString());
+        //     CultivationStageModel stage = new CultivationStageModel(GameManager.Instance.Database, ID);
+        // }
+
+        foreach ((int stageID, int substageID) in CultivationStageModel.stages.Keys)
         {
-            int ID = int.Parse(row["id"].ToString());
-            CultivationStageModel stage = new CultivationStageModel(GameManager.Instance.Database, ID);
+            if (!Categories.ContainsKey(stageID) && stageID < 1000)
+            {
+                Categories.Add(stageID, CultivationStageModel.stages[(stageID, substageID)].name);
+            }
         }
-
-        Categories = CultivationStageModel.types;
     }
 
     /// <summary>

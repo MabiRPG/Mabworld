@@ -11,11 +11,8 @@ public class WindowCharacter : Window
     public static WindowCharacter Instance = null;
 
     private TMP_Text actorNameText;
-    // private TMP_Text actorTitleText;
-    // private TMP_Text actorAgeText;
-    // private TMP_Text actorRaceText;
-    // private TMP_Text actorLevelText;
-    // private TMP_Text actorAPText;
+    private TMP_Text actorStageText;
+    private TMP_Text actorSubstageText;
 
     private UI_ProgressBar actorHPBar;
     private UI_ProgressBar actorMPBar;
@@ -61,8 +58,8 @@ public class WindowCharacter : Window
         basicInfoLeft = body.transform.Find("Basic Info (L)").gameObject;
         Dictionary<string, TMP_Text> dict = CreateComponentMap(basicInfoLeft.transform);
         actorNameText = dict["name"];
-        // actorLevelText = dict["level"];
-        // actorAPText = dict["ap"];
+        actorStageText = dict["stage"];
+        actorSubstageText = dict["substage"];
         actorStrText = dict["str"];
         actorIntText = dict["int"];
         actorDexText = dict["dex"];

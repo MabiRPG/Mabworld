@@ -162,7 +162,10 @@ public class SkillEditorWindow : EditorWindow
         selectedCultivationStage = rootVisualElement.Q<DropdownField>("selectedCultivationStage");
         selectedCultivationStage.RegisterValueChangedCallback(e =>
         {
-            selectedSkill.cultivationStageID = CultivationStageModel.FindByName(e.newValue);
+            selectedSkill.cultivationStageID = CultivationStageModel.stages
+                .Where(v => v.Value.name == e.newValue)
+                .Select(v => v.Value.ID)
+                .First();
         });
         selectedDescription = rootVisualElement.Q<TextField>("selectedDescription");
         selectedDescription.RegisterValueChangedCallback(e => 
@@ -815,8 +818,16 @@ public class SkillEditorWindow : EditorWindow
     {
         selectedName.value = selectedSkill.name;
 
-        selectedCultivationStage.value = CultivationStageModel.FindByID(selectedSkill.cultivationStageID);
-        selectedCultivationStage.choices = CultivationStageModel.types.Values.ToList();
+        selectedCultivationStage.value = CultivationStageModel.stages
+            .Where(v => v.Value.ID == selectedSkill.cultivationStageID)
+            .Select(v => v.Value.name)
+            .First();
+
+        selectedCultivationStage.choices = CultivationStageModel.stages
+            .Select(v => v.Value.name)
+            .Distinct()
+            .ToList();
+
         selectedIcon.value = selectedSkill.icon;
         selectedSFX.value = selectedSkill.sfx;
         selectedDescription.value = selectedSkill.description;

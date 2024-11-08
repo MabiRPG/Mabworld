@@ -16,7 +16,9 @@ public class Actor : MonoBehaviour
 
     // Name and level of actor
     public StringManager actorName = new StringManager();
-    public IntManager actorLevel = new IntManager();
+    // public IntManager actorLevel = new IntManager();
+    public StatManager actorStage = new StatManager(1, 9, 9);
+    public StatManager actorSubstage = new StatManager(1, 9, 9);
 
     // Health and mana
     public StatManager actorHP = new StatManager(100, 100, 100);

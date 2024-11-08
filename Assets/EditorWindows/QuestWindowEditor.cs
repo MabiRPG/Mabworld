@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Unity.Burst.Intrinsics;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -305,15 +306,22 @@ public class QuestWindowEditor : EditorWindow
                 {
                     DropdownField dropdown = new DropdownField();
 
-                    dropdown.SetValueWithoutNotify(
-                        CultivationStageModel.FindByID(int.Parse(condition.param1)));
-                    dropdown.choices = CultivationStageModel.types
-                        .OrderBy(v => v.Key)
-                        .Select(v => v.Value)
+                    dropdown.SetValueWithoutNotify(CultivationStageModel.stages
+                        .Where(v => v.Value.ID == int.Parse(condition.param1))
+                        .Select(v => v.Value.name)
+                        .First());
+                    dropdown.choices = CultivationStageModel.stages
+                        .OrderBy(v => v.Value.ID)
+                        .Select(v => v.Value.name)
+                        .Distinct()
                         .ToList();
                     dropdown.RegisterValueChangedCallback(e =>
                     {
-                        condition.param1 = CultivationStageModel.FindByName(e.newValue).ToString();
+                        condition.param1 = CultivationStageModel.stages
+                            .Where(v => v.Value.name == e.newValue)
+                            .Select(v => v.Value.ID)
+                            .First()
+                            .ToString();
                         listView.RefreshItems();
                     });
 
@@ -448,21 +456,38 @@ public class QuestWindowEditor : EditorWindow
                 {
                     DropdownField dropdown = new DropdownField();
 
-                    dropdown.SetValueWithoutNotify(CultivationSubstageModel
-                        .substages[(int.Parse(condition.param1), int.Parse(condition.param2))]);
-                    dropdown.choices = CultivationSubstageModel.substages
-                        .Where(v => v.Key.Item1 == int.Parse(condition.param1))
-                        .OrderBy(v => v.Key.Item2)
-                        .Select(v => v.Value)
+                    dropdown.SetValueWithoutNotify(CultivationStageModel.stages
+                        [(int.Parse(condition.param1), int.Parse(condition.param2))].substageName);
+                    dropdown.choices = CultivationStageModel.stages
+                        .Where(v => v.Value.ID == int.Parse(condition.param1))
+                        .OrderBy(v => v.Value.substageID)
+                        .Select(v => v.Value.substageName)
                         .ToList();
                     dropdown.RegisterValueChangedCallback(e =>
                     {
-                        condition.param2 = CultivationSubstageModel.substages
-                            .Where(v => v.Value == e.newValue)
-                            .Select(v => v.Key.Item2)
+                        condition.param2 = CultivationStageModel.stages
+                            .Where(v => v.Value.ID == int.Parse(condition.param1) &&
+                                v.Value.substageName == e.newValue)
+                            .Select(v => v.Value.substageID)
                             .First()
                             .ToString();
                     });
+
+                    // dropdown.SetValueWithoutNotify(CultivationSubstageModel
+                    //     .substages[(int.Parse(condition.param1), int.Parse(condition.param2))]);
+                    // dropdown.choices = CultivationSubstageModel.substages
+                    //     .Where(v => v.Key.Item1 == int.Parse(condition.param1))
+                    //     .OrderBy(v => v.Key.Item2)
+                    //     .Select(v => v.Value)
+                    //     .ToList();
+                    // dropdown.RegisterValueChangedCallback(e =>
+                    // {
+                    //     condition.param2 = CultivationSubstageModel.substages
+                    //         .Where(v => v.Value == e.newValue)
+                    //         .Select(v => v.Key.Item2)
+                    //         .First()
+                    //         .ToString();
+                    // });
 
                     item.Add(dropdown);
 
