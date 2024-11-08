@@ -48,16 +48,6 @@ public class CultivationStageModel : Model
         }
     }
 
-    public static CultivationStageModel FindByID(int stageID, int substageID)
-    {
-        if (stages.ContainsKey((stageID, substageID)))
-        {
-            return stages[(stageID, substageID)];
-        }
-
-        return null;
-    }
-
     public static List<CultivationStageModel> FindByStageName(string name)
     {
         return stages.Where(v => v.Value.name == name).Select(v => v.Value).ToList();

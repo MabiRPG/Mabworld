@@ -164,15 +164,17 @@ public class Player : Actor, IInputHandler
 
         if (actorXP.Value >= actorXP.Maximum)
         {
-            // actorAP.Value++;
             actorXP.Value -= actorXP.Maximum;
-            actorSubstage.Value++;
-        }
 
-        if (actorSubstage.Value >= actorSubstage.Maximum)
-        {
-            actorSubstage.Value -= actorSubstage.Maximum;
-            actorStage.Value++;
+            if (actorSubstage.Value + 1 > actorSubstage.Maximum)
+            {
+                actorStage.Value++;
+                actorSubstage.Value = 1;
+            }
+            else
+            {
+                actorSubstage.Value++;
+            }
         }
     }
 

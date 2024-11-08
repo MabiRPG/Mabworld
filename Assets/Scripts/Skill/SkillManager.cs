@@ -24,21 +24,6 @@ public class SkillManager
     {
         this.bubble = bubble;
 
-        // DataTable dt = GameManager.Instance.QueryDatabase(categoryQuery);
-
-        // foreach (DataRow row in dt.Rows)
-        // {
-        //     Categories.Add(int.Parse(row["id"].ToString()), row["name"].ToString());
-        // }
-
-        // DataTable dt = GameManager.Instance.Database.Read("SELECT id FROM cultivation_stage;");
-
-        // foreach (DataRow row in dt.Rows)
-        // {
-        //     int ID = int.Parse(row["id"].ToString());
-        //     CultivationStageModel stage = new CultivationStageModel(GameManager.Instance.Database, ID);
-        // }
-
         foreach ((int stageID, int substageID) in CultivationStageModel.stages.Keys)
         {
             if (!Categories.ContainsKey(stageID) && stageID < 1000)

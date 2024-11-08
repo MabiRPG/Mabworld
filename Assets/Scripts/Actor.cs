@@ -16,7 +16,6 @@ public class Actor : MonoBehaviour
 
     // Name and level of actor
     public StringManager actorName = new StringManager();
-    // public IntManager actorLevel = new IntManager();
     public StatManager actorStage = new StatManager(1, 9, 9);
     public StatManager actorSubstage = new StatManager(1, 9, 9);
 
@@ -81,6 +80,8 @@ public class Actor : MonoBehaviour
         navMeshAgent.updateRotation = false;
         navMeshAgent.updateUpAxis = false;
         transform.rotation = Quaternion.identity;
+
+        UpdateStats();
     }
 
     /// <summary>
@@ -88,6 +89,8 @@ public class Actor : MonoBehaviour
     /// </summary>
     private void OnEnable()
     {
+        actorStage.OnChange += UpdateStats;
+        actorSubstage.OnChange += UpdateStats;
         actorStr.OnBaseMaximumValueChange += CalculateDefense;
         actorStr.OnBaseMaximumValueChange += CalculateMDefense;
         actorInt.OnBaseMaximumValueChange += CalculateMProt;
@@ -98,6 +101,8 @@ public class Actor : MonoBehaviour
     /// </summary>
     private void OnDisable()
     {
+        actorStage.OnChange -= UpdateStats;
+        actorSubstage.OnChange -= UpdateStats;
         actorStr.OnBaseMaximumValueChange -= CalculateDefense;
         actorStr.OnBaseMaximumValueChange -= CalculateMDefense;
         actorInt.OnBaseMaximumValueChange -= CalculateMProt;
@@ -125,5 +130,18 @@ public class Actor : MonoBehaviour
     private void CalculateMProt()
     {
         actorMProt.BaseMaximum = actorInt.BaseMaximum / mProtIntFactor;
+    }
+
+    private void UpdateStats()
+    {
+        CultivationStageModel stage = CultivationStageModel.stages
+            [((int)actorStage.Value, (int)actorSubstage.Value)];
+
+        actorHP.Value = stage.hp;
+        actorMP.Value = stage.mp;
+        actorStr.Value = stage.strength;
+        actorInt.Value = stage.intelligence;
+        actorDex.Value = stage.dexterity;
+        actorLuck.Value = stage.luck;
     }
 }

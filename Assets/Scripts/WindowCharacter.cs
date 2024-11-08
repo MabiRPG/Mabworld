@@ -129,8 +129,8 @@ public class WindowCharacter : Window
     {
         // Basic Details
         Player.Instance.actorName.OnChange += Draw;
-        // Player.Instance.actorLevel.OnChange += Draw;
-        // Player.Instance.actorAP.OnChange += Draw;
+        Player.Instance.actorStage.OnChange += Draw;
+        Player.Instance.actorSubstage.OnChange += Draw;
 
         // HP and MP
         Player.Instance.actorHP.OnChange += Draw;
@@ -159,8 +159,8 @@ public class WindowCharacter : Window
     {
         // Basic Details
         Player.Instance.actorName.OnChange -= Draw;
-        // Player.Instance.actorLevel.OnChange -= Draw;
-        // Player.Instance.actorAP.OnChange -= Draw;
+        Player.Instance.actorStage.OnChange -= Draw;
+        Player.Instance.actorSubstage.OnChange -= Draw;
 
         // HP and MP
         Player.Instance.actorHP.OnChange -= Draw;
@@ -187,8 +187,12 @@ public class WindowCharacter : Window
     {
         // Basic Details
         actorNameText.text = Player.Instance.actorName.Value.ToString();
-        // actorLevelText.text = Player.Instance.actorLevel.Value.ToString();
-        // actorAPText.text = Player.Instance.actorAP.Value.ToString();
+
+        CultivationStageModel stage = CultivationStageModel.stages
+            [((int)Player.Instance.actorStage.Value, (int)Player.Instance.actorSubstage.Value)];
+
+        actorStageText.text = stage.name;
+        actorSubstageText.text = stage.substageName;
 
         // HP and MP
         actorHPBar.SetCurrent(Player.Instance.actorHP.Value);

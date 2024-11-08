@@ -36,7 +36,7 @@ public class ResultGatherController : ResultHandler
                 resource.lootTableID);
             action.Handle();
             resource.UpdateResource();
-            Player.Instance.AddXP(50);
+            Player.Instance.AddXP(100);
         }
 
         int skillID = resource.skillID;
