@@ -15,9 +15,10 @@ using UnityEngine.AddressableAssets;
 public class DatabaseManager
 {
     private string databaseName;
-   // Cache of database results.
+    // Cache of database results.
     private Dictionary<string, DataTable> cache = new Dictionary<string, DataTable>();
 
+    public readonly List<MapResourceModel> mapResourceModels;
     public DatabaseManager(string databaseName)
     {
         this.databaseName = databaseName;
@@ -36,6 +37,16 @@ public class DatabaseManager
             int ID = int.Parse(row["id"].ToString());
             int substageID = int.Parse(row["substage_id"].ToString());
             new CultivationStageModel(this, ID, substageID);
+        }  
+
+        dt = Read("SELECT id FROM map_resource;");
+        mapResourceModels = new List<MapResourceModel>();
+
+        foreach (DataRow row in dt.Rows)
+        {
+            int ID = int.Parse(row["id"].ToString());
+            MapResourceModel model = new MapResourceModel(this, ID);
+            mapResourceModels.Add(model);
         }  
     }
 

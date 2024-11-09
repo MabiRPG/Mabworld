@@ -12,22 +12,22 @@ public class MapResourceModel : Model
     // Label to display in world
     public string name;
     // Sprites to display depending on state of resource
-    private Sprite fullSprite;
-    private Sprite partialFullSprite;
-    private Sprite emptySprite;
+    public Sprite fullSprite;
+    public Sprite partialFullSprite;
+    public Sprite emptySprite;
     // Mouse hover sprite
-    private Sprite mouseHoverSprite;
+    public Sprite mouseHoverSprite;
     // Sound effect when interacting
-    private AudioClip sfx;
+    public AudioClip sfx;
     // How much the resource currently has
-    private IntManager resource;
+    public int resource;
     // Maximum capacity of resource
-    private int resourceMax;
+    public int resourceMax;
     // How much it regenerates per interval, and interval duration
-    private int resourceRegenPerInterval;
-    private int resourceRegenInterval;
+    public int resourceRegenPerInterval;
+    public int resourceRegenInterval;
     // What loot table this resource draws from
-    private int lootTableID;
+    public int lootTableID;
 
     public MapResourceModel(DatabaseManager database, int ID) : base(database)
     {

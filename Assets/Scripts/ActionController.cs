@@ -25,7 +25,7 @@ public class ActionGatherController : ActionHandler
     public override void Handle()
     {
         MapResource resource = (MapResource)caller;
-        int skillID = resource.skillID;
+        int skillID = resource.model.skillID;
         Skill skill = player.skillManager.Get(skillID);
         Vector3 position = resource.transform.TransformPoint(Vector3.zero);
 

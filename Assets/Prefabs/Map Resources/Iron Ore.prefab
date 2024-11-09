@@ -12,10 +12,9 @@ GameObject:
   - component: {fileID: 3787280157982434854}
   - component: {fileID: 1953990052273822322}
   - component: {fileID: 6689817681937809558}
-  - component: {fileID: 2653258104909653202}
   m_Layer: 0
-  m_Name: Iron Ore (full)
-  m_TagString: Untagged
+  m_Name: Iron Ore
+  m_TagString: MapObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -154,20 +153,3 @@ PolygonCollider2D:
       - {x: -0.38708687, y: 0.8041153}
       - {x: -0.5538025, y: 0.39709187}
   m_UseDelaunayMesh: 0
---- !u!114 &2653258104909653202
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8187157419973116051}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9555b2a4385188d4096453a2528124f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ID: 11
-  skillID: 0
-  rankRequired: 
-  successRateModifier: 0
-  sName: 

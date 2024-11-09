@@ -57,12 +57,24 @@ public abstract class GameState : State
         GameManager.Instance.baseCamera.SetActive(false);
         GameManager.Instance.canvas.worldCamera = Camera.main;
         GameManager.Instance.minimap.gameObject.SetActive(true);
+
+        SetupMapObjects();
     }
 
     private void PrepareTransition()
     {
         WindowManager.Instance.CloseAllWindows();
         GameManager.Instance.minimap.gameObject.SetActive(false);
+    }
+
+    private void SetupMapObjects()
+    {
+        GameObject[] mapObjects = GameObject.FindGameObjectsWithTag("MapObject");
+
+        foreach (GameObject obj in mapObjects)
+        {
+            obj.AddComponent(typeof(MapResource));
+        }
     }
 }
 

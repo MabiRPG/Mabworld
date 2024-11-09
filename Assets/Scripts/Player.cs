@@ -101,6 +101,17 @@ public class Player : Actor, IInputHandler
     {
     }
 
+    private void OnEnable()
+    {
+        actorSubstage.OnChange += () =>
+        {
+            foreach (Quest quest in quests.Values)
+            {
+                quest.CheckPrereq(this);
+            }
+        };
+    }
+
     public void Update()
     {
         if (navMeshAgent.hasPath)

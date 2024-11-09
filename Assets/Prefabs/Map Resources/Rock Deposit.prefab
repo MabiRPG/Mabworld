@@ -10,12 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 3132157404046371390}
   - component: {fileID: 8099188317801328032}
-  - component: {fileID: 950177512137483304}
   - component: {fileID: 8963469021719426580}
   - component: {fileID: 4808043238131208194}
   m_Layer: 0
   m_Name: Rock Deposit
-  m_TagString: Untagged
+  m_TagString: MapObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -87,23 +86,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 1
---- !u!114 &950177512137483304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2947054483406148685}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9555b2a4385188d4096453a2528124f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ID: 9
-  skillID: 0
-  rankRequired: 
-  successRateModifier: 0
-  sName: 
 --- !u!114 &8963469021719426580
 MonoBehaviour:
   m_ObjectHideFlags: 0

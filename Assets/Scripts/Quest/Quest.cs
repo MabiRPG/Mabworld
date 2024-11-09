@@ -33,6 +33,13 @@ public class Quest : QuestModel
                     }
 
                     break;
+                case "Cultivation stage":
+                    if (typeof(T) == typeof(Actor) || typeof(T) == typeof(Player))
+                    {
+                        HandleCultivation(result as Actor, condition);
+                    }
+
+                    break;
                 default:
                     break;
             }
@@ -93,6 +100,15 @@ public class Quest : QuestModel
                 break;
             default:
                 break;
+        }
+    }
+
+    private void HandleCultivation(Actor actor, QuestConditionModel condition)
+    {
+        if (int.Parse(condition.param1) == actor.actorStage.Value &&
+            int.Parse(condition.param2) <= actor.actorSubstage.Value)
+        {
+            prerequisites.Remove(condition);
         }
     }
 }

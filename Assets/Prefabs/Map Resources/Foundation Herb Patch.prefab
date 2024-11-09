@@ -10,11 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3306858157216107489}
   - component: {fileID: 1901677271334535502}
-  - component: {fileID: 1490885284431169072}
   - component: {fileID: 6437086557239399499}
   m_Layer: 6
   m_Name: Foundation Herb Patch
-  m_TagString: Untagged
+  m_TagString: MapObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -86,23 +85,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 1
---- !u!114 &1490885284431169072
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5962732683598833307}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9555b2a4385188d4096453a2528124f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ID: 1
-  skillID: 0
-  rankRequired: 
-  successRateModifier: 0
-  sName: 
 --- !u!61 &6437086557239399499
 BoxCollider2D:
   m_ObjectHideFlags: 0

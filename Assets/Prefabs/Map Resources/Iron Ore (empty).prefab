@@ -12,10 +12,9 @@ GameObject:
   - component: {fileID: 7933264641187972332}
   - component: {fileID: 2674444471527116019}
   - component: {fileID: 1342824865864859845}
-  - component: {fileID: 2050156434162786051}
   m_Layer: 0
   m_Name: Iron Ore (empty)
-  m_TagString: Untagged
+  m_TagString: MapObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -138,7 +137,7 @@ PolygonCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.49420345, y: 0.13043213}
     oldSize: {x: 0.9375, y: 1}
     newSize: {x: 0.9375, y: 1}
     adaptiveTilingThreshold: 0.5
@@ -155,20 +154,3 @@ PolygonCollider2D:
       - {x: 0.46875, y: 0.4375}
       - {x: 0.4375, y: 0.5}
   m_UseDelaunayMesh: 0
---- !u!114 &2050156434162786051
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7243632437151875940}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9555b2a4385188d4096453a2528124f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ID: 11
-  skillID: 0
-  rankRequired: 
-  successRateModifier: 0
-  sName: 

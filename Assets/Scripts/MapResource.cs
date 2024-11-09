@@ -10,54 +10,33 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class MapResource : MonoBehaviour, IInputHandler
 {
-    // Primary key for event
-    public int ID;
-    // Skill associated
-    [HideInInspector]
-    public int skillID;
-    // Rank restrictions on skill to gather
-    [HideInInspector]
-    public string rankRequired;
-    [HideInInspector]
-    public float successRateModifier;
-    // Label to display in world
-    [HideInInspector]
-    public string sName;
-    // Sprites to display depending on state of resource
-    private Sprite fullSprite;
-    private Sprite partialFullSprite;
-    private Sprite emptySprite;
-    // Mouse hover sprite
-    private Sprite mouseHoverSprite;
-    // Sound effect when interacting
-    private AudioClip sfx;
-    // How much the resource currently has
-    public IntManager resource;
-    // Maximum capacity of resource
-    private int resourceMax;
-    // How much it regenerates per interval, and interval duration
-    private int resourceRegenPerInterval;
-    private int resourceRegenInterval;
-    // What loot table this resource draws from
-    public int lootTableID;
-
+    public MapResourceModel model;
     private SpriteRenderer spriteRenderer;
+    public IntManager resource = new IntManager();
     private bool isRegening;
-
-    private const string eventQuery = @"SELECT * FROM map_resource WHERE id = @id LIMIT 1;";
 
     /// <summary>
     ///     Initializes the object.
     /// </summary>
     private void Awake()
     {
-        // Fetch event info from database.
-        DataTable dt = GameManager.Instance.QueryDatabase(eventQuery, ("@id", ID));
-        DataRow row = dt.Rows[0];
-        GameManager.Instance.ParseDatabaseRow(row, this, 
-            ("loot_table_id", "lootTableID"), ("name", "sName"), ("skill_id", "skillID"));
-
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        string name = gameObject.name;
+
+        foreach (MapResourceModel model in GameManager.Instance.Database.mapResourceModels)
+        {
+            if (name.StartsWith(model.name))
+            {
+                this.model = model;
+                resource.Value = model.resource;
+                break;
+            }
+        }
+
+        if (model == null)
+        {
+            Destroy(this);
+        }
     }
 
     /// <summary>
@@ -85,9 +64,9 @@ public class MapResource : MonoBehaviour, IInputHandler
     private void ChangeSpriteState()
     {
         // If resource is full, set sprite, stop regeneration
-        if (resource.Value == resourceMax)
+        if (resource.Value == model.resourceMax)
         {
-            spriteRenderer.sprite = fullSprite;
+            spriteRenderer.sprite = model.fullSprite;
             StopCoroutine(Regenerate());
             return;
         }
@@ -100,18 +79,18 @@ public class MapResource : MonoBehaviour, IInputHandler
         // If empty, set sprite.
         if (resource.Value == 0)
         {
-            spriteRenderer.sprite = emptySprite;
+            spriteRenderer.sprite = model.emptySprite;
         }
         // If partial full sprite exists, use it, otherwise default to full.
         else
         {
-            if (partialFullSprite != null)
+            if (model.partialFullSprite != null)
             {
-                spriteRenderer.sprite = partialFullSprite;
+                spriteRenderer.sprite = model.partialFullSprite;
             }
             else
             {
-                spriteRenderer.sprite = fullSprite;
+                spriteRenderer.sprite = model.fullSprite;
             }
         }
     }
@@ -124,10 +103,11 @@ public class MapResource : MonoBehaviour, IInputHandler
     {
         isRegening = true;
 
-        while (resource.Value < resourceMax)
+        while (resource.Value < model.resourceMax)
         {
-            yield return new WaitForSeconds(resourceRegenInterval);
-            resource.Value = Math.Min(resourceMax, resource.Value + resourceRegenPerInterval);
+            yield return new WaitForSeconds(model.resourceRegenInterval);
+            resource.Value = Math.Min(model.resourceMax, 
+                resource.Value + model.resourceRegenPerInterval);
         }
 
         isRegening = false;
@@ -150,9 +130,9 @@ public class MapResource : MonoBehaviour, IInputHandler
                 return;
             }
 
-            Skill playerSkill = Player.Instance.skillManager.Get(skillID);
+            Skill playerSkill = Player.Instance.skillManager.Get(model.skillID);
 
-            if (rankRequired == null || !playerSkill.IsRankOrGreater(rankRequired))
+            if (model.rankRequired == null || !playerSkill.IsRankOrGreater(model.rankRequired))
             {
                 Player.Instance.HandleMouseInput(graphicHits, sceneHits);
                 return;

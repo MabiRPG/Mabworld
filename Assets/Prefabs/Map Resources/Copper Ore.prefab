@@ -12,10 +12,9 @@ GameObject:
   - component: {fileID: 1009967199315905879}
   - component: {fileID: 859007388692562677}
   - component: {fileID: 1738575813260026075}
-  - component: {fileID: 8194365941007199168}
   m_Layer: 0
-  m_Name: Copper Ore (full)
-  m_TagString: Untagged
+  m_Name: Copper Ore
+  m_TagString: MapObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -157,20 +156,3 @@ PolygonCollider2D:
       - {x: 0.46050644, y: 0.53388405}
       - {x: 0.263134, y: 0.86124134}
   m_UseDelaunayMesh: 0
---- !u!114 &8194365941007199168
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2534636470875798172}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9555b2a4385188d4096453a2528124f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ID: 10
-  skillID: 0
-  rankRequired: 
-  successRateModifier: 0
-  sName: 

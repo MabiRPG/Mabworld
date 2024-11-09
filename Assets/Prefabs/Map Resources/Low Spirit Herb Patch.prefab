@@ -10,11 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4166610768962582792}
   - component: {fileID: 620729968540436047}
-  - component: {fileID: 3676267924668975586}
   - component: {fileID: 5135671940718480498}
   m_Layer: 6
   m_Name: Low Spirit Herb Patch
-  m_TagString: Untagged
+  m_TagString: MapObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -86,19 +85,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 1
---- !u!114 &3676267924668975586
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5116056147032752768}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9555b2a4385188d4096453a2528124f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ID: 5
 --- !u!61 &5135671940718480498
 BoxCollider2D:
   m_ObjectHideFlags: 0

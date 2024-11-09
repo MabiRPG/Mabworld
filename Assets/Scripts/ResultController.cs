@@ -33,13 +33,15 @@ public class ResultGatherController : ResultHandler
             // GameManager.Instance.lootGenerator.SetLootTable(resource.lootTableID);
             // (resourceID, resourceGain) = GameManager.Instance.lootGenerator.Generate();
             ActionItemController action = new ActionItemController(player, caller,
-                resource.lootTableID);
+                resource.model.lootTableID);
             action.Handle();
+            resourceID = action.itemID;
+            resourceGain = action.itemCurrentQuantity - action.itemPreviousQuantity;
             resource.UpdateResource();
             Player.Instance.AddXP(100);
         }
 
-        int skillID = resource.skillID;
+        int skillID = resource.model.skillID;
         Skill skill = player.skillManager.Get(skillID);
 
         foreach (SkillTrainingMethod method in skill.methods)
