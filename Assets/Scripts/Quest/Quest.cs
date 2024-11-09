@@ -40,6 +40,13 @@ public class Quest : QuestModel
                     }
 
                     break;
+                case "NPC":
+                    if (typeof(T) == typeof(ResultNPCInteractController))
+                    {
+                        HandleNPC(result as ResultNPCInteractController, condition);
+                    }
+
+                    break;
                 default:
                     break;
             }
@@ -109,6 +116,15 @@ public class Quest : QuestModel
             int.Parse(condition.param2) <= actor.actorSubstage.Value)
         {
             prerequisites.Remove(condition);
+        }
+    }
+
+    private void HandleNPC(ResultNPCInteractController result, QuestConditionModel condition)
+    {
+        if (int.Parse(condition.param1) == result.action.NPCID)
+        {
+            prerequisites.Remove(condition);
+            Debug.Log("hit");
         }
     }
 }

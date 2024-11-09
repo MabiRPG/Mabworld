@@ -154,3 +154,19 @@ public class ActionItemController : ActionHandler
         }
     }
 }
+
+public class ActionNPCInteractController : ActionHandler
+{
+    public int NPCID;
+
+    public ActionNPCInteractController(Player player, object caller, int NPCID) : base(player, caller)
+    {
+        this.NPCID = NPCID;
+    }
+
+    public override void Handle()
+    {
+        ResultNPCInteractController result = new ResultNPCInteractController(player, caller, this);
+        result.Handle(true);
+    }
+}

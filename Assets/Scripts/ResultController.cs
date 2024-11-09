@@ -92,3 +92,22 @@ public class ResultItemController : ResultHandler
         }
     }
 }
+
+public class ResultNPCInteractController : ResultHandler
+{
+    public ActionNPCInteractController action;
+
+    public ResultNPCInteractController(Player player, object caller, 
+        ActionNPCInteractController action) : base(player, caller)
+    {
+        this.action = action;
+    }
+
+    public override void Handle(bool isSuccess)
+    {
+        foreach (Quest quest in player.quests.Values)
+        {
+            quest.CheckPrereq(this);
+        }
+    }
+}

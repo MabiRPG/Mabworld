@@ -34,7 +34,9 @@ public class NPC : MonoBehaviour, IInputHandler
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("hit");
+            ActionNPCInteractController action = 
+                new ActionNPCInteractController(Player.Instance, this, model.ID);
+            action.Handle();
         }
     }
 }
