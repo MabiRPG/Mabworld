@@ -58,7 +58,8 @@ public abstract class GameState : State
         GameManager.Instance.canvas.worldCamera = Camera.main;
         GameManager.Instance.minimap.gameObject.SetActive(true);
 
-        SetupMapObjects();
+        SetupObjects<MapResource>("MapResource");
+        SetupObjects<NPC>("NPC");
     }
 
     private void PrepareTransition()
@@ -67,13 +68,13 @@ public abstract class GameState : State
         GameManager.Instance.minimap.gameObject.SetActive(false);
     }
 
-    private void SetupMapObjects()
+    private void SetupObjects<T>(string tagName)
     {
-        GameObject[] mapObjects = GameObject.FindGameObjectsWithTag("MapObject");
+        GameObject[] objs = GameObject.FindGameObjectsWithTag(tagName);
 
-        foreach (GameObject obj in mapObjects)
+        foreach (GameObject obj in objs)
         {
-            obj.AddComponent(typeof(MapResource));
+            obj.AddComponent(typeof(T));
         }
     }
 }

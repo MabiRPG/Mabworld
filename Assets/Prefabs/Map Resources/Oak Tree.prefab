@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7414398547260054400}
   m_Layer: 6
   m_Name: Oak Tree
-  m_TagString: MapObject
+  m_TagString: MapResource
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

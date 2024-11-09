@@ -19,6 +19,8 @@ public class DatabaseManager
     private Dictionary<string, DataTable> cache = new Dictionary<string, DataTable>();
 
     public readonly List<MapResourceModel> mapResourceModels;
+    public readonly List<NPCModel> npcModels;
+
     public DatabaseManager(string databaseName)
     {
         this.databaseName = databaseName;
@@ -47,6 +49,16 @@ public class DatabaseManager
             int ID = int.Parse(row["id"].ToString());
             MapResourceModel model = new MapResourceModel(this, ID);
             mapResourceModels.Add(model);
+        }  
+
+        dt = Read("SELECT id FROM npc;");
+        npcModels = new List<NPCModel>();
+
+        foreach (DataRow row in dt.Rows)
+        {
+            int ID = int.Parse(row["id"].ToString());
+            NPCModel model = new NPCModel(this, ID);
+            npcModels.Add(model);
         }  
     }
 
