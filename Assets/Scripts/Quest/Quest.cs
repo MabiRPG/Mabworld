@@ -10,50 +10,84 @@ public class Quest : QuestModel
     {
     }
 
-    public void CheckPrereq<T>(T result)
+    public void Update<T>(T result)
     {
-        foreach (QuestConditionModel condition in prerequisites.ToList())
+        if (prerequisites.Count > 0)
         {
-            int categoryID = condition.conditionID;
-            int conditionCategoryID = QuestConditionTypeModel.GetCategory(categoryID);
-
-            switch (QuestConditionCategoryTypeModel.FindByID(conditionCategoryID))
+            foreach (QuestConditionModel condition in prerequisites.ToList())
             {
-                case "Skill":
-                    if (typeof(T) == typeof(ResultSkillController))
-                    {
-                        HandleSkill(result as ResultSkillController, condition);
-                    }
-
-                    break;
-                case "Item":
-                    if (typeof(T) == typeof(ResultItemController))
-                    {
-                        HandleItem(result as ResultItemController, condition);
-                    }
-
-                    break;
-                case "Cultivation stage":
-                    if (typeof(T) == typeof(Actor) || typeof(T) == typeof(Player))
-                    {
-                        HandleCultivation(result as Actor, condition);
-                    }
-
-                    break;
-                case "NPC":
-                    if (typeof(T) == typeof(ResultNPCInteractController))
-                    {
-                        HandleNPC(result as ResultNPCInteractController, condition);
-                    }
-
-                    break;
-                default:
-                    break;
+                UpdateCondition(result, condition, prerequisites);
             }
+        }
+        else if (steps.Count > 0)
+        {
+            UpdateCondition(result, steps[0], steps);
+            // Debug.Log(steps.Count);
+        }
+        else
+        {
+            Debug.Log("reward");
         }
     }
 
-    private void HandleSkill(ResultSkillController result, QuestConditionModel condition)
+    private void UpdateCondition<T>(T result, QuestConditionModel condition, 
+        List<QuestConditionModel> conditions)
+    {
+        int categoryID = condition.conditionID;
+        int conditionCategoryID = QuestConditionTypeModel.GetCategory(categoryID);
+
+        switch (QuestConditionCategoryTypeModel.FindByID(conditionCategoryID))
+        {
+            case "Skill":
+                if (result.GetType() == typeof(ResultSkillController))
+                {
+                    HandleSkill(result as ResultSkillController, condition, conditions);
+                }
+
+                break;
+            case "Item":
+                if (result.GetType() == typeof(ResultItemController))
+                {
+                    HandleItem(result as ResultItemController, condition, conditions);
+                }
+
+                break;
+            case "Cultivation stage":
+                if (result.GetType() == typeof(Actor) || result.GetType() == typeof(Player))
+                {
+                    HandleCultivation(result as Actor, condition, conditions);
+                }
+
+                break;
+            case "NPC":
+                if (result.GetType() == typeof(ResultNPCInteractController))
+                {
+                    HandleNPC(result as ResultNPCInteractController, condition, conditions);
+                }
+
+                break;
+            case "Dialogue":
+                GameObject dialogueBox = GameObject.Instantiate(
+                        GameManager.Instance.dialogueBoxPrefab, 
+                        GameManager.Instance.canvas.transform);
+
+                UI_DialogueBox script = dialogueBox.GetComponent<UI_DialogueBox>();
+
+                script.SetDialogue(dialogues
+                    .Where(v => v.conversationID == int.Parse(condition.param1))
+                    .OrderBy(v => v.ID)
+                    .ToList());
+
+                conditions.Remove(condition);
+
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void HandleSkill(ResultSkillController result, QuestConditionModel condition, 
+        List<QuestConditionModel> conditions)
     {
         Skill skill = result.skill;
         ActionSkillController.ActionType actionType = result.action.type;
@@ -69,7 +103,7 @@ public class Quest : QuestModel
                 if (actionType == ActionSkillController.ActionType.Learn &&
                     result.player.skillManager.IsLearned(skill.ID))
                 {
-                    prerequisites.Remove(condition);
+                    conditions.Remove(condition);
                 }
 
                 break;
@@ -77,7 +111,7 @@ public class Quest : QuestModel
                 if (actionType == ActionSkillController.ActionType.RankUp &&
                     skill.IsRankOrGreater(condition.param2))
                 {
-                    prerequisites.Remove(condition);
+                    conditions.Remove(condition);
                 }
 
                 break;
@@ -86,7 +120,8 @@ public class Quest : QuestModel
         }
     }
 
-    private void HandleItem(ResultItemController result, QuestConditionModel condition)
+    private void HandleItem(ResultItemController result, QuestConditionModel condition, 
+        List<QuestConditionModel> conditions)
     {
         ActionItemController.ActionType actionType = result.action.type;
 
@@ -101,7 +136,7 @@ public class Quest : QuestModel
                 if (actionType == ActionItemController.ActionType.ItemAdd &&
                     result.action.itemCurrentQuantity >= int.Parse(condition.param2))
                 {
-                    prerequisites.Remove(condition);
+                    conditions.Remove(condition);
                 }
 
                 break;
@@ -110,21 +145,23 @@ public class Quest : QuestModel
         }
     }
 
-    private void HandleCultivation(Actor actor, QuestConditionModel condition)
+    private void HandleCultivation(Actor actor, QuestConditionModel condition, 
+        List<QuestConditionModel> conditions)
     {
         if (int.Parse(condition.param1) == actor.actorStage.Value &&
             int.Parse(condition.param2) <= actor.actorSubstage.Value)
         {
-            prerequisites.Remove(condition);
+            conditions.Remove(condition);
         }
     }
 
-    private void HandleNPC(ResultNPCInteractController result, QuestConditionModel condition)
+    private void HandleNPC(ResultNPCInteractController result, QuestConditionModel condition, 
+        List<QuestConditionModel> conditions)
     {
         if (int.Parse(condition.param1) == result.action.NPCID)
         {
-            prerequisites.Remove(condition);
-            Debug.Log("hit");
+            conditions.Remove(condition);
+            UpdateCondition(result, steps[0], conditions);
         }
     }
 }

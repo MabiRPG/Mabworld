@@ -29,7 +29,7 @@ public class ActionGatherController : ActionHandler
         Skill skill = player.skillManager.Get(skillID);
         Vector3 position = resource.transform.TransformPoint(Vector3.zero);
 
-        ResultGatherController result = new ResultGatherController(player, caller);
+        ResultGatherController result = new ResultGatherController(player, caller, skill);
         IEnumerator task = player.controller.AttemptSkill(position, skill, result);
         player.controller.SetTask(task);
     }

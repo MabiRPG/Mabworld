@@ -107,7 +107,7 @@ public class Player : Actor, IInputHandler
         {
             foreach (Quest quest in quests.Values)
             {
-                quest.CheckPrereq(this);
+                quest.Update(this);
             }
         };
     }

@@ -5,6 +5,7 @@ public abstract class ResultHandler
 {
     public Player player;
     public object caller;
+    public Skill skill;
 
     public ResultHandler(Player player, object caller)
     {
@@ -12,7 +13,21 @@ public abstract class ResultHandler
         this.caller = caller;
     }
 
-    public abstract void Handle(bool isSuccess);
+    public virtual void Handle(bool isSuccess)
+    {
+        if (skill != null)
+        {
+            foreach (SkillTrainingMethod method in skill.methods)
+            {
+                method.Update(this, caller, isSuccess);
+            }
+        } 
+
+        foreach (Quest quest in player.quests.Values)
+        {
+            quest.Update(this);
+        }
+    }
 }
 
 public class ResultGatherController : ResultHandler
@@ -20,8 +35,9 @@ public class ResultGatherController : ResultHandler
     public int resourceID;
     public int resourceGain;
 
-    public ResultGatherController(Player player, object caller) : base(player, caller)
+    public ResultGatherController(Player player, object caller, Skill skill) : base(player, caller)
     {
+        this.skill = skill;
     }
 
     public override void Handle(bool isSuccess)
@@ -30,8 +46,6 @@ public class ResultGatherController : ResultHandler
 
         if (isSuccess)
         {
-            // GameManager.Instance.lootGenerator.SetLootTable(resource.lootTableID);
-            // (resourceID, resourceGain) = GameManager.Instance.lootGenerator.Generate();
             ActionItemController action = new ActionItemController(player, caller,
                 resource.model.lootTableID);
             action.Handle();
@@ -41,21 +55,14 @@ public class ResultGatherController : ResultHandler
             Player.Instance.AddXP(100);
         }
 
-        int skillID = resource.model.skillID;
-        Skill skill = player.skillManager.Get(skillID);
-
-        foreach (SkillTrainingMethod method in skill.methods)
-        {
-            method.Update(this, caller, isSuccess);
-        }
-
         AudioController.Instance.PlayGatherResultSFX(isSuccess);
+
+        base.Handle(isSuccess);
     }
 }
 
 public class ResultSkillController : ResultHandler
 {
-    public Skill skill;
     public ActionSkillController action;
 
     public ResultSkillController(Player player, object caller, Skill skill, 
@@ -64,14 +71,6 @@ public class ResultSkillController : ResultHandler
         this.skill = skill;
         this.action = action;
     }
-
-    public override void Handle(bool isSuccess)
-    {
-        foreach (Quest quest in player.quests.Values)
-        {
-            quest.CheckPrereq(this);
-        }
-    }    
 }
 
 public class ResultItemController : ResultHandler
@@ -83,14 +82,6 @@ public class ResultItemController : ResultHandler
     {
         this.action = action;
     }
-
-    public override void Handle(bool isSuccess)
-    {
-        foreach (Quest quest in player.quests.Values)
-        {
-            quest.CheckPrereq(this);
-        }
-    }
 }
 
 public class ResultNPCInteractController : ResultHandler
@@ -101,13 +92,5 @@ public class ResultNPCInteractController : ResultHandler
         ActionNPCInteractController action) : base(player, caller)
     {
         this.action = action;
-    }
-
-    public override void Handle(bool isSuccess)
-    {
-        foreach (Quest quest in player.quests.Values)
-        {
-            quest.CheckPrereq(this);
-        }
     }
 }

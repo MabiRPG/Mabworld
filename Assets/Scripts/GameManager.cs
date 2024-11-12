@@ -30,6 +30,8 @@ public class GameManager : MonoBehaviour
     [Header("Universal Prefabs")]
     [SerializeField]
     public GameObject skillBubblePrefab;
+    [SerializeField]
+    public GameObject dialogueBoxPrefab;
     
     [Header("Window Prefabs")]
     public Canvas canvas;
