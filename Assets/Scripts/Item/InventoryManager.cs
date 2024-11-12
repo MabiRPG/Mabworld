@@ -76,11 +76,11 @@ public class InventoryManager
     ///     Removes an item from anywhere.
     /// </summary>
     /// <param name="item"></param>
-    public void RemoveItem(int itemID, int quantity)
+    public int RemoveItem(int itemID, int quantity)
     {
         if (!AllItems.ContainsKey(itemID))
         {
-            return;
+            return 0;
         }
 
         int remainingQuantity = quantity;
@@ -99,6 +99,8 @@ public class InventoryManager
 
         item.quantity -= quantity - remainingQuantity;
         changeEvent.RaiseOnChange();
+
+        return item.quantity;
     }
 
     /// <summary>

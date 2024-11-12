@@ -121,19 +121,18 @@ public class WindowCraftingDetailForm : MonoBehaviour
     {
         foreach (CraftingRecipeProductModel product in recipe.products.Values)
         {
-            Player.Instance.inventoryManager.AddItem(product.item.ID, quantity);
+            ActionItemController action = new ActionItemController(Player.Instance,
+                this, product.itemID, product.quantity * quantity,
+                ActionItemController.ActionType.ItemAdd);
+            action.Handle();
         }
-
-        // foreach (Item ingredient in recipe.ingredients)
-        // {
-        //     int usedAmount = ingredient.quantity * quantity;
-        //     Player.Instance.inventoryManager.RemoveItem(ingredient.ID, usedAmount);
-        // }
 
         foreach (CraftingRecipeIngredientModel ingredient in recipe.ingredients.Values)
         {
-            int usedAmount = ingredient.quantity * quantity;
-            Player.Instance.inventoryManager.RemoveItem(ingredient.itemID, usedAmount);
+            ActionItemController action = new ActionItemController(Player.Instance,
+                ingredient.itemID, ingredient.quantity * quantity,
+                ActionItemController.ActionType.ItemRemove);
+            action.Handle();
         }
     }
 }

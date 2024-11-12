@@ -106,7 +106,7 @@ public class ActionItemController : ActionHandler
         ItemRemove
     }
 
-    private int itemAddQuantity;
+    private int itemQuantity;
 
     public ActionItemController(Player player, object caller, int lootTableID, 
         ActionType type = ActionType.ItemAdd) : base(player, caller)
@@ -119,7 +119,7 @@ public class ActionItemController : ActionHandler
         ActionType type = ActionType.ItemAdd) : base(player, caller)
     {
         this.itemID = itemID;
-        itemAddQuantity = itemQuantity;
+        this.itemQuantity = itemQuantity;
         this.type = type;
     }
 
@@ -128,6 +128,7 @@ public class ActionItemController : ActionHandler
         switch (type)
         {
             case ActionType.ItemAdd:
+            {
                 if (lootTableID != default)
                 {
                     LootGenerator lootGen = new LootGenerator(lootTableID);
@@ -142,13 +143,23 @@ public class ActionItemController : ActionHandler
                 {
                     itemPreviousQuantity = player.inventoryManager.GetQuantity(itemID);
                     itemCurrentQuantity = itemPreviousQuantity;
-                    itemCurrentQuantity += player.inventoryManager.AddItem(itemID, itemAddQuantity);
+                    itemCurrentQuantity += player.inventoryManager.AddItem(itemID, itemQuantity);
                 }
 
                 ResultItemController result = new ResultItemController(player, caller, this);
                 result.Handle(true);
 
                 break;
+            }
+            case ActionType.ItemRemove:
+            {
+                itemPreviousQuantity = player.inventoryManager.GetQuantity(itemID);
+                itemCurrentQuantity = player.inventoryManager.RemoveItem(itemID, itemQuantity);
+                ResultItemController result = new ResultItemController(player, caller, this);
+                result.Handle(true);
+
+                break;
+            }
             default:
                 break;
         }

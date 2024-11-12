@@ -7,8 +7,6 @@ using UnityEngine.UI;
 
 public class UI_DialogueBox : MonoBehaviour
 {
-    // public static UI_DialogueBox Instance { get; private set; }
-
     public int ID;
     public int questID;
     public int npcID;

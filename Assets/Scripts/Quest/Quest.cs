@@ -22,7 +22,6 @@ public class Quest : QuestModel
         else if (steps.Count > 0)
         {
             UpdateCondition(result, steps[0], steps);
-            // Debug.Log(steps.Count);
         }
         else
         {
