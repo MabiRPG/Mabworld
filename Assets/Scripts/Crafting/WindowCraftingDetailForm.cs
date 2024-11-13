@@ -99,7 +99,7 @@ public class WindowCraftingDetailForm : MonoBehaviour
             if (playerQuantity / ingredient.quantity < craftable)
             {
                 craftable = playerQuantity / ingredient.quantity;
-            } 
+            }
         }
 
         if (craftable == 0)
@@ -121,17 +121,25 @@ public class WindowCraftingDetailForm : MonoBehaviour
     {
         foreach (CraftingRecipeProductModel product in recipe.products.Values)
         {
-            ActionItemController action = new ActionItemController(Player.Instance,
-                this, product.itemID, product.quantity * quantity,
-                ActionItemController.ActionType.ItemAdd);
+            ActionItemController action = new ActionItemController(
+                Player.Instance,
+                this, 
+                product.itemID, 
+                product.quantity * quantity,
+                ActionItemController.ActionType.ItemAdd
+            );
             action.Handle();
         }
 
         foreach (CraftingRecipeIngredientModel ingredient in recipe.ingredients.Values)
         {
-            ActionItemController action = new ActionItemController(Player.Instance,
-                ingredient.itemID, ingredient.quantity * quantity,
-                ActionItemController.ActionType.ItemRemove);
+            ActionItemController action = new ActionItemController(
+                Player.Instance,
+                this, 
+                ingredient.itemID, 
+                ingredient.quantity * quantity,
+                ActionItemController.ActionType.ItemRemove
+            );
             action.Handle();
         }
     }

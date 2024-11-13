@@ -108,15 +108,24 @@ public class ActionItemController : ActionHandler
 
     private int itemQuantity;
 
-    public ActionItemController(Player player, object caller, int lootTableID, 
-        ActionType type = ActionType.ItemAdd) : base(player, caller)
+    public ActionItemController(
+        Player player, 
+        object caller, 
+        int lootTableID, 
+        ActionType type = ActionType.ItemAdd
+    ) : base(player, caller)
     {
         this.type = type;
         this.lootTableID = lootTableID;
     }
 
-    public ActionItemController(Player player, object caller, int itemID, int itemQuantity,
-        ActionType type = ActionType.ItemAdd) : base(player, caller)
+    public ActionItemController(
+        Player player, 
+        object caller, 
+        int itemID, 
+        int itemQuantity,
+        ActionType type = ActionType.ItemAdd
+    ) : base(player, caller)
     {
         this.itemID = itemID;
         this.itemQuantity = itemQuantity;
