@@ -61,13 +61,13 @@ public class Quest : QuestModel
             }
         }
 
-        foreach (QuestCondition condition in stepStates)
+        if (questState != QuestState.Complete)
         {
-            UpdateCondition(result, condition, stepStates);
-        }
+            foreach (QuestCondition condition in stepStates)
+            {
+                UpdateCondition(result, condition, stepStates);
+            }
 
-        if (questState == QuestState.InProgress)
-        {
             stepCounter = 0;
 
             foreach (QuestCondition condition in stepStates)
@@ -81,12 +81,18 @@ public class Quest : QuestModel
                     break;
                 }
             }
+
+            if (stepCounter == stepStates.Count)
+            {
+                questState = QuestState.Complete;
+                GiveRewards();
+            }
         }
 
-        Debug.Log(questState);
-        Debug.Log($"Prereq: {prerequisiteStates.Where(v => v.State).Count()}/{prerequisiteStates.Count}");
-        Debug.Log($"Step: {stepStates.Where(v => v.State).Count()}/{stepStates.Count}");
-        Debug.Log($"Step Counter: {stepCounter}");
+        // Debug.Log(questState);
+        // Debug.Log($"Prereq: {prerequisiteStates.Where(v => v.State).Count()}/{prerequisiteStates.Count}");
+        // Debug.Log($"Step: {stepStates.Where(v => v.State).Count()}/{stepStates.Count}");
+        // Debug.Log($"Step Counter: {stepCounter}");
     }
 
     private void UpdateCondition<T>(T result, QuestCondition condition, List<QuestCondition> conditions)
@@ -199,7 +205,7 @@ public class Quest : QuestModel
 
     private void HandleCultivation(Actor actor, QuestCondition condition)
     {
-        if (int.Parse(condition.model.param1) == actor.actorStage.Value &&
+        if (int.Parse(condition.model.param1) <= actor.actorStage.Value &&
             int.Parse(condition.model.param2) <= actor.actorSubstage.Value)
         {
             condition.State = true;
@@ -213,7 +219,8 @@ public class Quest : QuestModel
     private void HandleNPC(ResultNPCInteractController result, QuestCondition condition,
         List<QuestCondition> conditions)
     {
-        if (int.Parse(condition.model.param1) == result.action.NPCID)
+        if (int.Parse(condition.model.param1) == result.action.NPCID &&
+            condition.model.stepID == stepCounter + 1)
         {
             condition.State = true;
 
@@ -234,57 +241,74 @@ public class Quest : QuestModel
                 return;
             }
 
-            if (conditions.Where(v => v.model.stepID < nextCondition.model.stepID).All(v => v.State))
-            {
-                GameObject dialogueBox = GameObject.Instantiate(
-                        GameManager.Instance.dialogueBoxPrefab,
-                        GameManager.Instance.canvas.transform);
+            GameObject dialogueBox = GameObject.Instantiate(
+                    GameManager.Instance.dialogueBoxPrefab,
+                    GameManager.Instance.canvas.transform);
 
-                UI_DialogueBox script = dialogueBox.GetComponent<UI_DialogueBox>();
+            UI_DialogueBox script = dialogueBox.GetComponent<UI_DialogueBox>();
 
-                script.SetDialogue(dialogues
-                    .Where(v => v.conversationID == int.Parse(condition.model.param1))
-                    .OrderBy(v => v.ID)
-                    .ToList());
+            script.SetDialogue(dialogues
+                .Where(v => v.conversationID == int.Parse(condition.model.param1))
+                .OrderBy(v => v.ID)
+                .ToList());
 
-                nextCondition.State = true;
-            }
-        }
-        else
-        {
-            condition.State = false;
+            nextCondition.State = true;
         }
     }
 
-    // private void HandleDialogue(QuestCondition condition)
-    // {
-    //     int stepID = condition.model.stepID;
-    //     QuestCondition prevCondition = conditions
-    //         .Where(v => v.model.stepID == stepID - 1)
-    //         .FirstOrDefault();
+    private void GiveRewards()
+    {
+        foreach (QuestConditionModel condition in rewards)
+        {
+            int categoryID = condition.conditionID;
+            int conditionCategoryID = QuestConditionTypeModel.GetCategory(categoryID);
 
-    //     if (prevCondition != null)
-    //     {
-    //         int prevCategoryID = QuestConditionTypeModel.GetCategory(
-    //             prevCondition.model.conditionID);
-    //         string prevCategory = QuestConditionCategoryTypeModel.FindByID(prevCategoryID);
+            switch (QuestConditionCategoryTypeModel.FindByID(conditionCategoryID))
+            {
+                case "Skill":
+                    GiveSkill(condition);
 
-    //         if (conditions.Where(v => v.model.stepID < stepID).All(v => v.State) &&
-    //             prevCategory == "NPC")
-    //         {
-    //             GameObject dialogueBox = GameObject.Instantiate(
-    //                     GameManager.Instance.dialogueBoxPrefab,
-    //                     GameManager.Instance.canvas.transform);
+                    break;
+                case "Item":
 
-    //             UI_DialogueBox script = dialogueBox.GetComponent<UI_DialogueBox>();
 
-    //             script.SetDialogue(dialogues
-    //                 .Where(v => v.conversationID == int.Parse(condition.model.param1))
-    //                 .OrderBy(v => v.ID)
-    //                 .ToList());
+                    break;
+                case "Cultivation stage":
 
-    //             condition.State = true;
-    //         }
-    //     }
-    // }
+                    break;
+                case "NPC":
+
+                    break;
+                default:
+                    break;
+            }            
+        }
+    }
+
+    private void GiveSkill(QuestConditionModel condition)
+    {
+        switch (QuestConditionTypeModel.FindByID(condition.conditionID))
+        {
+            case "Learn skill":
+                if (!Player.Instance.skillManager.IsLearned(int.Parse(condition.param1)))
+                {
+                    Player.Instance.skillManager.Learn(int.Parse(condition.param1));
+                }
+
+                Skill skill = Player.Instance.skillManager.Get(int.Parse(condition.param1));
+                string rank = condition.param2;
+
+                while (skill.CanRankUp() && !skill.IsRankOrGreater(rank))
+                {
+                    skill.RankUp();
+                }
+
+                break;
+            case "Rank up skill":
+
+                break;
+            default:
+                break;
+        }
+    }
 }

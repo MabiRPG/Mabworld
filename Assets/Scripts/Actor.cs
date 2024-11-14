@@ -87,7 +87,7 @@ public class Actor : MonoBehaviour
     /// <summary>
     ///     Called when the object becomes enabled and active.
     /// </summary>
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
         actorStage.OnChange += UpdateStats;
         actorSubstage.OnChange += UpdateStats;
@@ -99,7 +99,7 @@ public class Actor : MonoBehaviour
     /// <summary>
     ///     Called when the object becomes disabled and inactive.
     /// </summary>
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         actorStage.OnChange -= UpdateStats;
         actorSubstage.OnChange -= UpdateStats;

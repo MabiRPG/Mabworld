@@ -63,7 +63,7 @@ public class WindowItem : MonoBehaviour, IInputHandler, IPointerMoveHandler, IPo
 
     public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
-        throw new System.NotImplementedException();
+        // throw new System.NotImplementedException();
     }
 
     public void OnPointerMove(PointerEventData eventData)

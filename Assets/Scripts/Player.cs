@@ -101,8 +101,10 @@ public class Player : Actor, IInputHandler
     {
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
+
         actorSubstage.OnChange += () =>
         {
             foreach (Quest quest in quests.Values)

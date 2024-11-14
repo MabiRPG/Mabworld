@@ -38,7 +38,7 @@ public class Skill : SkillModel
     /// <returns>True if can rank up.</returns>
     public bool CanRankUp()
     {
-        return index.Value + 1 < ranks.Count && index.Value + 1 < ranks.IndexOf(lastAvailableRank);
+        return index.Value + 1 < ranks.Count && index.Value + 1 <= ranks.IndexOf(lastAvailableRank);
     }
 
     /// <summary>
