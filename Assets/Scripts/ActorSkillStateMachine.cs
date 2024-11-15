@@ -95,16 +95,16 @@ public class SkillUseState : State
 {
     private SkillStateMachine machine;
     private Skill skill;
-    private ResultGatherController resultController;
+    private ResultHandler result;
 
     /// <summary>
     ///     Initializes the object.
     /// </summary>
-    public SkillUseState(SkillStateMachine machine, Skill skill, ResultGatherController resultController)
+    public SkillUseState(SkillStateMachine machine, Skill skill, ResultHandler result)
     {
         this.machine = machine;
         this.skill = skill;
-        this.resultController = resultController;
+        this.result = result;
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ public class SkillUseState : State
     /// <returns>Coroutine to be run.</returns>
     public override IEnumerator Main()
     {
-        yield return skill.Use(resultController);
+        yield return skill.Use(result);
     }
 
     /// <summary>

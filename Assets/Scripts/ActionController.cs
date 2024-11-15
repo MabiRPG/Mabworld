@@ -14,23 +14,65 @@ public abstract class ActionHandler
     }
 
     public abstract void Handle();
+
+    public virtual void HandleMove()
+    {
+        return;
+    }
 }
 
-public class ActionGatherController : ActionHandler
+public class ActionMoveController : ActionHandler
 {
-    public ActionGatherController(Player player, object caller) : base(player, caller)
+    private Vector3 destination;
+    private ActionHandler nextAction;
+
+    public ActionMoveController(
+        Player player,
+        object caller,
+        Vector3 destination,
+        ActionHandler nextAction
+    )
+        : base(player, caller)
     {
+        this.destination = destination;
+        this.nextAction = nextAction;
     }
 
     public override void Handle()
     {
-        MapResource resource = (MapResource)caller;
-        int skillID = resource.model.skillID;
-        Skill skill = player.skillManager.Get(skillID);
-        Vector3 position = resource.transform.TransformPoint(Vector3.zero);
+        ResultMoveController resultMove = new ResultMoveController(player, caller, nextAction);
+        IEnumerator task = player.controller.AttemptMove(destination, resultMove);
+        player.controller.SetTask(task);
+    }
+}
 
+public class ActionGatherController : ActionHandler
+{
+    private Skill skill;
+    private Vector3 destination;
+
+    public ActionGatherController(Player player, object caller, Skill skill, Vector3 destination)
+        : base(player, caller)
+    {
+        this.skill = skill;
+        this.destination = destination;
+    }
+
+    public override void Handle()
+    {
+        ActionMoveController moveAction = new ActionMoveController(
+            player,
+            caller,
+            destination,
+            this
+        );
+        moveAction.Handle();
+    }
+
+    public override void HandleMove()
+    {
         ResultGatherController result = new ResultGatherController(player, caller, skill);
-        IEnumerator task = player.controller.AttemptSkill(position, skill, result);
+        IEnumerator task = player.controller.AttemptSkill(skill, result);
         player.controller.SetTask(task);
     }
 }
@@ -40,21 +82,27 @@ public class ActionSkillController : ActionHandler
     private Skill skill;
     private int skillID;
     public ActionType type;
+
     public enum ActionType
     {
         RankUp,
         RankDown,
-        Learn
+        Learn,
     }
 
-    public ActionSkillController(Player player, object caller, int skillID, 
-        ActionType type = ActionType.Learn) : base(player, caller)
+    public ActionSkillController(
+        Player player,
+        object caller,
+        int skillID,
+        ActionType type = ActionType.Learn
+    )
+        : base(player, caller)
     {
         this.skillID = skillID;
         this.type = type;
     }
 
-    public ActionSkillController(Player player, object caller, Skill skill, ActionType type) 
+    public ActionSkillController(Player player, object caller, Skill skill, ActionType type)
         : base(player, caller)
     {
         this.skill = skill;
@@ -75,8 +123,11 @@ public class ActionSkillController : ActionHandler
 
                 break;
             case ActionType.RankUp:
-                if (!skill.CanRankUp() || skill.xp.Value < 100 
-                    || !player.skillManager.IsLearned(skill))
+                if (
+                    !skill.CanRankUp()
+                    || skill.xp.Value < 100
+                    || !player.skillManager.IsLearned(skill)
+                )
                 {
                     result.Handle(false);
                 }
@@ -100,32 +151,35 @@ public class ActionItemController : ActionHandler
     public int itemPreviousQuantity;
     public int itemCurrentQuantity;
     public ActionType type;
+
     public enum ActionType
     {
         ItemAdd,
-        ItemRemove
+        ItemRemove,
     }
 
     private int itemQuantity;
 
     public ActionItemController(
-        Player player, 
-        object caller, 
-        int lootTableID, 
+        Player player,
+        object caller,
+        int lootTableID,
         ActionType type = ActionType.ItemAdd
-    ) : base(player, caller)
+    )
+        : base(player, caller)
     {
         this.type = type;
         this.lootTableID = lootTableID;
     }
 
     public ActionItemController(
-        Player player, 
-        object caller, 
-        int itemID, 
+        Player player,
+        object caller,
+        int itemID,
         int itemQuantity,
         ActionType type = ActionType.ItemAdd
-    ) : base(player, caller)
+    )
+        : base(player, caller)
     {
         this.itemID = itemID;
         this.itemQuantity = itemQuantity;
@@ -178,13 +232,27 @@ public class ActionItemController : ActionHandler
 public class ActionNPCInteractController : ActionHandler
 {
     public int NPCID;
+    private Vector3 destination;
 
-    public ActionNPCInteractController(Player player, object caller, int NPCID) : base(player, caller)
+    public ActionNPCInteractController(Player player, object caller, int NPCID, Vector3 destination)
+        : base(player, caller)
     {
         this.NPCID = NPCID;
+        this.destination = destination;
     }
 
     public override void Handle()
+    {
+        ActionMoveController moveAction = new ActionMoveController(
+            player,
+            caller,
+            destination,
+            this
+        );
+        moveAction.Handle();        
+    }
+
+    public override void HandleMove()
     {
         ResultNPCInteractController result = new ResultNPCInteractController(player, caller, this);
         result.Handle(true);

@@ -30,6 +30,25 @@ public abstract class ResultHandler
     }
 }
 
+public class ResultMoveController : ResultHandler
+{
+    private ActionHandler action;
+
+    public ResultMoveController(Player player, object caller, ActionHandler nextAction) 
+        : base(player, caller)
+    {
+        action = nextAction;
+    }
+
+    public override void Handle(bool isSuccess)
+    {
+        if (isSuccess)
+        {
+            action.HandleMove();
+        }
+    }
+}
+
 public class ResultGatherController : ResultHandler
 {
     public int resourceID;

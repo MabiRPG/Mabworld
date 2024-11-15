@@ -106,8 +106,10 @@ public class MapResource : MonoBehaviour, IInputHandler
         while (resource.Value < model.resourceMax)
         {
             yield return new WaitForSeconds(model.resourceRegenInterval);
-            resource.Value = Math.Min(model.resourceMax, 
-                resource.Value + model.resourceRegenPerInterval);
+            resource.Value = Math.Min(
+                model.resourceMax,
+                resource.Value + model.resourceRegenPerInterval
+            );
         }
 
         isRegening = false;
@@ -117,7 +119,7 @@ public class MapResource : MonoBehaviour, IInputHandler
     {
         // if (resultHandler.isSuccess)
         // {
-            resource.Value--;
+        resource.Value--;
         // }
     }
 
@@ -138,8 +140,12 @@ public class MapResource : MonoBehaviour, IInputHandler
                 return;
             }
 
-            ActionGatherController actionController = 
-                new ActionGatherController(Player.Instance, this);
+            ActionGatherController actionController = new ActionGatherController(
+                Player.Instance,
+                this,
+                playerSkill,
+                transform.TransformPoint(Vector3.zero)
+            );
             actionController.Handle();
         }
     }

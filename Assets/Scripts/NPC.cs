@@ -22,20 +22,24 @@ public class NPC : MonoBehaviour, IInputHandler
         if (model == null)
         {
             Destroy(this);
-        }        
+        }
     }
 
     public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
-        throw new System.NotImplementedException();
+        // throw new System.NotImplementedException();
     }
 
     public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
         if (Input.GetMouseButtonDown(0))
         {
-            ActionNPCInteractController action = 
-                new ActionNPCInteractController(Player.Instance, this, model.ID);
+            ActionNPCInteractController action = new ActionNPCInteractController(
+                Player.Instance,
+                this,
+                model.ID,
+                transform.TransformPoint(Vector3.zero)
+            );
             action.Handle();
         }
     }

@@ -169,7 +169,55 @@ public class PlayerController : MonoBehaviour
     //     Task = null;
     // }
 
-    public IEnumerator AttemptSkill(Vector3 position, Skill skill, ResultGatherController resultController)
+    // public IEnumerator AttemptSkill(Vector3 position, Skill skill, ResultGatherController resultController)
+    // {
+    //     NavMesh.SamplePosition(position, out NavMeshHit hit, 5, NavMesh.AllAreas);
+    //     movementMachine.PathToPosition(hit.position);
+
+    //     while (player.navMeshAgent.pathPending)
+    //     {
+    //         yield return null;
+    //     }
+
+    //     if (player.navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete)
+    //     {
+    //         MoveState moveState = new MoveState(movementMachine);
+    //         moveState.exitAction += () =>
+    //         {
+    //             SkillLoadState loadState = new SkillLoadState(skillMachine, skill);
+    //             SkillUseState useState = new SkillUseState(skillMachine, skill, resultController);
+
+    //             loadState.exitAction += () =>
+    //             {
+    //                 skillMachine.SetState(useState);
+    //             };
+
+    //             if (!skill.CanUse())
+    //             {
+    //                 return;
+    //             }
+
+    //             skillMachine.SetState(loadState);
+    //         };
+
+    //         movementMachine.SetState(moveState);
+
+    //         while (movementMachine.State != movementMachine.DefaultState ||
+    //             skillMachine.State != skillMachine.DefaultState)
+    //         {
+    //             yield return null;
+    //         }
+    //     }
+    //     else
+    //     {
+    //         player.navMeshAgent.ResetPath();
+    //         resultController.Handle(false);
+    //     }
+
+    //     Task = null;
+    // }
+
+    public IEnumerator AttemptMove(Vector3 position, ResultHandler result)
     {
         NavMesh.SamplePosition(position, out NavMeshHit hit, 5, NavMesh.AllAreas);
         movementMachine.PathToPosition(hit.position);
@@ -181,37 +229,46 @@ public class PlayerController : MonoBehaviour
 
         if (player.navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete)
         {
-            MoveState moveState = new MoveState(movementMachine);
-            moveState.exitAction += () =>
-            {
-                SkillLoadState loadState = new SkillLoadState(skillMachine, skill);
-                SkillUseState useState = new SkillUseState(skillMachine, skill, resultController);
+            movementMachine.SetState(new MoveState(movementMachine));
 
-                loadState.exitAction += () =>
-                {
-                    skillMachine.SetState(useState);
-                };
-
-                if (!skill.CanUse())
-                {
-                    return;
-                }
-
-                skillMachine.SetState(loadState);
-            };
-
-            movementMachine.SetState(moveState);
-
-            while (movementMachine.State != movementMachine.DefaultState ||
-                skillMachine.State != skillMachine.DefaultState)
+            while (movementMachine.State != movementMachine.DefaultState)
             {
                 yield return null;
             }
+
+            Task = null;
+            result.Handle(true);
         }
         else
         {
             player.navMeshAgent.ResetPath();
-            resultController.Handle(false);
+            Task = null;
+            result.Handle(false);
+        }
+    }
+
+    public IEnumerator AttemptSkill(Skill skill, ResultHandler result)
+    {
+        SkillLoadState loadState = new SkillLoadState(skillMachine, skill);
+        SkillUseState useState = new SkillUseState(skillMachine, skill, result);
+
+        loadState.exitAction += () =>
+        {
+            skillMachine.SetState(useState);
+        };
+
+        if (!skill.CanUse())
+        {
+            Task = null;
+            result.Handle(false);
+            yield break;
+        }
+
+        skillMachine.SetState(loadState);
+
+        while (skillMachine.State != skillMachine.DefaultState)
+        {
+            yield return null;
         }
 
         Task = null;

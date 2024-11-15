@@ -243,7 +243,7 @@ public class Skill : SkillModel
     /// <typeparam name="T">Derived class of Type ResultHandler</typeparam>
     /// <param name="resultHandler">ResultHandler instance to manage the success or failure</param>
     /// <returns>Coroutine to be run.</returns>
-    public IEnumerator Use(ResultGatherController resultController)
+    public IEnumerator Use(ResultHandler result)
     {
         // Calculates the base use time for the skill.
         float useTime = GetUseTime();
@@ -277,7 +277,7 @@ public class Skill : SkillModel
         chance /= 100;
         float roll = UnityEngine.Random.Range(0f, 1f);
         bool isSuccess = chance >= roll;
-        resultController.Handle(isSuccess);
+        result.Handle(isSuccess);
 
         GameManager.Instance.ExecuteCoroutine(StartCooldown(GetCooldownTime()));
     }
