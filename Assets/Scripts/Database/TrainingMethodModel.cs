@@ -6,8 +6,8 @@ public class TrainingMethodModel : Model
     public float xpGainEach;
     public int countMax;
     public string name;
-    public string param1;
-    public string param2;
+    public string param1 = "1";
+    public string param2 = "1";
 
     public TrainingMethodModel(DatabaseManager database, int skillID) : base(database)
     {

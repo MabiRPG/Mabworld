@@ -50,6 +50,7 @@ public class SkillEditorWindow : EditorWindow
     private List<int> usedTrainingMethodIDs;
 
     private List<MapResourceModel> mapResources;
+    private List<ItemModel> items;
 
     [SerializeField]
     private VisualTreeAsset m_VisualTreeAsset = default;
@@ -85,6 +86,16 @@ public class SkillEditorWindow : EditorWindow
             int ID = int.Parse(row["id"].ToString());
             MapResourceModel mapResource = new MapResourceModel(database, ID);
             mapResources.Add(mapResource);
+        }
+
+        dt = database.Read("SELECT id FROM item;");
+        items = new List<ItemModel>();
+
+        foreach (DataRow row in dt.Rows)
+        {
+            int ID = int.Parse(row["id"].ToString());
+            ItemModel item = new ItemModel(database, ID);
+            items.Add(item);
         }
     }
 
@@ -592,9 +603,55 @@ public class SkillEditorWindow : EditorWindow
                 case "Fail":
                     break;
                 case "Gather":
+                {
+                    DropdownField dropdown = new DropdownField();
+
+                    dropdown.SetValueWithoutNotify(items
+                        .Where(v => v.ID == int.Parse(method.param2))
+                        .Select(v => v.name)
+                        .First());
+                    dropdown.choices = items
+                        .Select(v => v.name)
+                        .OrderBy(v => v)
+                        .ToList();
+                    dropdown.RegisterValueChangedCallback(e =>
+                    {
+                        method.param2 = items
+                            .Where(v => v.name == e.newValue)
+                            .Select(v => v.ID)
+                            .First()
+                            .ToString();
+                    });
+
+                    item.Add(dropdown);
+
                     break;
+                }
                 case "Fully gather":
+                {
+                    DropdownField dropdown = new DropdownField();
+
+                    dropdown.SetValueWithoutNotify(items
+                        .Where(v => v.ID == int.Parse(method.param2))
+                        .Select(v => v.name)
+                        .First());
+                    dropdown.choices = items
+                        .Select(v => v.name)
+                        .OrderBy(v => v)
+                        .ToList();
+                    dropdown.RegisterValueChangedCallback(e =>
+                    {
+                        method.param2 = items
+                            .Where(v => v.name == e.newValue)
+                            .Select(v => v.ID)
+                            .First()
+                            .ToString();
+                    });
+
+                    item.Add(dropdown);
+
                     break;
+                }
                 case "Craft":
                     break;
                 default:

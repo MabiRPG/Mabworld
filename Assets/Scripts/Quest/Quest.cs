@@ -270,10 +270,11 @@ public class Quest : QuestModel
 
                     break;
                 case "Item":
-
+                    GiveItem(condition);
 
                     break;
                 case "Cultivation stage":
+                    GiveCultivation(condition);
 
                     break;
                 case "NPC":
@@ -290,25 +291,71 @@ public class Quest : QuestModel
         switch (QuestConditionTypeModel.FindByID(condition.conditionID))
         {
             case "Learn skill":
-                if (!Player.Instance.skillManager.IsLearned(int.Parse(condition.param1)))
-                {
-                    Player.Instance.skillManager.Learn(int.Parse(condition.param1));
-                }
-
-                Skill skill = Player.Instance.skillManager.Get(int.Parse(condition.param1));
+            {
+                ActionSkillController action;
+                ResultSkillController result;
+                int skillID = int.Parse(condition.param1);
                 string rank = condition.param2;
+
+                // Learn if needed
+                action = new ActionSkillController(Player.Instance, this, skillID,
+                    ActionSkillController.ActionType.Learn);
+                action.Handle();
+
+                Skill skill = Player.Instance.skillManager.Get(skillID);
 
                 while (skill.CanRankUp() && !skill.IsRankOrGreater(rank))
                 {
+                    // Force it to rank up, despite xp requirement
                     skill.RankUp();
+
+                    // Inform the quest and skill handlers of new updates...
+                    action = new ActionSkillController(Player.Instance, this, skillID,
+                        ActionSkillController.ActionType.RankUp);
+                    result = new ResultSkillController(Player.Instance, this, skill, action);
+                    result.Handle(true);
                 }
 
                 break;
+            }
             case "Rank up skill":
+            {
+
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    private void GiveItem(QuestConditionModel condition)
+    {
+        switch (QuestConditionTypeModel.FindByID(condition.conditionID))
+        {
+            case "Get item":
+                int itemID = int.Parse(condition.param1);
+                int itemQuantity = int.Parse(condition.param2);
+
+                ActionItemController action = new ActionItemController(Player.Instance, this,
+                    itemID, itemQuantity, ActionItemController.ActionType.ItemAdd);
+                action.Handle();
 
                 break;
             default:
                 break;
+        }
+    }
+
+    private void GiveCultivation(QuestConditionModel condition)
+    {
+        if (int.Parse(condition.param1) > Player.Instance.actorStage.Value)
+        {
+            Player.Instance.actorStage.Value = int.Parse(condition.param1);
+        }
+         
+        if (int.Parse(condition.param2) > Player.Instance.actorSubstage.Value)
+        {
+            Player.Instance.actorSubstage.Value = int.Parse(condition.param2);
         }
     }
 }

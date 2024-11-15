@@ -47,16 +47,21 @@ public class SkillTrainingMethod : TrainingMethodModel
 
     public void Update<T>(T result, object caller, bool isSuccess)
     {
+        if (count.Value >= countMax)
+        {
+            return;
+        }
+
         if (CheckTraining(result as ResultHandler, caller, isSuccess))
         {
             count.Value += 1;
             skill.AddXP(xpGainEach);
 
-            // Clears the event handler when done
-            if (IsComplete())
-            {
-                Clear();
-            }
+        //     // Clears the event handler when done
+        //     if (IsComplete())
+        //     {
+        //         Clear();
+        //     }
         }
     }
 
@@ -65,8 +70,17 @@ public class SkillTrainingMethod : TrainingMethodModel
         switch (TrainingMethodTypeModel.FindByID(trainingMethodID))
         {
             case "Success":
+                if (result.GetType() != typeof(ResultGatherController))
+                {
+                    break;
+                }
                 return isSuccess;
             case "Fail":
+                if (result.GetType() != typeof(ResultGatherController))
+                {
+                    break;
+                }
+
                 return !isSuccess;
             case "Gather":
             {
@@ -77,7 +91,7 @@ public class SkillTrainingMethod : TrainingMethodModel
 
                 ResultGatherController gatherResult = result as ResultGatherController;
 
-                if (isSuccess && gatherResult.resourceID == int.Parse(param1))
+                if (isSuccess && gatherResult.resourceID == int.Parse(param2))
                 {
                     return true;
                 }
@@ -94,7 +108,7 @@ public class SkillTrainingMethod : TrainingMethodModel
                 MapResource resource = (MapResource)caller;
                 ResultGatherController gatherResult = result as ResultGatherController;
 
-                if (isSuccess && gatherResult.resourceID == int.Parse(param1) 
+                if (gatherResult.resourceID == int.Parse(param2) 
                     && resource.resource.Value == 0)
                 {
                     return true;
