@@ -146,7 +146,9 @@ public class InputController : MonoBehaviour
         {
             WindowManager.Instance.HandleMouseInput(graphicHits, sceneHits);
         }
-        else if (WindowManager.Instance.inputFocusMode)
+        // If the user has a 'fullscreen overlay' active (i.e. dialogue), then suppress
+        // all other inputs.
+        else if (GameManager.Instance.overlay.activeSelf)
         {
             return;
         }

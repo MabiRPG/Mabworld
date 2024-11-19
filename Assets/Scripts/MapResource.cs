@@ -140,13 +140,19 @@ public class MapResource : MonoBehaviour, IInputHandler
                 return;
             }
 
-            ActionGatherController actionController = new ActionGatherController(
+            ActionMoveController action = new ActionMoveController(
                 Player.Instance,
                 this,
-                playerSkill,
-                transform.TransformPoint(Vector3.zero)
-            );
-            actionController.Handle();
+                transform.TransformPoint(Vector3.zero));
+            action.OnSuccess += () =>
+            {
+                ActionGatherController actionGather = new ActionGatherController(
+                    Player.Instance,
+                    this,
+                    playerSkill);
+                actionGather.Handle();
+            };
+            action.Handle();
         }
     }
 

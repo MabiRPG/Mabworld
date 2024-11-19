@@ -34,12 +34,18 @@ public class NPC : MonoBehaviour, IInputHandler
     {
         if (Input.GetMouseButtonDown(0))
         {
-            ActionNPCInteractController action = new ActionNPCInteractController(
-                Player.Instance,
-                this,
-                model.ID,
-                transform.TransformPoint(Vector3.zero)
-            );
+            ActionMoveController action = new ActionMoveController(Player.Instance, this,
+                transform.TransformPoint(Vector3.zero));
+            action.OnSuccess += () =>
+            {
+                ActionNPCInteractController npcAction = new ActionNPCInteractController(
+                    Player.Instance,
+                    this,
+                    model.ID,
+                    transform.TransformPoint(Vector3.zero)
+                );
+                npcAction.Handle();
+            };
             action.Handle();
         }
     }

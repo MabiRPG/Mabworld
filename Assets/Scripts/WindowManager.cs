@@ -9,7 +9,6 @@ public class WindowManager : MonoBehaviour, IInputHandler
     public static WindowManager Instance { get; private set; }
 
     private HashSet<Window> windows = new HashSet<Window>();
-    public bool inputFocusMode;
     public Window mainWindow;
     private bool isDraggingWindow;
 
@@ -50,14 +49,12 @@ public class WindowManager : MonoBehaviour, IInputHandler
     {
         if (!window.isActiveAndEnabled || window != mainWindow)
         {
-            inputFocusMode = toggleInputFocus;
             mainWindow = window;
             mainWindow.ShowWindow();
             mainWindow.Focus();
         }
         else if (window == mainWindow)
         {
-            inputFocusMode = false;
             mainWindow.HideWindow();
             mainWindow = FindNextOpenWindow();
         }

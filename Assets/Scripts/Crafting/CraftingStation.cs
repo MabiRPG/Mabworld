@@ -42,24 +42,30 @@ public class CraftingStation : MonoBehaviour, IInputHandler
                 return;
             }
 
-            List<Skill> skills = new List<Skill>();
-
-            foreach (int skillID in recipes.Keys)
+            ActionMoveController action = new ActionMoveController(Player.Instance, this,
+                transform.TransformPoint(Vector3.zero));
+            action.OnSuccess += () =>
             {
-                if (Player.Instance.skillManager.IsLearned(skillID))
+                List<Skill> skills = new List<Skill>();
+
+                foreach (int skillID in recipes.Keys)
                 {
-                    skills.Add(Player.Instance.skillManager.Get(skillID));
+                    if (Player.Instance.skillManager.IsLearned(skillID))
+                    {
+                        skills.Add(Player.Instance.skillManager.Get(skillID));
+                    }
                 }
-            }
 
-            if (WindowCrafting.Instance == null)
-            {
-                WindowCrafting window = GameManager.Instance.canvas.GetComponentInChildren<WindowCrafting>(true);
-                window.gameObject.SetActive(true);
-            }
+                if (WindowCrafting.Instance == null)
+                {
+                    WindowCrafting window = GameManager.Instance.canvas.GetComponentInChildren<WindowCrafting>(true);
+                    window.gameObject.SetActive(true);
+                }
 
-            WindowManager.Instance.ToggleWindow(WindowCrafting.Instance, true);
-            WindowCrafting.Instance.Init(skills, recipes);
+                WindowManager.Instance.ToggleWindow(WindowCrafting.Instance, true);
+                WindowCrafting.Instance.Init(skills, recipes);
+            };
+            action.Handle();
         }
     }
 

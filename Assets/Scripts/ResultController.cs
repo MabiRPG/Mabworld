@@ -7,13 +7,13 @@ public abstract class ResultHandler
     public Player player;
     public object caller;
     public Skill skill;
-    protected ActionHandler nextAction;
+    private ActionHandler action;
 
-    public ResultHandler(Player player, object caller, ActionHandler nextAction = null)
+    public ResultHandler(Player player, object caller, ActionHandler action)
     {
         this.player = player;
         this.caller = caller;
-        this.nextAction = nextAction;
+        this.action = action;
     }
 
     public virtual void Handle(bool isSuccess)
@@ -31,17 +31,21 @@ public abstract class ResultHandler
             quest.Update(this);
         }
 
-        if (nextAction != null && isSuccess)
+        if (isSuccess)
         {
-            nextAction.HandleNext();
+            action.RaiseOnSuccess();
+        }
+        else if (!isSuccess)
+        {
+            action.RaiseOnFailure();
         }
     }
 }
 
 public class ResultMoveController : ResultHandler
 {
-    public ResultMoveController(Player player, object caller, ActionHandler nextAction)
-        : base(player, caller, nextAction) { }
+    public ResultMoveController(Player player, object caller, ActionMoveController action)
+        : base(player, caller, action) { }
 }
 
 public class ResultGatherController : ResultHandler
@@ -49,8 +53,8 @@ public class ResultGatherController : ResultHandler
     public int resourceID;
     public int resourceGain;
 
-    public ResultGatherController(Player player, object caller, Skill skill)
-        : base(player, caller)
+    public ResultGatherController(Player player, object caller, Skill skill, 
+        ActionGatherController action) : base(player, caller, action)
     {
         this.skill = skill;
     }
@@ -89,7 +93,7 @@ public class ResultSkillController : ResultHandler
         Skill skill,
         ActionSkillController action
     )
-        : base(player, caller)
+        : base(player, caller, action)
     {
         this.skill = skill;
         this.action = action;
@@ -101,7 +105,7 @@ public class ResultItemController : ResultHandler
     public readonly ActionItemController action;
 
     public ResultItemController(Player player, object caller, ActionItemController action)
-        : base(player, caller)
+        : base(player, caller, action)
     {
         this.action = action;
     }
@@ -116,7 +120,7 @@ public class ResultNPCInteractController : ResultHandler
         object caller,
         ActionNPCInteractController action
     )
-        : base(player, caller)
+        : base(player, caller, action)
     {
         this.action = action;
     }
@@ -133,9 +137,10 @@ public class ResultCraftController : ResultHandler
         object caller,
         List<CraftingRecipeIngredientModel> ingredients,
         List<CraftingRecipeProductModel> products,
-        int quantity
+        int quantity,
+        ActionCraftController action
     )
-        : base(player, caller)
+        : base(player, caller, action)
     {
         this.ingredients = ingredients;
         this.products = products;

@@ -7,6 +7,8 @@ public abstract class ActionHandler
 {
     protected Player player;
     protected object caller;
+    public event Action OnSuccess;
+    public event Action OnFailure;
     protected Vector3 destination;
 
     public ActionHandler(Player player, object caller)
@@ -15,33 +17,30 @@ public abstract class ActionHandler
         this.caller = caller;
     }
 
-    public abstract void Handle();
-
-    public virtual void HandleNext()
+    public void RaiseOnSuccess()
     {
-        return;
+        OnSuccess?.Invoke();
     }
+
+    public void RaiseOnFailure()
+    {
+        OnFailure?.Invoke();
+    }
+
+    public abstract void Handle();
 }
 
 public class ActionMoveController : ActionHandler
 {
-    private ActionHandler nextAction;
-
-    public ActionMoveController(
-        Player player,
-        object caller,
-        Vector3 destination,
-        ActionHandler nextAction
-    )
+    public ActionMoveController(Player player, object caller, Vector3 destination)
         : base(player, caller)
     {
         this.destination = destination;
-        this.nextAction = nextAction;
     }
 
     public override void Handle()
     {
-        ResultMoveController resultMove = new ResultMoveController(player, caller, nextAction);
+        ResultMoveController resultMove = new ResultMoveController(player, caller, this);
         IEnumerator task = player.controller.AttemptMove(destination, resultMove);
         player.controller.SetTask(task);
     }
@@ -51,27 +50,15 @@ public class ActionGatherController : ActionHandler
 {
     private Skill skill;
 
-    public ActionGatherController(Player player, object caller, Skill skill, Vector3 destination)
+    public ActionGatherController(Player player, object caller, Skill skill)
         : base(player, caller)
     {
         this.skill = skill;
-        this.destination = destination;
     }
 
     public override void Handle()
     {
-        ActionMoveController moveAction = new ActionMoveController(
-            player,
-            caller,
-            destination,
-            this
-        );
-        moveAction.Handle();
-    }
-
-    public override void HandleNext()
-    {
-        ResultGatherController result = new ResultGatherController(player, caller, skill);
+        ResultGatherController result = new ResultGatherController(player, caller, skill, this);
         IEnumerator task = player.controller.AttemptSkill(skill, result);
         player.controller.SetTask(task);
     }
@@ -245,16 +232,14 @@ public class ActionNPCInteractController : ActionHandler
         ActionMoveController moveAction = new ActionMoveController(
             player,
             caller,
-            destination,
-            this
+            destination
         );
+        moveAction.OnSuccess += () =>
+        {
+            ResultNPCInteractController result = new ResultNPCInteractController(player, caller, this);
+            result.Handle(true);
+        };
         moveAction.Handle();
-    }
-
-    public override void HandleNext()
-    {
-        ResultNPCInteractController result = new ResultNPCInteractController(player, caller, this);
-        result.Handle(true);
     }
 }
 
@@ -285,23 +270,13 @@ public class ActionCraftController : ActionHandler
 
     public override void Handle()
     {
-        ActionMoveController moveAction = new ActionMoveController(
-            player,
-            caller,
-            destination,
-            this
-        );
-        moveAction.Handle();
-    }
-
-    public override void HandleNext()
-    {
         ResultCraftController result = new ResultCraftController(
             player,
             caller,
             ingredients,
             products,
-            quantity
+            quantity,
+            this
         );
         IEnumerator task = player.controller.AttemptSkill(skill, result);
         player.controller.SetTask(task);
