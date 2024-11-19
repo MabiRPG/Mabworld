@@ -6,7 +6,7 @@ using System.Collections.Generic;
 /// <summary>
 ///     This super class handles all basic window UI processing. Uses the Window prefab in unity.
 /// </summary>
-public class Window : MonoBehaviour
+public class Window : MonoBehaviour, IOverlay
 {
     // GameObject references to header and body content in window prefab.
     public GameObject header;
@@ -20,7 +20,11 @@ public class Window : MonoBehaviour
     private Button closeButton;
 
     public RectTransform rectTransform;
+    public bool blockMouse = false;
+    public bool blockKeyboard = false;
 
+    public bool isFullscreenFocus { get; set; }
+    
     /// <summary>
     ///     Initializes the object.
     /// </summary>
@@ -100,6 +104,7 @@ public class Window : MonoBehaviour
     public void ShowWindow()
     {
         gameObject.SetActive(true);
+        AddOverlayCaller();
     }
 
     /// <summary>
@@ -108,6 +113,7 @@ public class Window : MonoBehaviour
     public void HideWindow()
     {
         gameObject.SetActive(false);
+        RemoveOverlayCaller();
     }
 
     /// <summary>
@@ -116,5 +122,29 @@ public class Window : MonoBehaviour
     public virtual void ToggleVisible()
     {
         gameObject.SetActive(!gameObject.activeSelf);
+    }
+
+    public void AddOverlayCaller()
+    {
+        if (!isFullscreenFocus)
+        {
+            return;
+        }
+
+        GameObject obj = GameManager.Instance.overlay;
+        Overlay overlay = obj.GetComponent<Overlay>();
+        overlay.AddCaller(gameObject);
+    }
+
+    public void RemoveOverlayCaller()
+    {
+        if (!isFullscreenFocus)
+        {
+            return;
+        }
+
+        GameObject obj = GameManager.Instance.overlay;
+        Overlay overlay = obj.GetComponent<Overlay>();
+        overlay.RemoveCaller(gameObject);
     }
 }

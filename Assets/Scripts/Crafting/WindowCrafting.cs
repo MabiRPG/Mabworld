@@ -33,6 +33,8 @@ public class WindowCrafting : Window
         searchField = GetComponentInChildren<WindowCraftingItemSearchField>();
         recipeList = GetComponentInChildren<WindowCraftingRecipeList>();
         detailForm = GetComponentInChildren<WindowCraftingDetailForm>();
+
+        isFullscreenFocus = true;
     }
 
     private void Start()

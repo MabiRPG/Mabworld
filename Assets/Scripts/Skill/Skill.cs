@@ -259,7 +259,7 @@ public class Skill : SkillModel
             yield return new WaitForSecondsRealtime(interval);
 
             // Play a sound if audio interval is reached
-            if (interval % audioInterval == 0)
+            if (interval % audioInterval == 0 && sfx != default)
             {
                 audio.PlayOneShot(sfx);
             }

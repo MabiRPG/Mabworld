@@ -25,8 +25,10 @@ public class InputController : MonoBehaviour
 {
     // Global instance of InputController
     public static InputController Instance { get; private set; }
+
     // Dictionary of all button key binds
-    public Dictionary<KeyCode, InputSettings> buttonKeybinds = new Dictionary<KeyCode, InputSettings>();
+    public Dictionary<KeyCode, InputSettings> buttonKeybinds =
+        new Dictionary<KeyCode, InputSettings>();
 
     private List<RaycastResult> graphicHits;
     private RaycastHit2D sceneHits;
@@ -119,7 +121,11 @@ public class InputController : MonoBehaviour
         selectedObj = obj;
     }
 
-    private void PassMouseInput(GameObject obj, List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    private void PassMouseInput(
+        GameObject obj,
+        List<RaycastResult> graphicHits,
+        RaycastHit2D sceneHits
+    )
     {
         IInputHandler[] handlers = obj.GetComponents<IInputHandler>();
 
@@ -139,6 +145,10 @@ public class InputController : MonoBehaviour
         if (WindowManager.Instance.GetWindowHit(graphicHits, out _))
         {
             WindowManager.Instance.HandleMouseInput(graphicHits, sceneHits);
+        }
+        else if (WindowManager.Instance.inputFocusMode)
+        {
+            return;
         }
         // If the user has hit any scene objects...
         else if (sceneHits.transform != null)
@@ -167,10 +177,11 @@ public class InputController : MonoBehaviour
             else
             {
                 GameManager.Instance.gameStateMachine.SetState(
-                    new MenuState(GameManager.Instance.gameStateMachine, "Base"));
+                    new MenuState(GameManager.Instance.gameStateMachine, "Base")
+                );
             }
         }
-        
+
         foreach (KeyValuePair<KeyCode, InputSettings> pair in buttonKeybinds)
         {
             if (Input.GetKeyDown(pair.Key))
@@ -205,13 +216,26 @@ public class InputController : MonoBehaviour
     public void Reset()
     {
         AddButtonBind(KeyCode.Z, new InputSettings("Open Skills", OpenWindow<WindowSkill>, false));
-        AddButtonBind(KeyCode.C, new InputSettings("Open Character", OpenWindow<WindowCharacter>, false));
-        AddButtonBind(KeyCode.I, new InputSettings("Open Inventory", OpenWindow<WindowInventory>, false));
-        AddButtonBind(KeyCode.O, new InputSettings("Open Options", OpenWindow<WindowOptions>, false));
-        AddButtonBind(KeyCode.M, new InputSettings("Open Minimap", () => GameManager.Instance.minimap.Toggle(), false));
+        AddButtonBind(
+            KeyCode.C,
+            new InputSettings("Open Character", OpenWindow<WindowCharacter>, false)
+        );
+        AddButtonBind(
+            KeyCode.I,
+            new InputSettings("Open Inventory", OpenWindow<WindowInventory>, false)
+        );
+        AddButtonBind(
+            KeyCode.O,
+            new InputSettings("Open Options", OpenWindow<WindowOptions>, false)
+        );
+        AddButtonBind(
+            KeyCode.M,
+            new InputSettings("Open Minimap", () => GameManager.Instance.minimap.Toggle(), false)
+        );
     }
 
-    private void OpenWindow<T>() where T : Window
+    private void OpenWindow<T>()
+        where T : Window
     {
         if (typeof(T).GetField("Instance").GetValue(null) == null)
         {

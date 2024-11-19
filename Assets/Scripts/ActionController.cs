@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class ActionHandler
 {
     protected Player player;
     protected object caller;
+    protected Vector3 destination;
 
     public ActionHandler(Player player, object caller)
     {
@@ -15,7 +17,7 @@ public abstract class ActionHandler
 
     public abstract void Handle();
 
-    public virtual void HandleMove()
+    public virtual void HandleNext()
     {
         return;
     }
@@ -23,7 +25,6 @@ public abstract class ActionHandler
 
 public class ActionMoveController : ActionHandler
 {
-    private Vector3 destination;
     private ActionHandler nextAction;
 
     public ActionMoveController(
@@ -49,7 +50,6 @@ public class ActionMoveController : ActionHandler
 public class ActionGatherController : ActionHandler
 {
     private Skill skill;
-    private Vector3 destination;
 
     public ActionGatherController(Player player, object caller, Skill skill, Vector3 destination)
         : base(player, caller)
@@ -69,7 +69,7 @@ public class ActionGatherController : ActionHandler
         moveAction.Handle();
     }
 
-    public override void HandleMove()
+    public override void HandleNext()
     {
         ResultGatherController result = new ResultGatherController(player, caller, skill);
         IEnumerator task = player.controller.AttemptSkill(skill, result);
@@ -232,7 +232,6 @@ public class ActionItemController : ActionHandler
 public class ActionNPCInteractController : ActionHandler
 {
     public int NPCID;
-    private Vector3 destination;
 
     public ActionNPCInteractController(Player player, object caller, int NPCID, Vector3 destination)
         : base(player, caller)
@@ -249,12 +248,62 @@ public class ActionNPCInteractController : ActionHandler
             destination,
             this
         );
-        moveAction.Handle();        
+        moveAction.Handle();
     }
 
-    public override void HandleMove()
+    public override void HandleNext()
     {
         ResultNPCInteractController result = new ResultNPCInteractController(player, caller, this);
         result.Handle(true);
+    }
+}
+
+public class ActionCraftController : ActionHandler
+{
+    private Skill skill;
+    private List<CraftingRecipeIngredientModel> ingredients;
+    private List<CraftingRecipeProductModel> products;
+    private int quantity;
+
+    public ActionCraftController(
+        Player player,
+        object caller,
+        Vector3 destination,
+        Skill skill,
+        List<CraftingRecipeIngredientModel> ingredients,
+        List<CraftingRecipeProductModel> products,
+        int quantity
+    )
+        : base(player, caller)
+    {
+        this.destination = destination;
+        this.skill = skill;
+        this.ingredients = ingredients;
+        this.products = products;
+        this.quantity = quantity;
+    }
+
+    public override void Handle()
+    {
+        ActionMoveController moveAction = new ActionMoveController(
+            player,
+            caller,
+            destination,
+            this
+        );
+        moveAction.Handle();
+    }
+
+    public override void HandleNext()
+    {
+        ResultCraftController result = new ResultCraftController(
+            player,
+            caller,
+            ingredients,
+            products,
+            quantity
+        );
+        IEnumerator task = player.controller.AttemptSkill(skill, result);
+        player.controller.SetTask(task);
     }
 }

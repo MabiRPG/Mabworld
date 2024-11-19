@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public LightController lightController;
     public AudioController audioController;
     public WindowManager windowManager;
+    public GameObject overlay;
 
     [Header("Global Variables")]
     // Name of the game database in Assets/Database folder.
@@ -33,8 +34,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public GameObject dialogueBoxPrefab;
     
-    [Header("Window Prefabs")]
+    // [Header("Window Prefabs")]
     public Canvas canvas;
+    
     // Loot system
     // public LootGenerator lootGenerator = new LootGenerator();
 

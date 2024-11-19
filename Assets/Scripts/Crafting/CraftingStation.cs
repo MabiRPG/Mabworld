@@ -58,7 +58,7 @@ public class CraftingStation : MonoBehaviour, IInputHandler
                 window.gameObject.SetActive(true);
             }
 
-            WindowManager.Instance.ToggleWindow(WindowCrafting.Instance);
+            WindowManager.Instance.ToggleWindow(WindowCrafting.Instance, true);
             WindowCrafting.Instance.Init(skills, recipes);
         }
     }

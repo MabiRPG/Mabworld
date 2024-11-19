@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_DialogueBox : MonoBehaviour
+public class UI_DialogueBox : MonoBehaviour, IOverlay
 {
     public int ID;
     public int questID;
@@ -25,6 +25,8 @@ public class UI_DialogueBox : MonoBehaviour
     private List<QuestDialogueModel> dialogues;
     private int index = 0;
 
+    public bool isFullscreenFocus { get; set; }
+
     private void Awake()
     {
         npc1Image = transform.Find("NPC 1 Image").GetComponent<Image>();
@@ -32,6 +34,8 @@ public class UI_DialogueBox : MonoBehaviour
         npc1Name = transform.Find("NPC 1 Image/Image").GetComponentInChildren<TMP_Text>();
         // npc2Name = transform.Find("NPC 2 Image/Image").GetComponentInChildren<TMP_Text>();
         mainText = transform.Find("Text Box").GetComponent<TMP_Text>();
+
+        isFullscreenFocus = true;
     }
 
     private void Update()
@@ -88,5 +92,29 @@ public class UI_DialogueBox : MonoBehaviour
         {
             overflowText = null;
         }
+    }
+
+    public void AddOverlayCaller()
+    {
+        if (!isFullscreenFocus)
+        {
+            return;
+        }
+
+        GameObject obj = GameManager.Instance.overlay;
+        Overlay overlay = obj.GetComponent<Overlay>();
+        overlay.AddCaller(gameObject);
+    }
+
+    public void RemoveOverlayCaller()
+    {
+        if (!isFullscreenFocus)
+        {
+            return;
+        }
+
+        GameObject obj = GameManager.Instance.overlay;
+        Overlay overlay = obj.GetComponent<Overlay>();
+        overlay.RemoveCaller(gameObject);
     }
 }

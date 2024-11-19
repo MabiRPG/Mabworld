@@ -27,7 +27,9 @@ public class WindowCraftingDetailForm : MonoBehaviour
         detailsText = transform.Find("Details Text").GetComponent<TMP_Text>();
         productItem = transform.Find("Item Image Boxes/Product Item").GetComponent<WindowItem>();
         ingredientParentTransform = transform.Find("Item Image Boxes/Ingredient Parent");
-        quantityInput = transform.Find("Production Form/Quantity Input Field").GetComponent<TMP_InputField>();
+        quantityInput = transform
+            .Find("Production Form/Quantity Input Field")
+            .GetComponent<TMP_InputField>();
         rangeValidator = (UI_NumberRangeValidator)quantityInput.inputValidator;
         craftButton = transform.Find("Production Form/Craft Button").GetComponent<Button>();
 
@@ -37,14 +39,21 @@ public class WindowCraftingDetailForm : MonoBehaviour
 
     private void OnEnable()
     {
-        craftButton.onClick.AddListener(delegate { Craft(currentSkill, currentRecipe, int.Parse(quantityInput.text)); });
-        Player.Instance.inventoryManager.changeEvent.OnChange += () => SetRecipe(currentSkill, currentRecipe);
+        craftButton.onClick.AddListener(
+            delegate
+            {
+                Craft(currentSkill, currentRecipe, int.Parse(quantityInput.text));
+            }
+        );
+        Player.Instance.inventoryManager.changeEvent.OnChange += () =>
+            SetRecipe(currentSkill, currentRecipe);
     }
 
     private void OnDisable()
     {
         craftButton.onClick.RemoveAllListeners();
-        Player.Instance.inventoryManager.changeEvent.OnChange -= () => SetRecipe(currentSkill, currentRecipe);
+        Player.Instance.inventoryManager.changeEvent.OnChange -= () =>
+            SetRecipe(currentSkill, currentRecipe);
     }
 
     public void SetRecipe(Skill skill, CraftingRecipe recipe)
@@ -119,28 +128,15 @@ public class WindowCraftingDetailForm : MonoBehaviour
 
     private void Craft(Skill skill, CraftingRecipe recipe, int quantity)
     {
-        foreach (CraftingRecipeProductModel product in recipe.products.Values)
-        {
-            ActionItemController action = new ActionItemController(
-                Player.Instance,
-                this, 
-                product.itemID, 
-                product.quantity * quantity,
-                ActionItemController.ActionType.ItemAdd
-            );
-            action.Handle();
-        }
-
-        foreach (CraftingRecipeIngredientModel ingredient in recipe.ingredients.Values)
-        {
-            ActionItemController action = new ActionItemController(
-                Player.Instance,
-                this, 
-                ingredient.itemID, 
-                ingredient.quantity * quantity,
-                ActionItemController.ActionType.ItemRemove
-            );
-            action.Handle();
-        }
+        ActionCraftController action = new ActionCraftController(
+            Player.Instance,
+            this,
+            transform.TransformPoint(Vector3.zero),
+            skill,
+            recipe.ingredients.Values.ToList(),
+            recipe.products.Values.ToList(),
+            quantity
+        );
+        action.Handle();
     }
 }

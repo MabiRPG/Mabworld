@@ -9,6 +9,7 @@ public class WindowManager : MonoBehaviour, IInputHandler
     public static WindowManager Instance { get; private set; }
 
     private HashSet<Window> windows = new HashSet<Window>();
+    public bool inputFocusMode;
     public Window mainWindow;
     private bool isDraggingWindow;
 
@@ -45,16 +46,18 @@ public class WindowManager : MonoBehaviour, IInputHandler
         return false;
     }
 
-    public void ToggleWindow(Window window)
+    public void ToggleWindow(Window window, bool toggleInputFocus = false)
     {
         if (!window.isActiveAndEnabled || window != mainWindow)
         {
+            inputFocusMode = toggleInputFocus;
             mainWindow = window;
             mainWindow.ShowWindow();
             mainWindow.Focus();
         }
         else if (window == mainWindow)
         {
+            inputFocusMode = false;
             mainWindow.HideWindow();
             mainWindow = FindNextOpenWindow();
         }
@@ -80,7 +83,10 @@ public class WindowManager : MonoBehaviour, IInputHandler
 
         foreach (Window window in windows)
         {
-            if (window.gameObject.activeSelf && lastSiblingIndex < window.transform.GetSiblingIndex())
+            if (
+                window.gameObject.activeSelf
+                && lastSiblingIndex < window.transform.GetSiblingIndex()
+            )
             {
                 lastSiblingIndex = window.transform.GetSiblingIndex();
                 lastWindow = window;
@@ -103,7 +109,9 @@ public class WindowManager : MonoBehaviour, IInputHandler
 
     public bool MouseHovering()
     {
-        return !Input.GetMouseButtonDown(0) && !Input.GetMouseButton(0) && !Input.GetMouseButtonUp(0);
+        return !Input.GetMouseButtonDown(0)
+            && !Input.GetMouseButton(0)
+            && !Input.GetMouseButtonUp(0);
     }
 
     public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
@@ -137,8 +145,8 @@ public class WindowManager : MonoBehaviour, IInputHandler
         {
             if (isDraggingWindow)
             {
-                mainWindow.rectTransform.anchoredPosition += InputController.Instance.mouseDelta
-                    / GameManager.Instance.canvas.scaleFactor;
+                mainWindow.rectTransform.anchoredPosition +=
+                    InputController.Instance.mouseDelta / GameManager.Instance.canvas.scaleFactor;
             }
         }
         else if (Input.GetMouseButtonUp(0))
@@ -167,12 +175,7 @@ public class WindowManager : MonoBehaviour, IInputHandler
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (mainWindow != null)
-            {
-                mainWindow.HideWindow();
-            }
-
-            mainWindow = FindNextOpenWindow();
+            ToggleWindow(mainWindow);
         }
     }
 }
