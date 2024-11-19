@@ -36,6 +36,7 @@ public class UI_DialogueBox : MonoBehaviour, IOverlay
         mainText = transform.Find("Text Box").GetComponent<TMP_Text>();
 
         isFullscreenFocus = true;
+        AddOverlayCaller();
     }
 
     private void Update()
@@ -68,6 +69,7 @@ public class UI_DialogueBox : MonoBehaviour, IOverlay
     {
         if (dialogues.Count - 1 <= index)
         {
+            RemoveOverlayCaller();
             Destroy(gameObject);
         }
 

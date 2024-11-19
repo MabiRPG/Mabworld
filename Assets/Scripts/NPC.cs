@@ -41,8 +41,7 @@ public class NPC : MonoBehaviour, IInputHandler
                 ActionNPCInteractController npcAction = new ActionNPCInteractController(
                     Player.Instance,
                     this,
-                    model.ID,
-                    transform.TransformPoint(Vector3.zero)
+                    model.ID
                 );
                 npcAction.Handle();
             };

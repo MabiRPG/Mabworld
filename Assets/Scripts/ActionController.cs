@@ -220,26 +220,16 @@ public class ActionNPCInteractController : ActionHandler
 {
     public int NPCID;
 
-    public ActionNPCInteractController(Player player, object caller, int NPCID, Vector3 destination)
+    public ActionNPCInteractController(Player player, object caller, int NPCID)
         : base(player, caller)
     {
         this.NPCID = NPCID;
-        this.destination = destination;
     }
 
     public override void Handle()
     {
-        ActionMoveController moveAction = new ActionMoveController(
-            player,
-            caller,
-            destination
-        );
-        moveAction.OnSuccess += () =>
-        {
-            ResultNPCInteractController result = new ResultNPCInteractController(player, caller, this);
-            result.Handle(true);
-        };
-        moveAction.Handle();
+        ResultNPCInteractController result = new ResultNPCInteractController(player, caller, this);
+        result.Handle(true);
     }
 }
 
