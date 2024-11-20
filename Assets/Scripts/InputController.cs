@@ -217,7 +217,10 @@ public class InputController : MonoBehaviour
     /// </summary>
     public void Reset()
     {
-        AddButtonBind(KeyCode.Z, new InputSettings("Open Skills", OpenWindow<WindowSkill>, false));
+        AddButtonBind(
+            KeyCode.Z, 
+            new InputSettings("Open Skills", OpenWindow<WindowSkill>, false)
+        );
         AddButtonBind(
             KeyCode.C,
             new InputSettings("Open Character", OpenWindow<WindowCharacter>, false)
@@ -234,10 +237,13 @@ public class InputController : MonoBehaviour
             KeyCode.M,
             new InputSettings("Open Minimap", () => GameManager.Instance.minimap.Toggle(), false)
         );
+        AddButtonBind(
+            KeyCode.J,
+            new InputSettings("Open Quest Log", OpenWindow<WindowQuest>, false)
+        ); 
     }
 
-    private void OpenWindow<T>()
-        where T : Window
+    private void OpenWindow<T>() where T : Window
     {
         if (typeof(T).GetField("Instance").GetValue(null) == null)
         {

@@ -20,15 +20,15 @@ public class QuestCondition
 
 public class Quest : QuestModel
 {
-    private List<QuestCondition> prerequisiteStates = new List<QuestCondition>();
-    private List<QuestCondition> stepStates = new List<QuestCondition>();
-    private enum QuestState
+    public List<QuestCondition> prerequisiteStates = new List<QuestCondition>();
+    public List<QuestCondition> stepStates = new List<QuestCondition>();
+    public enum QuestState
     {
         NeedPrerequisite,
         InProgress,
         Complete
     }
-    private QuestState questState;
+    public QuestState questState { get; private set; }
     private int stepCounter = 0;
 
     public Quest(int ID) : base(GameManager.Instance.Database, ID)
