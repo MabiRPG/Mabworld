@@ -6,6 +6,11 @@ public class WindowQuestRowList : MonoBehaviour
     private GameObject questRowPrefab;
     private PrefabFactory questRowPrefabFactory;
 
+    [SerializeField]
+    private GameObject mainQuestParent;
+    [SerializeField]
+    private GameObject sideQuestParent;
+
     private void Awake()
     {
         questRowPrefabFactory = ScriptableObject.CreateInstance<PrefabFactory>();

@@ -20,6 +20,7 @@ public class Quest : QuestModel
 {
     public List<QuestCondition> prerequisiteStates = new List<QuestCondition>();
     public List<QuestCondition> stepStates = new List<QuestCondition>();
+    public List<QuestCondition> rewardStates = new List<QuestCondition>();
     public enum QuestState
     {
         NeedPrerequisite,
@@ -39,6 +40,11 @@ public class Quest : QuestModel
         foreach (QuestConditionModel model in steps)
         {
             stepStates.Add(new QuestCondition(model));
+        }
+
+        foreach (QuestConditionModel model in rewards)
+        {
+            rewardStates.Add(new QuestCondition(model));
         }
 
         questState = QuestState.NeedPrerequisite;

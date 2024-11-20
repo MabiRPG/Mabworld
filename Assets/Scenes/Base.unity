@@ -636,6 +636,11 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &457833454 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7439912349286379738, guid: 00eddd24416486943b31c8823a2be5ba, type: 3}
+  m_PrefabInstance: {fileID: 1662156372703246513}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &548775263
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2575,6 +2580,11 @@ MonoBehaviour:
   levelUpSFX: {fileID: 8300000, guid: 6ac3131e3d868524283d1f7d206eab57, type: 3}
   emotionSuccessSFX: {fileID: 8300000, guid: 8389175cd84fe6b46b0fdbfdef37bb50, type: 3}
   emotionFailSFX: {fileID: 8300000, guid: 8c9e8137544f6bc4caf63083ccce5751, type: 3}
+--- !u!1 &1085015186 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3287908247910122685, guid: 00eddd24416486943b31c8823a2be5ba, type: 3}
+  m_PrefabInstance: {fileID: 1662156372703246513}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1090339997
 GameObject:
   m_ObjectHideFlags: 0
@@ -4127,6 +4137,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1a18479055edc654a9490908b6292a8a, type: 3}
+--- !u!1 &1294647663 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 390497608437965966, guid: 00eddd24416486943b31c8823a2be5ba, type: 3}
+  m_PrefabInstance: {fileID: 1662156372703246513}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1315272950
 GameObject:
   m_ObjectHideFlags: 0
@@ -6142,6 +6157,18 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4012871001384883733, guid: 00eddd24416486943b31c8823a2be5ba, type: 3}
+      propertyPath: stepParent
+      value: 
+      objectReference: {fileID: 1294647663}
+    - target: {fileID: 4012871001384883733, guid: 00eddd24416486943b31c8823a2be5ba, type: 3}
+      propertyPath: rewardParent
+      value: 
+      objectReference: {fileID: 457833454}
+    - target: {fileID: 4012871001384883733, guid: 00eddd24416486943b31c8823a2be5ba, type: 3}
+      propertyPath: prerequisiteParent
+      value: 
+      objectReference: {fileID: 1085015186}
     - target: {fileID: 4326252825327937857, guid: 00eddd24416486943b31c8823a2be5ba, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
