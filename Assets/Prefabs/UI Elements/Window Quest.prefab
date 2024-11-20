@@ -1258,7 +1258,7 @@ MonoBehaviour:
     m_Top: 5
     m_Bottom: 5
   m_ChildAlignment: 0
-  m_Spacing: 0
+  m_Spacing: 5
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
@@ -2000,7 +2000,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8774746465619099830, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
       propertyPath: m_text
-      value: Quest
+      value: Quests
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2869047165692119801, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}

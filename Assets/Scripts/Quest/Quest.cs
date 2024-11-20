@@ -7,15 +7,13 @@ using UnityEngine;
 public class QuestCondition
 {
     public readonly QuestConditionModel model;
-    private bool state;
+    public BoolManager state = new BoolManager();
 
     public QuestCondition(QuestConditionModel model)
     {
         this.model = model;
-        State = false;
+        state.Value = false;
     }
-
-    public bool State { get => state; set => state = value; }
 }
 
 public class Quest : QuestModel
@@ -55,7 +53,7 @@ public class Quest : QuestModel
                 UpdateCondition(result, condition, prerequisiteStates);
             }
 
-            if (prerequisiteStates.All(v => v.State))
+            if (prerequisiteStates.All(v => v.state.Value))
             {
                 questState = QuestState.InProgress;
             }
@@ -72,7 +70,7 @@ public class Quest : QuestModel
 
             foreach (QuestCondition condition in stepStates)
             {
-                if (condition.State)
+                if (condition.state.Value)
                 {
                     stepCounter++;
                 }
@@ -151,11 +149,11 @@ public class Quest : QuestModel
                 if (actionType == ActionSkillController.ActionType.Learn &&
                     result.player.skillManager.IsLearned(skill.ID))
                 {
-                    condition.State = true;
+                    condition.state.Value = true;
                 }
                 else
                 {
-                    condition.State = false;
+                    condition.state.Value = false;
                 }
 
                 break;
@@ -163,11 +161,11 @@ public class Quest : QuestModel
                 if (actionType == ActionSkillController.ActionType.RankUp &&
                     skill.IsRankOrGreater(condition.model.param2))
                 {
-                    condition.State = true;
+                    condition.state.Value = true;
                 }
                 else
                 {
-                    condition.State = false;
+                    condition.state.Value = false;
                 }
 
                 break;
@@ -190,11 +188,11 @@ public class Quest : QuestModel
             case "Get item":
                 if (result.action.itemCurrentQuantity >= int.Parse(condition.model.param2))
                 {
-                    condition.State = true;
+                    condition.state.Value = true;
                 }
                 else
                 {
-                    condition.State = false;
+                    condition.state.Value = false;
                 }
 
                 break;
@@ -208,11 +206,11 @@ public class Quest : QuestModel
         if (int.Parse(condition.model.param1) <= actor.actorStage.Value &&
             int.Parse(condition.model.param2) <= actor.actorSubstage.Value)
         {
-            condition.State = true;
+            condition.state.Value = true;
         }
         else
         {
-            condition.State = false;
+            condition.state.Value = false;
         }
     }
 
@@ -222,7 +220,7 @@ public class Quest : QuestModel
         if (int.Parse(condition.model.param1) == result.action.NPCID &&
             condition.model.stepID == stepCounter + 1)
         {
-            condition.State = true;
+            condition.state.Value = true;
 
             QuestCondition nextCondition = conditions
                 .Where(v => v.model.stepID == condition.model.stepID + 1)
@@ -252,7 +250,7 @@ public class Quest : QuestModel
                 .OrderBy(v => v.ID)
                 .ToList());
 
-            nextCondition.State = true;
+            nextCondition.state.Value = true;
         }
     }
 
