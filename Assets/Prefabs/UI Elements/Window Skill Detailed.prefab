@@ -2307,7 +2307,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8327379423472962842, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 400
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8327379423472962842, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
       propertyPath: m_SizeDelta.y
@@ -2319,7 +2319,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8327379423472962842, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -189.5
+      value: -164.5
       objectReference: {fileID: 0}
     - target: {fileID: 8774746465619099830, guid: 86199149f6c6306428ac195b1d88adf8, type: 3}
       propertyPath: m_text
@@ -2391,6 +2391,8 @@ MonoBehaviour:
   header: {fileID: 0}
   body: {fileID: 0}
   rectTransform: {fileID: 0}
+  blockMouse: 0
+  blockKeyboard: 0
   statPrefab: {fileID: 4340221620085719375, guid: 8cf3ee1e18771cc4e824552767fcb1e5, type: 3}
   trainingMethodPrefab: {fileID: 7120052241312522462, guid: 2d39b8c0893a09046822c0a6f2827454, type: 3}
 --- !u!1 &7741527093070592611 stripped

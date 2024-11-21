@@ -1,9 +1,10 @@
 using System.Linq;
 using System.Text;
 using TMPro;
+using TypeExtension;
 using UnityEngine;
 
-public class WindowQuestCondition : MonoBehaviour 
+public class WindowQuestCondition : MonoBehaviour
 {
     private QuestCondition condition;
     private TMP_Text cName;
@@ -29,25 +30,28 @@ public class WindowQuestCondition : MonoBehaviour
 
     private void Draw()
     {
-        StringBuilder builder = new StringBuilder();
+        StringBuilder nameBuilder = new StringBuilder();
+        StringBuilder stateBuilder = new StringBuilder();
         int categoryID = condition.model.conditionID;
         int conditionCategoryID = QuestConditionTypeModel.GetCategory(categoryID);
 
-        builder.Append($"{QuestConditionTypeModel.FindByID(categoryID)} ");
+        nameBuilder.Append($"{QuestConditionTypeModel.FindByID(categoryID)} ");
 
         switch (QuestConditionCategoryTypeModel.FindByID(conditionCategoryID))
         {
             case "Skill":
                 SkillModel skill = new SkillModel(
-                    GameManager.Instance.Database, 
+                    GameManager.Instance.Database,
                     int.Parse(condition.model.param1)
                 );
 
                 string skillName = skill.name;
                 string rank = condition.model.param2;
 
-                builder.Replace(" skill", "");
-                builder.AppendFormat($"{skillName} Rank {rank}");
+                // nameBuilder.Replace(" skill", "");
+                stateBuilder.AppendFormat($"{skillName} Rank {rank}");
+
+                // Skill playerSkill = Player.Instance.skillManager.Get(skill.ID);
 
                 break;
             case "Item":
@@ -59,18 +63,26 @@ public class WindowQuestCondition : MonoBehaviour
                 string itemName = item.name;
                 int quantity = int.Parse(condition.model.param2);
 
-                builder.Replace(" item", "");
-                builder.AppendFormat($"{itemName} x{quantity}");
+                nameBuilder.Replace(" item", "");
+                nameBuilder.AppendFormat($"{itemName}");
+
+                int playerQuantity = Player.Instance.inventoryManager.GetQuantity(item.ID);
+
+                stateBuilder.AppendFormat($"({playerQuantity} / {quantity})");
 
                 break;
             case "Cultivation stage":
-                CultivationStageModel stage = CultivationStageModel.stages
-                    [(int.Parse(condition.model.param1), int.Parse(condition.model.param2))];
+                CultivationStageModel stage = CultivationStageModel.stages[
+                    (int.Parse(condition.model.param1), int.Parse(condition.model.param2))
+                ];
                 string stageName = stage.name;
                 string substageName = stage.substageName;
-                
-                builder.Replace(" cultivation stage", "");
-                builder.AppendFormat($"{stageName} {substageName}");
+
+                // nameBuilder.Replace(" cultivation stage", "");
+                stateBuilder.AppendFormat($"{stageName} - {substageName}");
+                stateBuilder.AppendFormat(
+                    $" ({int.Parse(condition.model.param2).DisplayWithSuffix()} stage)"
+                );
 
                 break;
             case "NPC":
@@ -80,15 +92,26 @@ public class WindowQuestCondition : MonoBehaviour
                 );
                 string npcName = npc.name;
 
-                builder.Replace(" someone", "");
-                builder.AppendFormat(npcName);
+                nameBuilder.Replace(" someone", "");
+                nameBuilder.AppendFormat(npcName);
 
                 break;
             default:
                 break;
         }
 
-        cName.text = builder.ToString();
-        cState.text = condition.state.Value.ToString();
+        cName.text = nameBuilder.ToString();
+        cState.text = stateBuilder.ToString();
+
+        if (condition.state.Value)
+        {
+            cName.alpha = 0.1f;
+            cState.alpha = 0.1f;
+        }
+        else
+        {
+            cName.alpha = 1f;
+            cState.alpha = 1f;
+        }
     }
 }

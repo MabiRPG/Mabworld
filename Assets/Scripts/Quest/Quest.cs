@@ -21,16 +21,29 @@ public class Quest : QuestModel
     public List<QuestCondition> prerequisiteStates = new List<QuestCondition>();
     public List<QuestCondition> stepStates = new List<QuestCondition>();
     public List<QuestCondition> rewardStates = new List<QuestCondition>();
-    public enum QuestState
+
+    public enum State
     {
         NeedPrerequisite,
         InProgress,
-        Complete
+        Complete,
     }
-    public QuestState questState { get; private set; }
+
+    private State _questState;
+    public State QuestState
+    {
+        get { return _questState; }
+        set
+        {
+            _questState = value;
+            OnStateChange?.Invoke();
+        }
+    }
+    public event Action OnStateChange;
     private int stepCounter = 0;
 
-    public Quest(int ID) : base(GameManager.Instance.Database, ID)
+    public Quest(int ID)
+        : base(GameManager.Instance.Database, ID)
     {
         foreach (QuestConditionModel model in prerequisites)
         {
@@ -47,12 +60,12 @@ public class Quest : QuestModel
             rewardStates.Add(new QuestCondition(model));
         }
 
-        questState = QuestState.NeedPrerequisite;
+        QuestState = State.NeedPrerequisite;
     }
 
     public void Update<T>(T result)
     {
-        if (questState == QuestState.NeedPrerequisite)
+        if (QuestState == State.NeedPrerequisite)
         {
             foreach (QuestCondition condition in prerequisiteStates)
             {
@@ -61,11 +74,11 @@ public class Quest : QuestModel
 
             if (prerequisiteStates.All(v => v.state.Value))
             {
-                questState = QuestState.InProgress;
+                QuestState = State.InProgress;
             }
         }
 
-        if (questState != QuestState.Complete)
+        if (QuestState != State.Complete)
         {
             foreach (QuestCondition condition in stepStates)
             {
@@ -88,7 +101,7 @@ public class Quest : QuestModel
 
             if (stepCounter == stepStates.Count)
             {
-                questState = QuestState.Complete;
+                QuestState = State.Complete;
                 GiveRewards();
             }
         }
@@ -99,7 +112,11 @@ public class Quest : QuestModel
         // Debug.Log($"Step Counter: {stepCounter}");
     }
 
-    private void UpdateCondition<T>(T result, QuestCondition condition, List<QuestCondition> conditions)
+    private void UpdateCondition<T>(
+        T result,
+        QuestCondition condition,
+        List<QuestCondition> conditions
+    )
     {
         int categoryID = condition.model.conditionID;
         int conditionCategoryID = QuestConditionTypeModel.GetCategory(categoryID);
@@ -152,8 +169,10 @@ public class Quest : QuestModel
         switch (QuestConditionTypeModel.FindByID(condition.model.conditionID))
         {
             case "Learn skill":
-                if (actionType == ActionSkillController.ActionType.Learn &&
-                    result.player.skillManager.IsLearned(skill.ID))
+                if (
+                    actionType == ActionSkillController.ActionType.Learn
+                    && result.player.skillManager.IsLearned(skill.ID)
+                )
                 {
                     condition.state.Value = true;
                 }
@@ -164,8 +183,10 @@ public class Quest : QuestModel
 
                 break;
             case "Rank up skill":
-                if (actionType == ActionSkillController.ActionType.RankUp &&
-                    skill.IsRankOrGreater(condition.model.param2))
+                if (
+                    actionType == ActionSkillController.ActionType.RankUp
+                    && skill.IsRankOrGreater(condition.model.param2)
+                )
                 {
                     condition.state.Value = true;
                 }
@@ -209,8 +230,10 @@ public class Quest : QuestModel
 
     private void HandleCultivation(Actor actor, QuestCondition condition)
     {
-        if (int.Parse(condition.model.param1) <= actor.actorStage.Value &&
-            int.Parse(condition.model.param2) <= actor.actorSubstage.Value)
+        if (
+            int.Parse(condition.model.param1) <= actor.actorStage.Value
+            && int.Parse(condition.model.param2) <= actor.actorSubstage.Value
+        )
         {
             condition.state.Value = true;
         }
@@ -220,11 +243,16 @@ public class Quest : QuestModel
         }
     }
 
-    private void HandleNPC(ResultNPCInteractController result, QuestCondition condition,
-        List<QuestCondition> conditions)
+    private void HandleNPC(
+        ResultNPCInteractController result,
+        QuestCondition condition,
+        List<QuestCondition> conditions
+    )
     {
-        if (int.Parse(condition.model.param1) == result.action.NPCID &&
-            condition.model.stepID == stepCounter + 1)
+        if (
+            int.Parse(condition.model.param1) == result.action.NPCID
+            && condition.model.stepID == stepCounter + 1
+        )
         {
             condition.state.Value = true;
 
@@ -237,7 +265,9 @@ public class Quest : QuestModel
                 return;
             }
 
-            int nextCategoryID = QuestConditionTypeModel.GetCategory(nextCondition.model.conditionID);
+            int nextCategoryID = QuestConditionTypeModel.GetCategory(
+                nextCondition.model.conditionID
+            );
             string nextCategory = QuestConditionCategoryTypeModel.FindByID(nextCategoryID);
 
             if (nextCategory != "Dialogue")
@@ -246,15 +276,18 @@ public class Quest : QuestModel
             }
 
             GameObject dialogueBox = GameObject.Instantiate(
-                    GameManager.Instance.dialogueBoxPrefab,
-                    GameManager.Instance.canvas.transform);
+                GameManager.Instance.dialogueBoxPrefab,
+                GameManager.Instance.canvas.transform
+            );
 
             UI_DialogueBox script = dialogueBox.GetComponent<UI_DialogueBox>();
 
-            script.SetDialogue(dialogues
-                .Where(v => v.conversationID == int.Parse(condition.model.param1))
-                .OrderBy(v => v.ID)
-                .ToList());
+            script.SetDialogue(
+                dialogues
+                    .Where(v => v.conversationID == int.Parse(condition.model.param1))
+                    .OrderBy(v => v.ID)
+                    .ToList()
+            );
 
             nextCondition.state.Value = true;
         }
@@ -286,7 +319,7 @@ public class Quest : QuestModel
                     break;
                 default:
                     break;
-            }            
+            }
         }
     }
 
@@ -302,8 +335,12 @@ public class Quest : QuestModel
                 string rank = condition.param2;
 
                 // Learn if needed
-                action = new ActionSkillController(Player.Instance, this, skillID,
-                    ActionSkillController.ActionType.Learn);
+                action = new ActionSkillController(
+                    Player.Instance,
+                    this,
+                    skillID,
+                    ActionSkillController.ActionType.Learn
+                );
                 action.Handle();
 
                 Skill skill = Player.Instance.skillManager.Get(skillID);
@@ -314,8 +351,12 @@ public class Quest : QuestModel
                     skill.RankUp();
 
                     // Inform the quest and skill handlers of new updates...
-                    action = new ActionSkillController(Player.Instance, this, skillID,
-                        ActionSkillController.ActionType.RankUp);
+                    action = new ActionSkillController(
+                        Player.Instance,
+                        this,
+                        skillID,
+                        ActionSkillController.ActionType.RankUp
+                    );
                     result = new ResultSkillController(Player.Instance, this, skill, action);
                     result.Handle(true);
                 }
@@ -324,7 +365,6 @@ public class Quest : QuestModel
             }
             case "Rank up skill":
             {
-
                 break;
             }
             default:
@@ -340,8 +380,13 @@ public class Quest : QuestModel
                 int itemID = int.Parse(condition.param1);
                 int itemQuantity = int.Parse(condition.param2);
 
-                ActionItemController action = new ActionItemController(Player.Instance, this,
-                    itemID, itemQuantity, ActionItemController.ActionType.ItemAdd);
+                ActionItemController action = new ActionItemController(
+                    Player.Instance,
+                    this,
+                    itemID,
+                    itemQuantity,
+                    ActionItemController.ActionType.ItemAdd
+                );
                 action.Handle();
 
                 break;
@@ -356,7 +401,7 @@ public class Quest : QuestModel
         {
             Player.Instance.actorStage.Value = int.Parse(condition.param1);
         }
-         
+
         if (int.Parse(condition.param2) > Player.Instance.actorSubstage.Value)
         {
             Player.Instance.actorSubstage.Value = int.Parse(condition.param2);
