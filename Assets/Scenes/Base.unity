@@ -6413,6 +6413,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0.002741468
       objectReference: {fileID: 0}
+    - target: {fileID: 8838529207443003349, guid: 00eddd24416486943b31c8823a2be5ba, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 500
+      objectReference: {fileID: 0}
     - target: {fileID: 8881640736074613047, guid: 00eddd24416486943b31c8823a2be5ba, type: 3}
       propertyPath: m_SizeDelta.x
       value: -25

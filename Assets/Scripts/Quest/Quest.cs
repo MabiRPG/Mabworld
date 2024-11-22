@@ -102,7 +102,6 @@ public class Quest : QuestModel
             if (stepCounter == stepStates.Count)
             {
                 QuestState = State.Complete;
-                GiveRewards();
             }
         }
 
@@ -252,6 +251,7 @@ public class Quest : QuestModel
         if (
             int.Parse(condition.model.param1) == result.action.NPCID
             && condition.model.stepID == stepCounter + 1
+            && QuestState == State.InProgress
         )
         {
             condition.state.Value = true;
@@ -293,8 +293,13 @@ public class Quest : QuestModel
         }
     }
 
-    private void GiveRewards()
+    public void GiveRewards()
     {
+        if (QuestState != State.Complete)
+        {
+            return;
+        }
+
         foreach (QuestConditionModel condition in rewards)
         {
             int categoryID = condition.conditionID;

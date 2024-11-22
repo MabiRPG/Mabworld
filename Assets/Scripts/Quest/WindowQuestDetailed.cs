@@ -22,10 +22,15 @@ public class WindowQuestDetailed : MonoBehaviour
     [SerializeField]
     private GameObject rewardParent;
 
+    private Button claimRewardButton;
+
     private void Awake()
     {
         questConditionPrefabFactory = ScriptableObject.CreateInstance<PrefabFactory>();
         questConditionPrefabFactory.SetPrefab(questConditionPrefab);
+        claimRewardButton = transform
+            .parent.Find("Interact Parent/Claim Reward Button")
+            .GetComponent<Button>();
     }
 
     public void SetQuest(Quest quest)
@@ -38,6 +43,8 @@ public class WindowQuestDetailed : MonoBehaviour
         this.quest = quest;
         quest.OnStateChange += Draw;
         Draw();
+
+        claimRewardButton.onClick.AddListener(ClaimReward);
     }
 
     private void Draw()
@@ -107,5 +114,19 @@ public class WindowQuestDetailed : MonoBehaviour
 
         // Resets the content size fitter.
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)transform);
+
+        if (quest.QuestState == Quest.State.Complete)
+        {
+            claimRewardButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            claimRewardButton.gameObject.SetActive(false);
+        }
+    }
+
+    private void ClaimReward()
+    {
+        quest?.GiveRewards();
     }
 }

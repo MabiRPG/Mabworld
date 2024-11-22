@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using System.Data;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_DialogueBox : MonoBehaviour, IOverlay
+public class UI_DialogueBox : MonoBehaviour, IOverlay, IInputHandler
 {
+    public static UI_DialogueBox Instance = null;
+
     public int ID;
     public int questID;
     public int npcID;
     public string text;
     public int nextID;
-    public Sprite icon; 
+    public Sprite icon;
 
     private Image npc1Image;
     // private Image npc2Image;
@@ -29,6 +32,16 @@ public class UI_DialogueBox : MonoBehaviour, IOverlay
 
     private void Awake()
     {
+        // Singleton pattern
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         npc1Image = transform.Find("NPC 1 Image").GetComponent<Image>();
         // npc2Image = transform.Find("NPC 2 Image").GetComponent<Image>();
         npc1Name = transform.Find("NPC 1 Image/Image").GetComponentInChildren<TMP_Text>();
@@ -37,24 +50,6 @@ public class UI_DialogueBox : MonoBehaviour, IOverlay
 
         isFullscreenFocus = true;
         AddOverlayCaller();
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            if (overflowText == null)
-            {
-                index++;
-                SetText();
-            }
-            else
-            {
-                mainText.text = overflowText;
-                mainText.ForceMeshUpdate();
-                CheckTextOverflow();
-            }
-        }
     }
 
     public void SetDialogue(List<QuestDialogueModel> dialogues)
@@ -75,7 +70,7 @@ public class UI_DialogueBox : MonoBehaviour, IOverlay
 
         QuestDialogueModel dialogue = dialogues[index];
         NPCModel npc = new NPCModel(GameManager.Instance.Database, dialogue.npcID);
-        
+
         npc1Name.text = npc.name;
         npc1Image.sprite = npc.icon;
         mainText.text = dialogue.text;
@@ -118,5 +113,41 @@ public class UI_DialogueBox : MonoBehaviour, IOverlay
         GameObject obj = GameManager.Instance.overlay;
         Overlay overlay = obj.GetComponent<Overlay>();
         overlay.RemoveCaller(gameObject);
+    }
+
+    public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (overflowText == null)
+            {
+                index++;
+                SetText();
+            }
+            else
+            {
+                mainText.text = overflowText;
+                mainText.ForceMeshUpdate();
+                CheckTextOverflow();
+            }
+        }
+    }
+
+    public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            if (overflowText == null)
+            {
+                index++;
+                SetText();
+            }
+            else
+            {
+                mainText.text = overflowText;
+                mainText.ForceMeshUpdate();
+                CheckTextOverflow();
+            }
+        }
     }
 }

@@ -146,6 +146,10 @@ public class InputController : MonoBehaviour
         {
             WindowManager.Instance.HandleMouseInput(graphicHits, sceneHits);
         }
+        else if (UI_DialogueBox.Instance != null)
+        {
+            UI_DialogueBox.Instance.HandleMouseInput(graphicHits, sceneHits);
+        }
         // If the user has a 'fullscreen overlay' active (i.e. dialogue), then suppress
         // all other inputs.
         else if (GameManager.Instance.overlay.activeSelf)
@@ -166,6 +170,7 @@ public class InputController : MonoBehaviour
 
     private void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
+        // Special escape key...
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (Player.Instance.controller.Task != null)
@@ -182,6 +187,10 @@ public class InputController : MonoBehaviour
                     new MenuState(GameManager.Instance.gameStateMachine, "Base")
                 );
             }
+        }
+        else if (UI_DialogueBox.Instance != null)
+        {
+            UI_DialogueBox.Instance.HandleKeyboardInput(graphicHits, sceneHits);
         }
 
         foreach (KeyValuePair<KeyCode, InputSettings> pair in buttonKeybinds)
@@ -218,7 +227,7 @@ public class InputController : MonoBehaviour
     public void Reset()
     {
         AddButtonBind(
-            KeyCode.Z, 
+            KeyCode.Z,
             new InputSettings("Open Skills", OpenWindow<WindowSkill>, false)
         );
         AddButtonBind(
@@ -240,7 +249,7 @@ public class InputController : MonoBehaviour
         AddButtonBind(
             KeyCode.J,
             new InputSettings("Open Quest Log", OpenWindow<WindowQuest>, false)
-        ); 
+        );
     }
 
     private void OpenWindow<T>() where T : Window

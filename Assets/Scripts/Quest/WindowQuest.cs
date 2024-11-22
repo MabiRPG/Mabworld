@@ -1,9 +1,12 @@
+using UnityEngine;
+
 public class WindowQuest : Window
 {
     public static WindowQuest Instance = null;
 
     private WindowQuestRowList windowQuestRowList;
     private WindowQuestDetailed windowQuestDetailed;
+    private GameObject selectedQuestObj;
 
     /// <summary>
     ///     Initializes the object.
@@ -24,10 +27,14 @@ public class WindowQuest : Window
 
         windowQuestRowList = GetComponentInChildren<WindowQuestRowList>();
         windowQuestDetailed = GetComponentInChildren<WindowQuestDetailed>();
+
+        selectedQuestObj = body.transform.Find("Selected Quest").gameObject;
+        selectedQuestObj.SetActive(false);
     }
 
     public void SetQuestDetailed(Quest quest)
     {
+        selectedQuestObj.SetActive(true);
         windowQuestDetailed.SetQuest(quest);
     }
 }
