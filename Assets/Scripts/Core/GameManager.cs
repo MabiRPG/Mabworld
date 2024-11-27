@@ -9,10 +9,10 @@ using System.Collections;
 ///     This class handles all game-wide processing. Refer to Game.instance for the 
 ///     specific instance.
 /// </summary>
-public class GameManager : MonoBehaviour 
+public class GameManager : MonoBehaviour
 {
     // Global instance of GameManager
-    public static GameManager Instance {get; private set;}
+    public static GameManager Instance { get; private set; }
 
     public InputController inputController;
     public LightController lightController;
@@ -33,10 +33,10 @@ public class GameManager : MonoBehaviour
     public GameObject skillBubblePrefab;
     [SerializeField]
     public GameObject dialogueBoxPrefab;
-    
+
     // [Header("Window Prefabs")]
     public Canvas canvas;
-    
+
     // Loot system
     // public LootGenerator lootGenerator = new LootGenerator();
 
@@ -64,9 +64,10 @@ public class GameManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
 
-        //DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);
 
         inputController = GetComponent<InputController>();
         lightController = GetComponent<LightController>();

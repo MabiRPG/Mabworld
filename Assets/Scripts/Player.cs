@@ -50,9 +50,10 @@ public class Player : Actor, IInputHandler
         else
         {
             Destroy(gameObject);
+            return;
         }
 
-        //DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);
 
         controller = gameObject.AddComponent<PlayerController>();
         controller.Init(this);

@@ -25,6 +25,7 @@ public abstract class GameState : State
 
         GameManager.Instance.levelScene = default;
         GameManager.Instance.baseCamera.SetActive(true);
+        Player.Instance.GetComponentInChildren<Camera>(true).gameObject.SetActive(false);
         GameManager.Instance.canvas.worldCamera = Camera.main;
     }
 
@@ -42,7 +43,7 @@ public abstract class GameState : State
         LoadingScreen loadingScreen = GameManager.Instance.loadingArt.GetComponent<LoadingScreen>();
         loadingScreen.SetProgress(0);
 
-        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, 
+        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName,
             LoadSceneMode.Additive);
 
         while (!asyncOperation.isDone)
@@ -55,6 +56,7 @@ public abstract class GameState : State
         SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
 
         GameManager.Instance.baseCamera.SetActive(false);
+        Player.Instance.GetComponentInChildren<Camera>(true).gameObject.SetActive(true);
         GameManager.Instance.canvas.worldCamera = Camera.main;
         GameManager.Instance.minimap.gameObject.SetActive(true);
 

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class AudioController : MonoBehaviour
 {
-    public static AudioController Instance {get; private set;}
+    public static AudioController Instance { get; private set; }
 
     public AudioSource globalAudio;
     private AudioSource playerAudio;
