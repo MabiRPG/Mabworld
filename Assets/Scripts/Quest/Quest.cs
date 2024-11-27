@@ -27,6 +27,7 @@ public class Quest : QuestModel
         NeedPrerequisite,
         InProgress,
         Complete,
+        RewardObtained
     }
 
     private State _questState;
@@ -65,6 +66,11 @@ public class Quest : QuestModel
 
     public void Update<T>(T result)
     {
+        if (QuestState == State.RewardObtained)
+        {
+            return;
+        }
+
         if (QuestState == State.NeedPrerequisite)
         {
             foreach (QuestCondition condition in prerequisiteStates)
@@ -308,13 +314,9 @@ public class Quest : QuestModel
             return;
         }
 
-        if (result.quest.QuestState == State.Complete)
+        if (result.quest.QuestState == State.RewardObtained)
         {
             condition.state.Value = true;
-        }
-        else
-        {
-            condition.state.Value = false;
         }
     }
 
@@ -352,7 +354,7 @@ public class Quest : QuestModel
             }
         }
 
-        rewards.Clear();
+        QuestState = State.RewardObtained;
     }
 
     private void GiveSkill(QuestConditionModel condition)

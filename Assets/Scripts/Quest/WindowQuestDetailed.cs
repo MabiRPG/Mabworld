@@ -147,7 +147,6 @@ public class WindowQuestDetailed : MonoBehaviour
 
         ActionQuestController action = new ActionQuestController(Player.Instance,
             this, quest);
-
         action.OnSuccess += () =>
         {
             claimRewardButton.gameObject.SetActive(false);
