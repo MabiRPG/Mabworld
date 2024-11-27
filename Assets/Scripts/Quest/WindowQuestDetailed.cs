@@ -8,7 +8,9 @@ public class WindowQuestDetailed : MonoBehaviour
 
     [SerializeField]
     private GameObject questConditionPrefab;
-    private PrefabFactory questConditionPrefabFactory;
+    private PrefabFactory questPrerequisitePrefabFactory;
+    private PrefabFactory questStepPrefabFactory;
+    private PrefabFactory questRewardPrefabFactory;
 
     [SerializeField]
     private TMP_Text qName;
@@ -26,8 +28,15 @@ public class WindowQuestDetailed : MonoBehaviour
 
     private void Awake()
     {
-        questConditionPrefabFactory = ScriptableObject.CreateInstance<PrefabFactory>();
-        questConditionPrefabFactory.SetPrefab(questConditionPrefab);
+        questPrerequisitePrefabFactory = ScriptableObject.CreateInstance<PrefabFactory>();
+        questPrerequisitePrefabFactory.SetPrefab(questConditionPrefab);
+
+        questStepPrefabFactory = ScriptableObject.CreateInstance<PrefabFactory>();
+        questStepPrefabFactory.SetPrefab(questConditionPrefab);
+
+        questRewardPrefabFactory = ScriptableObject.CreateInstance<PrefabFactory>();
+        questRewardPrefabFactory.SetPrefab(questConditionPrefab);
+
         claimRewardButton = transform
             .parent.Find("Interact Parent/Claim Reward Button")
             .GetComponent<Button>();
@@ -49,6 +58,10 @@ public class WindowQuestDetailed : MonoBehaviour
 
     private void Draw()
     {
+        questPrerequisitePrefabFactory.SetActiveAll(false);
+        questStepPrefabFactory.SetActiveAll(false);
+        questRewardPrefabFactory.SetActiveAll(false);
+
         qName.text = quest.name;
 
         if (quest.QuestState == Quest.State.NeedPrerequisite)
@@ -65,7 +78,7 @@ public class WindowQuestDetailed : MonoBehaviour
                     continue;
                 }
 
-                GameObject obj = questConditionPrefabFactory.GetFree(
+                GameObject obj = questPrerequisitePrefabFactory.GetFree(
                     condition,
                     prerequisiteParent.transform
                 );
@@ -92,7 +105,7 @@ public class WindowQuestDetailed : MonoBehaviour
                     continue;
                 }
 
-                GameObject obj = questConditionPrefabFactory.GetFree(
+                GameObject obj = questStepPrefabFactory.GetFree(
                     condition,
                     stepParent.transform
                 );
@@ -107,7 +120,7 @@ public class WindowQuestDetailed : MonoBehaviour
 
         foreach (QuestCondition condition in quest.rewardStates)
         {
-            GameObject obj = questConditionPrefabFactory.GetFree(condition, rewardParent.transform);
+            GameObject obj = questRewardPrefabFactory.GetFree(condition, rewardParent.transform);
             WindowQuestCondition script = obj.GetComponent<WindowQuestCondition>();
             script.SetCondition(condition);
         }
@@ -128,5 +141,7 @@ public class WindowQuestDetailed : MonoBehaviour
     private void ClaimReward()
     {
         quest?.GiveRewards();
+        claimRewardButton.gameObject.SetActive(false);
+        quest.OnStateChange -= Draw;
     }
 }

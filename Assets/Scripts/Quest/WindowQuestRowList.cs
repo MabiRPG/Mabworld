@@ -23,7 +23,17 @@ public class WindowQuestRowList : MonoBehaviour
 
         foreach (Quest quest in Player.Instance.quests.Values)
         {
-            GameObject obj = questRowPrefabFactory.GetFree(quest, transform.Find("Viewport/Content"));
+            GameObject obj;
+
+            if (quest.typeID == 1)
+            {
+                obj = questRowPrefabFactory.GetFree(quest, mainQuestParent.transform);
+            }
+            else
+            {
+                obj = questRowPrefabFactory.GetFree(quest, sideQuestParent.transform);
+            }
+
             WindowQuestRow row = obj.GetComponent<WindowQuestRow>();
             row.SetQuest(quest);
         }

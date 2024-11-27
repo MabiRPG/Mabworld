@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using Unity.Burst.Intrinsics;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -19,6 +18,7 @@ public class QuestWindowEditor : EditorWindow
     private Button questAddButton;
 
     private TextField selectedName;
+    private DropdownField selectedType;
     private MultiColumnListView prerequisiteView;
     private MultiColumnListView stepView;
     private MultiColumnListView rewardView;
@@ -49,7 +49,7 @@ public class QuestWindowEditor : EditorWindow
     private void Initialize()
     {
         database = new DatabaseManager("mabinogi.db");
-        
+
         DataTable dt = database.Read("SELECT id FROM quest;");
         quests = new List<QuestModel>();
         questCounter = dt.Rows.Count;
@@ -58,8 +58,8 @@ public class QuestWindowEditor : EditorWindow
         {
             int ID = int.Parse(row["id"].ToString());
             QuestModel quest = new QuestModel(database, ID);
-            quests.Add(quest);            
-        }    
+            quests.Add(quest);
+        }
 
         dt = database.Read("SELECT id FROM skill;");
         skills = new List<SkillModel>();
@@ -127,6 +127,13 @@ public class QuestWindowEditor : EditorWindow
         {
             selectedQuest.name = e.newValue;
             questView.RefreshItems();
+        });
+
+        selectedType = rootVisualElement.Q<DropdownField>("selectedType");
+        selectedType.choices = QuestTypeModel.types.Values.ToList();
+        selectedType.RegisterValueChangedCallback(e =>
+        {
+            selectedQuest.typeID = QuestTypeModel.FindByName(e.newValue);
         });
 
         prerequisiteAddButton = rootVisualElement.Q<Button>("prerequisiteAddButton");
@@ -204,7 +211,7 @@ public class QuestWindowEditor : EditorWindow
             dropdown.choices = QuestConditionTypeModel.types.Values.ToList();
             dropdown.RegisterValueChangedCallback(e =>
             {
-                QuestConditionModel condition = 
+                QuestConditionModel condition =
                     (QuestConditionModel)listView.itemsSource[(int)dropdown.userData];
                 condition.conditionID = QuestConditionTypeModel.FindByName(e.newValue);
                 listView.RefreshItems();
@@ -218,7 +225,7 @@ public class QuestWindowEditor : EditorWindow
             (item as DropdownField).SetValueWithoutNotify(
                 QuestConditionTypeModel.FindByID(condition.conditionID));
             (item as DropdownField).userData = index;
-        };       
+        };
 
         listView.columns["condition"].makeCell = () =>
         {
@@ -226,7 +233,7 @@ public class QuestWindowEditor : EditorWindow
             dropdown.choices = QuestConditionTypeModel.types.Values.ToList();
             dropdown.RegisterValueChangedCallback(e =>
             {
-                QuestConditionModel condition = 
+                QuestConditionModel condition =
                     (QuestConditionModel)listView.itemsSource[(int)dropdown.userData];
                 condition.conditionID = QuestConditionTypeModel.FindByName(e.newValue);
                 listView.RefreshItems();
@@ -240,7 +247,7 @@ public class QuestWindowEditor : EditorWindow
             (item as DropdownField).SetValueWithoutNotify(
                 QuestConditionTypeModel.FindByID(condition.conditionID));
             (item as DropdownField).userData = index;
-        }; 
+        };
 
         listView.columns["param1"].makeCell = () => new VisualElement();
         listView.columns["param1"].bindCell = (item, index) =>
@@ -253,175 +260,175 @@ public class QuestWindowEditor : EditorWindow
             switch (QuestConditionCategoryTypeModel.FindByID(categoryID))
             {
                 case "Skill":
-                {
-                    DropdownField dropdown = new DropdownField();
+                    {
+                        DropdownField dropdown = new DropdownField();
 
-                    dropdown.SetValueWithoutNotify(skills
+                        dropdown.SetValueWithoutNotify(skills
+                                .Where(v => v.ID == int.Parse(condition.param1))
+                                .Select(v => v.name)
+                                .First());
+                        dropdown.choices = skills
+                            .Select(v => v.name)
+                            .OrderBy(v => v)
+                            .ToList();
+                        dropdown.RegisterValueChangedCallback(e =>
+                        {
+                            condition.param1 = skills
+                                .Where(v => v.name == e.newValue)
+                                .Select(v => v.ID)
+                                .First()
+                                .ToString();
+                        });
+
+                        item.Add(dropdown);
+
+                        break;
+                    }
+                case "NPC":
+                    {
+                        DropdownField dropdown = new DropdownField();
+
+                        dropdown.SetValueWithoutNotify(npcs
                             .Where(v => v.ID == int.Parse(condition.param1))
                             .Select(v => v.name)
                             .First());
-                    dropdown.choices = skills
-                        .Select(v => v.name)
-                        .OrderBy(v => v)
-                        .ToList();
-                    dropdown.RegisterValueChangedCallback(e =>
-                    {
-                        condition.param1 = skills
-                            .Where(v => v.name == e.newValue)
-                            .Select(v => v.ID)
-                            .First()
-                            .ToString();
-                    });
-
-                    item.Add(dropdown);
-
-                    break;
-                }
-                case "NPC":
-                {
-                    DropdownField dropdown = new DropdownField();
-
-                    dropdown.SetValueWithoutNotify(npcs
-                        .Where(v => v.ID == int.Parse(condition.param1))
-                        .Select(v => v.name)
-                        .First());
-                    dropdown.choices = npcs
-                        .Select(v => v.name)
-                        .OrderBy(v => v)
-                        .ToList();
-                    dropdown.RegisterValueChangedCallback(e =>
-                    {
-                        condition.param1 = npcs
-                            .Where(v => v.name == e.newValue)
-                            .Select(v => v.ID)
-                            .First()
-                            .ToString();
-                    });
-
-                    item.Add(dropdown);
-
-                    break;
-                }
-                case "Cultivation stage":
-                {
-                    DropdownField dropdown = new DropdownField();
-
-                    dropdown.SetValueWithoutNotify(CultivationStageModel.stages
-                        .Where(v => v.Value.ID == int.Parse(condition.param1))
-                        .Select(v => v.Value.name)
-                        .First());
-                    dropdown.choices = CultivationStageModel.stages
-                        .OrderBy(v => v.Value.ID)
-                        .Select(v => v.Value.name)
-                        .Distinct()
-                        .ToList();
-                    dropdown.RegisterValueChangedCallback(e =>
-                    {
-                        condition.param1 = CultivationStageModel.stages
-                            .Where(v => v.Value.name == e.newValue)
-                            .Select(v => v.Value.ID)
-                            .First()
-                            .ToString();
-                        listView.RefreshItems();
-                    });
-
-                    item.Add(dropdown);
-
-                    break;
-                }
-                case "Item":
-                {
-                    DropdownField dropdown = new DropdownField();
-
-                    dropdown.SetValueWithoutNotify(items
-                        .Where(v => v.ID == int.Parse(condition.param1))
-                        .Select(v => v.name)
-                        .First());
-                    dropdown.choices = items
-                        .Select(v => v.name)
-                        .OrderBy(v => v)
-                        .ToList();
-                    dropdown.RegisterValueChangedCallback(e =>
-                    {
-                        condition.param1 = items
-                            .Where(v => v.name == e.newValue)
-                            .Select(v => v.ID)
-                            .First()
-                            .ToString();
-                    });
-
-                    item.Add(dropdown);
-
-                    break;
-                }
-                case "Dialogue":
-                {
-                    DropdownField dropdown = new DropdownField();
-
-                    dropdown.SetValueWithoutNotify(condition.param1.ToString());
-                    conversationID = int.Parse(condition.param1);
-                    dropdown.choices = selectedQuest.dialogues
-                        .Select(v => v.conversationID.ToString())
-                        .Distinct()
-                        .ToList();
-                    dropdown.choices.Add("Add new dialogue");
-                    dropdown.RegisterValueChangedCallback(e =>
-                    {
-                        if (e.newValue == "Add new dialogue")
+                        dropdown.choices = npcs
+                            .Select(v => v.name)
+                            .OrderBy(v => v)
+                            .ToList();
+                        dropdown.RegisterValueChangedCallback(e =>
                         {
-                            int max = 0;
+                            condition.param1 = npcs
+                                .Where(v => v.name == e.newValue)
+                                .Select(v => v.ID)
+                                .First()
+                                .ToString();
+                        });
 
-                            if (selectedQuest.dialogues.Count > 0)
+                        item.Add(dropdown);
+
+                        break;
+                    }
+                case "Cultivation stage":
+                    {
+                        DropdownField dropdown = new DropdownField();
+
+                        dropdown.SetValueWithoutNotify(CultivationStageModel.stages
+                            .Where(v => v.Value.ID == int.Parse(condition.param1))
+                            .Select(v => v.Value.name)
+                            .First());
+                        dropdown.choices = CultivationStageModel.stages
+                            .OrderBy(v => v.Value.ID)
+                            .Select(v => v.Value.name)
+                            .Distinct()
+                            .ToList();
+                        dropdown.RegisterValueChangedCallback(e =>
+                        {
+                            condition.param1 = CultivationStageModel.stages
+                                .Where(v => v.Value.name == e.newValue)
+                                .Select(v => v.Value.ID)
+                                .First()
+                                .ToString();
+                            listView.RefreshItems();
+                        });
+
+                        item.Add(dropdown);
+
+                        break;
+                    }
+                case "Item":
+                    {
+                        DropdownField dropdown = new DropdownField();
+
+                        dropdown.SetValueWithoutNotify(items
+                            .Where(v => v.ID == int.Parse(condition.param1))
+                            .Select(v => v.name)
+                            .First());
+                        dropdown.choices = items
+                            .Select(v => v.name)
+                            .OrderBy(v => v)
+                            .ToList();
+                        dropdown.RegisterValueChangedCallback(e =>
+                        {
+                            condition.param1 = items
+                                .Where(v => v.name == e.newValue)
+                                .Select(v => v.ID)
+                                .First()
+                                .ToString();
+                        });
+
+                        item.Add(dropdown);
+
+                        break;
+                    }
+                case "Dialogue":
+                    {
+                        DropdownField dropdown = new DropdownField();
+
+                        dropdown.SetValueWithoutNotify(condition.param1.ToString());
+                        conversationID = int.Parse(condition.param1);
+                        dropdown.choices = selectedQuest.dialogues
+                            .Select(v => v.conversationID.ToString())
+                            .Distinct()
+                            .ToList();
+                        dropdown.choices.Add("Add new dialogue");
+                        dropdown.RegisterValueChangedCallback(e =>
+                        {
+                            if (e.newValue == "Add new dialogue")
                             {
-                                max = selectedQuest.dialogues.Max(v => v.conversationID);
+                                int max = 0;
+
+                                if (selectedQuest.dialogues.Count > 0)
+                                {
+                                    max = selectedQuest.dialogues.Max(v => v.conversationID);
+                                }
+
+                                QuestDialogueModel dialogue = new QuestDialogueModel(database,
+                                    1, max + 1, selectedQuest.ID);
+                                dialogue.text = "";
+                                dialogue.npcID = 1;
+                                selectedQuest.dialogues.Add(dialogue);
+
+                                dropdown.value = (max + 1).ToString();
+                                condition.param1 = (max + 1).ToString();
+                                conversationID = max + 1;
+                            }
+                            else
+                            {
+                                condition.param1 = e.newValue;
+                                conversationID = int.Parse(e.newValue);
                             }
 
-                            QuestDialogueModel dialogue = new QuestDialogueModel(database,
-                                1, max + 1, selectedQuest.ID);
-                            dialogue.text = "";
-                            dialogue.npcID = 1;
-                            selectedQuest.dialogues.Add(dialogue);
+                            listView.RefreshItems();
+                            dialogueView.RefreshItems();
+                        });
 
-                            dropdown.value = (max + 1).ToString();
-                            condition.param1 = (max + 1).ToString();
-                            conversationID = max + 1;
-                        }
-                        else
-                        {
-                            condition.param1 = e.newValue;
-                            conversationID = int.Parse(e.newValue);
-                        }
+                        item.Add(dropdown);
 
-                        listView.RefreshItems();
-                        dialogueView.RefreshItems();
-                    });
-
-                    item.Add(dropdown);
-
-                    break;
-                }
+                        break;
+                    }
                 case "Quest":
-                {
-                    DropdownField dropdown = new DropdownField();
-
-                    dropdown.SetValueWithoutNotify(quests
-                        .Where(v => v.ID == int.Parse(condition.param1))
-                        .Select(v => v.name)
-                        .First());
-                    dropdown.choices = quests.Select(v => v.name).ToList();
-                    dropdown.RegisterValueChangedCallback(e =>
                     {
-                        condition.param1 = quests
-                            .Where(v => v.name == e.newValue)
-                            .Select(v => v.ID)
-                            .First()
-                            .ToString();
-                    });
+                        DropdownField dropdown = new DropdownField();
 
-                    item.Add(dropdown);
+                        dropdown.SetValueWithoutNotify(quests
+                            .Where(v => v.ID == int.Parse(condition.param1))
+                            .Select(v => v.name)
+                            .First());
+                        dropdown.choices = quests.Select(v => v.name).ToList();
+                        dropdown.RegisterValueChangedCallback(e =>
+                        {
+                            condition.param1 = quests
+                                .Where(v => v.name == e.newValue)
+                                .Select(v => v.ID)
+                                .First()
+                                .ToString();
+                        });
 
-                    break;
-                }
+                        item.Add(dropdown);
+
+                        break;
+                    }
                 default:
                     break;
             }
@@ -438,109 +445,109 @@ public class QuestWindowEditor : EditorWindow
             switch (QuestConditionCategoryTypeModel.FindByID(categoryID))
             {
                 case "Skill":
-                {
-                    DropdownField dropdown = new DropdownField();
-
-                    dropdown.SetValueWithoutNotify(condition.param2);
-                    dropdown.choices = SkillModel.ranks;
-                    dropdown.RegisterValueChangedCallback(e =>
                     {
-                        condition.param2 = e.newValue;
-                    });
+                        DropdownField dropdown = new DropdownField();
 
-                    item.Add(dropdown);
+                        dropdown.SetValueWithoutNotify(condition.param2);
+                        dropdown.choices = SkillModel.ranks;
+                        dropdown.RegisterValueChangedCallback(e =>
+                        {
+                            condition.param2 = e.newValue;
+                        });
 
-                    break;
-                }
-                case "Cultivation stage":
-                {
-                    DropdownField dropdown = new DropdownField();
+                        item.Add(dropdown);
 
-                    dropdown.SetValueWithoutNotify(CultivationStageModel.stages
-                        [(int.Parse(condition.param1), int.Parse(condition.param2))].substageName);
-                    dropdown.choices = CultivationStageModel.stages
-                        .Where(v => v.Value.ID == int.Parse(condition.param1))
-                        .OrderBy(v => v.Value.substageID)
-                        .Select(v => v.Value.substageName)
-                        .ToList();
-                    dropdown.RegisterValueChangedCallback(e =>
-                    {
-                        condition.param2 = CultivationStageModel.stages
-                            .Where(v => v.Value.ID == int.Parse(condition.param1) &&
-                                v.Value.substageName == e.newValue)
-                            .Select(v => v.Value.substageID)
-                            .First()
-                            .ToString();
-                    });
-
-                    // dropdown.SetValueWithoutNotify(CultivationSubstageModel
-                    //     .substages[(int.Parse(condition.param1), int.Parse(condition.param2))]);
-                    // dropdown.choices = CultivationSubstageModel.substages
-                    //     .Where(v => v.Key.Item1 == int.Parse(condition.param1))
-                    //     .OrderBy(v => v.Key.Item2)
-                    //     .Select(v => v.Value)
-                    //     .ToList();
-                    // dropdown.RegisterValueChangedCallback(e =>
-                    // {
-                    //     condition.param2 = CultivationSubstageModel.substages
-                    //         .Where(v => v.Value == e.newValue)
-                    //         .Select(v => v.Key.Item2)
-                    //         .First()
-                    //         .ToString();
-                    // });
-
-                    item.Add(dropdown);
-
-                    break;
-                }
-                case "Item":
-                {
-                    IntegerField field = new IntegerField();
-
-                    if (!int.TryParse(condition.param2, out _))
-                    {
-                        condition.param2 = "1";
+                        break;
                     }
-
-                    field.SetValueWithoutNotify(int.Parse(condition.param2));
-                    field.RegisterValueChangedCallback(e =>
+                case "Cultivation stage":
                     {
-                        condition.param2 = e.newValue.ToString();
-                    });
+                        DropdownField dropdown = new DropdownField();
 
-                    item.Add(field);
-
-                    break;
-                }
-                case "Dialogue":
-                {
-                    dialogueView = CreateDialogueView();
-                    item.Add(dialogueView);
-
-                    Button button = new Button();
-                    button.text = "Add new line";
-                    button.RegisterCallback<ClickEvent>(e =>
-                    {
-                        int max = selectedQuest.dialogues
-                            .Where(v => v.conversationID == conversationID)
-                            .Max(v => v.ID);
-                        QuestDialogueModel dialogue = new QuestDialogueModel(database, max + 1,
-                            conversationID, selectedQuest.ID);
-                        dialogue.text = "";
-                        dialogue.npcID = 1;
-
-                        selectedQuest.dialogues.Add(dialogue);
-                        dialogueView.itemsSource = selectedQuest.dialogues
-                            .Where(v => v.conversationID == conversationID)
+                        dropdown.SetValueWithoutNotify(CultivationStageModel.stages
+                            [(int.Parse(condition.param1), int.Parse(condition.param2))].substageName);
+                        dropdown.choices = CultivationStageModel.stages
+                            .Where(v => v.Value.ID == int.Parse(condition.param1))
+                            .OrderBy(v => v.Value.substageID)
+                            .Select(v => v.Value.substageName)
                             .ToList();
+                        dropdown.RegisterValueChangedCallback(e =>
+                        {
+                            condition.param2 = CultivationStageModel.stages
+                                .Where(v => v.Value.ID == int.Parse(condition.param1) &&
+                                    v.Value.substageName == e.newValue)
+                                .Select(v => v.Value.substageID)
+                                .First()
+                                .ToString();
+                        });
+
+                        // dropdown.SetValueWithoutNotify(CultivationSubstageModel
+                        //     .substages[(int.Parse(condition.param1), int.Parse(condition.param2))]);
+                        // dropdown.choices = CultivationSubstageModel.substages
+                        //     .Where(v => v.Key.Item1 == int.Parse(condition.param1))
+                        //     .OrderBy(v => v.Key.Item2)
+                        //     .Select(v => v.Value)
+                        //     .ToList();
+                        // dropdown.RegisterValueChangedCallback(e =>
+                        // {
+                        //     condition.param2 = CultivationSubstageModel.substages
+                        //         .Where(v => v.Value == e.newValue)
+                        //         .Select(v => v.Key.Item2)
+                        //         .First()
+                        //         .ToString();
+                        // });
+
+                        item.Add(dropdown);
+
+                        break;
+                    }
+                case "Item":
+                    {
+                        IntegerField field = new IntegerField();
+
+                        if (!int.TryParse(condition.param2, out _))
+                        {
+                            condition.param2 = "1";
+                        }
+
+                        field.SetValueWithoutNotify(int.Parse(condition.param2));
+                        field.RegisterValueChangedCallback(e =>
+                        {
+                            condition.param2 = e.newValue.ToString();
+                        });
+
+                        item.Add(field);
+
+                        break;
+                    }
+                case "Dialogue":
+                    {
+                        dialogueView = CreateDialogueView();
+                        item.Add(dialogueView);
+
+                        Button button = new Button();
+                        button.text = "Add new line";
+                        button.RegisterCallback<ClickEvent>(e =>
+                        {
+                            int max = selectedQuest.dialogues
+                                .Where(v => v.conversationID == conversationID)
+                                .Max(v => v.ID);
+                            QuestDialogueModel dialogue = new QuestDialogueModel(database, max + 1,
+                                conversationID, selectedQuest.ID);
+                            dialogue.text = "";
+                            dialogue.npcID = 1;
+
+                            selectedQuest.dialogues.Add(dialogue);
+                            dialogueView.itemsSource = selectedQuest.dialogues
+                                .Where(v => v.conversationID == conversationID)
+                                .ToList();
+                            dialogueView.RefreshItems();
+                        });
+
+                        item.Add(button);
                         dialogueView.RefreshItems();
-                    });
 
-                    item.Add(button);
-                    dialogueView.RefreshItems();
-
-                    break;
-                }
+                        break;
+                    }
                 default:
                     break;
             }
@@ -860,7 +867,7 @@ public class QuestWindowEditor : EditorWindow
         {
             (item as Button).userData = index;
         };
-        
+
         CreateQuestInfoView(rewardView);
 
         rewardAddButton.clicked += () =>
@@ -890,6 +897,7 @@ public class QuestWindowEditor : EditorWindow
         selectedQuest = (QuestModel)questView.itemsSource[index];
 
         selectedName.SetValueWithoutNotify(selectedQuest.name);
+        selectedType.SetValueWithoutNotify(QuestTypeModel.FindByID(selectedQuest.typeID));
 
         prerequisiteView.itemsSource = selectedQuest.prerequisites;
         prerequisiteView.RefreshItems();
@@ -904,7 +912,7 @@ public class QuestWindowEditor : EditorWindow
     private void SaveQuests()
     {
         database.Write(@"DELETE FROM quest; DELETE FROM quest_prerequisite;
-            DELETE FROM quest_step; DELETE FROM quest_reward; DELETE FROM quest_dialogue;", 
+            DELETE FROM quest_step; DELETE FROM quest_reward; DELETE FROM quest_dialogue;",
             new Dictionary<string, ModelFieldReference>());
 
         foreach (QuestModel quest in quests)

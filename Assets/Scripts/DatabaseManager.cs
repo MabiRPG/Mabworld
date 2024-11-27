@@ -26,6 +26,7 @@ public class DatabaseManager
         this.databaseName = databaseName;
         InitializeTypeModel<SkillStatTypeModel>("skill_stat_type");
         InitializeTypeModel<TrainingMethodTypeModel>("training_method_type");
+        InitializeTypeModel<QuestTypeModel>("quest_type");
         InitializeTypeModel<QuestConditionTypeModel>("quest_condition_type");
         InitializeTypeModel<QuestConditionCategoryTypeModel>("quest_condition_category_type");
         InitializeTypeModel<ItemTypeModel>("item_category_type");
@@ -39,7 +40,7 @@ public class DatabaseManager
             int ID = int.Parse(row["id"].ToString());
             int substageID = int.Parse(row["substage_id"].ToString());
             new CultivationStageModel(this, ID, substageID);
-        }  
+        }
 
         dt = Read("SELECT id FROM map_resource;");
         mapResourceModels = new List<MapResourceModel>();
@@ -49,7 +50,7 @@ public class DatabaseManager
             int ID = int.Parse(row["id"].ToString());
             MapResourceModel model = new MapResourceModel(this, ID);
             mapResourceModels.Add(model);
-        }  
+        }
 
         dt = Read("SELECT id FROM npc;");
         npcModels = new List<NPCModel>();
@@ -59,7 +60,7 @@ public class DatabaseManager
             int ID = int.Parse(row["id"].ToString());
             NPCModel model = new NPCModel(this, ID);
             npcModels.Add(model);
-        }  
+        }
     }
 
     private void InitializeTypeModel<T>(string tableName) where T : TypeModel<T>
@@ -124,7 +125,7 @@ public class DatabaseManager
         // Saves it to cache.
         cache[cacheKey] = dt;
 
-        return dt;        
+        return dt;
     }
 
     /// <summary>
@@ -232,7 +233,7 @@ public class DatabaseManager
 
     public void ParseRow(DataRow row, Dictionary<string, ModelFieldReference> fieldMap)
     {
-        foreach(DataColumn column in row.Table.Columns)
+        foreach (DataColumn column in row.Table.Columns)
         {
             if (!fieldMap.ContainsKey(column.ColumnName))
             {
@@ -240,7 +241,7 @@ public class DatabaseManager
             }
 
             var field = fieldMap[column.ColumnName];
-            
+
             // Gets the value in the table, converts it to a string
             string s = row[column].ToString();
             object value;
@@ -253,7 +254,7 @@ public class DatabaseManager
 
             // Checks the type of the class field, and converts the database value
             // to the appropriate type
-            switch(field.Type())
+            switch (field.Type())
             {
                 case Type t when t == typeof(int):
                     value = int.Parse(s);
@@ -273,7 +274,7 @@ public class DatabaseManager
                     }
                     else
                     {
-                        value = false; 
+                        value = false;
                     }
 
                     break;
@@ -314,7 +315,7 @@ public class DatabaseManager
             // Sets the class field to the value.
             // Debug.Log($"{column.ColumnName}, {value}, {value.GetType()}, {field.Type()}");
             field.Set(value);
-        }        
+        }
     }
 
     /// <summary>
@@ -324,15 +325,15 @@ public class DatabaseManager
     /// <param name="row">DataRow result from querying the database.</param>
     /// <param name="model"></param>
     /// <param name="customMap"></param>
-    public void ParseRow(DataRow row, object model, 
+    public void ParseRow(DataRow row, object model,
         params (string Key, string FieldName)[] customMap)
     {
-        foreach(DataColumn column in row.Table.Columns)
+        foreach (DataColumn column in row.Table.Columns)
         {
             FieldInfo field = null;
-            
+
             // Iterate over custom map to see if name exists, if so, use custom fieldname.
-            foreach(var (Key, FieldName) in customMap)
+            foreach (var (Key, FieldName) in customMap)
             {
                 if (Key == column.ColumnName)
                 {
@@ -348,7 +349,7 @@ public class DatabaseManager
                 string name = ConvertSnakeCaseToCamelCase(column.ColumnName);
                 // Finds the field in the class model using the default naming convention, 
                 // if it exists
-                field = model.GetType().GetField(name, 
+                field = model.GetType().GetField(name,
                     BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
 
                 // Continues if nothing can be found.
@@ -370,7 +371,7 @@ public class DatabaseManager
 
             // Checks the type of the class field, and converts the database value
             // to the appropriate type
-            switch(field.FieldType)
+            switch (field.FieldType)
             {
                 case Type t when t == typeof(int):
                     value = int.Parse(s);
@@ -390,7 +391,7 @@ public class DatabaseManager
                     }
                     else
                     {
-                        value = false; 
+                        value = false;
                     }
 
                     break;

@@ -96,6 +96,14 @@ public class WindowQuestCondition : MonoBehaviour
                 nameBuilder.AppendFormat(npcName);
 
                 break;
+            case "Quest":
+                QuestModel quest = new QuestModel(
+                    GameManager.Instance.Database,
+                    int.Parse(condition.model.param1));
+
+                stateBuilder.AppendFormat(quest.name);
+
+                break;
             default:
                 break;
         }

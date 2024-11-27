@@ -1467,8 +1467,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   questRowPrefab: {fileID: 1810678231714800423, guid: 77d7204fdaa9f7742b0f2c9f8752abaf, type: 3}
-  mainQuestParent: {fileID: 0}
-  sideQuestParent: {fileID: 0}
+  mainQuestParent: {fileID: 4453289374886283330}
+  sideQuestParent: {fileID: 1895212939689576257}
 --- !u!1 &4183693569120059316
 GameObject:
   m_ObjectHideFlags: 0

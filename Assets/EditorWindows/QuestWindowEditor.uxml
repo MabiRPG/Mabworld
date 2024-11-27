@@ -16,6 +16,7 @@
         <ui:VisualElement>
             <ui:ScrollView>
                 <ui:TextField label="Name:" name="selectedName" multiline="false" style="white-space: normal; flex-wrap: wrap;" />
+                <ui:DropdownField label="Type:" name="selectedType" />
                 <ui:Label tabindex="-1" text="Prerequisites" parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-top: 25px; align-self: center; font-size: 18px;" />
                 <ui:MultiColumnListView fixed-item-height="20" name="prerequisiteView" sorting-enabled="true" selection-type="None" style="flex-grow: 0; flex-shrink: 1; margin-top: 0; margin-left: 0; margin-bottom: 0; width: auto;">
                     <ui:Columns>

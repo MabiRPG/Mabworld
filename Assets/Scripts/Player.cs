@@ -69,6 +69,7 @@ public class Player : Actor, IInputHandler
 
         Quest quest = new Quest(1);
         quests.Add(1, quest);
+        quests.Add(2, new Quest(2));
 
         int skillLimit = 14;
 
@@ -82,7 +83,7 @@ public class Player : Actor, IInputHandler
         skillManager.Skills[2].AddXP(150);
 
         ActionItemController actionItem = new ActionItemController(this, this, 1, 50);
-        actionItem.Handle(); 
+        actionItem.Handle();
     }
 
     public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
@@ -159,12 +160,12 @@ public class Player : Actor, IInputHandler
             skill.RankUp();
             // actorLevel.Value += apCost;
 
-            foreach(KeyValuePair<string, StatManager> stat in primaryStats)
+            foreach (KeyValuePair<string, StatManager> stat in primaryStats)
             {
                 int statAdd = (int)skill.GetStatBackwardDiff(stat.Key);
                 stat.Value.Value += statAdd;
             }
-        }        
+        }
     }
 
     /// <summary>
@@ -204,17 +205,17 @@ public class Player : Actor, IInputHandler
     ///     Calculates the lucky resource gain factor
     /// </summary>
     /// <returns>Resource gain multiplier</returns>
-    public int CalculateLuckyGainMultiplier() 
+    public int CalculateLuckyGainMultiplier()
     {
         float lucky = (float)actorLuck.Value / luckyFactor;
         float hugeLucky = (float)actorLuck.Value / hugeLuckyFactor;
         float roll = UnityEngine.Random.Range(0f, 1f);
 
-        if (hugeLucky >= roll) 
+        if (hugeLucky >= roll)
         {
             return hugeLuckyGain;
         }
-        else if (lucky >= roll) 
+        else if (lucky >= roll)
         {
             return luckyGain;
         }

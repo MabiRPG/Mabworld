@@ -326,6 +326,8 @@ public class Quest : QuestModel
                     break;
             }
         }
+
+        rewards.Clear();
     }
 
     private void GiveSkill(QuestConditionModel condition)
@@ -333,45 +335,45 @@ public class Quest : QuestModel
         switch (QuestConditionTypeModel.FindByID(condition.conditionID))
         {
             case "Learn skill":
-            {
-                ActionSkillController action;
-                ResultSkillController result;
-                int skillID = int.Parse(condition.param1);
-                string rank = condition.param2;
-
-                // Learn if needed
-                action = new ActionSkillController(
-                    Player.Instance,
-                    this,
-                    skillID,
-                    ActionSkillController.ActionType.Learn
-                );
-                action.Handle();
-
-                Skill skill = Player.Instance.skillManager.Get(skillID);
-
-                while (skill.CanRankUp() && !skill.IsRankOrGreater(rank))
                 {
-                    // Force it to rank up, despite xp requirement
-                    skill.RankUp();
+                    ActionSkillController action;
+                    ResultSkillController result;
+                    int skillID = int.Parse(condition.param1);
+                    string rank = condition.param2;
 
-                    // Inform the quest and skill handlers of new updates...
+                    // Learn if needed
                     action = new ActionSkillController(
                         Player.Instance,
                         this,
                         skillID,
-                        ActionSkillController.ActionType.RankUp
+                        ActionSkillController.ActionType.Learn
                     );
-                    result = new ResultSkillController(Player.Instance, this, skill, action);
-                    result.Handle(true);
-                }
+                    action.Handle();
 
-                break;
-            }
+                    Skill skill = Player.Instance.skillManager.Get(skillID);
+
+                    while (skill.CanRankUp() && !skill.IsRankOrGreater(rank))
+                    {
+                        // Force it to rank up, despite xp requirement
+                        skill.RankUp();
+
+                        // Inform the quest and skill handlers of new updates...
+                        action = new ActionSkillController(
+                            Player.Instance,
+                            this,
+                            skillID,
+                            ActionSkillController.ActionType.RankUp
+                        );
+                        result = new ResultSkillController(Player.Instance, this, skill, action);
+                        result.Handle(true);
+                    }
+
+                    break;
+                }
             case "Rank up skill":
-            {
-                break;
-            }
+                {
+                    break;
+                }
             default:
                 break;
         }

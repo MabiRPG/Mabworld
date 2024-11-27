@@ -6,6 +6,7 @@ public class QuestModel : Model
 {
     public int ID;
     public string name;
+    public int typeID;
 
     public List<QuestConditionModel> prerequisites = new List<QuestConditionModel>();
     public List<QuestConditionModel> steps = new List<QuestConditionModel>();
@@ -30,6 +31,7 @@ public class QuestModel : Model
 
         fieldMap.Add("id", new ModelFieldReference(this, nameof(ID)));
         fieldMap.Add("name", new ModelFieldReference(this, nameof(name)));
+        fieldMap.Add("type_id", new ModelFieldReference(this, nameof(typeID)));
 
         CreateReadQuery();
         CreateWriteQuery();
@@ -56,7 +58,7 @@ public class QuestModel : Model
             int stepID = int.Parse(row["step_id"].ToString());
             QuestConditionModel step = new QuestConditionModel(database, ID, stepID, tableName);
             appendList.Add(step);
-        }            
+        }
     }
 
     private void ReadDialogue()
@@ -71,9 +73,9 @@ public class QuestModel : Model
         {
             int dialogueID = int.Parse(row["id"].ToString());
             int conversationID = int.Parse(row["conversation_id"].ToString());
-            QuestDialogueModel dialogue = 
+            QuestDialogueModel dialogue =
                 new QuestDialogueModel(database, dialogueID, conversationID, ID);
             dialogues.Add(dialogue);
-        }                   
+        }
     }
 }
