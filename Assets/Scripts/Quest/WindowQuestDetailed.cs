@@ -64,59 +64,59 @@ public class WindowQuestDetailed : MonoBehaviour
 
         qName.text = quest.name;
 
-        if (quest.QuestState == Quest.State.NeedPrerequisite)
-        {
-            prerequisiteParent.SetActive(true);
+        // if (quest.QuestState == Quest.State.NeedPrerequisite)
+        // {
+        prerequisiteParent.SetActive(true);
 
-            foreach (QuestCondition condition in quest.prerequisiteStates)
+        foreach (QuestCondition condition in quest.prerequisiteStates)
+        {
+            int categoryID = condition.model.conditionID;
+            int conditionCategoryID = QuestConditionTypeModel.GetCategory(categoryID);
+
+            if (QuestConditionCategoryTypeModel.FindByID(conditionCategoryID) == "Dialogue")
             {
-                int categoryID = condition.model.conditionID;
-                int conditionCategoryID = QuestConditionTypeModel.GetCategory(categoryID);
-
-                if (QuestConditionCategoryTypeModel.FindByID(conditionCategoryID) == "Dialogue")
-                {
-                    continue;
-                }
-
-                GameObject obj = questPrerequisitePrefabFactory.GetFree(
-                    condition,
-                    prerequisiteParent.transform
-                );
-                WindowQuestCondition script = obj.GetComponent<WindowQuestCondition>();
-                script.SetCondition(condition);
+                continue;
             }
-        }
-        else
-        {
-            prerequisiteParent.SetActive(false);
-        }
 
-        if (quest.QuestState == Quest.State.InProgress)
-        {
-            stepParent.SetActive(true);
+            GameObject obj = questPrerequisitePrefabFactory.GetFree(
+                condition,
+                prerequisiteParent.transform
+            );
+            WindowQuestCondition script = obj.GetComponent<WindowQuestCondition>();
+            script.SetCondition(condition);
+        }
+        // }
+        // else
+        // {
+        //     prerequisiteParent.SetActive(false);
+        // }
 
-            foreach (QuestCondition condition in quest.stepStates)
+        // if (quest.QuestState == Quest.State.InProgress)
+        // {
+        stepParent.SetActive(true);
+
+        foreach (QuestCondition condition in quest.stepStates)
+        {
+            int categoryID = condition.model.conditionID;
+            int conditionCategoryID = QuestConditionTypeModel.GetCategory(categoryID);
+
+            if (QuestConditionCategoryTypeModel.FindByID(conditionCategoryID) == "Dialogue")
             {
-                int categoryID = condition.model.conditionID;
-                int conditionCategoryID = QuestConditionTypeModel.GetCategory(categoryID);
-
-                if (QuestConditionCategoryTypeModel.FindByID(conditionCategoryID) == "Dialogue")
-                {
-                    continue;
-                }
-
-                GameObject obj = questStepPrefabFactory.GetFree(
-                    condition,
-                    stepParent.transform
-                );
-                WindowQuestCondition script = obj.GetComponent<WindowQuestCondition>();
-                script.SetCondition(condition);
+                continue;
             }
+
+            GameObject obj = questStepPrefabFactory.GetFree(
+                condition,
+                stepParent.transform
+            );
+            WindowQuestCondition script = obj.GetComponent<WindowQuestCondition>();
+            script.SetCondition(condition);
         }
-        else
-        {
-            stepParent.SetActive(false);
-        }
+        // }
+        // else
+        // {
+        //     stepParent.SetActive(false);
+        // }
 
         foreach (QuestCondition condition in quest.rewardStates)
         {
@@ -140,8 +140,19 @@ public class WindowQuestDetailed : MonoBehaviour
 
     private void ClaimReward()
     {
-        quest?.GiveRewards();
-        claimRewardButton.gameObject.SetActive(false);
-        quest.OnStateChange -= Draw;
+        if (quest == null)
+        {
+            return;
+        }
+
+        ActionQuestController action = new ActionQuestController(Player.Instance,
+            this, quest);
+
+        action.OnSuccess += () =>
+        {
+            claimRewardButton.gameObject.SetActive(false);
+            quest.OnStateChange -= Draw;
+        };
+        action.Handle();
     }
 }

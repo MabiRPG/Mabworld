@@ -150,6 +150,13 @@ public class Quest : QuestModel
                 }
 
                 break;
+            case "Quest":
+                if (result.GetType() == typeof(ResultQuestController))
+                {
+                    HandleQuest(result as ResultQuestController, condition, conditions);
+                }
+
+                break;
             default:
                 break;
         }
@@ -175,7 +182,7 @@ public class Quest : QuestModel
                 {
                     condition.state.Value = true;
                 }
-                else
+                else if (!result.player.skillManager.IsLearned(skill.ID))
                 {
                     condition.state.Value = false;
                 }
@@ -189,7 +196,7 @@ public class Quest : QuestModel
                 {
                     condition.state.Value = true;
                 }
-                else
+                else if (!skill.IsRankOrGreater(condition.model.param2))
                 {
                     condition.state.Value = false;
                 }
@@ -290,6 +297,24 @@ public class Quest : QuestModel
             );
 
             nextCondition.state.Value = true;
+        }
+    }
+
+    private void HandleQuest(ResultQuestController result,
+        QuestCondition condition, List<QuestCondition> conditions)
+    {
+        if (result.quest.ID != int.Parse(condition.model.param1))
+        {
+            return;
+        }
+
+        if (result.quest.QuestState == State.Complete)
+        {
+            condition.state.Value = true;
+        }
+        else
+        {
+            condition.state.Value = false;
         }
     }
 

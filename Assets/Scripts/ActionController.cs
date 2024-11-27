@@ -178,38 +178,38 @@ public class ActionItemController : ActionHandler
         switch (type)
         {
             case ActionType.ItemAdd:
-            {
-                if (lootTableID != default)
                 {
-                    LootGenerator lootGen = new LootGenerator(lootTableID);
-                    (int newItemID, int newItemGain) = lootGen.Generate();
+                    if (lootTableID != default)
+                    {
+                        LootGenerator lootGen = new LootGenerator(lootTableID);
+                        (int newItemID, int newItemGain) = lootGen.Generate();
 
-                    itemID = newItemID;
-                    itemPreviousQuantity = player.inventoryManager.GetQuantity(itemID);
-                    itemCurrentQuantity = itemPreviousQuantity;
-                    itemCurrentQuantity += player.inventoryManager.AddItem(itemID, newItemGain);
+                        itemID = newItemID;
+                        itemPreviousQuantity = player.inventoryManager.GetQuantity(itemID);
+                        itemCurrentQuantity = itemPreviousQuantity;
+                        itemCurrentQuantity += player.inventoryManager.AddItem(itemID, newItemGain);
+                    }
+                    else
+                    {
+                        itemPreviousQuantity = player.inventoryManager.GetQuantity(itemID);
+                        itemCurrentQuantity = itemPreviousQuantity;
+                        itemCurrentQuantity += player.inventoryManager.AddItem(itemID, itemQuantity);
+                    }
+
+                    ResultItemController result = new ResultItemController(player, caller, this);
+                    result.Handle(true);
+
+                    break;
                 }
-                else
-                {
-                    itemPreviousQuantity = player.inventoryManager.GetQuantity(itemID);
-                    itemCurrentQuantity = itemPreviousQuantity;
-                    itemCurrentQuantity += player.inventoryManager.AddItem(itemID, itemQuantity);
-                }
-
-                ResultItemController result = new ResultItemController(player, caller, this);
-                result.Handle(true);
-
-                break;
-            }
             case ActionType.ItemRemove:
-            {
-                itemPreviousQuantity = player.inventoryManager.GetQuantity(itemID);
-                itemCurrentQuantity = player.inventoryManager.RemoveItem(itemID, itemQuantity);
-                ResultItemController result = new ResultItemController(player, caller, this);
-                result.Handle(true);
+                {
+                    itemPreviousQuantity = player.inventoryManager.GetQuantity(itemID);
+                    itemCurrentQuantity = player.inventoryManager.RemoveItem(itemID, itemQuantity);
+                    ResultItemController result = new ResultItemController(player, caller, this);
+                    result.Handle(true);
 
-                break;
-            }
+                    break;
+                }
             default:
                 break;
         }
@@ -248,8 +248,7 @@ public class ActionCraftController : ActionHandler
         List<CraftingRecipeIngredientModel> ingredients,
         List<CraftingRecipeProductModel> products,
         int quantity
-    )
-        : base(player, caller)
+    ) : base(player, caller)
     {
         this.destination = destination;
         this.skill = skill;
@@ -270,5 +269,32 @@ public class ActionCraftController : ActionHandler
         );
         IEnumerator task = player.controller.AttemptSkill(skill, result);
         player.controller.SetTask(task);
+    }
+}
+
+public class ActionQuestController : ActionHandler
+{
+    private Quest quest;
+
+    public ActionQuestController(
+        Player player,
+        object caller,
+        Quest quest
+    )
+        : base(player, caller)
+    {
+        this.quest = quest;
+    }
+
+    public override void Handle()
+    {
+        ResultQuestController result = new ResultQuestController(
+            player,
+            caller,
+            quest,
+            this
+        );
+
+        result.Handle(quest.QuestState == Quest.State.Complete);
     }
 }

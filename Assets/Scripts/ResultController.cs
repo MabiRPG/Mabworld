@@ -53,7 +53,7 @@ public class ResultGatherController : ResultHandler
     public int resourceID;
     public int resourceGain;
 
-    public ResultGatherController(Player player, object caller, Skill skill, 
+    public ResultGatherController(Player player, object caller, Skill skill,
         ActionGatherController action) : base(player, caller, action)
     {
         this.skill = skill;
@@ -176,6 +176,29 @@ public class ResultCraftController : ResultHandler
                 ActionItemController.ActionType.ItemRemove
             );
             action.Handle();
-        }        
+        }
+
+        base.Handle(isSuccess);
+    }
+}
+
+public class ResultQuestController : ResultHandler
+{
+    public Quest quest;
+
+    public ResultQuestController(Player player, object caller,
+        Quest quest, ActionQuestController action) : base(player, caller, action)
+    {
+        this.quest = quest;
+    }
+
+    public override void Handle(bool isSuccess)
+    {
+        if (isSuccess)
+        {
+            quest.GiveRewards();
+        }
+
+        base.Handle(isSuccess);
     }
 }
