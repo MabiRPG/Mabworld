@@ -4,7 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine.AI;
+using System.Data;
+using TypeExtension;
 
+[Serializable]
 /// <summary>
 ///     Handles all player & input processing.
 /// </summary>
@@ -19,20 +22,27 @@ public class Player : Actor, IInputHandler
     // Inventory
     public InventoryManager inventoryManager = new InventoryManager();
     // Quests
-    public Dictionary<int, Quest> quests = new Dictionary<int, Quest>();
+    public SerializableDictionary<int, Quest> quests = new SerializableDictionary<int, Quest>();
 
+    [SerializeField]
     // How much our life skill success rates scale with dex.
     private int lifeSkillDexFactor = 10;
+    [SerializeField]
     // What the maximize success rate increase is.
     private int lifeSkillSuccessCap = 18;
 
+    [SerializeField]
     // How much our lucky gathers scale with luck stat
     private int luckyFactor = 2000;
+    [SerializeField]
     // How much resource multiplier is applied on trigger lucky
     private int luckyGain = 2;
+    [SerializeField]
     private int hugeLuckyFactor = 50000;
+    [SerializeField]
     private int hugeLuckyGain = 20;
 
+    [NonSerialized]
     public PlayerController controller;
 
     /// <summary>
@@ -65,26 +75,17 @@ public class Player : Actor, IInputHandler
     /// </summary>
     protected void Start()
     {
-        // Debug purposes...
-        actorName.Value = "Test";
+        DataTable dt = GameManager.Instance.Database.Read(@"SELECT id FROM skill
+            WHERE is_starting_with = 1");
 
-        Quest quest = new Quest(1);
-        quests.Add(1, quest);
-        quests.Add(2, new Quest(2));
-
-        int skillLimit = 14;
-
-        for (int i = 1; i < skillLimit; i++)
+        foreach (DataRow row in dt.Rows)
         {
-            ActionSkillController action = new ActionSkillController(this, this, i);
+            int ID = int.Parse(row["id"].ToString());
+            ActionSkillController action = new ActionSkillController(this, this, ID);
             action.Handle();
         }
 
-        skillManager.Skills[1].AddXP(100);
-        skillManager.Skills[2].AddXP(150);
-
-        ActionItemController actionItem = new ActionItemController(this, this, 1, 50);
-        actionItem.Handle();
+        Debug();
     }
 
     public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
@@ -240,5 +241,21 @@ public class Player : Actor, IInputHandler
         {
             quests.Add(ID, new Quest(ID));
         }
+    }
+
+    private void Debug()
+    {
+        // Debug purposes...
+        actorName.Value = "Test";
+
+        Quest quest = new Quest(1);
+        quests.Add(1, quest);
+        quests.Add(2, new Quest(2));
+
+        skillManager.Skills[1].AddXP(100);
+        skillManager.Skills[2].AddXP(150);
+
+        ActionItemController actionItem = new ActionItemController(this, this, 1, 50);
+        actionItem.Handle();
     }
 }

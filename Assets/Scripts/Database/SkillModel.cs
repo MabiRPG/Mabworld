@@ -1,33 +1,52 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
 
+[Serializable]
 public class SkillModel : Model
 {
     // Primary key of skill
     public int ID;
+    [NonSerialized]
     // Name of skill and category
     public string name;
+    [NonSerialized]
     public int cultivationStageID;
+    [NonSerialized]
     // Skill description, details, skill icon, and sound effect when using
     public string description;
+    [NonSerialized]
     public string details;
+    [NonSerialized]
     public Sprite icon;
+    [NonSerialized]
     public AudioClip sfx;
+    [NonSerialized]
     public AnimationClip animationClip;
+    [NonSerialized]
     // Starting, first and last ranks that can be reached
     public string startingRank;
+    [NonSerialized]
     public string firstAvailableRank;
+    [NonSerialized]
     public string lastAvailableRank;
+    [NonSerialized]
     // Base loading time, use time, and cooldown
     public float baseLoadTime;
+    [NonSerialized]
     public float baseUseTime;
+    [NonSerialized]
     public float baseCooldown;
+    [NonSerialized]
     // Does player start with skill?
     public bool isStartingWith;
+    [NonSerialized]
     // Learnable? and learn condition
     public bool isLearnable;
+    [NonSerialized]
     public int learnConditionID;
+    [NonSerialized]
     // Passive or active
     public bool isPassive;
 
@@ -39,7 +58,7 @@ public class SkillModel : Model
     private string trainingMethodTableName;
 
     public Dictionary<int, SkillStatModel> stats = new Dictionary<int, SkillStatModel>();
-    public Dictionary<(int, string), TrainingMethodModel> trainingMethods = 
+    public Dictionary<(int, string), TrainingMethodModel> trainingMethods =
         new Dictionary<(int, string), TrainingMethodModel>();
 
     public SkillModel(DatabaseManager database, int ID) : base(database)

@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 public class EventManager
 {
@@ -15,13 +16,15 @@ public class EventManager
     }
 }
 
+[Serializable]
 public class IntManager : EventManager
 {
+    [SerializeField]
     private int _value;
     public int Value
     {
-        get {return _value;}
-        set {_value = value; RaiseOnChange();}
+        get { return _value; }
+        set { _value = value; RaiseOnChange(); }
     }
 
     public IntManager(int Value = 0)
@@ -30,13 +33,15 @@ public class IntManager : EventManager
     }
 }
 
+[Serializable]
 public class FloatManager : EventManager
 {
+    [SerializeField]
     private float _value;
     public float Value
     {
-        get {return _value;}
-        set {_value = value; RaiseOnChange();}
+        get { return _value; }
+        set { _value = value; RaiseOnChange(); }
     }
 
     public FloatManager(float Value = 0f)
@@ -45,13 +50,15 @@ public class FloatManager : EventManager
     }
 }
 
+[Serializable]
 public class StringManager : EventManager
 {
+    [SerializeField]
     private string _value;
     public string Value
     {
-        get {return _value;}
-        set {_value = value; RaiseOnChange();}
+        get { return _value; }
+        set { _value = value; RaiseOnChange(); }
     }
 
     public StringManager(string Value = "")
@@ -60,13 +67,15 @@ public class StringManager : EventManager
     }
 }
 
+[Serializable]
 public class BoolManager : EventManager
 {
+    [SerializeField]
     private bool _value;
     public bool Value
     {
-        get {return _value;}
-        set {_value = value; RaiseOnChange();}
+        get { return _value; }
+        set { _value = value; RaiseOnChange(); }
     }
 
     public BoolManager(bool Value = false)
@@ -75,6 +84,7 @@ public class BoolManager : EventManager
     }
 }
 
+[Serializable]
 /// <summary>
 ///     Handles all triple float (actor Stats) and event management.
 /// </summary>
@@ -83,22 +93,26 @@ public class StatManager : FloatManager
     // Event handler objects
     public event Action OnMaximumValueChange;
     public event Action OnBaseMaximumValueChange;
+    [SerializeField]
     // Current maximum value of stat (modified by buffs/debuffs, etc)
     private float _maximum;
     public float Maximum
     {
-        get {return _maximum;}
-        set {
+        get { return _maximum; }
+        set
+        {
             _maximum = value;
             RaiseOnMaximumValueChange();
         }
     }
+    [SerializeField]
     // Permanent base maximum of stat (calculated from skills, etc).
     private float _baseMaximum;
     public float BaseMaximum
     {
-        get {return _baseMaximum;}
-        set {
+        get { return _baseMaximum; }
+        set
+        {
             _baseMaximum = value;
             RaiseOnBaseMaximumValueChange();
         }

@@ -1,6 +1,9 @@
+using System;
+
 /// <summary>
 ///     Handles the inventory item occupying the bag space
 /// </summary>
+[Serializable]
 public class InventoryItem
 {
     public Item item;

@@ -1,12 +1,20 @@
+using System;
+
+[Serializable]
 public class TrainingMethodModel : Model
 {
     public int skillID;
     public string rank;
     public int trainingMethodID;
+    [NonSerialized]
     public float xpGainEach;
+    [NonSerialized]
     public int countMax;
+    [NonSerialized]
     public string name;
+    [NonSerialized]
     public string param1 = "1";
+    [NonSerialized]
     public string param2 = "1";
 
     public TrainingMethodModel(DatabaseManager database, int skillID) : base(database)
@@ -31,7 +39,7 @@ public class TrainingMethodModel : Model
         CreateWriteQuery();
     }
 
-    public TrainingMethodModel(DatabaseManager database, int skillID, int trainingMethodID, string rank) 
+    public TrainingMethodModel(DatabaseManager database, int skillID, int trainingMethodID, string rank)
         : base(database)
     {
         this.skillID = skillID;

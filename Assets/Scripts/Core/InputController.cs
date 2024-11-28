@@ -250,6 +250,15 @@ public class InputController : MonoBehaviour
             KeyCode.J,
             new InputSettings("Open Quest Log", OpenWindow<WindowQuest>, false)
         );
+        AddButtonBind(
+            KeyCode.F1,
+            new InputSettings("Save State Debug", () =>
+            {
+                string json = JsonUtility.ToJson(Player.Instance);
+                Debug.Log(json);
+            }
+            , false)
+        );
     }
 
     private void OpenWindow<T>() where T : Window

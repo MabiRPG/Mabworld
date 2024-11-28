@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Linq;
 
+[Serializable]
 /// <summary>
 ///     Handles all skill processing.
 /// </summary>
@@ -44,11 +45,11 @@ public class Skill : SkillModel
     /// <summary>
     ///     Ranks up the skill.
     /// </summary>
-    public void RankUp() 
+    public void RankUp()
     {
         index.Value++;
         xp.Value = 0;
-        
+
         if (!CanRankUp())
         {
             index.Clear();

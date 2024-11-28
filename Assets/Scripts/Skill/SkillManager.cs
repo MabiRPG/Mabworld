@@ -1,22 +1,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using UnityEngine;
+using TypeExtension;
 
 /// <summary>
 ///     Handles all skill processing for an actor.
 /// </summary>
+[Serializable]
 public class SkillManager
 {
+    [NonSerialized]
     public SkillBubble bubble;
 
     // Hashmap of skills on (Skill ID, Skill instance)
-    public Dictionary<int, Skill> Skills = new Dictionary<int, Skill>();
+    public SerializableDictionary<int, Skill> Skills = new SerializableDictionary<int, Skill>();
     public EventManager learnEvent = new EventManager();
 
-    // private const string categoryQuery = @"SELECT * FROM skill_category_type ORDER BY id;";
     public Dictionary<int, string> Categories = new Dictionary<int, string>();
     private HashSet<int> learnedCategoryIDs = new HashSet<int>();
 
@@ -66,7 +65,7 @@ public class SkillManager
     public bool IsLearned(Skill skill)
     {
         return Skills.ContainsValue(skill);
-    }    
+    }
 
     /// <summary>
     ///     Learns the skill

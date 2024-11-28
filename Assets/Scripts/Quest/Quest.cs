@@ -4,9 +4,12 @@ using System.Data;
 using System.Linq;
 using UnityEngine;
 
+[Serializable]
 public class QuestCondition
 {
-    public readonly QuestConditionModel model;
+    [SerializeField]
+    public QuestConditionModel model;
+    [SerializeField]
     public BoolManager state = new BoolManager();
 
     public QuestCondition(QuestConditionModel model)
@@ -16,6 +19,7 @@ public class QuestCondition
     }
 }
 
+[Serializable]
 public class Quest : QuestModel
 {
     public List<QuestCondition> prerequisiteStates = new List<QuestCondition>();
@@ -41,6 +45,8 @@ public class Quest : QuestModel
         }
     }
     public event Action OnStateChange;
+
+    [SerializeField]
     private int stepCounter = 0;
 
     public Quest(int ID)

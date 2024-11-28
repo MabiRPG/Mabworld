@@ -1,18 +1,27 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
 
+[Serializable]
 public class ItemModel : Model
 {
     // Internal ID number
     public int ID;
+    [NonSerialized]
     public string name;
+    [NonSerialized]
     public int categoryID;
+    [NonSerialized]
     public string description;
+    [NonSerialized]
     public Sprite icon;
     // Stack size limits inside an inventory
+    [NonSerialized]
     public int stackSizeLimit;
+    [NonSerialized]
     public int widthInGrid;
+    [NonSerialized]
     public int heightInGrid;
 
     private string statTableName;
@@ -55,7 +64,7 @@ public class ItemModel : Model
 
         CreateReadQuery();
         CreateWriteQuery();
-        
+
         ReadRow();
         ReadStats();
     }

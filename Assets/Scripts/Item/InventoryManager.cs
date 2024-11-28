@@ -1,15 +1,22 @@
+using System;
 using System.Collections.Generic;
+using TypeExtension;
+using UnityEngine;
 
 /// <summary>
 ///     Handles processing all inventory bags and the total inventory space.
 /// </summary>
+[Serializable]
 public class InventoryManager
 {
     // Dimensions of a single slot (pixels) in the inventory window.
+    [NonSerialized]
     public static int slotWidth = 50;
+    [NonSerialized]
     public static int slotHeight = 50;
     // Dictionary of all items across all bags.
-    private Dictionary<int, Item> AllItems = new Dictionary<int, Item>();
+    [SerializeField]
+    private SerializableDictionary<int, Item> AllItems = new SerializableDictionary<int, Item>();
     // List of all bags.
     public List<InventoryBag> Bags = new List<InventoryBag>();
     public EventManager changeEvent = new EventManager();

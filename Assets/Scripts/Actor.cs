@@ -11,7 +11,9 @@ public class Actor : MonoBehaviour
 {
     [SerializeField]
     protected LayerMask blockingLayer;
+    [NonSerialized]
     public Animator animator;
+    [NonSerialized]
     public NavMeshAgent navMeshAgent;
 
     // Name and level of actor
@@ -39,14 +41,18 @@ public class Actor : MonoBehaviour
     public Dictionary<string, StatManager> primaryStats = new Dictionary<string, StatManager>();
     public Dictionary<string, StatManager> secondaryStats = new Dictionary<string, StatManager>();
 
+    [SerializeField]
     // How much defense scales with strength
     protected int defenseStrFactor = 10;
+    [SerializeField]
     // Magic defense scale with str
     protected int mDefenseStrFactor = 10;
+    [SerializeField]
     // Magic Protection scale with int
-    protected int mProtIntFactor = 20; 
+    protected int mProtIntFactor = 20;
 
     public SkillManager skillManager;
+    [NonSerialized]
     public SkillBubble bubble;
 
     /// <summary>
@@ -69,7 +75,7 @@ public class Actor : MonoBehaviour
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         // Adjust skill bubble so it is slightly above the actor head.
         float offsetY = spriteRenderer.bounds.size.y / 2 + 1;
-        GameObject obj = Instantiate(GameManager.Instance.skillBubblePrefab, 
+        GameObject obj = Instantiate(GameManager.Instance.skillBubblePrefab,
             transform.TransformPoint(new Vector2(0, offsetY)), Quaternion.identity, transform);
         bubble = obj.GetComponent<SkillBubble>();
         skillManager = new SkillManager(bubble);
@@ -121,7 +127,7 @@ public class Actor : MonoBehaviour
     /// </summary>
     private void CalculateMDefense()
     {
-        actorMDefense.BaseMaximum = actorStr.BaseMaximum / mDefenseStrFactor; 
+        actorMDefense.BaseMaximum = actorStr.BaseMaximum / mDefenseStrFactor;
     }
 
     /// <summary>

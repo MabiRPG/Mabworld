@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TypeExtension;
 
 /// <summary>
 ///     Handles the inventory processing per bag.
 /// </summary>
+[Serializable]
 public class InventoryBag
 {
     public int ID;
@@ -13,7 +15,8 @@ public class InventoryBag
     public int height;
 
     public List<(int row, int column)> excludedSlots = new List<(int, int)>();
-    public Dictionary<(int row, int column), InventoryItem> items = new Dictionary<(int row, int column), InventoryItem>();
+    public SerializableDictionary<(int row, int column), InventoryItem> items =
+        new SerializableDictionary<(int row, int column), InventoryItem>();
     public EventManager changeEvent = new EventManager();
 
     /// <summary>
@@ -97,7 +100,7 @@ public class InventoryBag
             {
                 if (IsEmpty(i, j, item.widthInGrid, item.heightInGrid))
                 {
-                    InventoryItem inventoryItem = new InventoryItem(item, 
+                    InventoryItem inventoryItem = new InventoryItem(item,
                         Math.Min(remainingQuantity, item.stackSizeLimit), i, j);
 
                     InsertItemAt(inventoryItem, i, j);
@@ -222,7 +225,7 @@ public class InventoryBag
         if (row + height > this.height || column + width > this.width)
         {
             return 0;
-        }        
+        }
 
         List<InventoryItem> itemsHit = new List<InventoryItem>();
 
