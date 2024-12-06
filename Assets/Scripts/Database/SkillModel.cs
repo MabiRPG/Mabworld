@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -39,11 +40,11 @@ public class SkillModel : Model
 
     // Serialization info
     [JsonProperty]
-    private readonly string _iconName;
+    private string _iconName;
     [JsonProperty]
-    private readonly string _sfxName;
+    private string _sfxName;
     [JsonProperty]
-    private readonly string _animationClipName;
+    private string _animationClipName;
 
     // All ranks in string format
     [JsonIgnore]
@@ -53,7 +54,9 @@ public class SkillModel : Model
     private string statTableName;
     private string trainingMethodTableName;
 
+    [JsonIgnore]
     public Dictionary<int, SkillStatModel> stats = new Dictionary<int, SkillStatModel>();
+    [JsonIgnore]
     public Dictionary<(int, string), TrainingMethodModel> trainingMethods =
         new Dictionary<(int, string), TrainingMethodModel>();
 
@@ -89,11 +92,6 @@ public class SkillModel : Model
         ReadRow();
         ReadStats();
         ReadTrainingMethods();
-
-        // Get the addressable names for save. Does not actually add to addressable
-        _iconName = database.AddToAddressables(icon);
-        _sfxName = database.AddToAddressables(sfx);
-        _animationClipName = database.AddToAddressables(animationClip);
     }
 
     private void ReadStats()
@@ -127,5 +125,22 @@ public class SkillModel : Model
             TrainingMethodModel method = new TrainingMethodModel(database, ID, methodID, rank);
             trainingMethods.Add((methodID, method.rank), method);
         }
+    }
+
+    [OnSerializing]
+    internal void OnSerializing(StreamingContext context)
+    {
+        // Get the addressable names for save. Does not actually add to addressable
+        _iconName = database.AddToAddressables(icon);
+        _sfxName = database.AddToAddressables(sfx);
+        _animationClipName = database.AddToAddressables(animationClip);
+    }
+
+    [OnDeserialized]
+    internal void OnDeserialized(StreamingContext context)
+    {
+        icon = database.LoadAsset<Sprite>(_iconName);
+        sfx = database.LoadAsset<AudioClip>(_sfxName);
+        animationClip = database.LoadAsset<AnimationClip>(_animationClipName);
     }
 }

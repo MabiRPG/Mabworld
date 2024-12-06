@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -258,9 +259,8 @@ public class InputController : MonoBehaviour
             {
                 string json = JsonConvert.SerializeObject(Player.Instance.skillManager);
                 Debug.Log(json);
-                // string json = JsonUtility.ToJson(Player.Instance.skillManager);
-                // using StreamWriter sw = new StreamWriter("saveTest.json");
-                // sw.Write(json);
+                using StreamWriter sw = new StreamWriter("./Saves/saveTest.json");
+                sw.Write(json);
             }
             , false)
         );
@@ -268,9 +268,9 @@ public class InputController : MonoBehaviour
             KeyCode.F2,
             new InputSettings("Load State Debug", () =>
             {
-                using StreamReader sr = new StreamReader("saveTest.json");
+                using StreamReader sr = new StreamReader("./Saves/saveTest.json");
                 string json = sr.ReadToEnd();
-                Player.Instance.skillManager = JsonUtility.FromJson<SkillManager>(json);
+                JsonConvert.PopulateObject(json, Player.Instance.skillManager);
             }
             , false)
         );
@@ -285,33 +285,5 @@ public class InputController : MonoBehaviour
         }
 
         WindowManager.Instance.ToggleWindow((Window)typeof(T).GetField("Instance").GetValue(null));
-    }
-}
-
-[Serializable]
-public class SerializeTest : ISerializationCallbackReceiver
-{
-    [SerializeField]
-    private List<int> skillIDs = new List<int>();
-    [NonSerialized]
-    public List<SkillModel> skills = new List<SkillModel>();
-
-    public SerializeTest()
-    {
-    }
-
-    public void OnBeforeSerialize()
-    {
-        skillIDs = skills.Select(v => v.ID).ToList();
-    }
-
-    public void OnAfterDeserialize()
-    {
-        skills.Clear();
-
-        foreach (int ID in skillIDs)
-        {
-            skills.Add(new SkillModel(GameManager.Instance.Database, ID));
-        }
     }
 }

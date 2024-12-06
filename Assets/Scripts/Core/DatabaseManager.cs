@@ -439,6 +439,11 @@ public class DatabaseManager
     /// <returns>Addressable asset to manipulate</returns>
     public T LoadAsset<T>(string key)
     {
+        if (key == "")
+        {
+            return default;
+        }
+
         T t = Addressables.LoadAssetAsync<T>(key).WaitForCompletion();
         return t;
     }

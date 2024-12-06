@@ -25,6 +25,7 @@ public class Skill
     public FloatManager cooldown;
 
     // List of training methods at current rank
+    [JsonIgnore]
     public List<SkillTrainingMethod> methods;
 
     /// <summary>

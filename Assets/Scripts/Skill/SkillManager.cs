@@ -2,7 +2,49 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
+
+public class SkillManagerSkillsConverter : JsonConverter
+{
+    public override bool CanConvert(Type objectType)
+    {
+        return true;
+    }
+
+    public override bool CanWrite
+    {
+        get { return false; }
+    }
+
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    {
+        throw new Exception("Is not implemented");
+    }
+
+    public override bool CanRead
+    {
+        get { return true; }
+    }
+
+    public override object ReadJson(JsonReader reader, Type objectType,
+        object existingValue, JsonSerializer serializer)
+    {
+        JToken obj = JToken.Load(reader);
+
+        Dictionary<int, Skill> Skills = new Dictionary<int, Skill>();
+
+        foreach (JToken token in obj)
+        {
+            int ID = (int)token.First["model"]["ID"];
+            Skill skill = new Skill(ID);
+            JsonConvert.PopulateObject(token.First.ToString(), skill);
+            Skills.Add(ID, skill);
+        }
+
+        return Skills;
+    }
+}
 
 /// <summary>
 ///     Handles all skill processing for an actor.
@@ -14,6 +56,7 @@ public class SkillManager
     public SkillBubble bubble;
 
     // Hashmap of skills on (Skill ID, Skill instance)
+    [JsonConverter(typeof(SkillManagerSkillsConverter))]
     public Dictionary<int, Skill> Skills;
     [JsonIgnore]
     public EventManager learnEvent;
