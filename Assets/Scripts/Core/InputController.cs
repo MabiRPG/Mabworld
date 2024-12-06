@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 
 public class InputSettings
 {
@@ -254,8 +256,21 @@ public class InputController : MonoBehaviour
             KeyCode.F1,
             new InputSettings("Save State Debug", () =>
             {
-                string json = JsonUtility.ToJson(Player.Instance);
+                string json = JsonConvert.SerializeObject(Player.Instance.skillManager);
                 Debug.Log(json);
+                // string json = JsonUtility.ToJson(Player.Instance.skillManager);
+                // using StreamWriter sw = new StreamWriter("saveTest.json");
+                // sw.Write(json);
+            }
+            , false)
+        );
+        AddButtonBind(
+            KeyCode.F2,
+            new InputSettings("Load State Debug", () =>
+            {
+                using StreamReader sr = new StreamReader("saveTest.json");
+                string json = sr.ReadToEnd();
+                Player.Instance.skillManager = JsonUtility.FromJson<SkillManager>(json);
             }
             , false)
         );
@@ -270,5 +285,33 @@ public class InputController : MonoBehaviour
         }
 
         WindowManager.Instance.ToggleWindow((Window)typeof(T).GetField("Instance").GetValue(null));
+    }
+}
+
+[Serializable]
+public class SerializeTest : ISerializationCallbackReceiver
+{
+    [SerializeField]
+    private List<int> skillIDs = new List<int>();
+    [NonSerialized]
+    public List<SkillModel> skills = new List<SkillModel>();
+
+    public SerializeTest()
+    {
+    }
+
+    public void OnBeforeSerialize()
+    {
+        skillIDs = skills.Select(v => v.ID).ToList();
+    }
+
+    public void OnAfterDeserialize()
+    {
+        skills.Clear();
+
+        foreach (int ID in skillIDs)
+        {
+            skills.Add(new SkillModel(GameManager.Instance.Database, ID));
+        }
     }
 }

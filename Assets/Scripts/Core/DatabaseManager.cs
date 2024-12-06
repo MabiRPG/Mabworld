@@ -480,7 +480,7 @@ public class DatabaseManager
         return camelCase.ToString();
     }
 
-    private string AddToAddressables(UnityEngine.Object asset)
+    public string AddToAddressables(UnityEngine.Object asset)
     {
         if (asset == default)
         {

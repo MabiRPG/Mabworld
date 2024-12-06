@@ -4,30 +4,42 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Linq;
+using Newtonsoft.Json;
 
-[Serializable]
 /// <summary>
 ///     Handles all skill processing.
 /// </summary>
-public class Skill : SkillModel
+[JsonObject]
+public class Skill
 {
+    public SkillModel model;
+
     // Current index and rank of skill.
-    public IntManager index = new IntManager();
+    public IntManager index;
     // Current xp and maximum rank xp.
-    public FloatManager xp = new FloatManager();
-    public FloatManager xpMax = new FloatManager();
+    public FloatManager xp;
+    [JsonIgnore]
+    public FloatManager xpMax;
     // Current cooldown timer
-    public FloatManager cooldown = new FloatManager();
+    [JsonIgnore]
+    public FloatManager cooldown;
 
     // List of training methods at current rank
-    public List<SkillTrainingMethod> methods = new List<SkillTrainingMethod>();
+    public List<SkillTrainingMethod> methods;
 
     /// <summary>
     ///     Initializes the object.
     /// </summary>
     /// <param name="ID">Skill ID in database.</param>
-    public Skill(int ID) : base(GameManager.Instance.Database, ID)
+    public Skill(int ID)
     {
+        index = new IntManager();
+        xp = new FloatManager();
+        xpMax = new FloatManager();
+        cooldown = new FloatManager();
+        methods = new List<SkillTrainingMethod>();
+        model = new SkillModel(GameManager.Instance.Database, ID);
+
         index.OnChange += AudioController.Instance.PlayLevelUpSFX;
         index.OnChange += CreateTrainingMethods;
         CreateTrainingMethods();
@@ -39,7 +51,8 @@ public class Skill : SkillModel
     /// <returns>True if can rank up.</returns>
     public bool CanRankUp()
     {
-        return index.Value + 1 < ranks.Count && index.Value + 1 <= ranks.IndexOf(lastAvailableRank);
+        return index.Value + 1 < SkillModel.ranks.Count
+            && index.Value + 1 <= SkillModel.ranks.IndexOf(model.lastAvailableRank);
     }
 
     /// <summary>
@@ -61,7 +74,7 @@ public class Skill : SkillModel
     /// </summary>
     public void RankDown()
     {
-        if (index.Value - 1 >= ranks.IndexOf(firstAvailableRank))
+        if (index.Value - 1 >= SkillModel.ranks.IndexOf(model.firstAvailableRank))
         {
             index.Value--;
         }
@@ -74,9 +87,9 @@ public class Skill : SkillModel
     /// <returns></returns>
     public bool IsRankOrGreater(string rank)
     {
-        if (ranks.Contains(rank))
+        if (SkillModel.ranks.Contains(rank))
         {
-            return index.Value >= ranks.IndexOf(rank);
+            return index.Value >= SkillModel.ranks.IndexOf(rank);
         }
 
         return false;
@@ -108,7 +121,7 @@ public class Skill : SkillModel
         //     return stats[key][index.Value];
         // }
 
-        return stats.Where(v => SkillStatTypeModel.FindByID(v.Value.statID) == key)
+        return model.stats.Where(v => SkillStatTypeModel.FindByID(v.Value.statID) == key)
             .Select(v => v.Value).Select(v => v.values[index.Value]).FirstOrDefault();
 
         // return 0;
@@ -128,12 +141,12 @@ public class Skill : SkillModel
         //     return curr - prev;
         // }
 
-        if (!stats.ContainsKey(SkillStatTypeModel.FindByName(key)))
+        if (!model.stats.ContainsKey(SkillStatTypeModel.FindByName(key)))
         {
             return 0;
         }
 
-        SkillStatModel stat = stats
+        SkillStatModel stat = model.stats
             .Where(v => SkillStatTypeModel.FindByID(v.Value.statID) == key)
             .Select(v => v.Value).First();
 
@@ -157,17 +170,17 @@ public class Skill : SkillModel
         //     return next - curr;
         // }
 
-        if (!stats.ContainsKey(SkillStatTypeModel.FindByName(key)))
+        if (!model.stats.ContainsKey(SkillStatTypeModel.FindByName(key)))
         {
             return 0;
         }
 
-        SkillStatModel stat = stats
+        SkillStatModel stat = model.stats
             .Where(v => SkillStatTypeModel.FindByID(v.Value.statID) == key)
             .Select(v => v.Value).First();
 
         float curr = stat.values[index.Value];
-        float next = stat.values[Math.Min(ranks.Count - 1, index.Value + 1)];
+        float next = stat.values[Math.Min(SkillModel.ranks.Count - 1, index.Value + 1)];
 
         return next - curr;
     }
@@ -178,7 +191,7 @@ public class Skill : SkillModel
     /// <returns></returns>
     public float GetLoadTime()
     {
-        return baseLoadTime + GetStat("Load Time");
+        return model.baseLoadTime + GetStat("Load Time");
     }
 
     /// <summary>
@@ -187,7 +200,7 @@ public class Skill : SkillModel
     /// <returns></returns>
     public float GetUseTime()
     {
-        return baseUseTime + GetStat("Use Time");
+        return model.baseUseTime + GetStat("Use Time");
     }
 
     /// <summary>
@@ -196,7 +209,7 @@ public class Skill : SkillModel
     /// <returns></returns>
     public float GetCooldownTime()
     {
-        return baseCooldown + GetStat("Cooldown Time");
+        return model.baseCooldown + GetStat("Cooldown Time");
     }
 
     public bool CanUse()
@@ -219,8 +232,8 @@ public class Skill : SkillModel
         xpMax.Value = 0;
 
         // For every method, create a new method and insert into list.
-        List<TrainingMethodModel> rankMethods = trainingMethods
-            .Where(v => v.Key.Item2 == ranks[index.Value])
+        List<TrainingMethodModel> rankMethods = model.trainingMethods
+            .Where(v => v.Key.Item2 == SkillModel.ranks[index.Value])
             .Select(v => v.Value)
             .ToList();
 
@@ -260,9 +273,9 @@ public class Skill : SkillModel
             yield return new WaitForSecondsRealtime(interval);
 
             // Play a sound if audio interval is reached
-            if (interval % audioInterval == 0 && sfx != default)
+            if (interval % audioInterval == 0 && model.sfx != default)
             {
-                audio.PlayOneShot(sfx);
+                audio.PlayOneShot(model.sfx);
             }
 
             currTime += interval;

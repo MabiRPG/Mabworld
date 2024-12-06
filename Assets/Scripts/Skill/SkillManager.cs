@@ -1,27 +1,36 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TypeExtension;
+using Newtonsoft.Json;
+using UnityEngine;
 
 /// <summary>
 ///     Handles all skill processing for an actor.
 /// </summary>
-[Serializable]
+[JsonObject]
 public class SkillManager
 {
-    [NonSerialized]
+    [JsonIgnore]
     public SkillBubble bubble;
 
     // Hashmap of skills on (Skill ID, Skill instance)
-    public SerializableDictionary<int, Skill> Skills = new SerializableDictionary<int, Skill>();
-    public EventManager learnEvent = new EventManager();
+    public Dictionary<int, Skill> Skills;
+    [JsonIgnore]
+    public EventManager learnEvent;
 
-    public Dictionary<int, string> Categories = new Dictionary<int, string>();
-    private HashSet<int> learnedCategoryIDs = new HashSet<int>();
+    public Dictionary<int, string> Categories;
+
+    [JsonRequired]
+    private HashSet<int> learnedCategoryIDs;
 
     public SkillManager(SkillBubble bubble)
     {
         this.bubble = bubble;
+
+        Skills = new Dictionary<int, Skill>();
+        learnEvent = new EventManager();
+        learnedCategoryIDs = new HashSet<int>();
+        Categories = new Dictionary<int, string>();
 
         foreach ((int stageID, int substageID) in CultivationStageModel.stages.Keys)
         {
@@ -80,7 +89,7 @@ public class SkillManager
 
         Skill skill = new Skill(ID);
         Skills.Add(ID, skill);
-        learnedCategoryIDs.Add(skill.cultivationStageID);
+        learnedCategoryIDs.Add(skill.model.cultivationStageID);
         learnEvent.RaiseOnChange();
     }
 
@@ -119,7 +128,7 @@ public class SkillManager
 
         foreach (Skill skill in Skills.Values)
         {
-            if (skill.cultivationStageID == categoryID)
+            if (skill.model.cultivationStageID == categoryID)
             {
                 skills.Add(skill);
             }
@@ -137,7 +146,7 @@ public class SkillManager
     {
         if (IsLearned(skill) && bubble != null)
         {
-            return bubble.Pulse(skill.icon, skill.GetLoadTime());
+            return bubble.Pulse(skill.model.icon, skill.GetLoadTime());
         }
 
         return null;
@@ -156,18 +165,6 @@ public class SkillManager
 
         return null;
     }
-
-    /// <summary>
-    ///     Prepares the skill to be used, and gets the coroutine to be run.
-    /// </summary>
-    /// <param name="skill">Skill instance to use</param>
-    /// <param name="resultHandler">ResultHandler derived class object to handle events</param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns>Coroutine to be run.</returns>
-    // public IEnumerator Use<T>(Skill skill, T resultHandler) where T : ResultHandler
-    // {
-    //     yield return null; //skill.Use(resultHandler);
-    // }
 
     /// <summary>
     ///     Puts the skill on cooldown, and gets the coroutine to be run.

@@ -66,7 +66,7 @@ public class WindowSkillDetailed : Window
     /// </summary>
     private void OnEnable()
     {
-        advanceButton.onClick.AddListener(delegate {advanceButtonEvent.RaiseOnChange();});
+        advanceButton.onClick.AddListener(delegate { advanceButtonEvent.RaiseOnChange(); });
         closeButtonBody.onClick.AddListener(HideWindow);
     }
 
@@ -92,7 +92,7 @@ public class WindowSkillDetailed : Window
         this.skill = skill;
 
         // Finds the skill icon sprite and reassigns it.
-        icon.sprite = this.skill.icon;
+        icon.sprite = this.skill.model.icon;
         UpdateRank();
         UpdateXp();
 
@@ -129,7 +129,7 @@ public class WindowSkillDetailed : Window
     private void UpdateRank()
     {
         // Finds the skill name and reassigns it.
-        skillName.text = "Rank " + Skill.ranks[skill.index.Value] + " " + skill.name;
+        skillName.text = "Rank " + SkillModel.ranks[skill.index.Value] + " " + skill.model.name;
 
         int index = skill.index.Value;
 
@@ -138,7 +138,7 @@ public class WindowSkillDetailed : Window
         body.transform.Find("Stats").gameObject.SetActive(true);
         int i = 0;
 
-        foreach ((int ID, SkillStatModel stat) in skill.stats)
+        foreach ((int ID, SkillStatModel stat) in skill.model.stats)
         {
             string statName = SkillStatTypeModel.FindByID(stat.statID);
 
@@ -179,21 +179,21 @@ public class WindowSkillDetailed : Window
         // Resets the content size fitter.
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)gameObject.transform);
     }
-    
+
     /// <summary>
     ///     Updates the xp bar progress.
     /// </summary>
     private void UpdateXp()
     {
         // If < 100, use normal bar, else use overfill bar.
-        if (skill.xp.Value <= 100) 
+        if (skill.xp.Value <= 100)
         {
             xpBar.SetActive(true);
             xpBarScript.SetCurrent(skill.xp.Value);
             xpBarScript.SetMaximum(100);
             overXpBar.SetActive(false);
         }
-        else 
+        else
         {
             xpBar.SetActive(false);
             overXpBarScript.SetCurrent(skill.xp.Value);

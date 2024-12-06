@@ -1,24 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using UnityEngine;
 
-[Serializable]
 public class QuestModel : Model
 {
     public int ID;
-    [NonSerialized]
     public string name;
-    [NonSerialized]
     public int typeID;
 
-    [NonSerialized]
     public List<QuestConditionModel> prerequisites = new List<QuestConditionModel>();
-    [NonSerialized]
     public List<QuestConditionModel> steps = new List<QuestConditionModel>();
-    [NonSerialized]
     public List<QuestConditionModel> rewards = new List<QuestConditionModel>();
-    [NonSerialized]
     public List<QuestDialogueModel> dialogues = new List<QuestDialogueModel>();
 
     public static string prerequisitesTableName;

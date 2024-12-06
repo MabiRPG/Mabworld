@@ -16,10 +16,8 @@ public class EventManager
     }
 }
 
-[Serializable]
 public class IntManager : EventManager
 {
-    [SerializeField]
     private int _value;
     public int Value
     {
@@ -33,10 +31,8 @@ public class IntManager : EventManager
     }
 }
 
-[Serializable]
 public class FloatManager : EventManager
 {
-    [SerializeField]
     private float _value;
     public float Value
     {

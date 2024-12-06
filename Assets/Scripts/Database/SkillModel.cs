@@ -1,56 +1,52 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using Newtonsoft.Json;
 using UnityEngine;
 
-[Serializable]
+[JsonObject]
 public class SkillModel : Model
 {
     // Primary key of skill
     public int ID;
-    [NonSerialized]
     // Name of skill and category
     public string name;
-    [NonSerialized]
     public int cultivationStageID;
-    [NonSerialized]
     // Skill description, details, skill icon, and sound effect when using
     public string description;
-    [NonSerialized]
     public string details;
-    [NonSerialized]
+    [JsonIgnore]
     public Sprite icon;
-    [NonSerialized]
+    [JsonIgnore]
     public AudioClip sfx;
-    [NonSerialized]
+    [JsonIgnore]
     public AnimationClip animationClip;
-    [NonSerialized]
     // Starting, first and last ranks that can be reached
     public string startingRank;
-    [NonSerialized]
     public string firstAvailableRank;
-    [NonSerialized]
     public string lastAvailableRank;
-    [NonSerialized]
     // Base loading time, use time, and cooldown
     public float baseLoadTime;
-    [NonSerialized]
     public float baseUseTime;
-    [NonSerialized]
     public float baseCooldown;
-    [NonSerialized]
     // Does player start with skill?
     public bool isStartingWith;
-    [NonSerialized]
     // Learnable? and learn condition
     public bool isLearnable;
-    [NonSerialized]
     public int learnConditionID;
-    [NonSerialized]
     // Passive or active
     public bool isPassive;
 
+    // Serialization info
+    [JsonProperty]
+    private readonly string _iconName;
+    [JsonProperty]
+    private readonly string _sfxName;
+    [JsonProperty]
+    private readonly string _animationClipName;
+
     // All ranks in string format
+    [JsonIgnore]
     public static List<string> ranks = new List<string>
         {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
 
@@ -93,6 +89,11 @@ public class SkillModel : Model
         ReadRow();
         ReadStats();
         ReadTrainingMethods();
+
+        // Get the addressable names for save. Does not actually add to addressable
+        _iconName = database.AddToAddressables(icon);
+        _sfxName = database.AddToAddressables(sfx);
+        _animationClipName = database.AddToAddressables(animationClip);
     }
 
     private void ReadStats()

@@ -179,7 +179,7 @@ public class Quest : QuestModel
         Skill skill = result.skill;
         ActionSkillController.ActionType actionType = result.action.type;
 
-        if (int.Parse(condition.model.param1) != skill.ID)
+        if (int.Parse(condition.model.param1) != skill.model.ID)
         {
             return;
         }
@@ -189,12 +189,12 @@ public class Quest : QuestModel
             case "Learn skill":
                 if (
                     actionType == ActionSkillController.ActionType.Learn
-                    && result.player.skillManager.IsLearned(skill.ID)
+                    && result.player.skillManager.IsLearned(skill.model.ID)
                 )
                 {
                     condition.state.Value = true;
                 }
-                else if (!result.player.skillManager.IsLearned(skill.ID))
+                else if (!result.player.skillManager.IsLearned(skill.model.ID))
                 {
                     condition.state.Value = false;
                 }

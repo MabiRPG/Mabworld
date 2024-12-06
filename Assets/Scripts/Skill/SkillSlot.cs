@@ -56,7 +56,7 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
             {
                 openWindowAction.Invoke();
             }
-            else if (!skill.isPassive)
+            else if (!skill.model.isPassive)
             {
                 //Player.Instance.LoadSkill(skill);
             }
@@ -76,11 +76,11 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
     public void SetSkill(Skill skill, Action openWindowAction)
     {
         this.skill = skill;
-        icon.sprite = this.skill.icon;
+        icon.sprite = this.skill.model.icon;
         this.skill.cooldown.OnChange += UpdateCooldown;
         UpdateCooldown();
 
-        if (!skill.isPassive)
+        if (!skill.model.isPassive)
         {
             //InputController.Instance.AddButtonBind(key, () => Player.Instance.LoadSkill(skill));
         }

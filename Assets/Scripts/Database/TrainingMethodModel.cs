@@ -1,20 +1,12 @@
-using System;
-
-[Serializable]
 public class TrainingMethodModel : Model
 {
     public int skillID;
     public string rank;
     public int trainingMethodID;
-    [NonSerialized]
     public float xpGainEach;
-    [NonSerialized]
     public int countMax;
-    [NonSerialized]
     public string name;
-    [NonSerialized]
     public string param1 = "1";
-    [NonSerialized]
     public string param2 = "1";
 
     public TrainingMethodModel(DatabaseManager database, int skillID) : base(database)

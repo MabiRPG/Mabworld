@@ -20,7 +20,7 @@ public class WindowSkillRowUseButton : MonoBehaviour, IInputHandler
     {
         this.skill = skill;
 
-        if (skill.isPassive)
+        if (skill.model.isPassive)
         {
             button.interactable = false;
             buttonText.text = "Passive";

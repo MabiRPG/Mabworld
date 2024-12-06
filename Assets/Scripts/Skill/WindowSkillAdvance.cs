@@ -6,14 +6,14 @@ using TMPro;
 /// <summary>
 ///     Class for skill advancement window confirmations.
 /// </summary>
-public class WindowSkillAdvance : Window 
+public class WindowSkillAdvance : Window
 {
     // Prefab for the skill stat text.
     [SerializeField]
     private GameObject statPrefab;
     // Manager of all stat prefab instances.
     private PrefabFactory statPrefabs;
-    
+
     // Skill instance to render
     private Skill skill;
 
@@ -25,7 +25,7 @@ public class WindowSkillAdvance : Window
     // private TMP_Text ap;
     private Button advanceButton;
     private Button cancelButton;
-    
+
     /// <summary>
     ///     Initializes the object.
     /// </summary>
@@ -50,7 +50,7 @@ public class WindowSkillAdvance : Window
     /// </summary>
     private void OnEnable()
     {
-        advanceButton.onClick.AddListener(delegate {AdvanceSkill(skill);});
+        advanceButton.onClick.AddListener(delegate { AdvanceSkill(skill); });
         cancelButton.onClick.AddListener(HideWindow);
     }
 
@@ -72,7 +72,7 @@ public class WindowSkillAdvance : Window
     public void SetSkill(Skill skill)
     {
         Clear();
-        
+
         this.skill = skill;
         this.skill.index.OnChange += HideWindow;
 
@@ -109,20 +109,20 @@ public class WindowSkillAdvance : Window
     /// <summary>
     ///     Draws the window.
     /// </summary>
-    private void Draw() 
+    private void Draw()
     {
         int index = skill.index.Value + 1;
 
         // Finds the skill name and reassigns it.
-        skillName.text = "Rank " + Skill.ranks[skill.index.Value] + " " + skill.name;
+        skillName.text = "Rank " + SkillModel.ranks[skill.index.Value] + " " + skill.model.name;
 
         // Finds the skill icon sprite and reassigns it.
-        icon.sprite = skill.icon;
+        icon.sprite = skill.model.icon;
 
-        rank.text = string.Format("Advance to Rank {0} available", Skill.ranks[index]);
+        rank.text = string.Format("Advance to Rank {0} available", SkillModel.ranks[index]);
 
         // For every stat, create a new stat field prefab and populate it.
-        foreach ((int ID, SkillStatModel stat) in skill.stats)
+        foreach ((int ID, SkillStatModel stat) in skill.model.stats)
         {
             string statName = SkillStatTypeModel.FindByID(stat.statID);
 

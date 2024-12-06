@@ -52,7 +52,7 @@ public class WindowCrafting : Window
 
         foreach (Skill skill in skills)
         {
-            names.Add(skill.name);
+            names.Add(skill.model.name);
         }
 
         dropdown.PopulateOptions(names, (option) => UpdateRecipeList(option));
@@ -66,7 +66,7 @@ public class WindowCrafting : Window
     public void UpdateRecipeList(string currentSkillName)
     {
         Skill currentSkill = FindSkillByName(currentSkillName);
-        recipeList.Populate(recipes[currentSkill.ID], (recipe) => ExpandDetails(recipe));
+        recipeList.Populate(recipes[currentSkill.model.ID], (recipe) => ExpandDetails(recipe));
 
         // Resets the content size fitter.
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)transform);
@@ -77,7 +77,7 @@ public class WindowCrafting : Window
         Skill currentSkill = FindSkillByName(dropdown.GetCurrentOption());
         List<CraftingRecipe> newRecipeList = new List<CraftingRecipe>();
 
-        foreach (CraftingRecipe recipe in recipes[currentSkill.ID])
+        foreach (CraftingRecipe recipe in recipes[currentSkill.model.ID])
         {
             // if (recipe.products.name.StartsWith(recipeName))
             // {
@@ -113,7 +113,7 @@ public class WindowCrafting : Window
     {
         foreach (Skill skill in skills)
         {
-            if (skill.name == name)
+            if (skill.model.name == name)
             {
                 return skill;
             }

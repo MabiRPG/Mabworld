@@ -1,7 +1,3 @@
-using System;
-
-
-[Serializable]
 /// <summary>
 ///     Handles all training method processing.
 /// </summary>
@@ -13,7 +9,7 @@ public class SkillTrainingMethod : TrainingMethodModel
     private Skill skill;
 
     public SkillTrainingMethod(Skill skill, int methodID, string rank)
-        : base(GameManager.Instance.Database, skill.ID, methodID, rank)
+        : base(GameManager.Instance.Database, skill.model.ID, methodID, rank)
     {
         this.skill = skill;
         count.Value = 0;
