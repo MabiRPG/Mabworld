@@ -16,13 +16,17 @@ using System.Runtime.Serialization;
 public class Player : Actor, IInputHandler
 {
     // Global instance of player
+    [JsonIgnore]
     public static Player Instance = null;
 
     // Experience
+    [JsonProperty]
     public StatManager actorXP = new StatManager(0, 100, 100);
     // Inventory
+    [JsonIgnore]
     public InventoryManager inventoryManager = new InventoryManager();
     // Quests
+    [JsonIgnore]
     public Dictionary<int, Quest> quests = new Dictionary<int, Quest>();
 
     // How much our life skill success rates scale with dex.
@@ -43,15 +47,8 @@ public class Player : Actor, IInputHandler
     [JsonProperty]
     private int hugeLuckyGain = 20;
 
+    [JsonIgnore]
     public PlayerController controller;
-
-    // Serialization info
-    [JsonProperty]
-    private float _actorXP;
-    [JsonProperty]
-    private float _actorXPMaximum;
-    [JsonProperty]
-    private float _actorXPBaseMaximum;
 
     /// <summary>
     ///     Initializes the object.
@@ -258,21 +255,5 @@ public class Player : Actor, IInputHandler
 
         ActionItemController actionItem = new ActionItemController(this, this, 1, 50);
         actionItem.Handle();
-    }
-
-    [OnSerializing]
-    internal void OnSerializing(StreamingContext context)
-    {
-        _actorXP = actorXP.Value;
-        _actorXPMaximum = actorXP.Maximum;
-        _actorXPBaseMaximum = actorXP.BaseMaximum;
-    }
-
-    [OnDeserialized]
-    internal void OnDeserialized(StreamingContext context)
-    {
-        actorXP.Value = _actorXP;
-        actorXP.Maximum = _actorXPMaximum;
-        actorXP.BaseMaximum = _actorXPBaseMaximum;
     }
 }

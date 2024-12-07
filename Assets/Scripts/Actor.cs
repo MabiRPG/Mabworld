@@ -11,33 +11,51 @@ using UnityEngine.AI;
 [JsonObject(MemberSerialization.OptIn)]
 public class Actor : MonoBehaviour
 {
+    [JsonIgnore]
     protected LayerMask blockingLayer;
+    [JsonIgnore]
     public Animator animator;
+    [JsonIgnore]
     public NavMeshAgent navMeshAgent;
 
     // Name and level of actor
+    [JsonProperty]
     public StringManager actorName = new StringManager();
+    [JsonProperty]
     public StatManager actorStage = new StatManager(1, 9, 9);
+    [JsonProperty]
     public StatManager actorSubstage = new StatManager(1, 9, 9);
 
     // Health and mana
+    [JsonProperty]
     public StatManager actorHP = new StatManager(100, 100, 100);
+    [JsonProperty]
     public StatManager actorMP = new StatManager(100, 100, 100);
 
     // Strength, Intelligence, Dexterity, and Luck
+    [JsonProperty]
     public StatManager actorStr = new StatManager(0, 0, 0);
+    [JsonProperty]
     public StatManager actorInt = new StatManager(0, 0, 0);
+    [JsonProperty]
     public StatManager actorDex = new StatManager(0, 0, 0);
+    [JsonProperty]
     public StatManager actorLuck = new StatManager(0, 0, 0);
 
     // Defense, Protection, Magic Defense, and Magic Protection
+    [JsonProperty]
     public StatManager actorDefense = new StatManager();
+    [JsonProperty]
     public StatManager actorProt = new StatManager();
+    [JsonProperty]
     public StatManager actorMDefense = new StatManager();
+    [JsonProperty]
     public StatManager actorMProt = new StatManager();
 
     // Dict of primary and secondary (calculated) stats for easier reference
+    [JsonIgnore]
     public Dictionary<string, StatManager> primaryStats = new Dictionary<string, StatManager>();
+    [JsonIgnore]
     public Dictionary<string, StatManager> secondaryStats = new Dictionary<string, StatManager>();
 
     [JsonProperty]
@@ -52,17 +70,8 @@ public class Actor : MonoBehaviour
 
     [JsonProperty]
     public SkillManager skillManager;
+    [JsonIgnore]
     public SkillBubble bubble;
-
-    // Serialization info
-    private string _actorName;
-    private float _actorStageValue;
-    private float _actorStageMaximum;
-    private float _actorStageBaseMaximum;
-    private float _actorSubstageValue;
-    private float _actorSubstageMaximum;
-    private float _actorSubstageBaseMaximum;
-
 
     /// <summary>
     ///     Initializes the object.

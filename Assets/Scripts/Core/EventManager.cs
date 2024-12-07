@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class EventManager
@@ -16,9 +17,13 @@ public class EventManager
     }
 }
 
+[JsonObject]
 public class IntManager : EventManager
 {
+    [JsonProperty]
     private int _value;
+
+    [JsonIgnore]
     public int Value
     {
         get { return _value; }
@@ -36,9 +41,13 @@ public class IntManager : EventManager
     }
 }
 
+[JsonObject]
 public class FloatManager : EventManager
 {
+    [JsonProperty]
     private float _value;
+
+    [JsonIgnore]
     public float Value
     {
         get { return _value; }
@@ -51,9 +60,13 @@ public class FloatManager : EventManager
     }
 }
 
+[JsonObject]
 public class StringManager : EventManager
 {
+    [JsonProperty]
     private string _value;
+
+    [JsonIgnore]
     public string Value
     {
         get { return _value; }
@@ -66,9 +79,13 @@ public class StringManager : EventManager
     }
 }
 
+[JsonObject]
 public class BoolManager : EventManager
 {
+    [JsonProperty]
     private bool _value;
+
+    [JsonIgnore]
     public bool Value
     {
         get { return _value; }
@@ -84,6 +101,7 @@ public class BoolManager : EventManager
 /// <summary>
 ///     Handles all triple float (actor Stats) and event management.
 /// </summary>
+[JsonObject]
 public class StatManager : FloatManager
 {
     // Event handler objects
@@ -91,7 +109,10 @@ public class StatManager : FloatManager
     public event Action OnBaseMaximumValueChange;
 
     // Current maximum value of stat (modified by buffs/debuffs, etc)
+    [JsonProperty]
     private float _maximum;
+
+    [JsonIgnore]
     public float Maximum
     {
         get { return _maximum; }
@@ -103,7 +124,10 @@ public class StatManager : FloatManager
     }
 
     // Permanent base maximum of stat (calculated from skills, etc).
+    [JsonProperty]
     private float _baseMaximum;
+
+    [JsonIgnore]
     public float BaseMaximum
     {
         get { return _baseMaximum; }

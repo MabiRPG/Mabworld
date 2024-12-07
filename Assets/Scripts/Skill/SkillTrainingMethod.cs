@@ -9,12 +9,7 @@ using System.Runtime.Serialization;
 public class SkillTrainingMethod
 {
     public TrainingMethodModel model;
-    [JsonIgnore]
     public IntManager count;
-
-    // Serialization info
-    [JsonProperty]
-    private int _count;
 
     public SkillTrainingMethod(int skillID, int methodID, string rank)
     {
@@ -106,19 +101,6 @@ public class SkillTrainingMethod
 
     public void Clear()
     {
-        // Player.Instance.trainingEvent -= Update;
         count.Clear();
-    }
-
-    [OnSerializing]
-    internal void OnSerializing(StreamingContext context)
-    {
-        _count = count.Value;
-    }
-
-    [OnDeserialized]
-    internal void OnDeserialized(StreamingContext context)
-    {
-        count.Value = _count;
     }
 }

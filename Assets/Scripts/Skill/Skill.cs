@@ -62,12 +62,9 @@ public class Skill
     public SkillModel model;
 
     // Current index and rank of skill.
-    [JsonIgnore]
     public IntManager index;
     // Current xp and maximum rank xp.
-    [JsonIgnore]
     public FloatManager xp;
-    [JsonIgnore]
     public FloatManager xpMax;
     // Current cooldown timer
     [JsonIgnore]
@@ -76,12 +73,6 @@ public class Skill
     // List of training methods at current rank
     [JsonConverter(typeof(SkillMethodsConverter))]
     public List<SkillTrainingMethod> methods;
-
-    // Serialization info
-    [JsonProperty]
-    private int _index;
-    [JsonProperty]
-    private float _xp;
 
     /// <summary>
     ///     Initializes the object.
@@ -376,20 +367,5 @@ public class Skill
         }
 
         cooldown.Value = 0;
-    }
-
-    [OnSerializing]
-    internal void OnSerializing(StreamingContext context)
-    {
-        _index = index.Value;
-        _xp = xp.Value;
-    }
-
-    [OnDeserialized]
-    internal void OnDeserialized(StreamingContext context)
-    {
-        index.SetValueWithoutNotify(_index);
-        xp.Value = _xp;
-        xpMax.Value = methods.Sum(v => v.model.countMax * v.model.xpGainEach);
     }
 }
