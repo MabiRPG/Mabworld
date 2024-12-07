@@ -44,8 +44,7 @@ public class SkillMethodsConverter : JsonConverter
             string rank = (string)token["model"]["rank"];
 
             SkillTrainingMethod method = new SkillTrainingMethod(
-                Player.Instance.skillManager.Get(skillID),
-                trainingMethodID, rank);
+                skillID, trainingMethodID, rank);
             JsonConvert.PopulateObject(token.ToString(), method);
             methods.Add(method);
         }
@@ -297,7 +296,7 @@ public class Skill
         foreach (TrainingMethodModel methodModel in rankMethods)
         {
             SkillTrainingMethod method =
-                new SkillTrainingMethod(this, methodModel.trainingMethodID, methodModel.rank);
+                new SkillTrainingMethod(model.ID, methodModel.trainingMethodID, methodModel.rank);
             xpMax.Value += methodModel.xpGainEach * methodModel.countMax;
             methods.Add(method);
         }
@@ -389,7 +388,7 @@ public class Skill
     [OnDeserialized]
     internal void OnDeserialized(StreamingContext context)
     {
-        index.Value = _index;
+        index.SetValueWithoutNotify(_index);
         xp.Value = _xp;
         xpMax.Value = methods.Sum(v => v.model.countMax * v.model.xpGainEach);
     }

@@ -1,5 +1,5 @@
-using UnityEngine;
 using Newtonsoft.Json;
+using UnityEngine;
 using System.Runtime.Serialization;
 
 /// <summary>
@@ -10,20 +10,16 @@ public class SkillTrainingMethod
 {
     public TrainingMethodModel model;
     [JsonIgnore]
-    public IntManager count = new IntManager();
+    public IntManager count;
 
     // Serialization info
+    [JsonProperty]
     private int _count;
 
-    // Skill instance
-    private Skill skill;
-
-    public SkillTrainingMethod(Skill skill, int methodID, string rank)
+    public SkillTrainingMethod(int skillID, int methodID, string rank)
     {
-        this.skill = skill;
-
-        model = new TrainingMethodModel(GameManager.Instance.Database, skill.model.ID,
-            methodID, rank);
+        model = new TrainingMethodModel(GameManager.Instance.Database,
+            skillID, methodID, rank);
         count = new IntManager();
     }
 
@@ -37,7 +33,7 @@ public class SkillTrainingMethod
         if (CheckTraining(result as ResultHandler, caller, isSuccess))
         {
             count.Value += 1;
-            skill.AddXP(model.xpGainEach);
+            Player.Instance.skillManager.Get(model.skillID).AddXP(model.xpGainEach);
         }
     }
 

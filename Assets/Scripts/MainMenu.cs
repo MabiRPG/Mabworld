@@ -58,7 +58,7 @@ public class MainMenu : MonoBehaviour
 
     private void SaveGame()
     {
-        GameManager.Instance.SaveGame();
+        GameManager.Instance.Save();
     }
 
     private void LoadGame()

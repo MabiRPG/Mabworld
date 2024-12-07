@@ -15,8 +15,8 @@ public class InventoryBag
     public int height;
 
     public List<(int row, int column)> excludedSlots = new List<(int, int)>();
-    public SerializableDictionary<(int row, int column), InventoryItem> items =
-        new SerializableDictionary<(int row, int column), InventoryItem>();
+    public Dictionary<(int row, int column), InventoryItem> items =
+        new Dictionary<(int row, int column), InventoryItem>();
     public EventManager changeEvent = new EventManager();
 
     /// <summary>

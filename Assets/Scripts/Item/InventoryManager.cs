@@ -16,7 +16,7 @@ public class InventoryManager
     public static int slotHeight = 50;
     // Dictionary of all items across all bags.
     [SerializeField]
-    private SerializableDictionary<int, Item> AllItems = new SerializableDictionary<int, Item>();
+    private Dictionary<int, Item> AllItems = new Dictionary<int, Item>();
     // List of all bags.
     public List<InventoryBag> Bags = new List<InventoryBag>();
     public EventManager changeEvent = new EventManager();

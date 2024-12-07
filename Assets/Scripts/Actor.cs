@@ -1,19 +1,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.AI;
 
 /// <summary>
 ///     Handles all actor-level info and calculations.
 /// </summary>
+[JsonObject(MemberSerialization.OptIn)]
 public class Actor : MonoBehaviour
 {
-    [SerializeField]
     protected LayerMask blockingLayer;
-    [NonSerialized]
     public Animator animator;
-    [NonSerialized]
     public NavMeshAgent navMeshAgent;
 
     // Name and level of actor
@@ -41,19 +40,29 @@ public class Actor : MonoBehaviour
     public Dictionary<string, StatManager> primaryStats = new Dictionary<string, StatManager>();
     public Dictionary<string, StatManager> secondaryStats = new Dictionary<string, StatManager>();
 
-    [SerializeField]
+    [JsonProperty]
     // How much defense scales with strength
     protected int defenseStrFactor = 10;
-    [SerializeField]
+    [JsonProperty]
     // Magic defense scale with str
     protected int mDefenseStrFactor = 10;
-    [SerializeField]
+    [JsonProperty]
     // Magic Protection scale with int
     protected int mProtIntFactor = 20;
 
+    [JsonProperty]
     public SkillManager skillManager;
-    [NonSerialized]
     public SkillBubble bubble;
+
+    // Serialization info
+    private string _actorName;
+    private float _actorStageValue;
+    private float _actorStageMaximum;
+    private float _actorStageBaseMaximum;
+    private float _actorSubstageValue;
+    private float _actorSubstageMaximum;
+    private float _actorSubstageBaseMaximum;
+
 
     /// <summary>
     ///     Initializes the object.

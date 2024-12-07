@@ -97,19 +97,19 @@ public class GameManager : MonoBehaviour
         gameStateMachine.SetState(new MenuState(gameStateMachine, "Base"));
     }
 
-    public void LoadGame()
+    public void Save()
     {
-        using StreamReader sr = new StreamReader("./Saves/saveTest.json");
-        string json = sr.ReadToEnd();
-        JsonConvert.PopulateObject(json, Player.Instance.skillManager);
-    }
-
-    public void SaveGame()
-    {
-        string json = JsonConvert.SerializeObject(Player.Instance.skillManager);
+        string json = JsonConvert.SerializeObject(Player.Instance);
         Debug.Log(json);
         using StreamWriter sw = new StreamWriter("./Saves/saveTest.json");
         sw.Write(json);
+    }
+
+    public void Load()
+    {
+        using StreamReader sr = new StreamReader("./Saves/saveTest.json");
+        string json = sr.ReadToEnd();
+        JsonConvert.PopulateObject(json, Player.Instance);
     }
 
     public DataTable QueryDatabase(string query, params (string Key, object Value)[] args)

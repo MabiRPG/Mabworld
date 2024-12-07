@@ -6,44 +6,52 @@ using UnityEngine.EventSystems;
 using UnityEngine.AI;
 using System.Data;
 using TypeExtension;
+using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
-[Serializable]
 /// <summary>
 ///     Handles all player & input processing.
 /// </summary>
+[JsonObject(MemberSerialization.OptIn)]
 public class Player : Actor, IInputHandler
 {
     // Global instance of player
     public static Player Instance = null;
 
-    // Ability points and experience
-    // public IntManager actorAP = new IntManager(0);
+    // Experience
     public StatManager actorXP = new StatManager(0, 100, 100);
     // Inventory
     public InventoryManager inventoryManager = new InventoryManager();
     // Quests
-    public SerializableDictionary<int, Quest> quests = new SerializableDictionary<int, Quest>();
+    public Dictionary<int, Quest> quests = new Dictionary<int, Quest>();
 
-    [SerializeField]
     // How much our life skill success rates scale with dex.
+    [JsonProperty]
     private int lifeSkillDexFactor = 10;
-    [SerializeField]
     // What the maximize success rate increase is.
+    [JsonProperty]
     private int lifeSkillSuccessCap = 18;
 
-    [SerializeField]
     // How much our lucky gathers scale with luck stat
+    [JsonProperty]
     private int luckyFactor = 2000;
-    [SerializeField]
     // How much resource multiplier is applied on trigger lucky
+    [JsonProperty]
     private int luckyGain = 2;
-    [SerializeField]
+    [JsonProperty]
     private int hugeLuckyFactor = 50000;
-    [SerializeField]
+    [JsonProperty]
     private int hugeLuckyGain = 20;
 
-    [NonSerialized]
     public PlayerController controller;
+
+    // Serialization info
+    [JsonProperty]
+    private float _actorXP;
+    [JsonProperty]
+    private float _actorXPMaximum;
+    [JsonProperty]
+    private float _actorXPBaseMaximum;
 
     /// <summary>
     ///     Initializes the object.
@@ -68,24 +76,6 @@ public class Player : Actor, IInputHandler
         controller = gameObject.AddComponent<PlayerController>();
         controller.Init(this);
         GameManager.Instance.audioController.SetPlayer(this);
-    }
-
-    /// <summary>
-    ///     Called after all Awakes.
-    /// </summary>
-    protected void Start()
-    {
-        DataTable dt = GameManager.Instance.Database.Read(@"SELECT id FROM skill
-            WHERE is_starting_with = 1");
-
-        foreach (DataRow row in dt.Rows)
-        {
-            int ID = int.Parse(row["id"].ToString());
-            ActionSkillController action = new ActionSkillController(this, this, ID);
-            action.Handle();
-        }
-
-        Debug();
     }
 
     public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
@@ -243,7 +233,7 @@ public class Player : Actor, IInputHandler
         }
     }
 
-    private void Debug()
+    public void Init()
     {
         // Debug purposes...
         actorName.Value = "Test";
@@ -252,10 +242,37 @@ public class Player : Actor, IInputHandler
         quests.Add(1, quest);
         quests.Add(2, new Quest(2));
 
+        DataTable dt = GameManager.Instance.Database.Read(@"SELECT id FROM skill
+            WHERE is_starting_with = 1");
+
+        foreach (DataRow row in dt.Rows)
+        {
+            int ID = int.Parse(row["id"].ToString());
+            ActionSkillController action = new ActionSkillController(this, this, ID);
+            action.Handle();
+        }
+
+
         skillManager.Skills[1].AddXP(100);
         skillManager.Skills[2].AddXP(150);
 
         ActionItemController actionItem = new ActionItemController(this, this, 1, 50);
         actionItem.Handle();
+    }
+
+    [OnSerializing]
+    internal void OnSerializing(StreamingContext context)
+    {
+        _actorXP = actorXP.Value;
+        _actorXPMaximum = actorXP.Maximum;
+        _actorXPBaseMaximum = actorXP.BaseMaximum;
+    }
+
+    [OnDeserialized]
+    internal void OnDeserialized(StreamingContext context)
+    {
+        actorXP.Value = _actorXP;
+        actorXP.Maximum = _actorXPMaximum;
+        actorXP.BaseMaximum = _actorXPBaseMaximum;
     }
 }

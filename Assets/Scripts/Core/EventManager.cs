@@ -29,6 +29,11 @@ public class IntManager : EventManager
     {
         this.Value = Value;
     }
+
+    public void SetValueWithoutNotify(int value)
+    {
+        _value = value;
+    }
 }
 
 public class FloatManager : EventManager
@@ -46,10 +51,8 @@ public class FloatManager : EventManager
     }
 }
 
-[Serializable]
 public class StringManager : EventManager
 {
-    [SerializeField]
     private string _value;
     public string Value
     {
@@ -63,10 +66,8 @@ public class StringManager : EventManager
     }
 }
 
-[Serializable]
 public class BoolManager : EventManager
 {
-    [SerializeField]
     private bool _value;
     public bool Value
     {
@@ -80,7 +81,6 @@ public class BoolManager : EventManager
     }
 }
 
-[Serializable]
 /// <summary>
 ///     Handles all triple float (actor Stats) and event management.
 /// </summary>
@@ -89,7 +89,7 @@ public class StatManager : FloatManager
     // Event handler objects
     public event Action OnMaximumValueChange;
     public event Action OnBaseMaximumValueChange;
-    [SerializeField]
+
     // Current maximum value of stat (modified by buffs/debuffs, etc)
     private float _maximum;
     public float Maximum
@@ -101,7 +101,7 @@ public class StatManager : FloatManager
             RaiseOnMaximumValueChange();
         }
     }
-    [SerializeField]
+
     // Permanent base maximum of stat (calculated from skills, etc).
     private float _baseMaximum;
     public float BaseMaximum

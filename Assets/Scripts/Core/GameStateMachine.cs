@@ -131,7 +131,11 @@ public class PlayState : GameState
 
         if (loadGame)
         {
-            GameManager.Instance.LoadGame();
+            GameManager.Instance.Load();
+        }
+        else
+        {
+            Player.Instance.Init();
         }
     }
 
