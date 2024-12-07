@@ -58,10 +58,13 @@ public class MainMenu : MonoBehaviour
 
     private void SaveGame()
     {
+        GameManager.Instance.SaveGame();
     }
 
     private void LoadGame()
     {
+        GameManager.Instance.gameStateMachine.SetState(
+            new PlayState(GameManager.Instance.gameStateMachine, "Test Map", true));
     }
 
     private void OpenCredits()

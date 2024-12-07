@@ -5,6 +5,54 @@ using System;
 using System.Collections;
 using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Runtime.Serialization;
+
+public class SkillMethodsConverter : JsonConverter
+{
+    public override bool CanConvert(Type objectType)
+    {
+        return true;
+    }
+
+    public override bool CanWrite
+    {
+        get { return false; }
+    }
+
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    {
+        throw new Exception("Is not implemented");
+    }
+
+    public override bool CanRead
+    {
+        get { return true; }
+    }
+
+    public override object ReadJson(JsonReader reader, Type objectType,
+        object existingValue, JsonSerializer serializer)
+    {
+        JToken obj = JToken.Load(reader);
+
+        List<SkillTrainingMethod> methods = new List<SkillTrainingMethod>();
+
+        foreach (JToken token in obj)
+        {
+            int skillID = (int)token["model"]["skillID"];
+            int trainingMethodID = (int)token["model"]["trainingMethodID"];
+            string rank = (string)token["model"]["rank"];
+
+            SkillTrainingMethod method = new SkillTrainingMethod(
+                Player.Instance.skillManager.Get(skillID),
+                trainingMethodID, rank);
+            JsonConvert.PopulateObject(token.ToString(), method);
+            methods.Add(method);
+        }
+
+        return methods;
+    }
+}
 
 /// <summary>
 ///     Handles all skill processing.
@@ -15,8 +63,10 @@ public class Skill
     public SkillModel model;
 
     // Current index and rank of skill.
+    [JsonIgnore]
     public IntManager index;
     // Current xp and maximum rank xp.
+    [JsonIgnore]
     public FloatManager xp;
     [JsonIgnore]
     public FloatManager xpMax;
@@ -25,8 +75,14 @@ public class Skill
     public FloatManager cooldown;
 
     // List of training methods at current rank
-    [JsonIgnore]
+    [JsonConverter(typeof(SkillMethodsConverter))]
     public List<SkillTrainingMethod> methods;
+
+    // Serialization info
+    [JsonProperty]
+    private int _index;
+    [JsonProperty]
+    private float _xp;
 
     /// <summary>
     ///     Initializes the object.
@@ -321,5 +377,20 @@ public class Skill
         }
 
         cooldown.Value = 0;
+    }
+
+    [OnSerializing]
+    internal void OnSerializing(StreamingContext context)
+    {
+        _index = index.Value;
+        _xp = xp.Value;
+    }
+
+    [OnDeserialized]
+    internal void OnDeserialized(StreamingContext context)
+    {
+        index.Value = _index;
+        xp.Value = _xp;
+        xpMax.Value = methods.Sum(v => v.model.countMax * v.model.xpGainEach);
     }
 }

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -109,10 +108,13 @@ public class MenuState : GameState
 
 public class PlayState : GameState
 {
-    public PlayState(GameStateMachine machine, string sceneName)
+    private bool loadGame;
+
+    public PlayState(GameStateMachine machine, string sceneName, bool loadGame = false)
     {
         this.machine = machine;
         this.sceneName = sceneName;
+        this.loadGame = loadGame;
     }
 
     public override void OnEnter()
@@ -126,6 +128,11 @@ public class PlayState : GameState
         yield return UnloadLevel();
         yield return LoadLevel();
         GameManager.Instance.levelScene = SceneManager.GetActiveScene();
+
+        if (loadGame)
+        {
+            GameManager.Instance.LoadGame();
+        }
     }
 
     public override void OnExit()

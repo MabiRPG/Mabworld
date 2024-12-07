@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 ///     Handles rendering skill training methods in window.
 /// </summary>
-public class WindowSkillTrainingMethod : MonoBehaviour 
+public class WindowSkillTrainingMethod : MonoBehaviour
 {
     private SkillTrainingMethod method;
     private TMP_Text methodName;
@@ -56,15 +56,15 @@ public class WindowSkillTrainingMethod : MonoBehaviour
     /// </summary>
     private void Draw()
     {
-        string sName = method.name;
+        string sName = method.model.name;
         string sValue = string.Format("+{0:0.00} (<color=\"yellow\">{1}<color=\"white\">/{2})",
-            method.xpGainEach, method.count.Value, method.countMax);
+            method.model.xpGainEach, method.count.Value, method.model.countMax);
 
         if (method.IsComplete())
         {
             sName = "<color=\"grey\">" + sName;
             sValue = string.Format("<color=\"grey\">+{0:0.00} ({1}/{2})",
-                method.xpGainEach, method.count.Value, method.countMax);
+                method.model.xpGainEach, method.count.Value, method.model.countMax);
         }
 
         methodName.text = sName;
