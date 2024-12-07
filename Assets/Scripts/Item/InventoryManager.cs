@@ -1,24 +1,67 @@
 using System;
 using System.Collections.Generic;
-using TypeExtension;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
+
+public class InventoryManagerAllItemsConverter : JsonConverter
+{
+    public override bool CanConvert(Type objectType)
+    {
+        return true;
+    }
+
+    public override bool CanWrite
+    {
+        get { return false; }
+    }
+
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    {
+        throw new Exception("Is not implemented");
+    }
+
+    public override bool CanRead
+    {
+        get { return true; }
+    }
+
+    public override object ReadJson(JsonReader reader, Type objectType,
+        object existingValue, JsonSerializer serializer)
+    {
+        JToken obj = JToken.Load(reader);
+
+        Dictionary<int, Item> AllItems = new Dictionary<int, Item>();
+
+        foreach (JToken token in obj)
+        {
+            int ID = (int)token.First["model"]["ID"];
+            Item item = new Item(ID);
+            JsonConvert.PopulateObject(token.First.ToString(), item);
+            AllItems.Add(ID, item);
+        }
+
+        return AllItems;
+    }
+}
 
 /// <summary>
 ///     Handles processing all inventory bags and the total inventory space.
 /// </summary>
-[Serializable]
+[JsonObject]
 public class InventoryManager
 {
     // Dimensions of a single slot (pixels) in the inventory window.
-    [NonSerialized]
     public static int slotWidth = 50;
-    [NonSerialized]
     public static int slotHeight = 50;
     // Dictionary of all items across all bags.
-    [SerializeField]
+    [JsonProperty]
+    [JsonConverter(typeof(InventoryManagerAllItemsConverter))]
     private Dictionary<int, Item> AllItems = new Dictionary<int, Item>();
     // List of all bags.
     public List<InventoryBag> Bags = new List<InventoryBag>();
+
+    [JsonIgnore]
     public EventManager changeEvent = new EventManager();
 
     /// <summary>
@@ -26,7 +69,6 @@ public class InventoryManager
     /// </summary>
     public InventoryManager()
     {
-        AddBag(1);
     }
 
     /// <summary>
@@ -36,6 +78,16 @@ public class InventoryManager
     public void AddBag(int bagID)
     {
         Bags.Add(new InventoryBag());
+    }
+
+    public Item GetItem(int itemID)
+    {
+        if (AllItems.ContainsKey(itemID))
+        {
+            return AllItems[itemID];
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -120,12 +172,12 @@ public class InventoryManager
 
     public int GetQuantity(Item item)
     {
-        if (!AllItems.ContainsKey(item.ID))
+        if (!AllItems.ContainsKey(item.model.ID))
         {
             return 0;
         }
 
-        return AllItems[item.ID].quantity;
+        return AllItems[item.model.ID].quantity;
     }
 
     public int GetQuantity(ItemModel item)

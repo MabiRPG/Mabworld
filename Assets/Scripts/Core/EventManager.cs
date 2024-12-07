@@ -34,11 +34,6 @@ public class IntManager : EventManager
     {
         this.Value = Value;
     }
-
-    public void SetValueWithoutNotify(int value)
-    {
-        _value = value;
-    }
 }
 
 [JsonObject]

@@ -5,9 +5,7 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine.AI;
 using System.Data;
-using TypeExtension;
 using Newtonsoft.Json;
-using System.Runtime.Serialization;
 
 /// <summary>
 ///     Handles all player & input processing.
@@ -23,7 +21,7 @@ public class Player : Actor, IInputHandler
     [JsonProperty]
     public StatManager actorXP = new StatManager(0, 100, 100);
     // Inventory
-    [JsonIgnore]
+    [JsonProperty]
     public InventoryManager inventoryManager = new InventoryManager();
     // Quests
     [JsonIgnore]
@@ -249,9 +247,10 @@ public class Player : Actor, IInputHandler
             action.Handle();
         }
 
-
         skillManager.Skills[1].AddXP(100);
         skillManager.Skills[2].AddXP(150);
+
+        inventoryManager.AddBag(1);
 
         ActionItemController actionItem = new ActionItemController(this, this, 1, 50);
         actionItem.Handle();

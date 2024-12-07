@@ -36,14 +36,14 @@ public class WindowItem : MonoBehaviour, IInputHandler, IPointerMoveHandler, IPo
     {
         this.item = item;
         this.quantity = quantity;
-        icon.sprite = item.icon;
+        icon.sprite = item.model.icon;
         quantityText.text = quantity.ToString();
     }
 
     public void SetItem(Item item, string text)
     {
         this.item = item;
-        icon.sprite = item.icon;
+        icon.sprite = item.model.icon;
         quantityText.text = text;
     }
 

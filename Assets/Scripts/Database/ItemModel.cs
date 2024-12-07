@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
 using UnityEngine;
 
+[JsonObject]
 public class ItemModel : Model
 {
     // Internal ID number
@@ -10,6 +13,7 @@ public class ItemModel : Model
     public string name;
     public int categoryID;
     public string description;
+    [JsonIgnore]
     public Sprite icon;
     // Stack size limits inside an inventory
     public int stackSizeLimit;
@@ -19,6 +23,10 @@ public class ItemModel : Model
     private string statTableName;
 
     public Dictionary<int, ItemStatModel> stats = new Dictionary<int, ItemStatModel>();
+
+    // Serialization
+    [JsonProperty]
+    private string _iconName;
 
     public ItemModel(DatabaseManager database) : base(database)
     {
@@ -77,4 +85,16 @@ public class ItemModel : Model
         }
     }
 
+    [OnSerializing]
+    internal void OnSerializing(StreamingContext context)
+    {
+        // Get the addressable names for save. Does not actually add to addressable
+        _iconName = database.AddToAddressables(icon);
+    }
+
+    [OnDeserialized]
+    internal void OnDeserialized(StreamingContext context)
+    {
+        icon = database.LoadAsset<Sprite>(_iconName);
+    }
 }

@@ -34,7 +34,7 @@ public class WindowItemTooltip : MonoBehaviour
         else
         {
             Destroy(gameObject);
-        }        
+        }
 
         itemName = transform.Find("Item Name").GetComponent<TMP_Text>();
         description = transform.Find("Description Parent/Description").GetComponent<TMP_Text>();
@@ -56,9 +56,9 @@ public class WindowItemTooltip : MonoBehaviour
     /// <param name="item"></param>
     public void SetItem(Item item)
     {
-        itemName.text = item.name;
-        description.text = item.description;
-        itemStackSize.text = $"* Max Stack Size: {item.stackSizeLimit}";
+        itemName.text = item.model.name;
+        description.text = item.model.description;
+        itemStackSize.text = $"* Max Stack Size: {item.model.stackSizeLimit}";
         gameObject.SetActive(true);
         gameObject.transform.SetAsLastSibling();
         // Resets the content size fitter.

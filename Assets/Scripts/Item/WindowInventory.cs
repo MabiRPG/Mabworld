@@ -81,7 +81,7 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
     private RectTransform itemCanvasRect;
     private float slotWidth;
     private float slotHeight;
-    
+
     // Prefabs for the actual item sprites
     [SerializeField]
     private GameObject itemPrefab;
@@ -126,7 +126,7 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
 
         raycaster = GameManager.Instance.canvas.GetComponent<GraphicRaycaster>();
         canvasCamera = GameManager.Instance.canvas.GetComponent<Canvas>().worldCamera;
-        
+
         GameObject obj = Instantiate(itemTooltipPrefab, transform.parent);
         tooltip = obj.GetComponent<WindowItemTooltip>();
 
@@ -282,7 +282,7 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
         else
         {
             bag.RemoveItemAt(row, column);
-            movableItem = new MovableItem(inventoryItem, windowItem, 
+            movableItem = new MovableItem(inventoryItem, windowItem,
                 body.transform.Find("Item Canvas"));
 
             movableItem.Begin();
@@ -298,17 +298,17 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
     /// <param name="quantity">Quantity of resulting new split stack.</param>
     private void OnItemSplit(InventoryItem inventoryItem, WindowItem windowItem, int quantity)
     {
-        InventoryItem newInventoryItem = new InventoryItem(inventoryItem.item, quantity, -1, -1);
-        
+        InventoryItem newInventoryItem = new InventoryItem(inventoryItem.itemID, quantity, -1, -1);
+
         GameObject obj = itemPrefabs.GetFree(newInventoryItem, body.transform.Find("Item Canvas"));
         WindowItem newWindowItem = obj.GetComponent<WindowItem>();
         newWindowItem.SetItem(inventoryItem.item, quantity);
 
         RectTransform rectTransform = obj.GetComponent<RectTransform>();
-        rectTransform.sizeDelta = new Vector2(inventoryItem.width * slotWidth, 
+        rectTransform.sizeDelta = new Vector2(inventoryItem.width * slotWidth,
             inventoryItem.height * slotHeight);
 
-        movableItem = new MovableItem(newInventoryItem, newWindowItem, 
+        movableItem = new MovableItem(newInventoryItem, newWindowItem,
             body.transform.Find("Item Canvas"));
         movableItem.Begin();
         isMovingItem = true;
@@ -346,7 +346,7 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
     /// <param name="hits"></param>
     private void OnItemDrop()
     {
-        ClearHighlight();    
+        ClearHighlight();
 
         // Stores all the results of our raycasts
         List<RaycastResult> hits = new List<RaycastResult>();
@@ -364,8 +364,8 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
             movableItem.windowItem.gameObject.SetActive(false);
             // Removes from window inventory and reduces quantity on inventory side
             // TODO : Remove from master inventory...
-            isMovingItem = false;      
-            return;             
+            isMovingItem = false;
+            return;
         }
 
         (int row, int column) = ConvertScreenPointToBagPoint();
@@ -379,21 +379,24 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
             isMovingItem = false;
         }
         // Otherwise, check if there is exactly one item underneath, then swap
-        else if (bag.CountItemsAt(row, column, movableItem.item.widthInGrid, movableItem.item.heightInGrid) == 1)
+        else if (bag.CountItemsAt(row, column,
+            movableItem.item.model.widthInGrid, movableItem.item.model.heightInGrid) == 1)
         {
             // Find the item underneath and remove it
             InventoryItem itemFound = bag.FindItemsAt(
                 row, column,
-                row + movableItem.item.heightInGrid,
-                column + movableItem.item.widthInGrid
+                row + movableItem.item.model.heightInGrid,
+                column + movableItem.item.model.widthInGrid
             )[0];
 
             GameObject obj;
 
             // Check if we can recombine the stacks assuming the same item
-            if (itemFound.item == movableItem.inventoryItem.item && itemFound.quantity < itemFound.item.stackSizeLimit)
+            if (itemFound.item == movableItem.inventoryItem.item
+                && itemFound.quantity < itemFound.item.model.stackSizeLimit)
             {
-                int diff = Math.Min(itemFound.quantity + movableItem.inventoryItem.quantity, itemFound.item.stackSizeLimit);
+                int diff = Math.Min(itemFound.quantity + movableItem.inventoryItem.quantity,
+                    itemFound.item.model.stackSizeLimit);
                 diff -= itemFound.quantity;
 
                 itemFound.quantity += diff;
@@ -458,9 +461,9 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
 
         // Iterate over the area given by the starting pos vector2, moving over slot dimensions
         // and raycasting
-        for (int i = 0; i < movableItem.item.heightInGrid; i++)
+        for (int i = 0; i < movableItem.item.model.heightInGrid; i++)
         {
-            for (int j = 0; j < movableItem.item.widthInGrid; j++)
+            for (int j = 0; j < movableItem.item.model.widthInGrid; j++)
             {
                 float nx = Input.mousePosition.x + j * slotWidth;
                 float ny = Input.mousePosition.y - i * slotHeight;
@@ -479,10 +482,11 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
 
         // Count the number of items under our cursor
         (int row, int column) = ConvertScreenPointToBagPoint();
-        int itemsHit = bag.CountItemsAt(row, column, movableItem.item.widthInGrid, movableItem.item.heightInGrid);
+        int itemsHit = bag.CountItemsAt(row, column,
+            movableItem.item.model.widthInGrid, movableItem.item.model.heightInGrid);
 
         // Enforcing dimensional requirements here
-        if (slots.Count != movableItem.item.widthInGrid * movableItem.item.heightInGrid)
+        if (slots.Count != movableItem.item.model.widthInGrid * movableItem.item.model.heightInGrid)
         {
             return;
         }
@@ -531,7 +535,7 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
             return (-(int)pos.y / (int)slotWidth, (int)pos.x / (int)slotHeight);
         }
 
-        return (-1, -1);     
+        return (-1, -1);
     }
 
     /// <summary>
@@ -590,10 +594,10 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
             windowItem.SetItem(inventoryItem.item, inventoryItem.quantity);
 
             RectTransform rectTransform = obj.GetComponent<RectTransform>();
-            rectTransform.sizeDelta = new Vector2(inventoryItem.width * slotWidth, 
+            rectTransform.sizeDelta = new Vector2(inventoryItem.width * slotWidth,
                 inventoryItem.height * slotHeight);
             rectTransform.anchoredPosition = new Vector2(
-                inventoryItem.origin.column * slotWidth, 
+                inventoryItem.origin.column * slotWidth,
                 -inventoryItem.origin.row * slotHeight
             );
         }

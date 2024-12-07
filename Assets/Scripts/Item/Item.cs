@@ -1,20 +1,20 @@
-using System;
-using System.Data;
-using UnityEngine;
+using Newtonsoft.Json;
 
 /// <summary>
 ///     Handles the individual item processing.
 /// </summary>
-[Serializable]
-public class Item : ItemModel
+[JsonObject]
+public class Item
 {
+    public ItemModel model;
     public int quantity;
 
     /// <summary>
     ///     Initializes the object.
     /// </summary>
     /// <param name="ID">Item ID in database.</param>
-    public Item(int ID) : base(GameManager.Instance.Database, ID)
+    public Item(int ID)
     {
+        model = new ItemModel(GameManager.Instance.Database, ID);
     }
 }

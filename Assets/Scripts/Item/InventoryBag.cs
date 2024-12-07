@@ -1,12 +1,57 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TypeExtension;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+public class InventoryBagItemsConverter : JsonConverter
+{
+    public override bool CanConvert(Type objectType)
+    {
+        return true;
+    }
+
+    public override bool CanWrite
+    {
+        get { return false; }
+    }
+
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    {
+        throw new Exception("Is not implemented");
+    }
+
+    public override bool CanRead
+    {
+        get { return true; }
+    }
+
+    public override object ReadJson(JsonReader reader, Type objectType,
+        object existingValue, JsonSerializer serializer)
+    {
+        JToken obj = JToken.Load(reader);
+
+        Dictionary<(int row, int column), InventoryItem> items =
+            new Dictionary<(int row, int column), InventoryItem>();
+
+        foreach (JToken token in obj)
+        {
+            int itemID = (int)token.First["itemID"];
+            int row = (int)token.First["_row"];
+            int column = (int)token.First["_column"];
+            InventoryItem item = new InventoryItem(itemID, 0, row, column);
+            JsonConvert.PopulateObject(token.First.ToString(), item);
+            items.Add((row, column), item);
+        }
+
+        return items;
+    }
+}
 
 /// <summary>
 ///     Handles the inventory processing per bag.
 /// </summary>
-[Serializable]
+[JsonObject]
 public class InventoryBag
 {
     public int ID;
@@ -14,9 +59,14 @@ public class InventoryBag
     public int width;
     public int height;
 
+    [JsonIgnore]
     public List<(int row, int column)> excludedSlots = new List<(int, int)>();
+
+    [JsonConverter(typeof(InventoryBagItemsConverter))]
     public Dictionary<(int row, int column), InventoryItem> items =
         new Dictionary<(int row, int column), InventoryItem>();
+
+    [JsonIgnore]
     public EventManager changeEvent = new EventManager();
 
     /// <summary>
@@ -77,9 +127,11 @@ public class InventoryBag
         // Add to existing items, if they are less than the maximum stack size limit.
         foreach (InventoryItem inventoryItem in items.Values)
         {
-            if (item == inventoryItem.item && inventoryItem.quantity < item.stackSizeLimit)
+            if (item == inventoryItem.item
+                && inventoryItem.quantity < item.model.stackSizeLimit)
             {
-                int diff = Math.Min(inventoryItem.quantity + remainingQuantity, item.stackSizeLimit);
+                int diff = Math.Min(inventoryItem.quantity + remainingQuantity,
+                    item.model.stackSizeLimit);
                 diff -= inventoryItem.quantity;
 
                 inventoryItem.quantity += diff;
@@ -94,17 +146,17 @@ public class InventoryBag
         }
 
         // Iterate over space, and create a new item if possible.
-        for (int i = 0; i < height - item.heightInGrid + 1; i++)
+        for (int i = 0; i < height - item.model.heightInGrid + 1; i++)
         {
-            for (int j = 0; j < width - item.widthInGrid + 1; j++)
+            for (int j = 0; j < width - item.model.widthInGrid + 1; j++)
             {
-                if (IsEmpty(i, j, item.widthInGrid, item.heightInGrid))
+                if (IsEmpty(i, j, item.model.widthInGrid, item.model.heightInGrid))
                 {
-                    InventoryItem inventoryItem = new InventoryItem(item,
-                        Math.Min(remainingQuantity, item.stackSizeLimit), i, j);
+                    InventoryItem inventoryItem = new InventoryItem(item.model.ID,
+                        Math.Min(remainingQuantity, item.model.stackSizeLimit), i, j);
 
                     InsertItemAt(inventoryItem, i, j);
-                    remainingQuantity -= Math.Min(remainingQuantity, item.stackSizeLimit);
+                    remainingQuantity -= Math.Min(remainingQuantity, item.model.stackSizeLimit);
 
                     if (remainingQuantity == 0)
                     {
