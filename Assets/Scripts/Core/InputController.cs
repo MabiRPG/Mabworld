@@ -253,27 +253,6 @@ public class InputController : MonoBehaviour
             KeyCode.J,
             new InputSettings("Open Quest Log", OpenWindow<WindowQuest>, false)
         );
-        AddButtonBind(
-            KeyCode.F1,
-            new InputSettings("Save State Debug", () =>
-            {
-                string json = JsonConvert.SerializeObject(Player.Instance.skillManager);
-                Debug.Log(json);
-                using StreamWriter sw = new StreamWriter("./Saves/saveTest.json");
-                sw.Write(json);
-            }
-            , false)
-        );
-        AddButtonBind(
-            KeyCode.F2,
-            new InputSettings("Load State Debug", () =>
-            {
-                using StreamReader sr = new StreamReader("./Saves/saveTest.json");
-                string json = sr.ReadToEnd();
-                JsonConvert.PopulateObject(json, Player.Instance.skillManager);
-            }
-            , false)
-        );
     }
 
     private void OpenWindow<T>() where T : Window

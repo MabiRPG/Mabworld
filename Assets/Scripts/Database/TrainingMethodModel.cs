@@ -1,3 +1,6 @@
+using Newtonsoft.Json;
+
+[JsonObject]
 public class TrainingMethodModel : Model
 {
     public int skillID;

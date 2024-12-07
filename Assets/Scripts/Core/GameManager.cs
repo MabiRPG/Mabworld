@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 using System.Data;
 using UnityEngine.AddressableAssets;
 using System.Collections;
+using System.IO;
+using Newtonsoft.Json;
 
 /// <summary>
 ///     This class handles all game-wide processing. Refer to Game.instance for the 
@@ -93,6 +95,21 @@ public class GameManager : MonoBehaviour
 
         gameStateMachine = gameObject.AddComponent<GameStateMachine>();
         gameStateMachine.SetState(new MenuState(gameStateMachine, "Base"));
+    }
+
+    public void LoadGame()
+    {
+        using StreamReader sr = new StreamReader("./Saves/saveTest.json");
+        string json = sr.ReadToEnd();
+        JsonConvert.PopulateObject(json, Player.Instance.skillManager);
+    }
+
+    public void SaveGame()
+    {
+        string json = JsonConvert.SerializeObject(Player.Instance.skillManager);
+        Debug.Log(json);
+        using StreamWriter sw = new StreamWriter("./Saves/saveTest.json");
+        sw.Write(json);
     }
 
     public DataTable QueryDatabase(string query, params (string Key, object Value)[] args)

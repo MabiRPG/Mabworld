@@ -165,7 +165,7 @@ public class WindowSkillDetailed : Window
 
         foreach (SkillTrainingMethod method in skill.methods)
         {
-            GameObject obj = trainingMethodPrefabs.GetFree(method.name, trainingMethodsTransform);
+            GameObject obj = trainingMethodPrefabs.GetFree(method.model.name, trainingMethodsTransform);
             WindowSkillTrainingMethod script = obj.GetComponent<WindowSkillTrainingMethod>();
             script.SetMethod(method);
             i++;

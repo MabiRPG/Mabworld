@@ -31,6 +31,8 @@ public class WindowSkillXPBar : MonoBehaviour, IInputHandler
 
     private void Draw()
     {
+        Debug.Log("hit");
+
         if ((overflowBar && skill.xp.Value > 100) || (!overflowBar && skill.xp.Value <= 100))
         {
             gameObject.SetActive(true);
