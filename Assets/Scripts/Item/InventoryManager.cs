@@ -35,10 +35,15 @@ public class InventoryManagerAllItemsConverter : JsonConverter
 
         foreach (JToken token in obj)
         {
-            int ID = (int)token.First["model"]["ID"];
-            Item item = new Item(ID);
-            JsonConvert.PopulateObject(token.First.ToString(), item);
-            AllItems.Add(ID, item);
+            JProperty property = (JProperty)token;
+
+            if (property.Name == "$id")
+            {
+                continue;
+            }
+
+            Item item = JsonConvert.DeserializeObject<Item>(property.First.ToString());
+            AllItems.Add(item.model.ID, item);
         }
 
         return AllItems;

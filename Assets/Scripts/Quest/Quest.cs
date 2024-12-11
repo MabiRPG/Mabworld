@@ -2,15 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
 using UnityEngine;
 
-[Serializable]
+[JsonObject]
 public class QuestCondition
 {
-    [SerializeField]
     public QuestConditionModel model;
-    [SerializeField]
     public BoolManager state = new BoolManager();
+
+    [JsonConstructor]
+    public QuestCondition() { }
 
     public QuestCondition(QuestConditionModel model)
     {
@@ -19,9 +22,10 @@ public class QuestCondition
     }
 }
 
-[Serializable]
-public class Quest : QuestModel
+[JsonObject]
+public class Quest
 {
+    public QuestModel model;
     public List<QuestCondition> prerequisiteStates = new List<QuestCondition>();
     public List<QuestCondition> stepStates = new List<QuestCondition>();
     public List<QuestCondition> rewardStates = new List<QuestCondition>();
@@ -34,7 +38,10 @@ public class Quest : QuestModel
         RewardObtained
     }
 
+    [JsonProperty]
     private State _questState;
+
+    [JsonIgnore]
     public State QuestState
     {
         get { return _questState; }
@@ -46,23 +53,27 @@ public class Quest : QuestModel
     }
     public event Action OnStateChange;
 
-    [SerializeField]
+    [JsonProperty]
     private int stepCounter = 0;
 
+    [JsonConstructor]
+    public Quest() { }
+
     public Quest(int ID)
-        : base(GameManager.Instance.Database, ID)
     {
-        foreach (QuestConditionModel model in prerequisites)
+        model = new QuestModel(GameManager.Instance.Database, ID);
+
+        foreach (QuestConditionModel model in model.prerequisites)
         {
             prerequisiteStates.Add(new QuestCondition(model));
         }
 
-        foreach (QuestConditionModel model in steps)
+        foreach (QuestConditionModel model in model.steps)
         {
             stepStates.Add(new QuestCondition(model));
         }
 
-        foreach (QuestConditionModel model in rewards)
+        foreach (QuestConditionModel model in model.rewards)
         {
             rewardStates.Add(new QuestCondition(model));
         }
@@ -302,7 +313,7 @@ public class Quest : QuestModel
             UI_DialogueBox script = dialogueBox.GetComponent<UI_DialogueBox>();
 
             script.SetDialogue(
-                dialogues
+                model.dialogues
                     .Where(v => v.conversationID == int.Parse(condition.model.param1))
                     .OrderBy(v => v.ID)
                     .ToList()
@@ -315,7 +326,7 @@ public class Quest : QuestModel
     private void HandleQuest(ResultQuestController result,
         QuestCondition condition, List<QuestCondition> conditions)
     {
-        if (result.quest.ID != int.Parse(condition.model.param1))
+        if (result.quest.model.ID != int.Parse(condition.model.param1))
         {
             return;
         }
@@ -333,7 +344,7 @@ public class Quest : QuestModel
             return;
         }
 
-        foreach (QuestConditionModel condition in rewards)
+        foreach (QuestConditionModel condition in model.rewards)
         {
             int categoryID = condition.conditionID;
             int conditionCategoryID = QuestConditionTypeModel.GetCategory(categoryID);

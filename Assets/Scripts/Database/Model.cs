@@ -9,7 +9,7 @@ public abstract class Model
     protected DatabaseManager database;
 
     protected List<string> primaryKeys = new List<string>();
-    protected Dictionary<string, ModelFieldReference> fieldMap = 
+    protected Dictionary<string, ModelFieldReference> fieldMap =
         new Dictionary<string, ModelFieldReference>();
 
     protected string tableName;
@@ -21,9 +21,14 @@ public abstract class Model
         this.database = database;
     }
 
+    public string GetTableName()
+    {
+        return tableName;
+    }
+
     protected virtual DataRow ReadRow()
     {
-        if (readString == default)
+        if (readString == default || database == null)
         {
             return null;
         }
@@ -43,7 +48,7 @@ public abstract class Model
 
     public virtual bool Upsert()
     {
-        if (writeString == default)
+        if (writeString == default || database == null)
         {
             return false;
         }
@@ -124,7 +129,7 @@ public class TypeModel<T> : Model
     public TypeModel(DatabaseManager database) : base(database)
     {
         primaryKeys.Add("id");
-        
+
         fieldMap.Add("id", new ModelFieldReference(this, nameof(ID)));
         fieldMap.Add("name", new ModelFieldReference(this, nameof(name)));
     }

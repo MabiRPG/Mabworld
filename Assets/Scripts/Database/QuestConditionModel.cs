@@ -1,16 +1,17 @@
-using System;
+using UnityEngine;
+using Newtonsoft.Json;
 
-[Serializable]
+[JsonObject]
 public class QuestConditionModel : Model
 {
     public int questID;
     public int stepID;
-    [NonSerialized]
     public int conditionID;
-    [NonSerialized]
     public string param1 = "1";
-    [NonSerialized]
     public string param2 = "1";
+
+    [JsonConstructor]
+    public QuestConditionModel() : base(null) { }
 
     public QuestConditionModel(DatabaseManager database, int questID, int stepID,
         string tableName) : base(database)

@@ -25,7 +25,7 @@ public class WindowQuestRowList : MonoBehaviour
         {
             GameObject obj;
 
-            if (quest.typeID == 1)
+            if (quest.model.typeID == 1)
             {
                 obj = questRowPrefabFactory.GetFree(quest, mainQuestParent.transform);
             }

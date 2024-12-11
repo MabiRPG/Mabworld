@@ -99,7 +99,10 @@ public class GameManager : MonoBehaviour
 
     public void Save()
     {
-        string json = JsonConvert.SerializeObject(Player.Instance);
+        string json = JsonConvert.SerializeObject(Player.Instance, new JsonSerializerSettings
+        {
+            PreserveReferencesHandling = PreserveReferencesHandling.Objects
+        });
         Debug.Log(json);
         using StreamWriter sw = new StreamWriter("./Saves/saveTest.json");
         sw.Write(json);
@@ -109,7 +112,10 @@ public class GameManager : MonoBehaviour
     {
         using StreamReader sr = new StreamReader("./Saves/saveTest.json");
         string json = sr.ReadToEnd();
-        JsonConvert.PopulateObject(json, Player.Instance);
+        JsonConvert.PopulateObject(json, Player.Instance, new JsonSerializerSettings
+        {
+            PreserveReferencesHandling = PreserveReferencesHandling.Objects
+        });
     }
 
     public DataTable QueryDatabase(string query, params (string Key, object Value)[] args)

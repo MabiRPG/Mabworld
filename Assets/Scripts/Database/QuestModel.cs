@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using Newtonsoft.Json;
+using UnityEngine;
 
 public class QuestModel : Model
 {
@@ -8,15 +10,18 @@ public class QuestModel : Model
     public string name;
     public int typeID;
 
-    public List<QuestConditionModel> prerequisites = new List<QuestConditionModel>();
-    public List<QuestConditionModel> steps = new List<QuestConditionModel>();
-    public List<QuestConditionModel> rewards = new List<QuestConditionModel>();
-    public List<QuestDialogueModel> dialogues = new List<QuestDialogueModel>();
+    public List<QuestConditionModel> prerequisites;
+    public List<QuestConditionModel> steps;
+    public List<QuestConditionModel> rewards;
+    public List<QuestDialogueModel> dialogues;
 
     public static string prerequisitesTableName;
     public static string stepsTableName;
     public static string rewardsTableName;
     public static string dialogueTableName;
+
+    [JsonConstructor]
+    public QuestModel() : base(null) { }
 
     public QuestModel(DatabaseManager database, int ID) : base(database)
     {
@@ -38,10 +43,17 @@ public class QuestModel : Model
 
         ReadRow();
 
+        prerequisites = new List<QuestConditionModel>();
+        steps = new List<QuestConditionModel>();
+        rewards = new List<QuestConditionModel>();
+        dialogues = new List<QuestDialogueModel>();
+
         ReadInfo(prerequisitesTableName, prerequisites);
         ReadInfo(stepsTableName, steps);
         ReadInfo(rewardsTableName, rewards);
         ReadDialogue();
+
+        Debug.Log("should not run!");
     }
 
     private void ReadInfo(string tableName, List<QuestConditionModel> appendList)

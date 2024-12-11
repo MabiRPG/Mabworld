@@ -62,7 +62,7 @@ public class WindowQuestDetailed : MonoBehaviour
         questStepPrefabFactory.SetActiveAll(false);
         questRewardPrefabFactory.SetActiveAll(false);
 
-        qName.text = quest.name;
+        qName.text = quest.model.name;
 
         // if (quest.QuestState == Quest.State.NeedPrerequisite)
         // {

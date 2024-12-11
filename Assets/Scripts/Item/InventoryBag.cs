@@ -36,11 +36,18 @@ public class InventoryBagItemsConverter : JsonConverter
 
         foreach (JToken token in obj)
         {
-            int itemID = (int)token.First["itemID"];
-            int row = (int)token.First["_row"];
-            int column = (int)token.First["_column"];
+            JProperty property = (JProperty)token;
+
+            if (property.Name == "$id")
+            {
+                continue;
+            }
+
+            int itemID = (int)property.First["itemID"];
+            int row = (int)property.First["_row"];
+            int column = (int)property.First["_column"];
             InventoryItem item = new InventoryItem(itemID, 0, row, column);
-            JsonConvert.PopulateObject(token.First.ToString(), item);
+            JsonConvert.PopulateObject(property.First.ToString(), item);
             items.Add((row, column), item);
         }
 

@@ -29,7 +29,7 @@ public class WindowQuestRow : MonoBehaviour, IInputHandler
 
     private void Draw()
     {
-        qName.text = quest.name;
+        qName.text = quest.model.name;
         qProgress.text = quest.QuestState.ToString();
     }
 

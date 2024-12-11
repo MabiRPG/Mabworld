@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.AI;
@@ -68,10 +69,16 @@ public class Actor : MonoBehaviour
     // Magic Protection scale with int
     protected int mProtIntFactor = 20;
 
-    [JsonProperty]
+    [JsonIgnore]
     public SkillManager skillManager;
     [JsonIgnore]
     public SkillBubble bubble;
+
+    // Serialization info
+    [JsonProperty]
+    private float _x;
+    [JsonProperty]
+    private float _y;
 
     /// <summary>
     ///     Initializes the object.
@@ -167,5 +174,18 @@ public class Actor : MonoBehaviour
         actorInt.Value = stage.intelligence;
         actorDex.Value = stage.dexterity;
         actorLuck.Value = stage.luck;
+    }
+
+    [OnSerializing]
+    internal void OnSerializing(StreamingContext context)
+    {
+        _x = transform.position.x;
+        _y = transform.position.y;
+    }
+
+    [OnDeserialized]
+    internal void OnDeserialized(StreamingContext context)
+    {
+        transform.position = new Vector2(_x, _y);
     }
 }
