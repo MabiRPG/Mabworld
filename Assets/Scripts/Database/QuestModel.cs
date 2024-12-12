@@ -52,8 +52,6 @@ public class QuestModel : Model
         ReadInfo(stepsTableName, steps);
         ReadInfo(rewardsTableName, rewards);
         ReadDialogue();
-
-        Debug.Log("should not run!");
     }
 
     private void ReadInfo(string tableName, List<QuestConditionModel> appendList)

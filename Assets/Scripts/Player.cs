@@ -1,13 +1,10 @@
 using UnityEngine;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine.AI;
 using System.Data;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using TypeExtension;
 
 /// <summary>
 ///     Handles all player & input processing.
@@ -23,11 +20,10 @@ public class Player : Actor, IInputHandler
     [JsonProperty]
     public StatManager actorXP = new StatManager(0, 100, 100);
     // Inventory
-    [JsonIgnore]
+    [JsonProperty]
     public InventoryManager inventoryManager = new InventoryManager();
     // Quests
     [JsonProperty]
-    [JsonConverter(typeof(JsonDictionaryIDConverter<Quest>))]
     public Dictionary<int, Quest> quests = new Dictionary<int, Quest>();
 
     // How much our life skill success rates scale with dex.

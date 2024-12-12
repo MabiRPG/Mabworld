@@ -12,6 +12,9 @@ public class TrainingMethodModel : Model
     public string param1 = "1";
     public string param2 = "1";
 
+    [JsonConstructor]
+    public TrainingMethodModel() : base(null) { }
+
     public TrainingMethodModel(DatabaseManager database, int skillID) : base(database)
     {
         this.skillID = skillID;

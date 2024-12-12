@@ -1,59 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-public class InventoryBagItemsConverter : JsonConverter
-{
-    public override bool CanConvert(Type objectType)
-    {
-        return true;
-    }
-
-    public override bool CanWrite
-    {
-        get { return false; }
-    }
-
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-    {
-        throw new Exception("Is not implemented");
-    }
-
-    public override bool CanRead
-    {
-        get { return true; }
-    }
-
-    public override object ReadJson(JsonReader reader, Type objectType,
-        object existingValue, JsonSerializer serializer)
-    {
-        JToken obj = JToken.Load(reader);
-
-        Dictionary<(int row, int column), InventoryItem> items =
-            new Dictionary<(int row, int column), InventoryItem>();
-
-        foreach (JToken token in obj)
-        {
-            JProperty property = (JProperty)token;
-
-            if (property.Name == "$id")
-            {
-                continue;
-            }
-
-            int itemID = (int)property.First["itemID"];
-            int row = (int)property.First["_row"];
-            int column = (int)property.First["_column"];
-            InventoryItem item = new InventoryItem(itemID, 0, row, column);
-            JsonConvert.PopulateObject(property.First.ToString(), item);
-            items.Add((row, column), item);
-        }
-
-        return items;
-    }
-}
 
 /// <summary>
 ///     Handles the inventory processing per bag.
@@ -69,12 +18,19 @@ public class InventoryBag
     [JsonIgnore]
     public List<(int row, int column)> excludedSlots = new List<(int, int)>();
 
-    [JsonConverter(typeof(InventoryBagItemsConverter))]
+    [JsonIgnore]
     public Dictionary<(int row, int column), InventoryItem> items =
         new Dictionary<(int row, int column), InventoryItem>();
 
     [JsonIgnore]
     public EventManager changeEvent = new EventManager();
+
+    [JsonProperty]
+    private List<int> _row;
+    [JsonProperty]
+    private List<int> _column;
+    [JsonProperty]
+    private List<InventoryItem> _items;
 
     /// <summary>
     ///     Initializes the object.
@@ -341,5 +297,38 @@ public class InventoryBag
         }
 
         return itemsFound;
+    }
+
+    [OnSerializing]
+    internal void OnSerializing(StreamingContext context)
+    {
+        _row = new List<int>();
+        _column = new List<int>();
+        _items = new List<InventoryItem>();
+
+        foreach ((int row, int column) in items.Keys)
+        {
+            _row.Add(row);
+            _column.Add(column);
+            _items.Add(items[(row, column)]);
+        }
+    }
+
+    [OnDeserialized]
+    internal void OnDeserialized(StreamingContext context)
+    {
+        items = new Dictionary<(int row, int column), InventoryItem>();
+
+        for (int i = 0; i < _row.Count; i++)
+        {
+            int row = _row[i];
+            int column = _column[i];
+            InventoryItem item = _items[i];
+            items.Add((row, column), item);
+        }
+
+        _row.Clear();
+        _column.Clear();
+        _items.Clear();
     }
 }

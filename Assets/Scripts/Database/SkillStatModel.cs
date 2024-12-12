@@ -1,10 +1,14 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 public class SkillStatModel : Model
 {
     public int skillID;
     public int statID;
     public List<float> values = new List<float>(SkillModel.ranks.Count);
+
+    [JsonConstructor]
+    public SkillStatModel() : base(null) { }
 
     public SkillStatModel(DatabaseManager database, int skillID) : base(database)
     {

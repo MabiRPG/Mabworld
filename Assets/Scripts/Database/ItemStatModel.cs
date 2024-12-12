@@ -1,9 +1,14 @@
+using Newtonsoft.Json;
+
 public class ItemStatModel : Model
 {
     public int itemID;
     public int statID;
     public float min;
     public float max;
+
+    [JsonConstructor]
+    public ItemStatModel() : base(null) { }
 
     public ItemStatModel(DatabaseManager database, int itemID) : base(database)
     {

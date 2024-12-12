@@ -27,6 +27,9 @@ public class InventoryItem
     [JsonProperty]
     private int _column;
 
+    [JsonConstructor]
+    public InventoryItem() { }
+
     /// <summary>
     ///     Initializes the object.
     /// </summary>

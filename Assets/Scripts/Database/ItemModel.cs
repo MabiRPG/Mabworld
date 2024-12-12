@@ -28,6 +28,9 @@ public class ItemModel : Model
     [JsonProperty]
     private string _iconName;
 
+    [JsonConstructor]
+    public ItemModel() : base(null) { }
+
     public ItemModel(DatabaseManager database) : base(database)
     {
         tableName = "item";
@@ -89,12 +92,12 @@ public class ItemModel : Model
     internal void OnSerializing(StreamingContext context)
     {
         // Get the addressable names for save. Does not actually add to addressable
-        _iconName = database.AddToAddressables(icon);
+        _iconName = GameManager.Instance.Database.AddToAddressables(icon);
     }
 
     [OnDeserialized]
     internal void OnDeserialized(StreamingContext context)
     {
-        icon = database.LoadAsset<Sprite>(_iconName);
+        icon = GameManager.Instance.Database.LoadAsset<Sprite>(_iconName);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using TypeExtension;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -69,7 +70,7 @@ public class Actor : MonoBehaviour
     // Magic Protection scale with int
     protected int mProtIntFactor = 20;
 
-    [JsonIgnore]
+    [JsonProperty]
     public SkillManager skillManager;
     [JsonIgnore]
     public SkillBubble bubble;
@@ -186,6 +187,7 @@ public class Actor : MonoBehaviour
     [OnDeserialized]
     internal void OnDeserialized(StreamingContext context)
     {
-        transform.position = new Vector2(_x, _y);
+        // transform.position = new Vector2(_x, _y);
+        navMeshAgent.Warp(new Vector2(_x, _y));
     }
 }

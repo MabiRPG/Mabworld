@@ -54,11 +54,20 @@ public class SkillModel : Model
     private string statTableName;
     private string trainingMethodTableName;
 
-    [JsonIgnore]
     public Dictionary<int, SkillStatModel> stats = new Dictionary<int, SkillStatModel>();
     [JsonIgnore]
     public Dictionary<(int, string), TrainingMethodModel> trainingMethods =
         new Dictionary<(int, string), TrainingMethodModel>();
+
+    [JsonProperty]
+    private List<int> _methodID;
+    [JsonProperty]
+    private List<string> _rank;
+    [JsonProperty]
+    private List<TrainingMethodModel> _methods;
+
+    [JsonConstructor]
+    public SkillModel() : base(null) { }
 
     public SkillModel(DatabaseManager database, int ID) : base(database)
     {
@@ -131,16 +140,40 @@ public class SkillModel : Model
     internal void OnSerializing(StreamingContext context)
     {
         // Get the addressable names for save. Does not actually add to addressable
-        _iconName = database.AddToAddressables(icon);
-        _sfxName = database.AddToAddressables(sfx);
-        _animationClipName = database.AddToAddressables(animationClip);
+        _iconName = GameManager.Instance.Database.AddToAddressables(icon);
+        _sfxName = GameManager.Instance.Database.AddToAddressables(sfx);
+        _animationClipName = GameManager.Instance.Database.AddToAddressables(animationClip);
+
+        _methodID = new List<int>();
+        _rank = new List<string>();
+        _methods = new List<TrainingMethodModel>();
+
+        foreach ((int methodID, string rank) in trainingMethods.Keys)
+        {
+            _methodID.Add(methodID);
+            _rank.Add(rank);
+            _methods.Add(trainingMethods[(methodID, rank)]);
+        }
     }
 
     [OnDeserialized]
     internal void OnDeserialized(StreamingContext context)
     {
-        icon = database.LoadAsset<Sprite>(_iconName);
-        sfx = database.LoadAsset<AudioClip>(_sfxName);
-        animationClip = database.LoadAsset<AnimationClip>(_animationClipName);
+        icon = GameManager.Instance.Database.LoadAsset<Sprite>(_iconName);
+        sfx = GameManager.Instance.Database.LoadAsset<AudioClip>(_sfxName);
+        animationClip = GameManager.Instance.Database.LoadAsset<AnimationClip>(_animationClipName);
+
+        for (int i = 0; i < _methodID.Count; i++)
+        {
+            int methodID = _methodID[i];
+            string rank = _rank[i];
+            TrainingMethodModel method = _methods[i];
+
+            trainingMethods.Add((methodID, rank), method);
+        }
+
+        _methodID.Clear();
+        _rank.Clear();
+        _methods.Clear();
     }
 }

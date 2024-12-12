@@ -9,6 +9,9 @@ public class Item
     public ItemModel model;
     public int quantity;
 
+    [JsonConstructor]
+    public Item() { }
+
     /// <summary>
     ///     Initializes the object.
     /// </summary>

@@ -5,53 +5,6 @@ using System;
 using System.Collections;
 using System.Linq;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Runtime.Serialization;
-
-public class SkillMethodsConverter : JsonConverter
-{
-    public override bool CanConvert(Type objectType)
-    {
-        return true;
-    }
-
-    public override bool CanWrite
-    {
-        get { return false; }
-    }
-
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-    {
-        throw new Exception("Is not implemented");
-    }
-
-    public override bool CanRead
-    {
-        get { return true; }
-    }
-
-    public override object ReadJson(JsonReader reader, Type objectType,
-        object existingValue, JsonSerializer serializer)
-    {
-        JToken obj = JToken.Load(reader);
-
-        List<SkillTrainingMethod> methods = new List<SkillTrainingMethod>();
-
-        foreach (JToken token in obj)
-        {
-            int skillID = (int)token["model"]["skillID"];
-            int trainingMethodID = (int)token["model"]["trainingMethodID"];
-            string rank = (string)token["model"]["rank"];
-
-            SkillTrainingMethod method = new SkillTrainingMethod(
-                skillID, trainingMethodID, rank);
-            JsonConvert.PopulateObject(token.ToString(), method);
-            methods.Add(method);
-        }
-
-        return methods;
-    }
-}
 
 /// <summary>
 ///     Handles all skill processing.
@@ -62,17 +15,23 @@ public class Skill
     public SkillModel model;
 
     // Current index and rank of skill.
-    public IntManager index;
+    public IntManager index = new IntManager();
     // Current xp and maximum rank xp.
-    public FloatManager xp;
-    public FloatManager xpMax;
+    public FloatManager xp = new FloatManager();
+    public FloatManager xpMax = new FloatManager();
     // Current cooldown timer
     [JsonIgnore]
-    public FloatManager cooldown;
+    public FloatManager cooldown = new FloatManager();
 
     // List of training methods at current rank
-    [JsonConverter(typeof(SkillMethodsConverter))]
-    public List<SkillTrainingMethod> methods;
+    public List<SkillTrainingMethod> methods = new List<SkillTrainingMethod>();
+
+    [JsonConstructor]
+    public Skill()
+    {
+        index.OnChange += AudioController.Instance.PlayLevelUpSFX;
+        index.OnChange += CreateTrainingMethods;
+    }
 
     /// <summary>
     ///     Initializes the object.
@@ -80,11 +39,6 @@ public class Skill
     /// <param name="ID">Skill ID in database.</param>
     public Skill(int ID)
     {
-        index = new IntManager();
-        xp = new FloatManager();
-        xpMax = new FloatManager();
-        cooldown = new FloatManager();
-        methods = new List<SkillTrainingMethod>();
         model = new SkillModel(GameManager.Instance.Database, ID);
 
         index.OnChange += AudioController.Instance.PlayLevelUpSFX;

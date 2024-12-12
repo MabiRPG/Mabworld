@@ -1,54 +1,5 @@
-using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using UnityEngine;
-
-public class InventoryManagerAllItemsConverter : JsonConverter
-{
-    public override bool CanConvert(Type objectType)
-    {
-        return true;
-    }
-
-    public override bool CanWrite
-    {
-        get { return false; }
-    }
-
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-    {
-        throw new Exception("Is not implemented");
-    }
-
-    public override bool CanRead
-    {
-        get { return true; }
-    }
-
-    public override object ReadJson(JsonReader reader, Type objectType,
-        object existingValue, JsonSerializer serializer)
-    {
-        JToken obj = JToken.Load(reader);
-
-        Dictionary<int, Item> AllItems = new Dictionary<int, Item>();
-
-        foreach (JToken token in obj)
-        {
-            JProperty property = (JProperty)token;
-
-            if (property.Name == "$id")
-            {
-                continue;
-            }
-
-            Item item = JsonConvert.DeserializeObject<Item>(property.First.ToString());
-            AllItems.Add(item.model.ID, item);
-        }
-
-        return AllItems;
-    }
-}
 
 /// <summary>
 ///     Handles processing all inventory bags and the total inventory space.
@@ -61,7 +12,6 @@ public class InventoryManager
     public static int slotHeight = 50;
     // Dictionary of all items across all bags.
     [JsonProperty]
-    [JsonConverter(typeof(InventoryManagerAllItemsConverter))]
     private Dictionary<int, Item> AllItems = new Dictionary<int, Item>();
     // List of all bags.
     public List<InventoryBag> Bags = new List<InventoryBag>();
