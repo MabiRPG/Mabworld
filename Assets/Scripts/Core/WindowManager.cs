@@ -127,7 +127,7 @@ public class WindowManager : MonoBehaviour, IInputHandler
                     continue;
                 }
 
-                if (hit.gameObject.TryGetComponent(out IInputHandler handler))
+                if (hit.gameObject.TryGetComponent(out IMouseInputHandler handler))
                 {
                     handler.HandleMouseInput(graphicHits, sceneHits);
                 }
@@ -160,7 +160,7 @@ public class WindowManager : MonoBehaviour, IInputHandler
                     continue;
                 }
 
-                if (hit.gameObject.TryGetComponent(out IInputHandler handler))
+                if (hit.gameObject.TryGetComponent(out IMouseInputHandler handler))
                 {
                     handler.HandleMouseInput(graphicHits, sceneHits);
                 }

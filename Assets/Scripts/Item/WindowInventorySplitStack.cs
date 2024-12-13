@@ -9,10 +9,10 @@ using UnityEngine.UI;
 public class WindowInventorySplitStack : Window
 {
     // Item to be split
-    private WindowItem itemHover;
+    private UI_Item itemHover;
     // Value of the input field
     private IntManager quantity = new IntManager(1);
-    
+
     private TMP_InputField quantityInput;
     private UI_NumberRangeValidator rangeValidator;
     private TMP_Text maxQuantityText;
@@ -52,7 +52,8 @@ public class WindowInventorySplitStack : Window
         // If the slider changes, change all other quantity fields
         slider.onValueChanged.AddListener(delegate { SetQuantity(slider.value); });
         // If the input field changes, change all other quantity fields
-        quantityInput.onValueChanged.AddListener(delegate {
+        quantityInput.onValueChanged.AddListener(delegate
+        {
             // Parse the input and check if it is float, otherwise assign it to 1.
             if (float.TryParse(quantityInput.text, out float value))
             {
@@ -97,7 +98,7 @@ public class WindowInventorySplitStack : Window
     /// </summary>
     /// <param name="itemHover">Item to be split.</param>
     /// <param name="splitItemAction">Action to be called when confirmed.</param>
-    public void SetItem(WindowItem itemHover, Action<int> splitItemAction)
+    public void SetItem(UI_Item itemHover, Action<int> splitItemAction)
     {
         this.itemHover = itemHover;
         this.splitItemAction = splitItemAction;

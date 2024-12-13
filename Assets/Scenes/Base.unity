@@ -2338,6 +2338,7 @@ MonoBehaviour:
   lifeSkillBaseSuccessRate: 50
   skillBubblePrefab: {fileID: 8385094532266632610, guid: bd522f58a95bad143a834106220d9e05, type: 3}
   dialogueBoxPrefab: {fileID: 6182522262148720795, guid: 5ba77397a5e4a4e498ed8a26c4ebd8ff, type: 3}
+  itemTooltipPrefab: {fileID: 6397780202506812243, guid: 9354d603f9439f24886ad3f958645881, type: 3}
   canvas: {fileID: 1845714305}
   raycaster: {fileID: 2102367923}
   baseScene:

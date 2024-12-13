@@ -11,7 +11,7 @@ using UnityEngine.UI;
 public class MovableItem
 {
     public InventoryItem inventoryItem;
-    public WindowItem windowItem;
+    public UI_Item windowItem;
     private Transform originTransform;
     public Item item;
     private RectTransform rectTransform;
@@ -23,7 +23,7 @@ public class MovableItem
     /// <param name="inventoryItem"></param>
     /// <param name="windowItem"></param>
     /// <param name="originTransform">Starting Transform component of window item.</param>
-    public MovableItem(InventoryItem inventoryItem, WindowItem windowItem, Transform originTransform)
+    public MovableItem(InventoryItem inventoryItem, UI_Item windowItem, Transform originTransform)
     {
         this.inventoryItem = inventoryItem;
         this.windowItem = windowItem;
@@ -69,7 +69,7 @@ public class MovableItem
 /// <summary>
 ///     Handles all window inventory processing.
 /// </summary>
-public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPointerExitHandler
+public class WindowInventory : Window, IMouseInputHandler
 {
     public static WindowInventory Instance = null;
 
@@ -88,7 +88,7 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
     // Tooltip on hover over item
     [SerializeField]
     private GameObject itemTooltipPrefab;
-    private WindowItemTooltip tooltip;
+    private UI_ItemTooltip tooltip;
     [SerializeField]
     private GameObject splitStackPrefab;
     private WindowInventorySplitStack splitStack;
@@ -127,10 +127,10 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
         raycaster = GameManager.Instance.canvas.GetComponent<GraphicRaycaster>();
         canvasCamera = GameManager.Instance.canvas.GetComponent<Canvas>().worldCamera;
 
-        GameObject obj = Instantiate(itemTooltipPrefab, transform.parent);
-        tooltip = obj.GetComponent<WindowItemTooltip>();
+        // GameObject obj = Instantiate(itemTooltipPrefab, transform.parent);
+        // tooltip = obj.GetComponent<UI_ItemTooltip>();
 
-        obj = Instantiate(splitStackPrefab, transform.parent);
+        GameObject obj = Instantiate(splitStackPrefab, transform.parent);
         splitStack = obj.GetComponent<WindowInventorySplitStack>();
 
         itemPrefabs = ScriptableObject.CreateInstance<PrefabFactory>();
@@ -189,7 +189,7 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
     private void OnDisable()
     {
         bag.changeEvent.OnChange -= Draw;
-        tooltip.Clear();
+        // tooltip.Clear();
     }
 
     /// <summary>
@@ -247,11 +247,6 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
         }
     }
 
-    public void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
-    {
-        // throw new NotImplementedException();
-    }
-
     /// <summary>
     ///     Called when an item is clicked for the first time.
     /// </summary>
@@ -268,7 +263,7 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
         }
 
         GameObject obj = itemPrefabs.prefabs[inventoryItem];
-        WindowItem windowItem = obj.GetComponent<WindowItem>();
+        UI_Item windowItem = obj.GetComponent<UI_Item>();
 
         if (inventoryItem.quantity > 1 && Input.GetKey(KeyCode.LeftShift))
         {
@@ -296,12 +291,12 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
     /// <param name="inventoryItem"></param>
     /// <param name="windowItem"></param>
     /// <param name="quantity">Quantity of resulting new split stack.</param>
-    private void OnItemSplit(InventoryItem inventoryItem, WindowItem windowItem, int quantity)
+    private void OnItemSplit(InventoryItem inventoryItem, UI_Item windowItem, int quantity)
     {
         InventoryItem newInventoryItem = new InventoryItem(inventoryItem.item, quantity, -1, -1);
 
         GameObject obj = itemPrefabs.GetFree(newInventoryItem, body.transform.Find("Item Canvas"));
-        WindowItem newWindowItem = obj.GetComponent<WindowItem>();
+        UI_Item newWindowItem = obj.GetComponent<UI_Item>();
         newWindowItem.SetItem(inventoryItem.item, quantity);
 
         RectTransform rectTransform = obj.GetComponent<RectTransform>();
@@ -401,7 +396,7 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
 
                 itemFound.quantity += diff;
                 obj = itemPrefabs.prefabs[itemFound];
-                WindowItem windowItem = obj.GetComponent<WindowItem>();
+                UI_Item windowItem = obj.GetComponent<UI_Item>();
                 windowItem.SetItem(itemFound.item, itemFound.quantity);
 
                 movableItem.inventoryItem.quantity -= diff;
@@ -433,7 +428,7 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
                 obj = itemPrefabs.prefabs[inventoryItem];
                 movableItem = new MovableItem(
                     inventoryItem,
-                    obj.GetComponent<WindowItem>(),
+                    obj.GetComponent<UI_Item>(),
                     body.transform.Find("Item Canvas")
                 );
 
@@ -539,48 +534,6 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
     }
 
     /// <summary>
-    ///     Called when the mouse pointer moves inside the object.
-    /// </summary>
-    /// <param name="pointerData"></param>
-    public void OnPointerMove(PointerEventData pointerData)
-    {
-        if (isMovingItem)
-        {
-            tooltip.Clear();
-            return;
-        }
-
-        WindowItem itemHover = pointerData.pointerEnter.GetComponent<WindowItem>();
-
-        if (itemHover != null && itemHover.item != null)
-        {
-            tooltip.SetItem(itemHover.item);
-
-            RectTransform canvasRect = transform.parent.GetComponent<RectTransform>();
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                canvasRect, pointerData.position, canvasCamera, out Vector2 pos);
-            pos.x -= 5;
-            pos.y += 5;
-
-            RectTransform rect = tooltip.gameObject.GetComponent<RectTransform>();
-            rect.anchoredPosition = pos;
-        }
-        else
-        {
-            tooltip.Clear();
-        }
-    }
-
-    /// <summary>
-    ///     Called when the mouse pointer exits the object.
-    /// </summary>
-    /// <param name="pointerData"></param>
-    public void OnPointerExit(PointerEventData pointerData)
-    {
-        tooltip.Clear();
-    }
-
-    /// <summary>
     ///     Draws the inventory canvas.
     /// </summary>
     private void Draw()
@@ -590,8 +543,9 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
         foreach (InventoryItem inventoryItem in bag.items.Values)
         {
             GameObject obj = itemPrefabs.GetFree(inventoryItem, body.transform.Find("Item Canvas"));
-            WindowItem windowItem = obj.GetComponent<WindowItem>();
+            UI_Item windowItem = obj.GetComponent<UI_Item>();
             windowItem.SetItem(inventoryItem.item, inventoryItem.quantity);
+            windowItem.SetMovable(true);
 
             RectTransform rectTransform = obj.GetComponent<RectTransform>();
             rectTransform.sizeDelta = new Vector2(inventoryItem.width * slotWidth,

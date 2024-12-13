@@ -881,7 +881,7 @@ GameObject:
   - component: {fileID: 2678543399451542999}
   - component: {fileID: 1216182799353795527}
   m_Layer: 5
-  m_Name: Window Inventory (Item Tooltip)
+  m_Name: Item Tooltip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

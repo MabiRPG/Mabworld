@@ -56,6 +56,11 @@ public class CraftingStation : MonoBehaviour, IInputHandler
                     }
                 }
 
+                if (skills.Count == 0)
+                {
+                    return;
+                }
+
                 if (WindowCrafting.Instance == null)
                 {
                     WindowCrafting window = GameManager.Instance.canvas.GetComponentInChildren<WindowCrafting>(true);

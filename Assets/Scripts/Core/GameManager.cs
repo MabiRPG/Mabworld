@@ -6,6 +6,7 @@ using UnityEngine.AddressableAssets;
 using System.Collections;
 using System.IO;
 using Newtonsoft.Json;
+using System;
 
 /// <summary>
 ///     This class handles all game-wide processing. Refer to Game.instance for the 
@@ -16,9 +17,13 @@ public class GameManager : MonoBehaviour
     // Global instance of GameManager
     public static GameManager Instance { get; private set; }
 
+    [NonSerialized]
     public InputController inputController;
+    [NonSerialized]
     public LightController lightController;
+    [NonSerialized]
     public AudioController audioController;
+    [NonSerialized]
     public WindowManager windowManager;
     public GameObject overlay;
 
@@ -31,10 +36,9 @@ public class GameManager : MonoBehaviour
     public float lifeSkillBaseSuccessRate;
 
     [Header("Universal Prefabs")]
-    [SerializeField]
     public GameObject skillBubblePrefab;
-    [SerializeField]
     public GameObject dialogueBoxPrefab;
+    public GameObject itemTooltipPrefab;
 
     // [Header("Window Prefabs")]
     public Canvas canvas;
@@ -45,12 +49,17 @@ public class GameManager : MonoBehaviour
     public GraphicRaycaster raycaster;
 
     public Scene baseScene;
+    [NonSerialized]
     public GameObject baseCamera;
     public Scene levelScene;
 
+    [NonSerialized]
     public Minimap minimap;
+    [NonSerialized]
     public GameObject mainMenu;
+    [NonSerialized]
     public GameObject loadingArt;
+    [NonSerialized]
     public GameStateMachine gameStateMachine;
 
     /// <summary>

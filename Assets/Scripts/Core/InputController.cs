@@ -33,11 +33,14 @@ public class InputController : MonoBehaviour
     public Dictionary<KeyCode, InputSettings> buttonKeybinds =
         new Dictionary<KeyCode, InputSettings>();
 
-    private List<RaycastResult> graphicHits;
-    private RaycastHit2D sceneHits;
-    private GameObject selectedObj;
+    private List<RaycastResult> graphicHits = new List<RaycastResult>();
+    private RaycastHit2D sceneHits = new RaycastHit2D();
+    private List<RaycastResult> prevGraphicHits = new List<RaycastResult>();
+    private RaycastHit2D prevSceneHits = new RaycastHit2D();
+
     private Vector2 prevMousePosition;
     public Vector2 mouseDelta;
+
     private bool blockMouse = false;
     private bool blockKeyboard = false;
 
@@ -93,20 +96,23 @@ public class InputController : MonoBehaviour
 
         graphicHits = GraphicsRaycast(Input.mousePosition);
         sceneHits = SceneRaycast(Input.mousePosition);
-
         mouseDelta = (Vector2)Input.mousePosition - prevMousePosition;
+
+        HandleMouseDifference();
 
         if (!blockMouse)
         {
-            HandleMouseInput(graphicHits, sceneHits);
+            HandleMouseInput();
         }
 
         if (!blockKeyboard)
         {
-            HandleKeyboardInput(graphicHits, sceneHits);
+            HandleKeyboardInput();
         }
 
         prevMousePosition = Input.mousePosition;
+        prevGraphicHits = graphicHits;
+        prevSceneHits = sceneHits;
     }
 
     public void SetBlockMouse(bool state)
@@ -119,9 +125,35 @@ public class InputController : MonoBehaviour
         blockKeyboard = state;
     }
 
-    public void SetSelectedObject(GameObject obj)
+    private void HandleMouseDifference()
     {
-        selectedObj = obj;
+        foreach (RaycastResult prevResult in prevGraphicHits)
+        {
+            if (prevResult.gameObject == null)
+            {
+                continue;
+            }
+
+            bool inPrevious = false;
+
+            foreach (RaycastResult result in graphicHits)
+            {
+                if (prevResult.gameObject == result.gameObject)
+                {
+                    inPrevious = true;
+                    break;
+                }
+            }
+
+            if (!inPrevious)
+            {
+                foreach (IMouseExitHandler handler in
+                    prevResult.gameObject.GetComponents<IMouseExitHandler>())
+                {
+                    handler.HandleMouseExit(graphicHits, sceneHits);
+                }
+            }
+        }
     }
 
     private void PassMouseInput(
@@ -130,15 +162,15 @@ public class InputController : MonoBehaviour
         RaycastHit2D sceneHits
     )
     {
-        IInputHandler[] handlers = obj.GetComponents<IInputHandler>();
+        IMouseInputHandler[] handlers = obj.GetComponents<IMouseInputHandler>();
 
-        foreach (IInputHandler handler in handlers)
+        foreach (IMouseInputHandler handler in handlers)
         {
             handler.HandleMouseInput(graphicHits, sceneHits);
         }
     }
 
-    private void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    private void HandleMouseInput()
     {
         // if (selectedObj != null && selectedObj.TryGetComponent<IInputHandler>(out _))
         // {
@@ -149,7 +181,8 @@ public class InputController : MonoBehaviour
         {
             WindowManager.Instance.HandleMouseInput(graphicHits, sceneHits);
         }
-        else if (UI_DialogueBox.Instance != null)
+        // If the dialogue window is open
+        else if (UI_DialogueBox.Instance != null && UI_DialogueBox.Instance.gameObject.activeSelf)
         {
             UI_DialogueBox.Instance.HandleMouseInput(graphicHits, sceneHits);
         }
@@ -171,7 +204,7 @@ public class InputController : MonoBehaviour
         }
     }
 
-    private void HandleKeyboardInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    private void HandleKeyboardInput()
     {
         // Special escape key...
         if (Input.GetKeyDown(KeyCode.Escape))
