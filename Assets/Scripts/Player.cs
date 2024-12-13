@@ -253,5 +253,16 @@ public class Player : Actor, IInputHandler
 
         ActionItemController actionItem = new ActionItemController(this, this, 1, 50);
         actionItem.Handle();
+
+        actionItem = new ActionItemController(this, this, 38, 1);
+        actionItem.Handle();
+        actionItem = new ActionItemController(this, this, 38, 1);
+        actionItem.Handle();
+        actionItem = new ActionItemController(this, this, 38, 1);
+        actionItem.Handle();
+        actionItem = new ActionItemController(this, this, 38, 1);
+        actionItem.Handle();
+        actionItem = new ActionItemController(this, this, 38, 1);
+        actionItem.Handle();
     }
 }

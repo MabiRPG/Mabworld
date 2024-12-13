@@ -115,7 +115,7 @@ public class InventoryBag
             {
                 if (IsEmpty(i, j, item.model.widthInGrid, item.model.heightInGrid))
                 {
-                    InventoryItem inventoryItem = new InventoryItem(item.model.ID,
+                    InventoryItem inventoryItem = new InventoryItem(item,
                         Math.Min(remainingQuantity, item.model.stackSizeLimit), i, j);
 
                     InsertItemAt(inventoryItem, i, j);

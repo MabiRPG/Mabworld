@@ -298,7 +298,7 @@ public class WindowInventory : Window, IInputHandler, IPointerMoveHandler, IPoin
     /// <param name="quantity">Quantity of resulting new split stack.</param>
     private void OnItemSplit(InventoryItem inventoryItem, WindowItem windowItem, int quantity)
     {
-        InventoryItem newInventoryItem = new InventoryItem(inventoryItem.itemID, quantity, -1, -1);
+        InventoryItem newInventoryItem = new InventoryItem(inventoryItem.item, quantity, -1, -1);
 
         GameObject obj = itemPrefabs.GetFree(newInventoryItem, body.transform.Find("Item Canvas"));
         WindowItem newWindowItem = obj.GetComponent<WindowItem>();

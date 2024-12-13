@@ -187,7 +187,6 @@ public class Actor : MonoBehaviour
     [OnDeserialized]
     internal void OnDeserialized(StreamingContext context)
     {
-        // transform.position = new Vector2(_x, _y);
         navMeshAgent.Warp(new Vector2(_x, _y));
     }
 }

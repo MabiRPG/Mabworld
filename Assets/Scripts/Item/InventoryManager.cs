@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using UnityEngine;
+using System.Linq;
 using Newtonsoft.Json;
 
 /// <summary>
@@ -12,7 +14,7 @@ public class InventoryManager
     public static int slotHeight = 50;
     // Dictionary of all items across all bags.
     [JsonProperty]
-    private Dictionary<int, Item> AllItems = new Dictionary<int, Item>();
+    private Dictionary<int, List<Item>> AllItems = new Dictionary<int, List<Item>>();
     // List of all bags.
     public List<InventoryBag> Bags = new List<InventoryBag>();
 
@@ -22,9 +24,7 @@ public class InventoryManager
     /// <summary>
     ///     Initializes the object.
     /// </summary>
-    public InventoryManager()
-    {
-    }
+    public InventoryManager() { }
 
     /// <summary>
     ///     Adds a bag.
@@ -35,7 +35,7 @@ public class InventoryManager
         Bags.Add(new InventoryBag());
     }
 
-    public Item GetItem(int itemID)
+    public List<Item> GetItem(int itemID)
     {
         if (AllItems.ContainsKey(itemID))
         {
@@ -45,6 +45,35 @@ public class InventoryManager
         return null;
     }
 
+    private bool CheckItemEquals(Item item1, Item item2)
+    {
+        // Checks for equal property values, not reference!
+        if (JsonConvert.SerializeObject(item1.model) != JsonConvert.SerializeObject(item2.model))
+        {
+            // Debug.Log("items are not the same");
+            return false;
+        }
+
+        if (item1.stats.Count == 0 && item2.stats.Count == 0)
+        {
+            // Debug.Log("number of stats are not the same");
+            return true;
+        }
+
+        foreach ((int statID, float roll) in item1.stats)
+        {
+            if (!item2.stats.ContainsKey(statID) ||
+                item2.stats[statID] != roll)
+            {
+                // Debug.Log("rolls are not the same");
+                return false;
+            }
+        }
+
+        // Debug.Log("item is the same");
+        return true;
+    }
+
     /// <summary>
     ///     Adds an item anywhere possible.
     /// </summary>
@@ -52,17 +81,39 @@ public class InventoryManager
     /// <param name="quantity">Quantity of item to add</param>
     public int AddItem(int itemID, int quantity)
     {
-        Item item;
+        Item item = new Item(itemID);
 
         // Check our item cache if the item instance exists, otherwise creates it
         if (AllItems.ContainsKey(itemID))
         {
-            item = AllItems[itemID];
+            if (item.model.stats.Count == 0)
+            {
+                item = AllItems[itemID].First();
+            }
+            // Searches for the exact same item with same rolls to add quantity.
+            else
+            {
+                bool found = false;
+
+                foreach (Item bagItem in AllItems[itemID])
+                {
+                    if (CheckItemEquals(item, bagItem))
+                    {
+                        item = bagItem;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    AllItems[itemID].Add(item);
+                }
+            }
         }
         else
         {
-            item = new Item(itemID);
-            AllItems.Add(itemID, item);
+            AllItems.Add(itemID, new List<Item> { item });
         }
 
         // Begin iterating through bags, pushing items wherever possible.
@@ -98,7 +149,7 @@ public class InventoryManager
         }
 
         int remainingQuantity = quantity;
-        Item item = AllItems[itemID];
+        Item item = AllItems[itemID].First();
 
         foreach (InventoryBag bag in Bags)
         {
@@ -132,17 +183,17 @@ public class InventoryManager
             return 0;
         }
 
-        return AllItems[item.model.ID].quantity;
+        return AllItems[item.model.ID].Sum(v => v.quantity);
     }
 
-    public int GetQuantity(ItemModel item)
+    public int GetQuantity(ItemModel model)
     {
-        if (!AllItems.ContainsKey(item.ID))
+        if (!AllItems.ContainsKey(model.ID))
         {
             return 0;
         }
 
-        return AllItems[item.ID].quantity;
+        return AllItems[model.ID].Sum(v => v.quantity);
     }
 
     public int GetQuantity(int itemID)
@@ -152,6 +203,6 @@ public class InventoryManager
             return 0;
         }
 
-        return AllItems[itemID].quantity;
+        return AllItems[itemID].Sum(v => v.quantity);
     }
 }

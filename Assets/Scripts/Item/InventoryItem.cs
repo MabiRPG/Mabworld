@@ -7,12 +7,7 @@ using Newtonsoft.Json;
 [JsonObject]
 public class InventoryItem
 {
-    [JsonIgnore]
-    public Item item
-    {
-        get { return Player.Instance.inventoryManager.GetItem(itemID); }
-    }
-    public int itemID;
+    public Item item;
     public int quantity;
     // Dimensions of item sprite
     public int width;
@@ -37,15 +32,13 @@ public class InventoryItem
     /// <param name="quantity">Quantity of the item</param>
     /// <param name="row">Starting row of the item in bag</param>
     /// <param name="column">Starting column of the item in bag</param>
-    public InventoryItem(int itemID, int quantity, int row, int column)
+    public InventoryItem(Item item, int quantity, int row, int column)
     {
-        this.itemID = itemID;
+        this.item = item;
         this.quantity = quantity;
 
-        Item item = Player.Instance.inventoryManager.GetItem(itemID);
         width = item.model.widthInGrid;
         height = item.model.heightInGrid;
-
         origin = (row, column);
     }
 

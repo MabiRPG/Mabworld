@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 /// <summary>
@@ -8,6 +9,7 @@ public class Item
 {
     public ItemModel model;
     public int quantity;
+    public Dictionary<int, float> stats = new Dictionary<int, float>();
 
     [JsonConstructor]
     public Item() { }
@@ -19,5 +21,11 @@ public class Item
     public Item(int ID)
     {
         model = new ItemModel(GameManager.Instance.Database, ID);
+
+        foreach ((int statID, ItemStatModel statModel) in model.stats)
+        {
+            float roll = UnityEngine.Random.Range((int)statModel.min, (int)statModel.max + 1);
+            stats.Add(statID, roll);
+        }
     }
 }

@@ -14,6 +14,7 @@ public class WindowItemTooltip : MonoBehaviour
     private TMP_Text itemName;
     private TMP_Text description;
     private TMP_Text itemStackSize;
+    private TMP_Text stats;
 
     public RectTransform rectTransform;
     private CanvasGroup canvasGroup;
@@ -39,6 +40,7 @@ public class WindowItemTooltip : MonoBehaviour
         itemName = transform.Find("Item Name").GetComponent<TMP_Text>();
         description = transform.Find("Description Parent/Description").GetComponent<TMP_Text>();
         itemStackSize = transform.Find("Description Parent/Stack Size Limit").GetComponent<TMP_Text>();
+        stats = transform.Find("Stat Parent/Description").GetComponent<TMP_Text>();
 
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
@@ -59,6 +61,13 @@ public class WindowItemTooltip : MonoBehaviour
         itemName.text = item.model.name;
         description.text = item.model.description;
         itemStackSize.text = $"* Max Stack Size: {item.model.stackSizeLimit}";
+        stats.text = "";
+
+        foreach ((int statID, float roll) in item.stats)
+        {
+            stats.text += $"{ItemStatTypeModel.FindByID(statID)}: {roll}\n";
+        }
+
         gameObject.SetActive(true);
         gameObject.transform.SetAsLastSibling();
         // Resets the content size fitter.
