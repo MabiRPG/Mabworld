@@ -20,6 +20,29 @@ public class PrefabFactory : ScriptableObject
         this.prefab = prefab;
     }
 
+    public bool Add(object key, GameObject value)
+    {
+        if (!prefabs.ContainsKey(key))
+        {
+            prefabs.Add(key, value);
+            return true;
+        }
+
+        return false;
+    }
+
+    public GameObject Remove(object key)
+    {
+        if (prefabs.ContainsKey(key))
+        {
+            GameObject obj = prefabs[key];
+            prefabs.Remove(key);
+            return obj;
+        }
+
+        return null;
+    }
+
     /// <summary>
     ///     Allocates a free prefab instance, if available.
     /// </summary>

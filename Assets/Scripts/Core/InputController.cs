@@ -43,6 +43,8 @@ public class InputController : MonoBehaviour
 
     private bool blockMouse = false;
     private bool blockKeyboard = false;
+    private UI_DialogueBox activeDialogueBox;
+    private UI_Item activeItem;
 
     /// <summary>
     ///     Initializes the object.
@@ -125,6 +127,21 @@ public class InputController : MonoBehaviour
         blockKeyboard = state;
     }
 
+    public void SetActiveDialogueBox(UI_DialogueBox box)
+    {
+        activeDialogueBox = box;
+    }
+
+    public void SetActiveItem(UI_Item item)
+    {
+        activeItem = item;
+    }
+
+    public UI_Item GetActiveItem()
+    {
+        return activeItem;
+    }
+
     private void HandleMouseDifference()
     {
         foreach (RaycastResult prevResult in prevGraphicHits)
@@ -147,8 +164,9 @@ public class InputController : MonoBehaviour
 
             if (!inPrevious)
             {
-                foreach (IMouseExitHandler handler in
-                    prevResult.gameObject.GetComponents<IMouseExitHandler>())
+                IMouseExitHandler[] handlers = prevResult.gameObject.GetComponents<IMouseExitHandler>();
+
+                foreach (IMouseExitHandler handler in handlers)
                 {
                     handler.HandleMouseExit(graphicHits, sceneHits);
                 }
@@ -177,14 +195,18 @@ public class InputController : MonoBehaviour
         //     PassMouseInput(selectedObj, graphicHits, sceneHits);
         // }
         // If the user has hit any UI windows...
-        if (WindowManager.Instance.GetWindowHit(graphicHits, out _))
+        if (activeItem != null)
+        {
+            activeItem.HandleMouseInput(graphicHits, sceneHits);
+        }
+        else if (WindowManager.Instance.GetWindowHit(graphicHits, out _))
         {
             WindowManager.Instance.HandleMouseInput(graphicHits, sceneHits);
         }
         // If the dialogue window is open
-        else if (UI_DialogueBox.Instance != null && UI_DialogueBox.Instance.gameObject.activeSelf)
+        else if (activeDialogueBox != null)
         {
-            UI_DialogueBox.Instance.HandleMouseInput(graphicHits, sceneHits);
+            activeDialogueBox.HandleMouseInput(graphicHits, sceneHits);
         }
         // If the user has a 'fullscreen overlay' active (i.e. dialogue), then suppress
         // all other inputs.
@@ -224,9 +246,9 @@ public class InputController : MonoBehaviour
                 );
             }
         }
-        else if (UI_DialogueBox.Instance != null)
+        else if (activeDialogueBox != null)
         {
-            UI_DialogueBox.Instance.HandleKeyboardInput(graphicHits, sceneHits);
+            activeDialogueBox.HandleKeyboardInput(graphicHits, sceneHits);
         }
 
         foreach (KeyValuePair<KeyCode, InputSettings> pair in buttonKeybinds)

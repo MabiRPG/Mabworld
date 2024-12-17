@@ -8,8 +8,6 @@ using UnityEngine.UI;
 
 public class UI_DialogueBox : MonoBehaviour, IOverlay, IInputHandler
 {
-    public static UI_DialogueBox Instance = null;
-
     public int ID;
     public int questID;
     public int npcID;
@@ -32,16 +30,6 @@ public class UI_DialogueBox : MonoBehaviour, IOverlay, IInputHandler
 
     private void Awake()
     {
-        // Singleton pattern
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-
         npc1Image = transform.Find("NPC 1 Image").GetComponent<Image>();
         // npc2Image = transform.Find("NPC 2 Image").GetComponent<Image>();
         npc1Name = transform.Find("NPC 1 Image/Image").GetComponentInChildren<TMP_Text>();
@@ -50,6 +38,7 @@ public class UI_DialogueBox : MonoBehaviour, IOverlay, IInputHandler
 
         isFullscreenFocus = true;
         AddOverlayCaller();
+        InputController.Instance.SetActiveDialogueBox(this);
     }
 
     public void SetDialogue(List<QuestDialogueModel> dialogues)
@@ -65,6 +54,7 @@ public class UI_DialogueBox : MonoBehaviour, IOverlay, IInputHandler
         if (dialogues.Count - 1 <= index)
         {
             RemoveOverlayCaller();
+            InputController.Instance.SetActiveDialogueBox(null);
             Destroy(gameObject);
         }
 
