@@ -223,11 +223,9 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
 
     private void CallItemPickupHandlers(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
-        if (WindowManager.Instance.GetWindowHit(graphicHits, out Window foundWindow))
+        foreach (RaycastResult hit in graphicHits)
         {
-            IItemPickupHandler[] handlers = foundWindow.gameObject.GetComponents<IItemPickupHandler>();
-
-            foreach (IItemPickupHandler handler in handlers)
+            if (hit.gameObject.TryGetComponent(out IItemPickupHandler handler))
             {
                 handler.HandleItemPickup(graphicHits, sceneHits, this);
             }
@@ -242,11 +240,9 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
 
     private void CallItemDropHandlers(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
-        if (WindowManager.Instance.GetWindowHit(graphicHits, out Window foundWindow))
+        foreach (RaycastResult hit in graphicHits)
         {
-            IItemDropHandler[] handlers = foundWindow.gameObject.GetComponents<IItemDropHandler>();
-
-            foreach (IItemDropHandler handler in handlers)
+            if (hit.gameObject.TryGetComponent(out IItemDropHandler handler))
             {
                 handler.HandleItemDrop(graphicHits, sceneHits, this);
             }
@@ -260,11 +256,9 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
 
     private void CallItemHoverHandlers(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
-        if (WindowManager.Instance.GetWindowHit(graphicHits, out Window foundWindow))
+        foreach (RaycastResult hit in graphicHits)
         {
-            IItemHoverHandler[] handlers = foundWindow.gameObject.GetComponents<IItemHoverHandler>();
-
-            foreach (IItemHoverHandler handler in handlers)
+            if (hit.gameObject.TryGetComponent(out IItemHoverHandler handler))
             {
                 handler.HandleItemHover(graphicHits, sceneHits, this);
             }

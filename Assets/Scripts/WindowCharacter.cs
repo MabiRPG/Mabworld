@@ -28,7 +28,7 @@ public class WindowCharacter : Window
     private TMP_Text actorDexText;
     private TMP_Text actorLuckText;
 
-    // private TMP_Text actorDefenseText;
+    private TMP_Text actorDefenseText;
     // private TMP_Text actorProtectionText;
     // private TMP_Text actorMagicDefenseText;
     // private TMP_Text actorMagicProtectionText;
@@ -64,23 +64,12 @@ public class WindowCharacter : Window
         actorIntText = dict["int"];
         actorDexText = dict["dex"];
         actorLuckText = dict["luck"];
+        actorDefenseText = dict["defense"];
 
         // HP and MP
         actorHPBar = body.transform.Find("Basic Info (L)/Bars Parent/HP Bar Parent/HP Bar").GetComponent<UI_ProgressBar>();
         actorMPBar = body.transform.Find("Basic Info (L)/Bars Parent/MP Bar Parent/MP Bar").GetComponent<UI_ProgressBar>();
         actorXPBar = body.transform.Find("Basic Info (L)/Bars Parent/XP Bar Parent/XP Bar").GetComponent<UI_ProgressBar>();
-
-        equipmentSlots = body.transform.Find("Equipment Slots").gameObject;
-        //dict = CreateComponentMap(equipmentSlots.transform);
-
-        basicInfoRight = body.transform.Find("Basic Info (R)").gameObject;
-        //dict = CreateComponentMap(basicInfoRight.transform);
-
-        // Defensive Stats
-        // actorDefenseText = body.transform.Find("Basic Information (R)").Find("Defensive Stats Parent").Find("Defense Parent").Find("Value").GetComponent<TMP_Text>();
-        // actorProtectionText = body.transform.Find("Basic Information (R)").Find("Defensive Stats Parent").Find("Protection Parent").Find("Value").GetComponent<TMP_Text>();
-        // actorMagicDefenseText = body.transform.Find("Basic Information (R)").Find("Defensive Stats Parent").Find("Magic Defense Parent").Find("Value").GetComponent<TMP_Text>();
-        // actorMagicProtectionText = body.transform.Find("Basic Information (R)").Find("Defensive Stats Parent").Find("Magic Protection Parent").Find("Value").GetComponent<TMP_Text>();
     }
 
     /// <summary>
@@ -209,7 +198,7 @@ public class WindowCharacter : Window
         actorLuckText.text = Player.Instance.actorLuck.Value.ToString();
 
         // Defensive Stats
-        // actorDefenseText.text = Player.Instance.actorDefense.Value.ToString();
+        actorDefenseText.text = Player.Instance.actorDefense.Value.ToString();
         // actorProtectionText.text = Player.Instance.actorProt.Value.ToString();
         // actorMagicDefenseText.text = Player.Instance.actorMDefense.Value.ToString();
         // actorMagicProtectionText.text = Player.Instance.actorMProt.Value.ToString();
