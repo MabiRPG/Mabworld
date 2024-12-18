@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -125,7 +126,7 @@ public class WindowInventory : Window, IItemPickupHandler, IItemDropHandler, IIt
         // start pickup.
         if (bag.FindItemAt(row, column) == uiItem.inventoryItem)
         {
-            itemPrefabs.Remove(uiItem.inventoryItem);
+            itemPrefabs.Remove(uiItem);
             bag.RemoveItemAt(row, column);
             uiItem.StartPickup();
         }
@@ -156,7 +157,7 @@ public class WindowInventory : Window, IItemPickupHandler, IItemDropHandler, IIt
 
             // Attach it to the prefab factory, and insert into bag.
             // This order prevents the bag insert from creating new unnecessary prefabs!
-            itemPrefabs.Add(uiItem.inventoryItem, uiItem.gameObject);
+            itemPrefabs.Add(uiItem, uiItem.gameObject);
             bag.InsertItemAt(uiItem.inventoryItem, row, column);
         }
         // If there is exactly one item in space, handle.
@@ -164,7 +165,7 @@ public class WindowInventory : Window, IItemPickupHandler, IItemDropHandler, IIt
             uiItem.item.model.widthInGrid, uiItem.item.model.heightInGrid) == 1)
         {
             List<InventoryItem> itemsFound = bag.FindItemsAt(row, column,
-                row + uiItem.item.model.widthInGrid, column + uiItem.item.model.heightInGrid);
+                row + uiItem.item.model.heightInGrid, column + uiItem.item.model.widthInGrid);
             InventoryItem itemFound = itemsFound[0];
 
             // Merging the same items.
@@ -195,19 +196,16 @@ public class WindowInventory : Window, IItemPickupHandler, IItemDropHandler, IIt
                 uiItem.SetPosition(new Vector2(column * slotWidth, -row * slotHeight));
                 uiItem.EndPickup();
 
-                // Next, we cycle through the graphic hits to find the item underneath
+                // Next, we cycle through the prefabs to find the item underneath
                 // then remove the item and start pickup.
-                foreach (RaycastResult result in graphicHits)
+                foreach (UI_Item newItem in itemPrefabs.prefabs.Keys.ToList().Cast<UI_Item>())
                 {
-                    if (result.gameObject.TryGetComponent(out UI_Item newItem))
+                    if (newItem.inventoryItem == itemFound)
                     {
-                        if (newItem.inventoryItem == itemFound)
-                        {
-                            itemPrefabs.Remove(itemFound);
-                            bag.RemoveItemAt(itemFound.origin.row, itemFound.origin.column);
-                            newItem.StartPickup();
-                            break;
-                        }
+                        itemPrefabs.Remove(newItem);
+                        bag.RemoveItemAt(itemFound.origin.row, itemFound.origin.column);
+                        newItem.StartPickup();
+                        break;
                     }
                 }
 
@@ -215,7 +213,7 @@ public class WindowInventory : Window, IItemPickupHandler, IItemDropHandler, IIt
                 // This order prevents the bag insert from creating new unnecessary prefabs!
                 // Finally, now that the bag slot is free by previous step, readd the item 
                 // back into the bag!
-                itemPrefabs.Add(uiItem.inventoryItem, uiItem.gameObject);
+                itemPrefabs.Add(uiItem, uiItem.gameObject);
                 bag.InsertItemAt(uiItem.inventoryItem, row, column);
             }
         }
@@ -332,10 +330,11 @@ public class WindowInventory : Window, IItemPickupHandler, IItemDropHandler, IIt
         foreach (InventoryItem inventoryItem in bag.items.Values)
         {
             GameObject obj = itemPrefabs.GetFree(inventoryItem, body.transform.Find("Item Canvas"));
-            UI_Item windowItem = obj.GetComponent<UI_Item>();
-            windowItem.SetItem(inventoryItem, inventoryItem.quantity);
-            windowItem.canPickup = true;
-            windowItem.canSplit = true;
+            UI_Item uiItem = obj.GetComponent<UI_Item>();
+            uiItem.SetItem(inventoryItem, inventoryItem.quantity);
+            uiItem.canPickup = true;
+            uiItem.canSplit = true;
+            itemPrefabs.ChangeKey(inventoryItem, uiItem);
 
             RectTransform rectTransform = obj.GetComponent<RectTransform>();
             rectTransform.sizeDelta = new Vector2(inventoryItem.width * slotWidth,
