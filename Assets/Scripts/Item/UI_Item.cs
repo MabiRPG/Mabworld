@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -177,11 +178,33 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
                 tooltip = null;
             }
 
-            if (canPickup &&
-                !PickedUp() &&
+            if (canPickup && !PickedUp() &&
                 InputController.Instance.GetActiveItem() == null)
             {
-                CallItemPickupHandlers(graphicHits, sceneHits);
+                if (canSplit && Input.GetKey(KeyCode.LeftShift) && quantity > 1)
+                {
+                    GameObject obj = Instantiate(splitStackPrefab, gameCanvas.transform);
+                    splitStack = obj.GetComponent<WindowInventorySplitStack>();
+
+                    Action<int> onSplitAction = splitQuantity =>
+                    {
+                        inventoryItem.quantity -= splitQuantity;
+                        SetItem(inventoryItem, inventoryItem.quantity);
+
+                        GameObject clonedItem = Instantiate(gameObject, gameCanvas.transform);
+                        UI_Item closeduiItem = clonedItem.GetComponent<UI_Item>();
+                        InventoryItem clonedInventoryItem = new InventoryItem(item, splitQuantity,
+                            -1, -1);
+                        closeduiItem.SetItem(clonedInventoryItem, splitQuantity);
+                        closeduiItem.StartPickup();
+                    };
+
+                    splitStack.SetItem(this, onSplitAction);
+                }
+                else
+                {
+                    CallItemPickupHandlers(graphicHits, sceneHits);
+                }
             }
             else if (PickedUp())
             {

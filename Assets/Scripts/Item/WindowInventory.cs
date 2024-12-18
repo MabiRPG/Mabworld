@@ -209,6 +209,8 @@ public class WindowInventory : Window, IMouseInputHandler, IItemPickupHandler, I
                     uiItem.EndPickup();
                     Destroy(uiItem.gameObject);
                 }
+
+                Draw();
             }
             // Swapping different items.
             else if (itemFound.item != uiItem.item)

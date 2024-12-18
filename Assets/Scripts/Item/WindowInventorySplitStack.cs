@@ -40,8 +40,6 @@ public class WindowInventorySplitStack : Window
         increaseButton = body.transform.Find("Slider/Increase Button").GetComponent<Button>();
         cancelButton = body.transform.Find("Button Parent/Cancel Button").GetComponent<Button>();
         confirmButton = body.transform.Find("Button Parent/Confirm Button").GetComponent<Button>();
-
-        gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -93,6 +91,11 @@ public class WindowInventorySplitStack : Window
         confirmButton.onClick.RemoveAllListeners();
     }
 
+    private void OnDestroy()
+    {
+        WindowManager.Instance.RemoveWindow(this);
+    }
+
     /// <summary>
     ///     Sets the item to be split
     /// </summary>
@@ -123,7 +126,7 @@ public class WindowInventorySplitStack : Window
     private void CreateItem(int quantity)
     {
         splitItemAction(quantity);
-        HideWindow();
+        Destroy(gameObject);
     }
 
     /// <summary>

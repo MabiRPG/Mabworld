@@ -24,7 +24,7 @@ public class Window : MonoBehaviour, IOverlay
     public bool blockKeyboard = false;
 
     public bool isFullscreenFocus { get; set; }
-    
+
     /// <summary>
     ///     Initializes the object.
     /// </summary>
@@ -48,7 +48,7 @@ public class Window : MonoBehaviour, IOverlay
         maximizeButton.onClick.AddListener(MaximizeWindow);
         closeButton.onClick.AddListener(HideWindow);
 
-        GameManager.Instance.windowManager.AddWindow(this);
+        WindowManager.Instance.AddWindow(this);
     }
 
     /// <summary>
@@ -57,8 +57,8 @@ public class Window : MonoBehaviour, IOverlay
     /// <param name="name">New window name.</param>
     protected void SetTitle(string name)
     {
-        title.text = name;      
-    } 
+        title.text = name;
+    }
 
     /// <summary>
     ///     Minimizes the window.

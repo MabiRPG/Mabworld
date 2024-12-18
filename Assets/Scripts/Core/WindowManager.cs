@@ -30,6 +30,12 @@ public class WindowManager : MonoBehaviour, IInputHandler
         windows.Add(window);
     }
 
+    public void RemoveWindow(Window window)
+    {
+        windows.Remove(window);
+        mainWindow = FindNextOpenWindow();
+    }
+
     public bool GetWindowHit(List<RaycastResult> graphicHits, out Window foundWindow)
     {
         foreach (RaycastResult hit in graphicHits)
