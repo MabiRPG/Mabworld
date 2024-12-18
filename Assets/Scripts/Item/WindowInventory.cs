@@ -8,7 +8,7 @@ using UnityEngine.UI;
 /// <summary>
 ///     Handles all window inventory processing.
 /// </summary>
-public class WindowInventory : Window, IMouseInputHandler, IItemPickupHandler, IItemDropHandler, IItemHoverHandler
+public class WindowInventory : Window, IItemPickupHandler, IItemDropHandler, IItemHoverHandler
 {
     public static WindowInventory Instance = null;
 
@@ -106,32 +106,6 @@ public class WindowInventory : Window, IMouseInputHandler, IItemPickupHandler, I
     private void OnDisable()
     {
         bag.changeEvent.OnChange -= Draw;
-    }
-
-    public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
-    {
-        // // If mouse click, check the item hold state and update
-        // if (Input.GetMouseButtonDown(0))
-        // {
-        //     // If we're not holding, then we pick up
-        //     if (!isMovingItem)
-        //     {
-        //         OnItemClick();
-        //     }
-        //     // If we are holding, drop & delete or place back into inventory if possible.
-        //     else
-        //     {
-        //         OnItemDrop();
-        //     }
-        // }
-        // // Else if the mouse is moving, move the held item if holding
-        // else
-        // {
-        //     if (isMovingItem)
-        //     {
-        //         OnItemMove();
-        //     }
-        // }
     }
 
     public void HandleItemPickup(
@@ -255,72 +229,6 @@ public class WindowInventory : Window, IMouseInputHandler, IItemPickupHandler, I
     {
         ClearHighlight();
         SetHighlight(uiItem);
-    }
-
-    /// <summary>
-    ///     Called when an item is clicked for the first time.
-    /// </summary>
-    /// <param name="hits"></param>
-    private void OnItemClick()
-    {
-        // TODO: Fix this so it only calls when window is selected.
-        (int row, int column) = ConvertScreenPointToBagPoint();
-        InventoryItem inventoryItem = bag.FindItemAt(row, column);
-
-        if (inventoryItem == null)
-        {
-            return;
-        }
-
-        GameObject obj = itemPrefabs.prefabs[inventoryItem];
-        UI_Item windowItem = obj.GetComponent<UI_Item>();
-
-        if (inventoryItem.quantity > 1 && Input.GetKey(KeyCode.LeftShift))
-        {
-            Action<int> onSplitAction = quantity =>
-            {
-                OnItemSplit(inventoryItem, windowItem, quantity);
-            };
-
-            // splitStack.SetItem(windowItem, onSplitAction);
-        }
-        else
-        {
-            bag.RemoveItemAt(row, column);
-        }
-    }
-
-    /// <summary>
-    ///     Called when an item is split through the split stack window.
-    /// </summary>
-    /// <param name="inventoryItem"></param>
-    /// <param name="windowItem"></param>
-    /// <param name="quantity">Quantity of resulting new split stack.</param>
-    private void OnItemSplit(InventoryItem inventoryItem, UI_Item windowItem, int quantity)
-    {
-        // InventoryItem newInventoryItem = new InventoryItem(inventoryItem.item, quantity, -1, -1);
-
-        // GameObject obj = itemPrefabs.GetFree(newInventoryItem, body.transform.Find("Item Canvas"));
-        // UI_Item newWindowItem = obj.GetComponent<UI_Item>();
-        // newWindowItem.SetItem(inventoryItem.item, quantity);
-
-        // RectTransform rectTransform = obj.GetComponent<RectTransform>();
-        // rectTransform.sizeDelta = new Vector2(inventoryItem.width * slotWidth,
-        //     inventoryItem.height * slotHeight);
-
-        // movableItem = new MovableItem(newInventoryItem, newWindowItem,
-        //     body.transform.Find("Item Canvas"));
-        // movableItem.Begin();
-        // isMovingItem = true;
-
-        // inventoryItem.quantity -= quantity;
-        // windowItem.SetItem(inventoryItem.item, inventoryItem.quantity);
-
-        // if (inventoryItem.quantity == 0)
-        // {
-        //     bag.RemoveItemAt(inventoryItem.origin.row, inventoryItem.origin.column);
-        //     windowItem.gameObject.SetActive(false);
-        // }
     }
 
     /// <summary>
