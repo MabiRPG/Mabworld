@@ -91,6 +91,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   quantity: 0
+  canPickup: 0
+  canSplit: 0
+  itemTooltipPrefab: {fileID: 6397780202506812243, guid: 9354d603f9439f24886ad3f958645881, type: 3}
+  splitStackPrefab: {fileID: 2803705538706826907, guid: ab6fb8adcba7d4441883489b82099cb6, type: 3}
 --- !u!114 &1922719477931444808
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -38,7 +38,6 @@ public class GameManager : MonoBehaviour
     [Header("Universal Prefabs")]
     public GameObject skillBubblePrefab;
     public GameObject dialogueBoxPrefab;
-    public GameObject itemTooltipPrefab;
 
     // [Header("Window Prefabs")]
     public Canvas canvas;

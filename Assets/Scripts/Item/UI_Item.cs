@@ -23,6 +23,15 @@ public interface IItemDropHandler
     );
 }
 
+public interface IItemHoverHandler
+{
+    public void HandleItemHover(
+        List<RaycastResult> graphicHits,
+        RaycastHit2D sceneHits,
+        UI_Item item
+    );
+}
+
 /// <summary>
 ///     Handles all individual item sprites in a window.
 /// </summary>
@@ -32,14 +41,21 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
     public Item item;
     public int quantity;
 
-    private bool canPickup = false;
+    public bool canPickup = false;
+    public bool canSplit = false;
 
     private Image icon;
     private TMP_Text quantityText;
     private RectTransform rectTransform;
     private Canvas gameCanvas;
 
+    [SerializeField]
+    private GameObject itemTooltipPrefab;
     private UI_ItemTooltip tooltip;
+
+    [SerializeField]
+    private GameObject splitStackPrefab;
+    private WindowInventorySplitStack splitStack;
 
     /// <summary>
     ///     Initializes the object.
@@ -100,11 +116,6 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
         rectTransform.SetAsLastSibling();
     }
 
-    public void SetCanPickup(bool canPickup)
-    {
-        this.canPickup = canPickup;
-    }
-
     private bool PickedUp()
     {
         return InputController.Instance.GetActiveItem() == this;
@@ -114,30 +125,36 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
     {
         if (PickedUp())
         {
-            HandleItemMove();
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                gameCanvas.GetComponent<RectTransform>(),
+                Input.mousePosition,
+                gameCanvas.GetComponent<Canvas>().worldCamera,
+                out Vector2 pos
+            );
+
+            pos.x -= InventoryManager.slotWidth / 2;
+            pos.y += InventoryManager.slotHeight / 2;
+
+            rectTransform.localPosition = pos / gameCanvas.scaleFactor;
         }
     }
 
     public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
-        // Debug.Log("handling mouse");
-
         if (WindowManager.Instance.MouseHovering())
         {
             if (InputController.Instance.GetActiveItem() == null)
             {
                 if (tooltip == null)
                 {
-                    GameObject obj = Instantiate(
-                        GameManager.Instance.itemTooltipPrefab,
-                        gameCanvas.transform);
+                    GameObject obj = Instantiate(itemTooltipPrefab, gameCanvas.transform);
                     tooltip = obj.GetComponent<UI_ItemTooltip>();
                     tooltip.SetItem(inventoryItem.item);
                 }
 
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(
                     gameCanvas.GetComponent<RectTransform>(),
-                    Input.mousePosition,
+                    graphicHits[0].screenPosition,
                     gameCanvas.GetComponent<Canvas>().worldCamera,
                     out Vector2 pos);
 
@@ -145,6 +162,10 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
                 pos.y += 5;
 
                 tooltip.SetPosition(pos);
+            }
+            else
+            {
+                CallItemHoverHandlers(graphicHits, sceneHits);
             }
         }
 
@@ -156,16 +177,15 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
                 tooltip = null;
             }
 
-            if (PickedUp())
-            {
-                HandleItemDrop(graphicHits, sceneHits);
-            }
-            else if (
-                canPickup &&
+            if (canPickup &&
                 !PickedUp() &&
                 InputController.Instance.GetActiveItem() == null)
             {
-                HandleItemPickup(graphicHits, sceneHits);
+                CallItemPickupHandlers(graphicHits, sceneHits);
+            }
+            else if (PickedUp())
+            {
+                CallItemDropHandlers(graphicHits, sceneHits);
             }
         }
     }
@@ -179,10 +199,8 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
         }
     }
 
-    private void HandleItemPickup(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    private void CallItemPickupHandlers(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
-        // Debug.Log("start");
-
         if (WindowManager.Instance.GetWindowHit(graphicHits, out Window foundWindow))
         {
             IItemPickupHandler[] handlers = foundWindow.gameObject.GetComponents<IItemPickupHandler>();
@@ -194,33 +212,14 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
         }
     }
 
-    public void Pickup()
+    public void StartPickup()
     {
         SetParent(gameCanvas.GetComponent<RectTransform>());
         InputController.Instance.SetActiveItem(this);
     }
 
-    private void HandleItemMove()
+    private void CallItemDropHandlers(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
-        // Debug.Log("moving");
-
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            gameCanvas.GetComponent<RectTransform>(),
-            Input.mousePosition,
-            gameCanvas.GetComponent<Canvas>().worldCamera,
-            out Vector2 pos
-        );
-
-        pos.x -= InventoryManager.slotWidth / 2;
-        pos.y += InventoryManager.slotHeight / 2;
-
-        rectTransform.localPosition = pos / gameCanvas.scaleFactor;
-    }
-
-    private void HandleItemDrop(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
-    {
-        Debug.Log("stop");
-
         if (WindowManager.Instance.GetWindowHit(graphicHits, out Window foundWindow))
         {
             IItemDropHandler[] handlers = foundWindow.gameObject.GetComponents<IItemDropHandler>();
@@ -232,8 +231,21 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
         }
     }
 
-    public void Drop()
+    public void EndPickup()
     {
         InputController.Instance.SetActiveItem(null);
+    }
+
+    private void CallItemHoverHandlers(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
+    {
+        if (WindowManager.Instance.GetWindowHit(graphicHits, out Window foundWindow))
+        {
+            IItemHoverHandler[] handlers = foundWindow.gameObject.GetComponents<IItemHoverHandler>();
+
+            foreach (IItemHoverHandler handler in handlers)
+            {
+                handler.HandleItemHover(graphicHits, sceneHits, this);
+            }
+        }
     }
 }

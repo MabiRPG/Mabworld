@@ -8,7 +8,7 @@ using UnityEngine.UI;
 /// <summary>
 ///     Handles all window inventory processing.
 /// </summary>
-public class WindowInventory : Window, IMouseInputHandler, IItemPickupHandler, IItemDropHandler
+public class WindowInventory : Window, IMouseInputHandler, IItemPickupHandler, IItemDropHandler, IItemHoverHandler
 {
     public static WindowInventory Instance = null;
 
@@ -24,10 +24,6 @@ public class WindowInventory : Window, IMouseInputHandler, IItemPickupHandler, I
     // Prefabs for the actual item sprites
     [SerializeField]
     private GameObject itemPrefab;
-    [SerializeField]
-    private GameObject splitStackPrefab;
-    private WindowInventorySplitStack splitStack;
-
     // Dictionary of all items for quick reference
     private PrefabFactory itemPrefabs;
 
@@ -60,9 +56,6 @@ public class WindowInventory : Window, IMouseInputHandler, IItemPickupHandler, I
         raycaster = GameManager.Instance.canvas.GetComponent<GraphicRaycaster>();
         canvasCamera = GameManager.Instance.canvas.GetComponent<Canvas>().worldCamera;
 
-        GameObject obj = Instantiate(splitStackPrefab, transform.parent);
-        splitStack = obj.GetComponent<WindowInventorySplitStack>();
-
         itemPrefabs = ScriptableObject.CreateInstance<PrefabFactory>();
         itemPrefabs.SetPrefab(itemPrefab);
 
@@ -83,7 +76,7 @@ public class WindowInventory : Window, IMouseInputHandler, IItemPickupHandler, I
             {
                 if (!bag.excludedSlots.Contains((i, j)))
                 {
-                    obj = Instantiate(slotBackgroundPrefab, itemCanvasRect);
+                    GameObject obj = Instantiate(slotBackgroundPrefab, itemCanvasRect);
                     RectTransform transform = obj.GetComponent<RectTransform>();
                     transform.sizeDelta = new Vector2(slotWidth, slotHeight);
                     transform.anchoredPosition = new Vector2(j * slotWidth, -i * slotHeight);
@@ -113,7 +106,6 @@ public class WindowInventory : Window, IMouseInputHandler, IItemPickupHandler, I
     private void OnDisable()
     {
         bag.changeEvent.OnChange -= Draw;
-        // tooltip.Clear();
     }
 
     public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
@@ -148,43 +140,21 @@ public class WindowInventory : Window, IMouseInputHandler, IItemPickupHandler, I
         UI_Item uiItem
     )
     {
-        int row = -1;
-        int column = -1;
-
-        RectTransform itemCanvasRect = body.transform.Find("Item Canvas").GetComponent<RectTransform>();
-        // Checks if its in our rect.
-        if (RectTransformUtility.RectangleContainsScreenPoint(
-            itemCanvasRect,
-            graphicHits[0].screenPosition,
-            canvasCamera))
-        {
-            // Converts our screen point of our mouse cursor to a local point
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                itemCanvasRect,
-                graphicHits[0].screenPosition,
-                canvasCamera,
-                out Vector2 pos);
-
-            (row, column) = (-(int)pos.y / (int)slotWidth, (int)pos.x / (int)slotHeight);
-        }
+        (int row, int column) = ConvertScreenPointToBagPoint();
 
         if (row == -1 || column == -1)
         {
             return;
         }
 
-        InventoryItem inventoryItem = bag.FindItemAt(row, column);
-
-        if (inventoryItem == null)
-        {
-            return;
-        }
-
         // Detach from the prefab factory to prevent overwrite, remove from bag, and then
         // start pickup.
-        itemPrefabs.Remove(uiItem.inventoryItem);
-        bag.RemoveItemAt(row, column);
-        uiItem.Pickup();
+        if (bag.FindItemAt(row, column) == uiItem.inventoryItem)
+        {
+            itemPrefabs.Remove(uiItem.inventoryItem);
+            bag.RemoveItemAt(row, column);
+            uiItem.StartPickup();
+        }
     }
 
     public void HandleItemDrop(
@@ -195,120 +165,94 @@ public class WindowInventory : Window, IMouseInputHandler, IItemPickupHandler, I
     {
         ClearHighlight();
 
-        int row = -1;
-        int column = -1;
-
-        RectTransform itemCanvasRect = body.transform.Find("Item Canvas").GetComponent<RectTransform>();
-        // Checks if its in our rect.
-        if (RectTransformUtility.RectangleContainsScreenPoint(
-            itemCanvasRect,
-            graphicHits[0].screenPosition,
-            canvasCamera))
-        {
-            // Converts our screen point of our mouse cursor to a local point
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                itemCanvasRect,
-                graphicHits[0].screenPosition,
-                canvasCamera,
-                out Vector2 pos);
-
-            (row, column) = (-(int)pos.y / (int)slotWidth, (int)pos.x / (int)slotHeight);
-        }
-
-        // Debug.Log($"{row}, {column}");
+        (int row, int column) = ConvertScreenPointToBagPoint();
 
         if (row == -1 || column == -1)
         {
             return;
         }
 
-        if (bag.FindItemAt(row, column) == null)
+        // Reinserting into an empty bag slot.
+        if (bag.IsEmpty(row, column,
+                uiItem.item.model.widthInGrid, uiItem.item.model.heightInGrid))
         {
             uiItem.SetParent(body.transform.Find("Item Canvas"));
             uiItem.SetPosition(new Vector2(column * slotWidth, -row * slotHeight));
-            uiItem.Drop();
+            uiItem.EndPickup();
 
             // Attach it to the prefab factory, and insert into bag.
             // This order prevents the bag insert from creating new unnecessary prefabs!
             itemPrefabs.Add(uiItem.inventoryItem, uiItem.gameObject);
             bag.InsertItemAt(uiItem.inventoryItem, row, column);
         }
+        // If there is exactly one item in space, handle.
+        else if (bag.CountItemsAt(row, column,
+            uiItem.item.model.widthInGrid, uiItem.item.model.heightInGrid) == 1)
+        {
+            List<InventoryItem> itemsFound = bag.FindItemsAt(row, column,
+                row + uiItem.item.model.widthInGrid, column + uiItem.item.model.heightInGrid);
+            InventoryItem itemFound = itemsFound[0];
 
-        // If the space is insertable (empty) then insert the item back
-        // if (bag.InsertItemAt(movableItem.inventoryItem, row, column))
-        // {
-        //     // Restores the transform to the inventory window to align our item again
-        //     movableItem.End();
-        //     movableItem.Move(column * slotWidth, -row * slotHeight);
-        //     isMovingItem = false;
-        // }
-        // // Otherwise, check if there is exactly one item underneath, then swap
-        // else if (bag.CountItemsAt(row, column,
-        //     movableItem.item.model.widthInGrid, movableItem.item.model.heightInGrid) == 1)
-        // {
-        //     // Find the item underneath and remove it
-        //     InventoryItem itemFound = bag.FindItemsAt(
-        //         row, column,
-        //         row + movableItem.item.model.heightInGrid,
-        //         column + movableItem.item.model.widthInGrid
-        //     )[0];
+            // Merging the same items.
+            if (itemFound.item == uiItem.item &&
+                itemFound.quantity < itemFound.item.model.stackSizeLimit)
+            {
+                int diff = Math.Min(itemFound.quantity + uiItem.quantity,
+                    itemFound.item.model.stackSizeLimit);
+                diff -= itemFound.quantity;
 
-        //     GameObject obj;
+                itemFound.quantity += diff;
+                uiItem.quantity -= diff;
 
-        //     // Check if we can recombine the stacks assuming the same item
-        //     if (itemFound.item == movableItem.inventoryItem.item
-        //         && itemFound.quantity < itemFound.item.model.stackSizeLimit)
-        //     {
-        //         int diff = Math.Min(itemFound.quantity + movableItem.inventoryItem.quantity,
-        //             itemFound.item.model.stackSizeLimit);
-        //         diff -= itemFound.quantity;
+                if (uiItem.quantity == 0)
+                {
+                    uiItem.EndPickup();
+                    Destroy(uiItem.gameObject);
+                }
+            }
+            // Swapping different items.
+            else if (itemFound.item != uiItem.item)
+            {
+                // First we move the item back to the canvas, set position, and then
+                // end the pickup.
+                uiItem.SetParent(body.transform.Find("Item Canvas"));
+                uiItem.SetPosition(new Vector2(column * slotWidth, -row * slotHeight));
+                uiItem.EndPickup();
 
-        //         itemFound.quantity += diff;
-        //         obj = itemPrefabs.prefabs[itemFound];
-        //         UI_Item windowItem = obj.GetComponent<UI_Item>();
-        //         windowItem.SetItem(itemFound.item, itemFound.quantity);
+                // Next, we cycle through the graphic hits to find the item underneath
+                // then remove the item and start pickup.
+                foreach (RaycastResult result in graphicHits)
+                {
+                    if (result.gameObject.TryGetComponent(out UI_Item newItem))
+                    {
+                        if (newItem.inventoryItem == itemFound)
+                        {
+                            itemPrefabs.Remove(itemFound);
+                            bag.RemoveItemAt(itemFound.origin.row, itemFound.origin.column);
+                            newItem.StartPickup();
+                            break;
+                        }
+                    }
+                }
 
-        //         movableItem.inventoryItem.quantity -= diff;
-        //         movableItem.windowItem.SetItem(itemFound.item, movableItem.inventoryItem.quantity);
+                // Attach it to the prefab factory, and insert into bag.
+                // This order prevents the bag insert from creating new unnecessary prefabs!
+                // Finally, now that the bag slot is free by previous step, readd the item 
+                // back into the bag!
+                itemPrefabs.Add(uiItem.inventoryItem, uiItem.gameObject);
+                bag.InsertItemAt(uiItem.inventoryItem, row, column);
+            }
+        }
+    }
 
-        //         if (movableItem.inventoryItem.quantity == 0)
-        //         {
-        //             movableItem.windowItem.gameObject.SetActive(false);
-        //             movableItem.End();
-        //             isMovingItem = false;
-        //             return;
-        //         }
-
-        //         movableItem.Begin();
-        //         isMovingItem = true;
-        //     }
-        //     else
-        //     {
-        //         (int i, int j) = itemFound.origin;
-        //         InventoryItem inventoryItem = bag.RemoveItemAt(i, j);
-
-        //         // Reinsert our item
-        //         bag.InsertItemAt(movableItem.inventoryItem, row, column);
-        //         // Restores the transform to the inventory window to align our item again
-        //         movableItem.End();
-        //         movableItem.Move(column * slotWidth, -row * slotHeight);
-
-        //         // Create a new movable item and restart
-        //         obj = itemPrefabs.prefabs[inventoryItem];
-        //         movableItem = new MovableItem(
-        //             inventoryItem,
-        //             obj.GetComponent<UI_Item>(),
-        //             body.transform.Find("Item Canvas")
-        //         );
-
-        //         movableItem.Begin();
-        //         isMovingItem = true;
-        //     }
-        // }
-        // else
-        // {
-        //     movableItem.Begin();
-        // }
+    public void HandleItemHover(
+        List<RaycastResult> graphicHits,
+        RaycastHit2D sceneHits,
+        UI_Item uiItem
+    )
+    {
+        ClearHighlight();
+        SetHighlight(uiItem);
     }
 
     /// <summary>
@@ -336,7 +280,7 @@ public class WindowInventory : Window, IMouseInputHandler, IItemPickupHandler, I
                 OnItemSplit(inventoryItem, windowItem, quantity);
             };
 
-            splitStack.SetItem(windowItem, onSplitAction);
+            // splitStack.SetItem(windowItem, onSplitAction);
         }
         else
         {
@@ -378,131 +322,9 @@ public class WindowInventory : Window, IMouseInputHandler, IItemPickupHandler, I
     }
 
     /// <summary>
-    ///     Called when an item is moved after clicking.
-    /// </summary>
-    private void OnItemMove()
-    {
-        ClearHighlight();
-        SetHighlight();
-
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            GameManager.Instance.canvas.GetComponent<RectTransform>(), Input.mousePosition,
-            canvasCamera, out Vector2 pos);
-        pos.x -= slotWidth / 2;
-        pos.y += slotHeight / 2;
-    }
-
-    /// <summary>
-    ///     Called when an item is released from the cursor.
-    /// </summary>
-    /// <param name="hits"></param>
-    private void OnItemDrop()
-    {
-        // ClearHighlight();
-
-        // // Stores all the results of our raycasts
-        // List<RaycastResult> hits = new List<RaycastResult>();
-        // // Create a new pointer data for our raycast manipulation
-        // PointerEventData pointerData = new PointerEventData(GetComponent<EventSystem>());
-        // pointerData.position = Input.mousePosition;
-        // // Raycast for any windows underneath
-        // raycaster.Raycast(pointerData, hits);
-
-        // // Dropped outside of any window, removes the item from inventory and clears cursor.
-        // if (hits.Count == 0)
-        // {
-        //     // Restores the transform to the inventory window and sets inactive
-        //     movableItem.End();
-        //     movableItem.windowItem.gameObject.SetActive(false);
-        //     // Removes from window inventory and reduces quantity on inventory side
-        //     // TODO : Remove from master inventory...
-        //     isMovingItem = false;
-        //     return;
-        // }
-
-        // (int row, int column) = ConvertScreenPointToBagPoint();
-
-        // // If the space is insertable (empty) then insert the item back
-        // if (bag.InsertItemAt(movableItem.inventoryItem, row, column))
-        // {
-        //     // Restores the transform to the inventory window to align our item again
-        //     movableItem.End();
-        //     movableItem.Move(column * slotWidth, -row * slotHeight);
-        //     isMovingItem = false;
-        // }
-        // // Otherwise, check if there is exactly one item underneath, then swap
-        // else if (bag.CountItemsAt(row, column,
-        //     movableItem.item.model.widthInGrid, movableItem.item.model.heightInGrid) == 1)
-        // {
-        //     // Find the item underneath and remove it
-        //     InventoryItem itemFound = bag.FindItemsAt(
-        //         row, column,
-        //         row + movableItem.item.model.heightInGrid,
-        //         column + movableItem.item.model.widthInGrid
-        //     )[0];
-
-        //     GameObject obj;
-
-        //     // Check if we can recombine the stacks assuming the same item
-        //     if (itemFound.item == movableItem.inventoryItem.item
-        //         && itemFound.quantity < itemFound.item.model.stackSizeLimit)
-        //     {
-        //         int diff = Math.Min(itemFound.quantity + movableItem.inventoryItem.quantity,
-        //             itemFound.item.model.stackSizeLimit);
-        //         diff -= itemFound.quantity;
-
-        //         itemFound.quantity += diff;
-        //         obj = itemPrefabs.prefabs[itemFound];
-        //         UI_Item windowItem = obj.GetComponent<UI_Item>();
-        //         windowItem.SetItem(itemFound.item, itemFound.quantity);
-
-        //         movableItem.inventoryItem.quantity -= diff;
-        //         movableItem.windowItem.SetItem(itemFound.item, movableItem.inventoryItem.quantity);
-
-        //         if (movableItem.inventoryItem.quantity == 0)
-        //         {
-        //             movableItem.windowItem.gameObject.SetActive(false);
-        //             movableItem.End();
-        //             isMovingItem = false;
-        //             return;
-        //         }
-
-        //         movableItem.Begin();
-        //         isMovingItem = true;
-        //     }
-        //     else
-        //     {
-        //         (int i, int j) = itemFound.origin;
-        //         InventoryItem inventoryItem = bag.RemoveItemAt(i, j);
-
-        //         // Reinsert our item
-        //         bag.InsertItemAt(movableItem.inventoryItem, row, column);
-        //         // Restores the transform to the inventory window to align our item again
-        //         movableItem.End();
-        //         movableItem.Move(column * slotWidth, -row * slotHeight);
-
-        //         // Create a new movable item and restart
-        //         obj = itemPrefabs.prefabs[inventoryItem];
-        //         movableItem = new MovableItem(
-        //             inventoryItem,
-        //             obj.GetComponent<UI_Item>(),
-        //             body.transform.Find("Item Canvas")
-        //         );
-
-        //         movableItem.Begin();
-        //         isMovingItem = true;
-        //     }
-        // }
-        // else
-        // {
-        //     movableItem.Begin();
-        // }
-    }
-
-    /// <summary>
     ///     Sets the slot highlight depending on the cursor position.
     /// </summary>
-    private void SetHighlight()
+    private void SetHighlight(UI_Item uiItem)
     {
         // Slots encountered by raycasting
         List<GameObject> slots = new List<GameObject>();
@@ -513,16 +335,16 @@ public class WindowInventory : Window, IMouseInputHandler, IItemPickupHandler, I
 
         // Iterate over the area given by the starting pos vector2, moving over slot dimensions
         // and raycasting
-        // for (int i = 0; i < movableItem.item.model.heightInGrid; i++)
-        // {
-        //     for (int j = 0; j < movableItem.item.model.widthInGrid; j++)
-        //     {
-        //         float nx = Input.mousePosition.x + j * slotWidth;
-        //         float ny = Input.mousePosition.y - i * slotHeight;
-        //         pointerData.position = new Vector3(nx, ny);
-        //         raycaster.Raycast(pointerData, hits);
-        //     }
-        // }
+        for (int i = 0; i < uiItem.item.model.heightInGrid; i++)
+        {
+            for (int j = 0; j < uiItem.item.model.widthInGrid; j++)
+            {
+                float nx = Input.mousePosition.x + j * slotWidth;
+                float ny = Input.mousePosition.y - i * slotHeight;
+                pointerData.position = new Vector3(nx, ny);
+                raycaster.Raycast(pointerData, hits);
+            }
+        }
 
         foreach (RaycastResult hit in hits)
         {
@@ -533,26 +355,26 @@ public class WindowInventory : Window, IMouseInputHandler, IItemPickupHandler, I
         }
 
         // Count the number of items under our cursor
-        // (int row, int column) = ConvertScreenPointToBagPoint();
-        // int itemsHit = bag.CountItemsAt(row, column,
-        //     movableItem.item.model.widthInGrid, movableItem.item.model.heightInGrid);
+        (int row, int column) = ConvertScreenPointToBagPoint();
+        int itemsHit = bag.CountItemsAt(row, column,
+            uiItem.item.model.widthInGrid, uiItem.item.model.heightInGrid);
 
-        // // Enforcing dimensional requirements here
-        // if (slots.Count != movableItem.item.model.widthInGrid * movableItem.item.model.heightInGrid)
-        // {
-        //     return;
-        // }
-        // // Can only swap with exactly one item
-        // else if (itemsHit > 1)
-        // {
-        //     return;
-        // }
+        // Enforcing dimensional requirements here
+        if (slots.Count != uiItem.item.model.widthInGrid * uiItem.item.model.heightInGrid)
+        {
+            return;
+        }
+        // Can only swap with exactly one item
+        else if (itemsHit > 1)
+        {
+            return;
+        }
 
-        // foreach (GameObject slot in slots)
-        // {
-        //     slot.SetActive(true);
-        //     highlightObjs.Add(slot);
-        // }
+        foreach (GameObject slot in slots)
+        {
+            slot.SetActive(true);
+            highlightObjs.Add(slot);
+        }
     }
 
     /// <summary>
@@ -602,7 +424,8 @@ public class WindowInventory : Window, IMouseInputHandler, IItemPickupHandler, I
             GameObject obj = itemPrefabs.GetFree(inventoryItem, body.transform.Find("Item Canvas"));
             UI_Item windowItem = obj.GetComponent<UI_Item>();
             windowItem.SetItem(inventoryItem, inventoryItem.quantity);
-            windowItem.SetCanPickup(true);
+            windowItem.canPickup = true;
+            windowItem.canSplit = true;
 
             RectTransform rectTransform = obj.GetComponent<RectTransform>();
             rectTransform.sizeDelta = new Vector2(inventoryItem.width * slotWidth,
