@@ -327,7 +327,7 @@ public class WindowInventory : Window, IItemPickupHandler, IItemDropHandler, IIt
     {
         itemPrefabs.SetActiveAll(false);
 
-        foreach (InventoryItem inventoryItem in bag.items.Values)
+        foreach (InventoryItem inventoryItem in bag.items.Values.Distinct())
         {
             GameObject obj = itemPrefabs.GetFree(inventoryItem, body.transform.Find("Item Canvas"));
             UI_Item uiItem = obj.GetComponent<UI_Item>();

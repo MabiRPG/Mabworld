@@ -51,7 +51,7 @@ public class WindowManager : MonoBehaviour, IInputHandler
         return false;
     }
 
-    public void ToggleWindow(Window window, bool toggleInputFocus = false)
+    public void ToggleWindow(Window window)
     {
         if (!window.isActiveAndEnabled || window != mainWindow)
         {

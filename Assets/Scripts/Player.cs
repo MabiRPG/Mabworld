@@ -251,10 +251,10 @@ public class Player : Actor, IInputHandler
 
         inventoryManager.AddBag(1);
 
-        ActionItemController actionItem = new ActionItemController(this, this, 1, 50);
-        actionItem.Handle();
+        // ActionItemController actionItem = new ActionItemController(this, this, 1, 50);
+        // actionItem.Handle();
 
-        actionItem = new ActionItemController(this, this, 17, 1);
+        ActionItemController actionItem = new ActionItemController(this, this, 17, 1);
         actionItem.Handle();
         actionItem = new ActionItemController(this, this, 18, 1);
         actionItem.Handle();
@@ -273,6 +273,8 @@ public class Player : Actor, IInputHandler
         actionItem = new ActionItemController(this, this, 40, 1);
         actionItem.Handle();
         actionItem = new ActionItemController(this, this, 41, 1);
+        actionItem.Handle();
+        actionItem = new ActionItemController(this, this, 31, 1);
         actionItem.Handle();
     }
 }

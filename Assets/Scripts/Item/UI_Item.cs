@@ -169,7 +169,8 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
                 CallItemHoverHandlers(graphicHits, sceneHits);
             }
         }
-        else if (Input.GetMouseButtonDown(0))
+
+        if (Input.GetMouseButtonDown(0))
         {
             if (tooltip != null)
             {

@@ -16,9 +16,7 @@ public class WindowCharacterEquipmentSlot : MonoBehaviour, IItemPickupHandler, I
         Earring,
         Belt,
         Ring,
-        Melee_Weapon,
-        Ranged_Weapon,
-        Magic_Weapon,
+        Weapon
     }
 
     [SerializeField]
@@ -30,9 +28,17 @@ public class WindowCharacterEquipmentSlot : MonoBehaviour, IItemPickupHandler, I
     {
         foreach ((int statID, float roll) in uiItem.item.stats)
         {
-            if (ItemStatTypeModel.FindByID(statID) == "Defense")
+            string statName = ItemStatTypeModel.FindByID(statID);
+
+            if (Player.Instance.primaryStats.ContainsKey(statName))
             {
-                Player.Instance.actorDefense.Value -= roll;
+                Player.Instance.primaryStats[statName].Value -= roll;
+                Player.Instance.primaryStats[statName].BaseMaximum -= roll;
+            }
+            else if (Player.Instance.secondaryStats.ContainsKey(statName))
+            {
+                Player.Instance.secondaryStats[statName].Value -= roll;
+                Player.Instance.secondaryStats[statName].BaseMaximum -= roll;
             }
         }
 
@@ -41,7 +47,10 @@ public class WindowCharacterEquipmentSlot : MonoBehaviour, IItemPickupHandler, I
 
     public void HandleItemDrop(List<RaycastResult> graphicHits, RaycastHit2D sceneHits, UI_Item uiItem)
     {
-        if (ItemTypeModel.FindByID(uiItem.item.model.categoryID) == slot.ToString())
+        string itemCategory = ItemTypeModel.FindByID(uiItem.item.model.categoryID);
+
+        if (itemCategory == slot.ToString() ||
+            (itemCategory.Contains("Weapon") && slot == Slot.Weapon))
         {
             this.uiItem = uiItem;
             uiItem.SetParent(transform);
@@ -53,9 +62,17 @@ public class WindowCharacterEquipmentSlot : MonoBehaviour, IItemPickupHandler, I
 
             foreach ((int statID, float roll) in uiItem.item.stats)
             {
-                if (ItemStatTypeModel.FindByID(statID) == "Defense")
+                string statName = ItemStatTypeModel.FindByID(statID);
+
+                if (Player.Instance.primaryStats.ContainsKey(statName))
                 {
-                    Player.Instance.actorDefense.Value += roll;
+                    Player.Instance.primaryStats[statName].Value += roll;
+                    Player.Instance.primaryStats[statName].BaseMaximum += roll;
+                }
+                else if (Player.Instance.secondaryStats.ContainsKey(statName))
+                {
+                    Player.Instance.secondaryStats[statName].Value += roll;
+                    Player.Instance.secondaryStats[statName].BaseMaximum += roll;
                 }
             }
         }

@@ -107,8 +107,6 @@ public class WindowCharacter : Window
     private void Start()
     {
         Draw();
-        // Hides the object at start
-        // gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -202,5 +200,8 @@ public class WindowCharacter : Window
         // actorProtectionText.text = Player.Instance.actorProt.Value.ToString();
         // actorMagicDefenseText.text = Player.Instance.actorMDefense.Value.ToString();
         // actorMagicProtectionText.text = Player.Instance.actorMProt.Value.ToString();
+
+        // Resets the content size fitter.
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)gameObject.transform);
     }
 }
