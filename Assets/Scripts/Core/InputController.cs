@@ -190,10 +190,6 @@ public class InputController : MonoBehaviour
 
     private void HandleMouseInput()
     {
-        // if (selectedObj != null && selectedObj.TryGetComponent<IInputHandler>(out _))
-        // {
-        //     PassMouseInput(selectedObj, graphicHits, sceneHits);
-        // }
         // If the user has hit any UI windows...
         if (activeItem != null)
         {
@@ -213,6 +209,16 @@ public class InputController : MonoBehaviour
         else if (GameManager.Instance.overlay.activeSelf)
         {
             return;
+        }
+        else if (graphicHits.Count > 0)
+        {
+            foreach (RaycastResult hit in graphicHits)
+            {
+                if (hit.gameObject.TryGetComponent(out IMouseInputHandler handler))
+                {
+                    handler.HandleMouseInput(graphicHits, sceneHits);
+                }
+            }
         }
         // If the user has hit any scene objects...
         else if (sceneHits.transform != null)
@@ -269,6 +275,12 @@ public class InputController : MonoBehaviour
         PointerEventData pointerData = new PointerEventData(GetComponent<EventSystem>());
         pointerData.position = position;
         GameManager.Instance.raycaster.Raycast(pointerData, hits);
+
+        if (LevelManager.Instance != null)
+        {
+            LevelManager.Instance.raycaster.Raycast(pointerData, hits);
+        }
+
         return hits;
     }
 

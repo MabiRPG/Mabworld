@@ -258,18 +258,22 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
 
         if (!foundHandler)
         {
-            GameObject obj = Instantiate(itemWorldDropPrefab, LevelManager.Instance.worldCanvas.transform);
+            GameObject obj = Instantiate(
+                itemWorldDropPrefab, LevelManager.Instance.worldCanvas.transform);
             ItemWorldDrop worldDrop = obj.GetComponent<ItemWorldDrop>();
+
+            Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(
+                Camera.main, Player.Instance.transform.localPosition);
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 LevelManager.Instance.worldCanvas.GetComponent<RectTransform>(),
-                Input.mousePosition,
+                screenPoint,
                 Camera.main,
                 out Vector2 pos);
 
-            worldDrop.Init(this, pos);
-            EndPickup();
+            worldDrop.SetItem(this, pos);
             gameObject.SetActive(false);
+            EndPickup();
         }
     }
 
