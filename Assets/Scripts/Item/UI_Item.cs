@@ -118,7 +118,6 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
     public void SetParent(Transform transform)
     {
         rectTransform.SetParent(transform);
-        rectTransform.SetAsLastSibling();
     }
 
     private bool PickedUp()
@@ -141,6 +140,7 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
             pos.y += InventoryManager.slotHeight / 2;
 
             rectTransform.localPosition = pos / screenCanvas.scaleFactor;
+            rectTransform.SetAsLastSibling();
         }
     }
 
@@ -245,27 +245,32 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
 
     private void CallItemDropHandlers(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
+        bool foundHandler = false;
+
         foreach (RaycastResult hit in graphicHits)
         {
             if (hit.gameObject.TryGetComponent(out IItemDropHandler handler))
             {
                 handler.HandleItemDrop(graphicHits, sceneHits, this);
+                foundHandler = true;
             }
         }
 
-        // if (graphicHits.Count == 1 && graphicHits[0].gameObject == this)
-        // {
-        GameObject obj = Instantiate(itemWorldDropPrefab, LevelManager.Instance.worldCanvas.transform);
-        ItemWorldDrop worldDrop = obj.GetComponent<ItemWorldDrop>();
+        if (!foundHandler)
+        {
+            GameObject obj = Instantiate(itemWorldDropPrefab, LevelManager.Instance.worldCanvas.transform);
+            ItemWorldDrop worldDrop = obj.GetComponent<ItemWorldDrop>();
 
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            LevelManager.Instance.worldCanvas.GetComponent<RectTransform>(),
-            Input.mousePosition,
-            Camera.main,
-            out Vector2 pos);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                LevelManager.Instance.worldCanvas.GetComponent<RectTransform>(),
+                Input.mousePosition,
+                Camera.main,
+                out Vector2 pos);
 
-        worldDrop.Init(this, pos);
-        // }
+            worldDrop.Init(this, pos);
+            EndPickup();
+            gameObject.SetActive(false);
+        }
     }
 
     public void EndPickup()

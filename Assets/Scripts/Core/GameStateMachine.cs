@@ -57,6 +57,7 @@ public abstract class GameState : State
         GameManager.Instance.baseCamera.SetActive(false);
         Player.Instance.GetComponentInChildren<Camera>(true).gameObject.SetActive(true);
         GameManager.Instance.screenCanvas.worldCamera = Camera.main;
+        LevelManager.Instance.worldCanvas.worldCamera = Camera.main;
         GameManager.Instance.minimap.gameObject.SetActive(true);
         // GameManager.Instance.worldCanvas = Player.Instance.gameObject.transform.parent.Get
 
