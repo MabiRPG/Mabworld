@@ -63,7 +63,7 @@ public class CraftingStation : MonoBehaviour, IInputHandler
 
                 if (WindowCrafting.Instance == null)
                 {
-                    WindowCrafting window = GameManager.Instance.canvas.GetComponentInChildren<WindowCrafting>(true);
+                    WindowCrafting window = GameManager.Instance.screenCanvas.GetComponentInChildren<WindowCrafting>(true);
                     window.gameObject.SetActive(true);
                 }
 

@@ -25,7 +25,7 @@ public abstract class GameState : State
         GameManager.Instance.levelScene = default;
         GameManager.Instance.baseCamera.SetActive(true);
         Player.Instance.GetComponentInChildren<Camera>(true).gameObject.SetActive(false);
-        GameManager.Instance.canvas.worldCamera = Camera.main;
+        GameManager.Instance.screenCanvas.worldCamera = Camera.main;
     }
 
     protected IEnumerator LoadLevel()
@@ -56,8 +56,9 @@ public abstract class GameState : State
 
         GameManager.Instance.baseCamera.SetActive(false);
         Player.Instance.GetComponentInChildren<Camera>(true).gameObject.SetActive(true);
-        GameManager.Instance.canvas.worldCamera = Camera.main;
+        GameManager.Instance.screenCanvas.worldCamera = Camera.main;
         GameManager.Instance.minimap.gameObject.SetActive(true);
+        // GameManager.Instance.worldCanvas = Player.Instance.gameObject.transform.parent.Get
 
         SetupObjects<MapResource>("MapResource");
         SetupObjects<NPC>("NPC");

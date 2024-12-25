@@ -314,7 +314,7 @@ public class InputController : MonoBehaviour
     {
         if (typeof(T).GetField("Instance").GetValue(null) == null)
         {
-            T window = GameManager.Instance.canvas.GetComponentInChildren<T>(true);
+            T window = GameManager.Instance.screenCanvas.GetComponentInChildren<T>(true);
             window.gameObject.SetActive(true);
         }
 

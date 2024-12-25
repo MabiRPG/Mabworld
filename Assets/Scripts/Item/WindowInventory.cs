@@ -54,8 +54,8 @@ public class WindowInventory : Window, IItemPickupHandler, IItemDropHandler, IIt
             Destroy(gameObject);
         }
 
-        raycaster = GameManager.Instance.canvas.GetComponent<GraphicRaycaster>();
-        canvasCamera = GameManager.Instance.canvas.GetComponent<Canvas>().worldCamera;
+        raycaster = GameManager.Instance.screenCanvas.GetComponent<GraphicRaycaster>();
+        canvasCamera = GameManager.Instance.screenCanvas.GetComponent<Canvas>().worldCamera;
 
         itemPrefabs = ScriptableObject.CreateInstance<PrefabFactory>();
         itemPrefabs.SetPrefab(itemPrefab);

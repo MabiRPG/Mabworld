@@ -48,7 +48,7 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
     private Image icon;
     private TMP_Text quantityText;
     private RectTransform rectTransform;
-    private Canvas gameCanvas;
+    private Canvas screenCanvas;
 
     [SerializeField]
     private GameObject itemTooltipPrefab;
@@ -58,6 +58,10 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
     private GameObject splitStackPrefab;
     private WindowInventorySplitStack splitStack;
 
+    [SerializeField]
+    private GameObject itemWorldDropPrefab;
+    private ItemWorldDrop worldDrop;
+
     /// <summary>
     ///     Initializes the object.
     /// </summary>
@@ -66,7 +70,7 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
         icon = GetComponent<Image>();
         quantityText = transform.Find("Quantity").GetComponent<TMP_Text>();
         rectTransform = GetComponent<RectTransform>();
-        gameCanvas = GameManager.Instance.canvas;
+        screenCanvas = GameManager.Instance.screenCanvas;
     }
 
     /// <summary>
@@ -108,7 +112,7 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
 
     public void SetPosition(Vector2 position)
     {
-        rectTransform.localPosition = position / gameCanvas.scaleFactor;
+        rectTransform.localPosition = position / screenCanvas.scaleFactor;
     }
 
     public void SetParent(Transform transform)
@@ -127,16 +131,16 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
         if (PickedUp())
         {
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                gameCanvas.GetComponent<RectTransform>(),
+                screenCanvas.GetComponent<RectTransform>(),
                 Input.mousePosition,
-                gameCanvas.GetComponent<Canvas>().worldCamera,
+                screenCanvas.GetComponent<Canvas>().worldCamera,
                 out Vector2 pos
             );
 
             pos.x -= InventoryManager.slotWidth / 2;
             pos.y += InventoryManager.slotHeight / 2;
 
-            rectTransform.localPosition = pos / gameCanvas.scaleFactor;
+            rectTransform.localPosition = pos / screenCanvas.scaleFactor;
         }
     }
 
@@ -148,15 +152,15 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
             {
                 if (tooltip == null)
                 {
-                    GameObject obj = Instantiate(itemTooltipPrefab, gameCanvas.transform);
+                    GameObject obj = Instantiate(itemTooltipPrefab, screenCanvas.transform);
                     tooltip = obj.GetComponent<UI_ItemTooltip>();
                     tooltip.SetItem(inventoryItem.item);
                 }
 
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    gameCanvas.GetComponent<RectTransform>(),
+                    screenCanvas.GetComponent<RectTransform>(),
                     graphicHits[0].screenPosition,
-                    gameCanvas.GetComponent<Canvas>().worldCamera,
+                    screenCanvas.GetComponent<Canvas>().worldCamera,
                     out Vector2 pos);
 
                 pos.x -= 5;
@@ -183,7 +187,7 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
             {
                 if (canSplit && Input.GetKey(KeyCode.LeftShift) && quantity > 1)
                 {
-                    GameObject obj = Instantiate(splitStackPrefab, gameCanvas.transform);
+                    GameObject obj = Instantiate(splitStackPrefab, screenCanvas.transform);
                     splitStack = obj.GetComponent<WindowInventorySplitStack>();
 
                     Action<int> onSplitAction = splitQuantity =>
@@ -191,7 +195,7 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
                         inventoryItem.quantity -= splitQuantity;
                         SetItem(inventoryItem, inventoryItem.quantity);
 
-                        GameObject clonedItem = Instantiate(gameObject, gameCanvas.transform);
+                        GameObject clonedItem = Instantiate(gameObject, screenCanvas.transform);
                         UI_Item closeduiItem = clonedItem.GetComponent<UI_Item>();
                         InventoryItem clonedInventoryItem = new InventoryItem(item, splitQuantity,
                             -1, -1);
@@ -235,7 +239,7 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
 
     public void StartPickup()
     {
-        SetParent(gameCanvas.GetComponent<RectTransform>());
+        SetParent(screenCanvas.GetComponent<RectTransform>());
         InputController.Instance.SetActiveItem(this);
     }
 
@@ -248,6 +252,20 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
                 handler.HandleItemDrop(graphicHits, sceneHits, this);
             }
         }
+
+        // if (graphicHits.Count == 1 && graphicHits[0].gameObject == this)
+        // {
+        GameObject obj = Instantiate(itemWorldDropPrefab, LevelManager.Instance.worldCanvas.transform);
+        ItemWorldDrop worldDrop = obj.GetComponent<ItemWorldDrop>();
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            LevelManager.Instance.worldCanvas.GetComponent<RectTransform>(),
+            Input.mousePosition,
+            Camera.main,
+            out Vector2 pos);
+
+        worldDrop.Init(this, pos);
+        // }
     }
 
     public void EndPickup()

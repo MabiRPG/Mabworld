@@ -149,7 +149,7 @@ public class WindowManager : MonoBehaviour, IInputHandler
             if (isDraggingWindow)
             {
                 mainWindow.rectTransform.anchoredPosition +=
-                    InputController.Instance.mouseDelta / GameManager.Instance.canvas.scaleFactor;
+                    InputController.Instance.mouseDelta / GameManager.Instance.screenCanvas.scaleFactor;
             }
         }
         else if (Input.GetMouseButtonUp(0))

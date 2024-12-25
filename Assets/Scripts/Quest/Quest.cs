@@ -307,7 +307,7 @@ public class Quest
 
             GameObject dialogueBox = GameObject.Instantiate(
                 GameManager.Instance.dialogueBoxPrefab,
-                GameManager.Instance.canvas.transform
+                GameManager.Instance.screenCanvas.transform
             );
 
             UI_DialogueBox script = dialogueBox.GetComponent<UI_DialogueBox>();

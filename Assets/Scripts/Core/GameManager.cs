@@ -40,7 +40,8 @@ public class GameManager : MonoBehaviour
     public GameObject dialogueBoxPrefab;
 
     // [Header("Window Prefabs")]
-    public Canvas canvas;
+    public Canvas screenCanvas;
+    public Canvas worldCanvas;
 
     // Loot system
     // public LootGenerator lootGenerator = new LootGenerator();
@@ -85,10 +86,10 @@ public class GameManager : MonoBehaviour
         windowManager = GetComponent<WindowManager>();
 
         baseCamera = Camera.main.gameObject;
-        raycaster = canvas.GetComponent<GraphicRaycaster>();
-        minimap = canvas.GetComponentInChildren<Minimap>(true);
-        mainMenu = canvas.GetComponentInChildren<MainMenu>(true).gameObject;
-        loadingArt = canvas.GetComponentInChildren<LoadingScreen>(true).gameObject;
+        raycaster = screenCanvas.GetComponent<GraphicRaycaster>();
+        minimap = screenCanvas.GetComponentInChildren<Minimap>(true);
+        mainMenu = screenCanvas.GetComponentInChildren<MainMenu>(true).gameObject;
+        loadingArt = screenCanvas.GetComponentInChildren<LoadingScreen>(true).gameObject;
 
         Database = new DatabaseManager(databaseName);
     }
@@ -98,7 +99,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        WindowOptions windowOptions = canvas.GetComponentInChildren<WindowOptions>(true);
+        WindowOptions windowOptions = screenCanvas.GetComponentInChildren<WindowOptions>(true);
         windowOptions.gameObject.SetActive(true);
 
         gameStateMachine = gameObject.AddComponent<GameStateMachine>();

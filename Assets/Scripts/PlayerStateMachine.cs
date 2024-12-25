@@ -52,7 +52,7 @@ public class PlayerMovementMachine : MovementStateMachine
     /// </summary>
     public void PathToCursor()
     {
-        PathToPosition(GameManager.Instance.canvas.worldCamera.ScreenToWorldPoint(Input.mousePosition));
+        PathToPosition(GameManager.Instance.screenCanvas.worldCamera.ScreenToWorldPoint(Input.mousePosition));
     }
 }
 

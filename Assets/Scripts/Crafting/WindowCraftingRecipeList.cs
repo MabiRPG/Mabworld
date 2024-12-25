@@ -19,7 +19,7 @@ public class WindowCraftingRecipeList : MonoBehaviour
 
     private void Awake()
     {
-        raycaster = GameManager.Instance.canvas.GetComponent<GraphicRaycaster>();
+        raycaster = GameManager.Instance.screenCanvas.GetComponent<GraphicRaycaster>();
         parentRectTransform = gameObject.transform.parent.parent.GetComponent<RectTransform>();
         columnConstraint = GetComponent<GridLayoutGroup>().constraintCount;
 

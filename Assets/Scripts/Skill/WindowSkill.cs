@@ -10,14 +10,14 @@ public class WindowSkill : Window
 {
     // Global reference.
     public static WindowSkill Instance = null;
-    
+
     // Prefab for extra skill detail window.
     [SerializeField]
     private GameObject windowSkillDetailedPrefab;
     // Prefab for skill advancement.
     [SerializeField]
     private GameObject windowSkillAdvancePrefab;
-    
+
     // Prefab manager instances.
     public PrefabFactory detailedPrefabFactory;
     public PrefabFactory advancePrefabFactory;
@@ -27,7 +27,7 @@ public class WindowSkill : Window
     /// <summary>
     ///     Initializes the object.
     /// </summary>
-    protected override void Awake() 
+    protected override void Awake()
     {
         base.Awake();
 
@@ -60,19 +60,19 @@ public class WindowSkill : Window
 
     public void CreateDetailedWindow(Skill skill)
     {
-        GameObject obj = detailedPrefabFactory.GetFree(skill, GameManager.Instance.canvas.transform);
+        GameObject obj = detailedPrefabFactory.GetFree(skill, GameManager.Instance.screenCanvas.transform);
         WindowSkillDetailed window = obj.GetComponent<WindowSkillDetailed>();
         window.SetSkill(skill, () => CreateAdvanceWindow(skill));
         WindowManager.Instance.AddWindow(window);
-        WindowManager.Instance.ToggleWindow(window);        
+        WindowManager.Instance.ToggleWindow(window);
     }
 
     public void CreateAdvanceWindow(Skill skill)
     {
-        GameObject obj = advancePrefabFactory.GetFree(skill, GameManager.Instance.canvas.transform);
+        GameObject obj = advancePrefabFactory.GetFree(skill, GameManager.Instance.screenCanvas.transform);
         WindowSkillAdvance window = obj.GetComponent<WindowSkillAdvance>();
         window.SetSkill(skill);
         WindowManager.Instance.AddWindow(window);
-        WindowManager.Instance.ToggleWindow(window);        
+        WindowManager.Instance.ToggleWindow(window);
     }
 }
