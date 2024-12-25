@@ -108,16 +108,16 @@ public class GameManager : MonoBehaviour
         gameStateMachine.SetState(new MenuState(gameStateMachine, "Base"));
     }
 
-    public void ChangeScene(string targetSceneName, int targetPointID)
+    public void ChangeScene(string targetSceneName, int targetPointID, bool loadGame = false)
     {
-        PlayState state = new PlayState(gameStateMachine, targetSceneName);
+        PlayState state = new PlayState(gameStateMachine, targetSceneName, loadGame);
         state.exitAction += () =>
         {
             MapTransfer[] transfers = FindObjectsByType<MapTransfer>(FindObjectsSortMode.None);
 
             foreach (MapTransfer transfer in transfers)
             {
-                if (transfer.targetPointID == targetPointID)
+                if (transfer.targetPointID == targetPointID && transfer.canReceive)
                 {
                     Vector2 pos = transfer.gameObject.transform.localPosition;
                     Player.Instance.navMeshAgent.Warp(pos);

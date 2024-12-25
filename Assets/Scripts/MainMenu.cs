@@ -52,8 +52,7 @@ public class MainMenu : MonoBehaviour
 
     private void StartGame()
     {
-        GameManager.Instance.gameStateMachine.SetState(
-            new PlayState(GameManager.Instance.gameStateMachine, "Test Map"));
+        GameManager.Instance.ChangeScene("Test Map", 0, false);
     }
 
     private void SaveGame()
@@ -63,8 +62,7 @@ public class MainMenu : MonoBehaviour
 
     private void LoadGame()
     {
-        GameManager.Instance.gameStateMachine.SetState(
-            new PlayState(GameManager.Instance.gameStateMachine, "Test Map", true));
+        GameManager.Instance.ChangeScene("Test Map", 0, true);
     }
 
     private void OpenCredits()

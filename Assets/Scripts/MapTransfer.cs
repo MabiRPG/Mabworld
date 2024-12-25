@@ -8,9 +8,12 @@ public class MapTransfer : MonoBehaviour, IMouseInputHandler
     private string targetSceneName;
     public int targetPointID;
 
+    public bool canSend;
+    public bool canReceive;
+
     public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && canSend)
         {
             GameManager.Instance.ChangeScene(targetSceneName, targetPointID);
         }
