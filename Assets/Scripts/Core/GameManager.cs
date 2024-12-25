@@ -7,6 +7,7 @@ using System.Collections;
 using System.IO;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 /// <summary>
 ///     This class handles all game-wide processing. Refer to Game.instance for the 
@@ -36,6 +37,7 @@ public class GameManager : MonoBehaviour
     public float lifeSkillBaseSuccessRate;
 
     [Header("Universal Prefabs")]
+    public GameObject playerPrefab;
     public GameObject skillBubblePrefab;
     public GameObject dialogueBoxPrefab;
 
@@ -106,6 +108,27 @@ public class GameManager : MonoBehaviour
         gameStateMachine.SetState(new MenuState(gameStateMachine, "Base"));
     }
 
+    public void ChangeScene(string targetSceneName, int targetPointID)
+    {
+        PlayState state = new PlayState(gameStateMachine, targetSceneName);
+        state.exitAction += () =>
+        {
+            MapTransfer[] transfers = FindObjectsByType<MapTransfer>(FindObjectsSortMode.None);
+
+            foreach (MapTransfer transfer in transfers)
+            {
+                if (transfer.targetPointID == targetPointID)
+                {
+                    Vector2 pos = transfer.gameObject.transform.localPosition;
+                    Player.Instance.navMeshAgent.Warp(pos);
+                    break;
+                }
+            }
+        };
+
+        gameStateMachine.SetState(state);
+    }
+
     public void Save()
     {
         string json = JsonConvert.SerializeObject(Player.Instance, new JsonSerializerSettings
@@ -148,6 +171,12 @@ public class GameManager : MonoBehaviour
     {
         T t = Addressables.LoadAssetAsync<T>(key).WaitForCompletion();
         return t;
+    }
+
+    public void CreatePlayer()
+    {
+        Instantiate(playerPrefab);
+        Player.Instance.Init();
     }
 
     public void ExecuteCoroutine(IEnumerator fn)

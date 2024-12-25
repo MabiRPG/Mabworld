@@ -412,16 +412,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f28fe8eb4c0bb74ca99f5167b9db3e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blockingLayer:
-    serializedVersion: 2
-    m_Bits: 64
   animator: {fileID: 0}
   navMeshAgent: {fileID: 0}
-  state: 0
   bubble: {fileID: 0}
-  movementController: {fileID: 0}
-  skillController: {fileID: 0}
-  map: {fileID: 0}
+  controller: {fileID: 0}
 --- !u!82 &6480767166102820284
 AudioSource:
   m_ObjectHideFlags: 0
@@ -544,7 +538,7 @@ MonoBehaviour:
   - {x: 0.5, y: -0.75, z: 0}
   m_ShapePathHash: 0
   m_Mesh: {fileID: 0}
-  m_InstanceId: -3624
+  m_InstanceId: 107878
   m_LocalBounds:
     m_Center: {x: -0.000000059604645, y: 0, z: 0}
     m_Extent: {x: 0.5, y: 0.75, z: 0}
@@ -608,7 +602,7 @@ BoxCollider2D:
   m_Offset: {x: 0.02662921, y: -0.00998497}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.5, y: 0}
     oldSize: {x: 1, y: 1.5}
     newSize: {x: 1, y: 1.5}
     adaptiveTilingThreshold: 0.5
@@ -694,6 +688,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6745159961359938785, guid: b97b992acf157d74faf0b393e43c5a30, type: 3}
       propertyPath: m_Name
+      value: MainCamera
+      objectReference: {fileID: 0}
+    - target: {fileID: 6745159961359938785, guid: b97b992acf157d74faf0b393e43c5a30, type: 3}
+      propertyPath: m_TagString
       value: MainCamera
       objectReference: {fileID: 0}
     m_RemovedComponents: []

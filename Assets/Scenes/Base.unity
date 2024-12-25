@@ -2332,6 +2332,7 @@ MonoBehaviour:
   overlay: {fileID: 280781783}
   databaseName: mabinogi.db
   lifeSkillBaseSuccessRate: 50
+  playerPrefab: {fileID: 4696373271578028107, guid: 3a5a2387aaa97aa4b83abde1ebde4046, type: 3}
   skillBubblePrefab: {fileID: 8385094532266632610, guid: bd522f58a95bad143a834106220d9e05, type: 3}
   dialogueBoxPrefab: {fileID: 6182522262148720795, guid: 5ba77397a5e4a4e498ed8a26c4ebd8ff, type: 3}
   screenCanvas: {fileID: 1845714305}
