@@ -112,8 +112,6 @@ public class Actor : MonoBehaviour
         navMeshAgent.updateRotation = false;
         navMeshAgent.updateUpAxis = false;
         transform.rotation = Quaternion.identity;
-
-        UpdateStats();
     }
 
     /// <summary>
@@ -121,8 +119,7 @@ public class Actor : MonoBehaviour
     /// </summary>
     protected virtual void OnEnable()
     {
-        actorStage.OnChange += UpdateStats;
-        actorSubstage.OnChange += UpdateStats;
+
         actorStr.OnBaseMaximumValueChange += CalculateDefense;
         actorStr.OnBaseMaximumValueChange += CalculateMDefense;
         actorInt.OnBaseMaximumValueChange += CalculateMProt;
@@ -133,8 +130,6 @@ public class Actor : MonoBehaviour
     /// </summary>
     protected virtual void OnDisable()
     {
-        actorStage.OnChange -= UpdateStats;
-        actorSubstage.OnChange -= UpdateStats;
         actorStr.OnBaseMaximumValueChange -= CalculateDefense;
         actorStr.OnBaseMaximumValueChange -= CalculateMDefense;
         actorInt.OnBaseMaximumValueChange -= CalculateMProt;
@@ -162,19 +157,6 @@ public class Actor : MonoBehaviour
     private void CalculateMProt()
     {
         actorMProt.BaseMaximum = actorInt.BaseMaximum / mProtIntFactor;
-    }
-
-    private void UpdateStats()
-    {
-        CultivationStageModel stage = CultivationStageModel.stages
-            [((int)actorStage.Value, (int)actorSubstage.Value)];
-
-        actorHP.Value = stage.hp;
-        actorMP.Value = stage.mp;
-        actorStr.Value = stage.strength;
-        actorInt.Value = stage.intelligence;
-        actorDex.Value = stage.dexterity;
-        actorLuck.Value = stage.luck;
     }
 
     [OnSerializing]

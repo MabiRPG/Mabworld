@@ -70,6 +70,8 @@ public class Player : Actor, IInputHandler
         controller = gameObject.AddComponent<PlayerController>();
         controller.Init(this);
         GameManager.Instance.audioController.SetPlayer(this);
+
+        UpdateStats();
     }
 
     public void HandleMouseInput(List<RaycastResult> graphicHits, RaycastHit2D sceneHits)
@@ -91,6 +93,8 @@ public class Player : Actor, IInputHandler
     protected override void OnEnable()
     {
         base.OnEnable();
+        actorStage.OnChange += UpdateStats;
+        actorSubstage.OnChange += UpdateStats;
 
         actorSubstage.OnChange += () =>
         {
@@ -99,6 +103,13 @@ public class Player : Actor, IInputHandler
                 quest.Update(this);
             }
         };
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        actorStage.OnChange -= UpdateStats;
+        actorSubstage.OnChange -= UpdateStats;
     }
 
     public void Update()
@@ -225,6 +236,71 @@ public class Player : Actor, IInputHandler
         {
             quests.Add(ID, new Quest(ID));
         }
+    }
+
+    private void UpdateStats()
+    {
+        Dictionary<string, float> cultivationStat = SumCultivationStats();
+        Dictionary<string, float> skillStat = SumSkillStats();
+
+        foreach ((string statName, StatManager stat) in primaryStats)
+        {
+            stat.Value = 0;
+        }
+
+        foreach ((string statName, float value) in cultivationStat)
+        {
+            primaryStats[statName].Value += value;
+        }
+
+        foreach ((string statName, float value) in skillStat)
+        {
+            primaryStats[statName].Value += value;
+        }
+    }
+
+    private Dictionary<string, float> SumCultivationStats()
+    {
+        CultivationStageModel stage = CultivationStageModel.stages
+            [((int)actorStage.Value, (int)actorSubstage.Value)];
+
+        return new Dictionary<string, float>
+        {
+            {"HP", stage.hp },
+            {"MP", stage.mp },
+            {"STR", stage.strength },
+            {"INT", stage.intelligence },
+            {"DEX", stage.dexterity },
+            {"Luck", stage.luck }
+        };
+    }
+
+    private Dictionary<string, float> SumSkillStats()
+    {
+        Dictionary<string, float> statAccumulator = new Dictionary<string, float>
+        {
+            {"HP", 0f },
+            {"MP", 0f },
+            {"STR", 0f },
+            {"INT", 0f },
+            {"DEX", 0f },
+            {"Luck", 0f }
+        };
+
+        foreach (Skill skill in skillManager.Skills.Values)
+        {
+            foreach ((int statID, SkillStatModel stat) in skill.model.stats)
+            {
+                string statName = SkillStatTypeModel.FindByID(statID);
+
+                if (statAccumulator.ContainsKey(statName))
+                {
+                    statAccumulator[statName] += stat.values[skill.index.Value];
+                }
+            }
+        }
+
+        return statAccumulator;
     }
 
     public void Init()

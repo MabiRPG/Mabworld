@@ -44,6 +44,23 @@ public class Skill
         index.OnChange += AudioController.Instance.PlayLevelUpSFX;
         index.OnChange += CreateTrainingMethods;
         CreateTrainingMethods();
+
+        foreach ((int statID, SkillStatModel stat) in model.stats)
+        {
+            string statName = SkillStatTypeModel.FindByID(statID);
+            float diff = stat.values[0];
+
+            if (Player.Instance.primaryStats.ContainsKey(statName))
+            {
+                Player.Instance.primaryStats[statName].Value += diff;
+                Player.Instance.primaryStats[statName].BaseMaximum += diff;
+            }
+            else if (Player.Instance.secondaryStats.ContainsKey(statName))
+            {
+                Player.Instance.secondaryStats[statName].Value += diff;
+                Player.Instance.secondaryStats[statName].BaseMaximum += diff;
+            }
+        }
     }
 
     /// <summary>
@@ -67,6 +84,23 @@ public class Skill
         if (!CanRankUp())
         {
             index.Clear();
+        }
+
+        foreach ((int statID, SkillStatModel stat) in model.stats)
+        {
+            string statName = SkillStatTypeModel.FindByID(statID);
+            float diff = GetStatBackwardDiff(statName);
+
+            if (Player.Instance.primaryStats.ContainsKey(statName))
+            {
+                Player.Instance.primaryStats[statName].Value += diff;
+                Player.Instance.primaryStats[statName].BaseMaximum += diff;
+            }
+            else if (Player.Instance.secondaryStats.ContainsKey(statName))
+            {
+                Player.Instance.secondaryStats[statName].Value += diff;
+                Player.Instance.secondaryStats[statName].BaseMaximum += diff;
+            }
         }
     }
 
