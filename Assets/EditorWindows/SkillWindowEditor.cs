@@ -106,8 +106,8 @@ public class SkillEditorWindow : EditorWindow
         m_VisualTreeAsset.CloneTree(rootVisualElement);
 
         refreshButton = rootVisualElement.Q<Button>("refreshButton");
-        refreshButton.RegisterCallback<ClickEvent>(e => 
-        { 
+        refreshButton.RegisterCallback<ClickEvent>(e =>
+        {
             Initialize();
             skillView.itemsSource = skills;
             SetSelectedSkill(skills[index]);
@@ -132,13 +132,13 @@ public class SkillEditorWindow : EditorWindow
         skillView.itemsSource = skills;
 
         skillView.columns["icon"].makeCell = () => new Image();
-        skillView.columns["icon"].bindCell = 
+        skillView.columns["icon"].bindCell =
             (item, index) => { (item as Image).sprite = skills[index].icon; };
 
         skillView.columns["name"].makeCell = () => new Label();
-        skillView.columns["name"].bindCell = 
+        skillView.columns["name"].bindCell =
             (item, index) => { (item as Label).text = skills[index].name; };
-        
+
         skillView.selectedIndicesChanged += OnSkillSelectionChange;
 
         Button skillAddButton = rootVisualElement.Q<Button>("skillAddButton");
@@ -154,7 +154,7 @@ public class SkillEditorWindow : EditorWindow
         });
 
         selectedName = rootVisualElement.Q<TextField>("selectedName");
-        selectedName.RegisterValueChangedCallback(e => 
+        selectedName.RegisterValueChangedCallback(e =>
         {
             selectedSkill.name = e.newValue;
             skillView.RefreshItems();
@@ -179,7 +179,7 @@ public class SkillEditorWindow : EditorWindow
                 .First();
         });
         selectedDescription = rootVisualElement.Q<TextField>("selectedDescription");
-        selectedDescription.RegisterValueChangedCallback(e => 
+        selectedDescription.RegisterValueChangedCallback(e =>
         {
             selectedSkill.description = e.newValue;
         });
@@ -274,12 +274,13 @@ public class SkillEditorWindow : EditorWindow
         statView.columns["stat"].makeCell = () =>
         {
             DropdownField dropdown = new DropdownField();
-            dropdown.RegisterValueChangedCallback(e => 
+            dropdown.RegisterValueChangedCallback(e =>
                 ChangeStatType(statView, (int)dropdown.userData, e.newValue));
 
             return dropdown;
         };
-        statView.columns["stat"].bindCell = (item, j) => {
+        statView.columns["stat"].bindCell = (item, j) =>
+        {
             List<string> names = new List<string>();
 
             int statID = (statView.itemsSource[j] as SkillStatModel).statID;
@@ -314,11 +315,12 @@ public class SkillEditorWindow : EditorWindow
 
                 return floatField;
             };
-            statView.columns[hex].bindCell = (item, k) => {
+            statView.columns[hex].bindCell = (item, k) =>
+            {
                 statView.columns[hex].visible = true;
-                (item as FloatField).SetValueWithoutNotify( 
+                (item as FloatField).SetValueWithoutNotify(
                     (statView.itemsSource[k] as SkillStatModel).values[SkillModel.ranks.Count - j]);
-                (item as FloatField).userData = k; 
+                (item as FloatField).userData = k;
             };
         }
 
@@ -326,7 +328,7 @@ public class SkillEditorWindow : EditorWindow
         {
             Button button = new Button();
             // Must use a callback here to prevent duplicating click events in bind.
-            button.RegisterCallback<ClickEvent>(e => 
+            button.RegisterCallback<ClickEvent>(e =>
                 RemoveStatAt(statView, (int)button.userData)
             );
             return button;
@@ -398,7 +400,7 @@ public class SkillEditorWindow : EditorWindow
     {
         SkillStatModel oldStat = (SkillStatModel)statView.itemsSource[index];
         int oldID = oldStat.statID;
-        
+
         if (selectedSkill.stats.ContainsKey(oldID))
         {
             selectedSkill.stats.Remove(oldID);
@@ -447,7 +449,7 @@ public class SkillEditorWindow : EditorWindow
             {
                 int index = (int)dropdown.userData;
                 TrainingMethodModel method = (TrainingMethodModel)trainingView.itemsSource[index];
-                method.rank = e.newValue;
+                // method.rank = e.newValue;
                 // int ID = (trainingView.itemsSource[index] as TrainingMethodModel).trainingMethodID;
                 // string name = TrainingMethodTypeModel.FindByID(ID);
                 // bool success = ChangeMethodType(trainingView, index, name, e.newValue);
@@ -456,13 +458,16 @@ public class SkillEditorWindow : EditorWindow
                 // {
                 //     dropdown.SetValueWithoutNotify(e.previousValue);
                 // }
+
+                ChangeMethodType(trainingView, index,
+                    method.trainingMethodID, e.newValue, method.param1, method.param2);
             });
 
             return dropdown;
         };
         trainingView.columns["rank"].bindCell = (item, j) =>
         {
-            (item as DropdownField).SetValueWithoutNotify( 
+            (item as DropdownField).SetValueWithoutNotify(
                 (trainingView.itemsSource[j] as TrainingMethodModel).rank);
             (item as DropdownField).choices = SkillModel.ranks;
             (item as DropdownField).userData = j;
@@ -482,8 +487,10 @@ public class SkillEditorWindow : EditorWindow
                 //     dropdown.SetValueWithoutNotify(e.previousValue);
                 // }
                 TrainingMethodModel method = (TrainingMethodModel)trainingView.itemsSource[index];
-                method.trainingMethodID = TrainingMethodTypeModel.FindByName(e.newValue);
-                trainingView.RefreshItems();
+                int trainingMethodID = TrainingMethodTypeModel.FindByName(e.newValue);
+
+                ChangeMethodType(trainingView, index,
+                    trainingMethodID, method.rank, method.param1, method.param2);
             });
 
             return dropdown;
@@ -526,6 +533,7 @@ public class SkillEditorWindow : EditorWindow
 
             TrainingMethodModel method = (TrainingMethodModel)trainingView.itemsSource[index];
 
+
             switch (TrainingMethodTypeModel.FindByID(method.trainingMethodID))
             {
                 case "Success":
@@ -533,57 +541,94 @@ public class SkillEditorWindow : EditorWindow
                 case "Fail":
                     break;
                 case "Gather":
-                {
-                    DropdownField dropdown = new DropdownField();
-
-                    dropdown.SetValueWithoutNotify(mapResources
-                        .Where(v => v.ID == int.Parse(method.param1))
-                        .Select(v => v.name)
-                        .First());
-                    dropdown.choices = mapResources
-                        .Select(v => v.name)
-                        .OrderBy(v => v)
-                        .ToList();
-                    dropdown.RegisterValueChangedCallback(e =>
                     {
-                        method.param1 = mapResources
-                            .Where(v => v.name == e.newValue)
-                            .Select(v => v.ID)
-                            .First()
-                            .ToString();
-                    });
+                        DropdownField dropdown = new DropdownField();
 
-                    item.Add(dropdown);
+                        dropdown.SetValueWithoutNotify(mapResources
+                            .Where(v => v.ID == int.Parse(method.param1))
+                            .Select(v => v.name)
+                            .First());
+                        dropdown.choices = mapResources
+                            .Select(v => v.name)
+                            .OrderBy(v => v)
+                            .ToList();
+                        dropdown.RegisterValueChangedCallback(e =>
+                        {
+                            // method.param1 = mapResources
+                            //     .Where(v => v.name == e.newValue)
+                            //     .Select(v => v.ID)
+                            //     .First()
+                            //     .ToString();
+                            string value = mapResources
+                                .Where(v => v.name == e.newValue)
+                                .Select(v => v.ID)
+                                .First()
+                                .ToString();
 
-                    break;
-                }
+                            ChangeMethodType(trainingView, index,
+                                method.trainingMethodID, method.rank, value, method.param2);
+                        });
+
+                        item.Add(dropdown);
+
+                        break;
+                    }
                 case "Fully gather":
-                {
-                    DropdownField dropdown = new DropdownField();
-
-                    dropdown.SetValueWithoutNotify(mapResources
-                        .Where(v => v.ID == int.Parse(method.param1))
-                        .Select(v => v.name)
-                        .First());
-                    dropdown.choices = mapResources
-                        .Select(v => v.name)
-                        .OrderBy(v => v)
-                        .ToList();
-                    dropdown.RegisterValueChangedCallback(e =>
                     {
-                        method.param1 = mapResources
-                            .Where(v => v.name == e.newValue)
-                            .Select(v => v.ID)
-                            .First()
-                            .ToString();
-                    });
+                        DropdownField dropdown = new DropdownField();
 
-                    item.Add(dropdown);
+                        dropdown.SetValueWithoutNotify(mapResources
+                            .Where(v => v.ID == int.Parse(method.param1))
+                            .Select(v => v.name)
+                            .First());
+                        dropdown.choices = mapResources
+                            .Select(v => v.name)
+                            .OrderBy(v => v)
+                            .ToList();
+                        dropdown.RegisterValueChangedCallback(e =>
+                        {
+                            string value = mapResources
+                                .Where(v => v.name == e.newValue)
+                                .Select(v => v.ID)
+                                .First()
+                                .ToString();
 
-                    break;
-                }
+                            ChangeMethodType(trainingView, index,
+                                method.trainingMethodID, method.rank, value, method.param2);
+                        });
+
+                        item.Add(dropdown);
+
+                        break;
+                    }
                 case "Craft":
-                    break;
+                    {
+                        DropdownField dropdown = new DropdownField();
+
+                        dropdown.SetValueWithoutNotify(items
+                            .Where(v => v.ID == int.Parse(method.param1))
+                            .Select(v => v.name)
+                            .First());
+                        dropdown.choices = items
+                            .Select(v => v.name)
+                            .OrderBy(v => v)
+                            .ToList();
+                        dropdown.RegisterValueChangedCallback(e =>
+                        {
+                            string value = items
+                                .Where(v => v.name == e.newValue)
+                                .Select(v => v.ID)
+                                .First()
+                                .ToString();
+
+                            ChangeMethodType(trainingView, index,
+                                method.trainingMethodID, method.rank, value, method.param2);
+                        });
+
+                        item.Add(dropdown);
+
+                        break;
+                    }
                 default:
                     break;
             }
@@ -603,55 +648,61 @@ public class SkillEditorWindow : EditorWindow
                 case "Fail":
                     break;
                 case "Gather":
-                {
-                    DropdownField dropdown = new DropdownField();
-
-                    dropdown.SetValueWithoutNotify(items
-                        .Where(v => v.ID == int.Parse(method.param2))
-                        .Select(v => v.name)
-                        .First());
-                    dropdown.choices = items
-                        .Select(v => v.name)
-                        .OrderBy(v => v)
-                        .ToList();
-                    dropdown.RegisterValueChangedCallback(e =>
                     {
-                        method.param2 = items
-                            .Where(v => v.name == e.newValue)
-                            .Select(v => v.ID)
-                            .First()
-                            .ToString();
-                    });
+                        DropdownField dropdown = new DropdownField();
 
-                    item.Add(dropdown);
+                        dropdown.SetValueWithoutNotify(items
+                            .Where(v => v.ID == int.Parse(method.param2))
+                            .Select(v => v.name)
+                            .First());
+                        dropdown.choices = items
+                            .Select(v => v.name)
+                            .OrderBy(v => v)
+                            .ToList();
+                        dropdown.RegisterValueChangedCallback(e =>
+                        {
+                            string value = items
+                                .Where(v => v.name == e.newValue)
+                                .Select(v => v.ID)
+                                .First()
+                                .ToString();
 
-                    break;
-                }
+                            ChangeMethodType(trainingView, index,
+                                method.trainingMethodID, method.rank, method.param1, value);
+                        });
+
+                        item.Add(dropdown);
+
+                        break;
+                    }
                 case "Fully gather":
-                {
-                    DropdownField dropdown = new DropdownField();
-
-                    dropdown.SetValueWithoutNotify(items
-                        .Where(v => v.ID == int.Parse(method.param2))
-                        .Select(v => v.name)
-                        .First());
-                    dropdown.choices = items
-                        .Select(v => v.name)
-                        .OrderBy(v => v)
-                        .ToList();
-                    dropdown.RegisterValueChangedCallback(e =>
                     {
-                        method.param2 = items
-                            .Where(v => v.name == e.newValue)
-                            .Select(v => v.ID)
-                            .First()
-                            .ToString();
-                    });
+                        DropdownField dropdown = new DropdownField();
 
-                    item.Add(dropdown);
+                        dropdown.SetValueWithoutNotify(items
+                            .Where(v => v.ID == int.Parse(method.param2))
+                            .Select(v => v.name)
+                            .First());
+                        dropdown.choices = items
+                            .Select(v => v.name)
+                            .OrderBy(v => v)
+                            .ToList();
+                        dropdown.RegisterValueChangedCallback(e =>
+                        {
+                            string value = items
+                                .Where(v => v.name == e.newValue)
+                                .Select(v => v.ID)
+                                .First()
+                                .ToString();
 
-                    break;
-                }
+                            ChangeMethodType(trainingView, index,
+                                method.trainingMethodID, method.rank, method.param1, value);
+                        });
+
+                        item.Add(dropdown);
+
+                        break;
+                    }
                 case "Craft":
                     break;
                 default:
@@ -708,7 +759,7 @@ public class SkillEditorWindow : EditorWindow
         trainingView.columns["delete"].makeCell = () =>
         {
             Button button = new Button();
-            button.RegisterCallback<ClickEvent>(e => 
+            button.RegisterCallback<ClickEvent>(e =>
                 RemoveMethodAt(trainingView, (int)button.userData));
             return button;
         };
@@ -728,7 +779,7 @@ public class SkillEditorWindow : EditorWindow
 
     private void SortMethodColumns()
     {
-        List<TrainingMethodModel> trainingMethods = 
+        List<TrainingMethodModel> trainingMethods =
             (List<TrainingMethodModel>)trainingView.itemsSource;
 
         foreach (var column in trainingView.sortedColumns)
@@ -753,12 +804,12 @@ public class SkillEditorWindow : EditorWindow
                 case "rank":
                     if (column.direction == SortDirection.Ascending)
                     {
-                        trainingMethods = 
+                        trainingMethods =
                             trainingMethods.OrderBy(v => v.rank).ToList();
                     }
                     else
                     {
-                        trainingMethods = 
+                        trainingMethods =
                             trainingMethods.OrderByDescending(v => v.rank).ToList();
                     }
 
@@ -766,12 +817,12 @@ public class SkillEditorWindow : EditorWindow
                 case "xpGainEach":
                     if (column.direction == SortDirection.Ascending)
                     {
-                        trainingMethods = 
+                        trainingMethods =
                             trainingMethods.OrderBy(v => v.xpGainEach).ToList();
                     }
                     else
                     {
-                        trainingMethods = 
+                        trainingMethods =
                             trainingMethods.OrderByDescending(v => v.xpGainEach).ToList();
                     }
 
@@ -779,12 +830,12 @@ public class SkillEditorWindow : EditorWindow
                 case "countMax":
                     if (column.direction == SortDirection.Ascending)
                     {
-                        trainingMethods = 
+                        trainingMethods =
                             trainingMethods.OrderBy(v => v.countMax).ToList();
                     }
                     else
                     {
-                        trainingMethods = 
+                        trainingMethods =
                             trainingMethods.OrderByDescending(v => v.countMax).ToList();
                     }
 
@@ -798,52 +849,67 @@ public class SkillEditorWindow : EditorWindow
         trainingView.RefreshItems();
     }
 
-    // private bool ChangeMethodType(MultiColumnListView trainingView, int index, 
-    //     string newMethodName, string newRank)
-    // {
-    //     TrainingMethodModel oldMethod = (TrainingMethodModel)trainingView.itemsSource[index];
-    //     int oldID = oldMethod.trainingMethodID;
-    //     string oldRank = oldMethod.rank;
+    private bool ChangeMethodType(MultiColumnListView trainingView, int index,
+        int newMethodID, string newRank, string newParam1, string newParam2)
+    {
+        TrainingMethodModel oldMethod = (TrainingMethodModel)trainingView.itemsSource[index];
+        int oldID = oldMethod.trainingMethodID;
+        string oldRank = oldMethod.rank;
+        string oldParam1 = oldMethod.param1;
+        string oldParam2 = oldMethod.param2;
 
-    //     if (selectedSkill.trainingMethods.ContainsKey((oldID, oldRank)))
-    //     {
-    //         selectedSkill.trainingMethods.Remove((oldID, oldRank));
-    //     }
+        // if (selectedSkill.trainingMethods.ContainsKey((oldID, oldRank)))
+        // {
+        //     selectedSkill.trainingMethods.Remove((oldID, oldRank));
+        // }
 
-    //     foreach ((int ID, string name) in TrainingMethodTypeModel.types)
-    //     {
-    //         if (name == newMethodName)
-    //         {
-    //             if (selectedSkill.trainingMethods.ContainsKey((ID, newRank)))
-    //             {
-    //                 Debug.Log("Found duplicate...");
-    //                 selectedSkill.trainingMethods.Add((oldID, oldRank), oldMethod);
-    //                 return false;
-    //             }
-    //             else
-    //             {
-    //                 oldMethod.trainingMethodID = ID;
-    //                 oldMethod.rank = newRank;
-    //                 selectedSkill.trainingMethods.Add((ID, newRank), oldMethod);
-    //                 break;
-    //             }
-    //         }
-    //     }
+        if (!selectedSkill.trainingMethods.ContainsKey((newMethodID, newRank, newParam1, newParam2)))
+        {
+            selectedSkill.trainingMethods.Remove((oldID, oldRank, oldParam1, oldParam2));
+            selectedSkill.trainingMethods.Add((newMethodID, newRank, newParam1, newParam2), oldMethod);
 
-    //     trainingView.itemsSource = selectedSkill.trainingMethods.Values.ToList();
-    //     trainingView.RefreshItems();
-    //     return true;
-    // }
+            oldMethod.trainingMethodID = newMethodID;
+            oldMethod.rank = newRank;
+            oldMethod.param1 = newParam1;
+            oldMethod.param2 = newParam2;
+        }
+
+        // foreach ((int ID, string name) in TrainingMethodTypeModel.types)
+        // {
+        //     if (name == newMethodName)
+        //     {
+        //         if (selectedSkill.trainingMethods.ContainsKey((ID, newRank)))
+        //         {
+        //             Debug.Log("Found duplicate...");
+        //             selectedSkill.trainingMethods.Add((oldID, oldRank), oldMethod);
+        //             return false;
+        //         }
+        //         else
+        //         {
+        //             oldMethod.trainingMethodID = ID;
+        //             oldMethod.rank = newRank;
+        //             selectedSkill.trainingMethods.Add((ID, newRank), oldMethod);
+        //             break;
+        //         }
+        //     }
+        // }
+
+        trainingView.itemsSource = selectedSkill.trainingMethods.Values.ToList();
+        trainingView.RefreshItems();
+        return true;
+    }
 
     private void RemoveMethodAt(MultiColumnListView trainingView, int index)
     {
         TrainingMethodModel oldMethod = (TrainingMethodModel)trainingView.itemsSource[index];
         int oldID = oldMethod.trainingMethodID;
         string oldRank = oldMethod.rank;
+        string oldParam1 = oldMethod.param1;
+        string oldParam2 = oldMethod.param2;
 
-        if (selectedSkill.trainingMethods.ContainsKey((oldID, oldRank)))
+        if (selectedSkill.trainingMethods.ContainsKey((oldID, oldRank, oldParam1, oldParam2)))
         {
-            selectedSkill.trainingMethods.Remove((oldID, oldRank));
+            selectedSkill.trainingMethods.Remove((oldID, oldRank, oldParam1, oldParam2));
         }
 
         trainingView.itemsSource = selectedSkill.trainingMethods.Values.ToList();
@@ -895,7 +961,7 @@ public class SkillEditorWindow : EditorWindow
         selectedFirstRank.choices = SkillModel.ranks;
 
         selectedStartRank.value = selectedSkill.startingRank;
-        selectedStartRank.choices = SkillModel.ranks;  
+        selectedStartRank.choices = SkillModel.ranks;
 
         selectedLastRank.value = selectedSkill.lastAvailableRank;
         lastAvailableRank = selectedSkill.lastAvailableRank;

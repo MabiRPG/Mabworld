@@ -23,6 +23,8 @@ public class TrainingMethodModel : Model
         primaryKeys.Add("skill_id");
         primaryKeys.Add("training_method_id");
         primaryKeys.Add("rank");
+        primaryKeys.Add("param1");
+        primaryKeys.Add("param2");
 
         fieldMap.Add("skill_id", new ModelFieldReference(this, nameof(this.skillID)));
         fieldMap.Add("rank", new ModelFieldReference(this, nameof(rank)));
@@ -37,17 +39,22 @@ public class TrainingMethodModel : Model
         CreateWriteQuery();
     }
 
-    public TrainingMethodModel(DatabaseManager database, int skillID, int trainingMethodID, string rank)
+    public TrainingMethodModel(DatabaseManager database, int skillID,
+        int trainingMethodID, string rank, string param1, string param2)
         : base(database)
     {
         this.skillID = skillID;
         this.trainingMethodID = trainingMethodID;
         this.rank = rank;
+        this.param1 = param1;
+        this.param2 = param2;
         tableName = "training_method";
 
         primaryKeys.Add("skill_id");
         primaryKeys.Add("training_method_id");
         primaryKeys.Add("rank");
+        primaryKeys.Add("param1");
+        primaryKeys.Add("param2");
 
         fieldMap.Add("skill_id", new ModelFieldReference(this, nameof(skillID)));
         fieldMap.Add("rank", new ModelFieldReference(this, nameof(rank)));

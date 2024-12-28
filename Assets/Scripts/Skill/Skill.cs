@@ -45,22 +45,22 @@ public class Skill
         index.OnChange += CreateTrainingMethods;
         CreateTrainingMethods();
 
-        foreach ((int statID, SkillStatModel stat) in model.stats)
-        {
-            string statName = SkillStatTypeModel.FindByID(statID);
-            float diff = stat.values[0];
+        // foreach ((int statID, SkillStatModel stat) in model.stats)
+        // {
+        //     string statName = SkillStatTypeModel.FindByID(statID);
+        //     float diff = stat.values[0];
 
-            if (Player.Instance.primaryStats.ContainsKey(statName))
-            {
-                Player.Instance.primaryStats[statName].Value += diff;
-                Player.Instance.primaryStats[statName].BaseMaximum += diff;
-            }
-            else if (Player.Instance.secondaryStats.ContainsKey(statName))
-            {
-                Player.Instance.secondaryStats[statName].Value += diff;
-                Player.Instance.secondaryStats[statName].BaseMaximum += diff;
-            }
-        }
+        //     if (Player.Instance.primaryStats.ContainsKey(statName))
+        //     {
+        //         Player.Instance.primaryStats[statName].Value += diff;
+        //         Player.Instance.primaryStats[statName].BaseMaximum += diff;
+        //     }
+        //     else if (Player.Instance.secondaryStats.ContainsKey(statName))
+        //     {
+        //         Player.Instance.secondaryStats[statName].Value += diff;
+        //         Player.Instance.secondaryStats[statName].BaseMaximum += diff;
+        //     }
+        // }
     }
 
     /// <summary>
@@ -86,22 +86,22 @@ public class Skill
             index.Clear();
         }
 
-        foreach ((int statID, SkillStatModel stat) in model.stats)
-        {
-            string statName = SkillStatTypeModel.FindByID(statID);
-            float diff = GetStatBackwardDiff(statName);
+        // foreach ((int statID, SkillStatModel stat) in model.stats)
+        // {
+        //     string statName = SkillStatTypeModel.FindByID(statID);
+        //     float diff = GetStatBackwardDiff(statName);
 
-            if (Player.Instance.primaryStats.ContainsKey(statName))
-            {
-                Player.Instance.primaryStats[statName].Value += diff;
-                Player.Instance.primaryStats[statName].BaseMaximum += diff;
-            }
-            else if (Player.Instance.secondaryStats.ContainsKey(statName))
-            {
-                Player.Instance.secondaryStats[statName].Value += diff;
-                Player.Instance.secondaryStats[statName].BaseMaximum += diff;
-            }
-        }
+        //     if (Player.Instance.primaryStats.ContainsKey(statName))
+        //     {
+        //         Player.Instance.primaryStats[statName].Value += diff;
+        //         Player.Instance.primaryStats[statName].BaseMaximum += diff;
+        //     }
+        //     else if (Player.Instance.secondaryStats.ContainsKey(statName))
+        //     {
+        //         Player.Instance.secondaryStats[statName].Value += diff;
+        //         Player.Instance.secondaryStats[statName].BaseMaximum += diff;
+        //     }
+        // }
     }
 
     /// <summary>
@@ -275,7 +275,9 @@ public class Skill
         foreach (TrainingMethodModel methodModel in rankMethods)
         {
             SkillTrainingMethod method =
-                new SkillTrainingMethod(model.ID, methodModel.trainingMethodID, methodModel.rank);
+                new SkillTrainingMethod(model.ID,
+                    methodModel.trainingMethodID, methodModel.rank,
+                    methodModel.param1, methodModel.param2);
             xpMax.Value += methodModel.xpGainEach * methodModel.countMax;
             methods.Add(method);
         }

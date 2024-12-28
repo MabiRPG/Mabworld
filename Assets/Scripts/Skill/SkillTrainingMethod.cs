@@ -11,10 +11,10 @@ public class SkillTrainingMethod
     public TrainingMethodModel model;
     public IntManager count;
 
-    public SkillTrainingMethod(int skillID, int methodID, string rank)
+    public SkillTrainingMethod(int skillID, int methodID, string rank, string param1, string param2)
     {
         model = new TrainingMethodModel(GameManager.Instance.Database,
-            skillID, methodID, rank);
+            skillID, methodID, rank, param1, param2);
         count = new IntManager();
     }
 

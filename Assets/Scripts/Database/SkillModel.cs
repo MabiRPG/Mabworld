@@ -56,13 +56,17 @@ public class SkillModel : Model
 
     public Dictionary<int, SkillStatModel> stats = new Dictionary<int, SkillStatModel>();
     [JsonIgnore]
-    public Dictionary<(int, string), TrainingMethodModel> trainingMethods =
-        new Dictionary<(int, string), TrainingMethodModel>();
+    public Dictionary<(int, string, string, string), TrainingMethodModel> trainingMethods =
+        new Dictionary<(int, string, string, string), TrainingMethodModel>();
 
     [JsonProperty]
     private List<int> _methodID;
     [JsonProperty]
     private List<string> _rank;
+    [JsonProperty]
+    private List<string> _param1;
+    [JsonProperty]
+    private List<string> _param2;
     [JsonProperty]
     private List<TrainingMethodModel> _methods;
 
@@ -121,7 +125,7 @@ public class SkillModel : Model
 
     private void ReadTrainingMethods()
     {
-        string trainingQuery = @$"SELECT training_method_id, rank
+        string trainingQuery = @$"SELECT training_method_id, rank, param1, param2
             FROM {trainingMethodTableName}
             WHERE skill_id = @id;";
 
@@ -131,8 +135,13 @@ public class SkillModel : Model
         {
             int methodID = int.Parse(row["training_method_id"].ToString());
             string rank = row["rank"].ToString();
-            TrainingMethodModel method = new TrainingMethodModel(database, ID, methodID, rank);
-            trainingMethods.Add((methodID, method.rank), method);
+            string param1 = row["param1"].ToString();
+            string param2 = row["param2"].ToString();
+
+            TrainingMethodModel method = new TrainingMethodModel(database, ID,
+                methodID, rank, param1, param2);
+
+            trainingMethods.Add((methodID, rank, param1, param2), method);
         }
     }
 
@@ -146,13 +155,17 @@ public class SkillModel : Model
 
         _methodID = new List<int>();
         _rank = new List<string>();
+        _param1 = new List<string>();
+        _param2 = new List<string>();
         _methods = new List<TrainingMethodModel>();
 
-        foreach ((int methodID, string rank) in trainingMethods.Keys)
+        foreach ((int methodID, string rank, string param1, string param2) in trainingMethods.Keys)
         {
             _methodID.Add(methodID);
             _rank.Add(rank);
-            _methods.Add(trainingMethods[(methodID, rank)]);
+            _param1.Add(param1);
+            _param2.Add(param2);
+            _methods.Add(trainingMethods[(methodID, rank, param1, param2)]);
         }
     }
 
@@ -167,9 +180,11 @@ public class SkillModel : Model
         {
             int methodID = _methodID[i];
             string rank = _rank[i];
+            string param1 = _param1[i];
+            string param2 = _param2[i];
             TrainingMethodModel method = _methods[i];
 
-            trainingMethods.Add((methodID, rank), method);
+            trainingMethods.Add((methodID, rank, param1, param2), method);
         }
 
         _methodID.Clear();
