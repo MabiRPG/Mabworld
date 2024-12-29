@@ -85,9 +85,8 @@ public class SkillManager
             return;
         }
 
-        Skill skill = new Skill(ID);
-        Skills.Add(ID, skill);
-        learnedCategoryIDs.Add(skill.model.cultivationStageID);
+        Skills.Add(ID, new Skill(ID));
+        learnedCategoryIDs.Add(Skills[ID].model.cultivationStageID);
         learnEvent.RaiseOnChange();
     }
 

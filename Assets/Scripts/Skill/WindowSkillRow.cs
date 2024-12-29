@@ -98,6 +98,12 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     /// <param name="advanceButtonAction">Function to call when advance button is triggered.</param>
     public void SetSkill(Skill skill, Action nameButtonAction, Action advanceButtonAction)
     {
+        if (this.skill != null)
+        {
+            this.skill.index.OnChange -= UpdateRank;
+            this.skill = null;
+        }
+
         this.skill = skill;
         UpdateRank();
 
@@ -111,6 +117,24 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         foreach (WindowSkillXPBar bar in xpBars)
         {
             bar.SetSkill(skill);
+        }
+    }
+
+    private void OnEnable()
+    {
+        if (skill != null)
+        {
+            skill.index.OnChange += UpdateRank;
+
+            UpdateRank();
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (skill != null)
+        {
+            skill.index.OnChange -= UpdateRank;
         }
     }
 

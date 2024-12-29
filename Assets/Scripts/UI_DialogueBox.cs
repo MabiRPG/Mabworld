@@ -51,11 +51,12 @@ public class UI_DialogueBox : MonoBehaviour, IOverlay, IInputHandler
 
     private void SetText()
     {
-        if (dialogues.Count - 1 <= index)
+        if (index == dialogues.Count)
         {
             RemoveOverlayCaller();
             InputController.Instance.SetActiveDialogueBox(null);
             Destroy(gameObject);
+            return;
         }
 
         QuestDialogueModel dialogue = dialogues[index];

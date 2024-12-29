@@ -227,28 +227,6 @@ public class QuestWindowEditor : EditorWindow
             (item as DropdownField).userData = index;
         };
 
-        listView.columns["condition"].makeCell = () =>
-        {
-            DropdownField dropdown = new DropdownField();
-            dropdown.choices = QuestConditionTypeModel.types.Values.ToList();
-            dropdown.RegisterValueChangedCallback(e =>
-            {
-                QuestConditionModel condition =
-                    (QuestConditionModel)listView.itemsSource[(int)dropdown.userData];
-                condition.conditionID = QuestConditionTypeModel.FindByName(e.newValue);
-                listView.RefreshItems();
-            });
-
-            return dropdown;
-        };
-        listView.columns["condition"].bindCell = (item, index) =>
-        {
-            QuestConditionModel condition = (QuestConditionModel)listView.itemsSource[index];
-            (item as DropdownField).SetValueWithoutNotify(
-                QuestConditionTypeModel.FindByID(condition.conditionID));
-            (item as DropdownField).userData = index;
-        };
-
         listView.columns["param1"].makeCell = () => new VisualElement();
         listView.columns["param1"].bindCell = (item, index) =>
         {
@@ -479,22 +457,6 @@ public class QuestWindowEditor : EditorWindow
                                 .First()
                                 .ToString();
                         });
-
-                        // dropdown.SetValueWithoutNotify(CultivationSubstageModel
-                        //     .substages[(int.Parse(condition.param1), int.Parse(condition.param2))]);
-                        // dropdown.choices = CultivationSubstageModel.substages
-                        //     .Where(v => v.Key.Item1 == int.Parse(condition.param1))
-                        //     .OrderBy(v => v.Key.Item2)
-                        //     .Select(v => v.Value)
-                        //     .ToList();
-                        // dropdown.RegisterValueChangedCallback(e =>
-                        // {
-                        //     condition.param2 = CultivationSubstageModel.substages
-                        //         .Where(v => v.Value == e.newValue)
-                        //         .Select(v => v.Key.Item2)
-                        //         .First()
-                        //         .ToString();
-                        // });
 
                         item.Add(dropdown);
 
@@ -740,7 +702,7 @@ public class QuestWindowEditor : EditorWindow
         prerequisiteAddButton.clicked += () =>
         {
             QuestConditionModel condition = new QuestConditionModel(database,
-                selectedQuest.ID, prerequisiteView.itemsSource.Count,
+                selectedQuest.ID, prerequisiteView.itemsSource.Count + 1,
                 QuestModel.prerequisitesTableName);
             prerequisiteView.itemsSource.Add(condition);
             prerequisiteView.RefreshItems();
@@ -839,7 +801,7 @@ public class QuestWindowEditor : EditorWindow
         stepAddButton.clicked += () =>
         {
             QuestConditionModel condition = new QuestConditionModel(database,
-                selectedQuest.ID, stepView.itemsSource.Count, QuestModel.stepsTableName);
+                selectedQuest.ID, stepView.itemsSource.Count + 1, QuestModel.stepsTableName);
             stepView.itemsSource.Add(condition);
             stepView.RefreshItems();
         };
@@ -873,7 +835,7 @@ public class QuestWindowEditor : EditorWindow
         rewardAddButton.clicked += () =>
         {
             QuestConditionModel condition = new QuestConditionModel(database,
-                selectedQuest.ID, rewardView.itemsSource.Count, QuestModel.rewardsTableName);
+                selectedQuest.ID, rewardView.itemsSource.Count + 1, QuestModel.rewardsTableName);
             rewardView.itemsSource.Add(condition);
             rewardView.RefreshItems();
         };

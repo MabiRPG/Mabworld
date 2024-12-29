@@ -95,6 +95,7 @@ public class Player : Actor, IInputHandler
         base.OnEnable();
         actorStage.OnChange += UpdateStats;
         actorSubstage.OnChange += UpdateStats;
+        skillManager.learnEvent.OnChange += UpdateStats;
 
         actorSubstage.OnChange += () =>
         {
@@ -110,6 +111,7 @@ public class Player : Actor, IInputHandler
         base.OnDisable();
         actorStage.OnChange -= UpdateStats;
         actorSubstage.OnChange -= UpdateStats;
+        skillManager.learnEvent.OnChange -= UpdateStats;
     }
 
     public void Update()
@@ -238,7 +240,7 @@ public class Player : Actor, IInputHandler
         }
     }
 
-    private void UpdateStats()
+    public void UpdateStats()
     {
         Dictionary<string, float> cultivationStat = SumCultivationStats();
         Dictionary<string, float> skillStat = SumSkillStats();
@@ -324,6 +326,8 @@ public class Player : Actor, IInputHandler
 
         skillManager.Skills[1].AddXP(100);
         skillManager.Skills[2].AddXP(150);
+        skillManager.Skills[3].AddXP(150);
+        skillManager.Skills[4].AddXP(150);
 
         inventoryManager.AddBag(1);
 
