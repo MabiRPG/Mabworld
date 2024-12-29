@@ -57,10 +57,6 @@ public abstract class GameState : State
         GameManager.Instance.baseCamera.SetActive(false);
         GameManager.Instance.minimap.gameObject.SetActive(true);
 
-        Player.Instance.GetComponentInChildren<Camera>(true).gameObject.SetActive(true);
-        GameManager.Instance.screenCanvas.worldCamera = Camera.main;
-        LevelManager.Instance.worldCanvas.worldCamera = Camera.main;
-
         SetupObjects<MapResource>("MapResource");
         SetupObjects<NPC>("NPC");
     }
@@ -127,18 +123,29 @@ public class PlayState : GameState
 
     public override IEnumerator Main()
     {
-        if (loadGame)
-        {
-            GameManager.Instance.Load();
-        }
-        else if (Player.Instance == null)
-        {
-            GameManager.Instance.CreatePlayer();
-        }
-
         yield return UnloadLevel();
         yield return LoadLevel();
+
         GameManager.Instance.levelScene = SceneManager.GetActiveScene();
+
+        if (Player.Instance == null)
+        {
+            GameManager.Instance.CreatePlayer();
+
+            if (loadGame)
+            {
+                GameManager.Instance.Load();
+            }
+            else
+            {
+                Player.Instance.Init();
+            }
+
+        }
+
+        Player.Instance.GetComponentInChildren<Camera>(true).gameObject.SetActive(true);
+        GameManager.Instance.screenCanvas.worldCamera = Camera.main;
+        LevelManager.Instance.worldCanvas.worldCamera = Camera.main;
     }
 
     public override void OnExit()

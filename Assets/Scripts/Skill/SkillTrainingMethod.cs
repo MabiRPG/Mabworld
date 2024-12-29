@@ -26,15 +26,19 @@ public class SkillTrainingMethod
             return;
         }
 
-        if (CheckTraining(result as ResultHandler, caller, isSuccess))
+        int countAdd = CheckTraining(result as ResultHandler, caller, isSuccess);
+
+        if (countAdd > 0)
         {
-            count.Value += 1;
-            Player.Instance.skillManager.Get(model.skillID).AddXP(model.xpGainEach);
+            count.Value += countAdd;
+            Player.Instance.skillManager.Get(model.skillID).AddXP(model.xpGainEach * countAdd);
         }
     }
 
-    public bool CheckTraining<T>(T result, object caller, bool isSuccess) where T : ResultHandler
+    public int CheckTraining<T>(T result, object caller, bool isSuccess) where T : ResultHandler
     {
+        int countAdd = 0;
+
         switch (TrainingMethodTypeModel.FindByID(model.trainingMethodID))
         {
             case "Success":
@@ -42,14 +46,25 @@ public class SkillTrainingMethod
                 {
                     break;
                 }
-                return isSuccess;
+
+                if (isSuccess)
+                {
+                    countAdd += 1;
+                }
+
+                break;
             case "Fail":
                 if (result.GetType() != typeof(ResultGatherController))
                 {
                     break;
                 }
 
-                return !isSuccess;
+                if (!isSuccess)
+                {
+                    countAdd += 1;
+                }
+
+                break;
             case "Gather":
                 {
                     if (result.GetType() != typeof(ResultGatherController))
@@ -61,7 +76,7 @@ public class SkillTrainingMethod
 
                     if (isSuccess && gatherResult.resourceID == int.Parse(model.param2))
                     {
-                        return true;
+                        countAdd += 1;
                     }
 
                     break;
@@ -80,7 +95,7 @@ public class SkillTrainingMethod
                         && gatherResult.resourceID == int.Parse(model.param2)
                         && resource.resource.Value == 0)
                     {
-                        return true;
+                        countAdd += 1;
                     }
 
                     break;
@@ -94,12 +109,10 @@ public class SkillTrainingMethod
 
                     ResultCraftController craftResult = result as ResultCraftController;
 
-                    Debug.Log(craftResult.products.Any(v => v.itemID == int.Parse(model.param1)));
-
                     if (isSuccess
                         && craftResult.products.Any(v => v.itemID == int.Parse(model.param1)))
                     {
-                        return true;
+                        countAdd += craftResult.quantity;
                     }
 
                     break;
@@ -108,7 +121,7 @@ public class SkillTrainingMethod
                 break;
         }
 
-        return false;
+        return countAdd;
     }
 
     /// <summary>

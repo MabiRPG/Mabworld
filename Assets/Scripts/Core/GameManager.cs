@@ -111,20 +111,24 @@ public class GameManager : MonoBehaviour
     public void ChangeScene(string targetSceneName, int targetPointID, bool loadGame = false)
     {
         PlayState state = new PlayState(gameStateMachine, targetSceneName, loadGame);
-        state.exitAction += () =>
-        {
-            MapTransfer[] transfers = FindObjectsByType<MapTransfer>(FindObjectsSortMode.None);
 
-            foreach (MapTransfer transfer in transfers)
+        if (!loadGame)
+        {
+            state.exitAction += () =>
             {
-                if (transfer.targetPointID == targetPointID && transfer.canReceive)
+                MapTransfer[] transfers = FindObjectsByType<MapTransfer>(FindObjectsSortMode.None);
+
+                foreach (MapTransfer transfer in transfers)
                 {
-                    Vector2 pos = transfer.gameObject.transform.localPosition;
-                    Player.Instance.navMeshAgent.Warp(pos);
-                    break;
+                    if (transfer.targetPointID == targetPointID && transfer.canReceive)
+                    {
+                        Vector2 pos = transfer.gameObject.transform.localPosition;
+                        Player.Instance.navMeshAgent.Warp(pos);
+                        break;
+                    }
                 }
-            }
-        };
+            };
+        }
 
         gameStateMachine.SetState(state);
     }
@@ -176,7 +180,6 @@ public class GameManager : MonoBehaviour
     public void CreatePlayer()
     {
         Instantiate(playerPrefab);
-        Player.Instance.Init();
     }
 
     public void ExecuteCoroutine(IEnumerator fn)

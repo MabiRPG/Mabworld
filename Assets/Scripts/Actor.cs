@@ -162,8 +162,8 @@ public class Actor : MonoBehaviour
     [OnSerializing]
     internal void OnSerializing(StreamingContext context)
     {
-        _x = transform.position.x;
-        _y = transform.position.y;
+        _x = navMeshAgent.destination.x;
+        _y = navMeshAgent.destination.y;
     }
 
     [OnDeserialized]
