@@ -154,7 +154,7 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
                 {
                     GameObject obj = Instantiate(itemTooltipPrefab, screenCanvas.transform);
                     tooltip = obj.GetComponent<UI_ItemTooltip>();
-                    tooltip.SetItem(inventoryItem.item);
+                    tooltip.SetItem(item);
                 }
 
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(

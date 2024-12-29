@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using UnityEngine;
 using System.Runtime.Serialization;
+using System.Linq;
 
 /// <summary>
 ///     Handles all training method processing.
@@ -75,8 +76,28 @@ public class SkillTrainingMethod
                     MapResource resource = (MapResource)caller;
                     ResultGatherController gatherResult = result as ResultGatherController;
 
-                    if (gatherResult.resourceID == int.Parse(model.param2)
+                    if (isSuccess
+                        && gatherResult.resourceID == int.Parse(model.param2)
                         && resource.resource.Value == 0)
+                    {
+                        return true;
+                    }
+
+                    break;
+                }
+            case "Craft":
+                {
+                    if (result.GetType() != typeof(ResultCraftController))
+                    {
+                        break;
+                    }
+
+                    ResultCraftController craftResult = result as ResultCraftController;
+
+                    Debug.Log(craftResult.products.Any(v => v.itemID == int.Parse(model.param1)));
+
+                    if (isSuccess
+                        && craftResult.products.Any(v => v.itemID == int.Parse(model.param1)))
                     {
                         return true;
                     }

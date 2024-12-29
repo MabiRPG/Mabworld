@@ -262,6 +262,7 @@ public class ActionCraftController : ActionHandler
         ResultCraftController result = new ResultCraftController(
             player,
             caller,
+            skill,
             ingredients,
             products,
             quantity,

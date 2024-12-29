@@ -135,6 +135,7 @@ public class ResultCraftController : ResultHandler
     public ResultCraftController(
         Player player,
         object caller,
+        Skill skill,
         List<CraftingRecipeIngredientModel> ingredients,
         List<CraftingRecipeProductModel> products,
         int quantity,
@@ -142,6 +143,7 @@ public class ResultCraftController : ResultHandler
     )
         : base(player, caller, action)
     {
+        this.skill = skill;
         this.ingredients = ingredients;
         this.products = products;
         this.quantity = quantity;
