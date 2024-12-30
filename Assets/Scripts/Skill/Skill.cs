@@ -215,6 +215,14 @@ public class Skill
         return model.baseCooldown + GetStat("Cooldown Time");
     }
 
+    public float GetSuccessRate()
+    {
+        float chance = GameManager.Instance.lifeSkillBaseSuccessRate;
+        chance += Player.Instance.CalculateLifeSkillSuccessRate();
+        chance += GetStat("success_rate_increase");
+        return chance;
+    }
+
     public bool CanUse()
     {
         return cooldown.Value == 0;
@@ -286,17 +294,10 @@ public class Skill
             currTime += interval;
         }
 
-        // Calculate base success rate of skill
-        float chance = GameManager.Instance.lifeSkillBaseSuccessRate;
-        chance += Player.Instance.CalculateLifeSkillSuccessRate();
-        // TODO : change to summation of previous ranks...
-        chance += GetStat("success_rate_increase");
-
-        // Change to percentage and roll die
-        chance /= 100;
+        // Calculate base success rate percentage of skill
+        float chance = GetSuccessRate() / 100;
         float roll = UnityEngine.Random.Range(0f, 1f);
-        bool isSuccess = chance >= roll;
-        result.Handle(isSuccess);
+        result.Handle(chance >= roll);
 
         GameManager.Instance.ExecuteCoroutine(StartCooldown(GetCooldownTime()));
     }

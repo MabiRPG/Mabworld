@@ -83,6 +83,30 @@ public class ResultGatherController : ResultHandler
     }
 }
 
+public class ResultSkillUseController : ResultHandler
+{
+    public readonly ActionSkillUseController action;
+
+    public ResultSkillUseController(
+        Player player,
+        object caller,
+        Skill skill,
+        ActionSkillUseController action
+    )
+        : base(player, caller, action)
+    {
+        this.skill = skill;
+        this.action = action;
+    }
+
+    public override void Handle(bool isSuccess)
+    {
+        AudioController.Instance.PlayGatherResultSFX(isSuccess);
+
+        base.Handle(isSuccess);
+    }
+}
+
 public class ResultSkillController : ResultHandler
 {
     public readonly ActionSkillController action;

@@ -64,6 +64,24 @@ public class ActionGatherController : ActionHandler
     }
 }
 
+public class ActionSkillUseController : ActionHandler
+{
+    private Skill skill;
+
+    public ActionSkillUseController(Player player, object caller, Skill skill)
+        : base(player, caller)
+    {
+        this.skill = skill;
+    }
+
+    public override void Handle()
+    {
+        ResultSkillUseController result = new ResultSkillUseController(player, caller, skill, this);
+        IEnumerator task = player.controller.AttemptSkill(skill, result);
+        player.controller.SetTask(task);
+    }
+}
+
 public class ActionSkillController : ActionHandler
 {
     private Skill skill;
@@ -259,17 +277,28 @@ public class ActionCraftController : ActionHandler
 
     public override void Handle()
     {
-        ResultCraftController result = new ResultCraftController(
+        ActionSkillUseController action = new ActionSkillUseController(
             player,
             caller,
-            skill,
-            ingredients,
-            products,
-            quantity,
-            this
+            skill
         );
-        IEnumerator task = player.controller.AttemptSkill(skill, result);
-        player.controller.SetTask(task);
+
+        action.OnSuccess += () =>
+        {
+            ResultCraftController craftResult = new ResultCraftController(
+                player,
+                caller,
+                skill,
+                ingredients,
+                products,
+                quantity,
+                this
+            );
+
+            craftResult.Handle(true);
+        };
+
+        action.Handle();
     }
 }
 

@@ -70,12 +70,13 @@ public class WindowCraftingDetailForm : MonoBehaviour
 
         StringBuilder builder = new StringBuilder();
 
-        foreach (CraftingRecipeProductModel product in recipe.products.Values)
-        {
-            builder.Append($"{product.item.name} ");
-        }
+        // foreach (CraftingRecipeProductModel product in recipe.products.Values)
+        // {
+        //     builder.Append($"{product.item.name} ");
+        // }
 
-        builder.Append($"{recipe.rankRequired} {skill.model.name}\nSuccess Rate:?");
+        builder.Append($"Requires Rank {recipe.rankRequired} {skill.model.name}\n");
+        builder.Append($"Success Rate:{skill.GetSuccessRate()}%");
         string details = builder.ToString();
         detailsText.text = details;
 
@@ -111,7 +112,7 @@ public class WindowCraftingDetailForm : MonoBehaviour
             }
         }
 
-        if (craftable == 0)
+        if (craftable == 0 || !skill.IsRankOrGreater(recipe.rankRequired))
         {
             quantityInput.interactable = false;
             craftButton.interactable = false;
