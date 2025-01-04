@@ -1,7 +1,71 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+
+public struct ActionStepStatus
+{
+    public ActionHandler action;
+    public bool status;
+
+    public ActionStepStatus(ActionHandler action)
+    {
+        this.action = action;
+        status = false;
+    }
+}
+
+public class ActionStep
+{
+    private List<ActionStepStatus> stepStatuses = new List<ActionStepStatus>();
+
+    public ActionStep() { }
+
+    public void AddStep(ActionHandler action)
+    {
+        stepStatuses.Add(new ActionStepStatus(action));
+    }
+
+    public void Start()
+    {
+        foreach (ActionStepStatus stepStatus in stepStatuses)
+        {
+            stepStatus.action.Handle();
+        }
+    }
+
+    public void Resolve(ActionHandler action)
+    {
+    }
+
+    public void Reject(ActionHandler action)
+    {
+    }
+}
+
+public class ActionManager
+{
+    private Queue<ActionStep> actions = new Queue<ActionStep>();
+
+    public ActionManager() { }
+
+    public void Enqueue(ActionStep step)
+    {
+        actions.Enqueue(step);
+    }
+
+    public ActionStep Dequeue()
+    {
+        return actions.Dequeue();
+    }
+
+    public void Advance()
+    {
+        ActionStep step = Dequeue();
+        step.Start();
+    }
+}
 
 public abstract class ActionHandler
 {

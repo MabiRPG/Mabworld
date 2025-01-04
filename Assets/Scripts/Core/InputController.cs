@@ -314,7 +314,11 @@ public class InputController : MonoBehaviour
         );
         AddButtonBind(
             KeyCode.M,
-            new InputSettings("Open Minimap", () => GameManager.Instance.minimap.Toggle(), false)
+            new InputSettings("Open Minimap", () =>
+            {
+                GameManager.Instance.HUD.GetComponent<HUD>().minimap.Toggle();
+            }
+            , false)
         );
         AddButtonBind(
             KeyCode.J,

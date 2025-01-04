@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,9 +7,14 @@ using UnityEngine.UI;
 /// </summary>
 public class UI_ProgressBar : MonoBehaviour
 {
-    public float current;
-    public float maximum;
-    public Image filledBar;
+    private float current;
+    private float maximum;
+    [SerializeField]
+    private Image filledBar;
+
+    [SerializeField]
+    private bool renderTextValue;
+    private TMP_Text barText;
 
     /// <summary>
     ///     Sets the current value of the bar.
@@ -39,15 +45,30 @@ public class UI_ProgressBar : MonoBehaviour
     /// <summary>
     ///     Draws the window.
     /// </summary>
-    private void Draw() 
+    private void Draw()
     {
         float amount = current / maximum;
-        
+
         if (amount > 1)
         {
             amount = 1;
         }
-        
+
         filledBar.fillAmount = amount;
+
+        if (barText == null)
+        {
+            barText = GetComponentInChildren<TMP_Text>(true);
+        }
+
+        if (renderTextValue)
+        {
+            barText.gameObject.SetActive(true);
+            barText.text = $"{current} / {maximum}";
+        }
+        else
+        {
+            barText.gameObject.SetActive(false);
+        }
     }
 }

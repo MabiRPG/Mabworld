@@ -55,7 +55,6 @@ public abstract class GameState : State
         SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
 
         GameManager.Instance.baseCamera.SetActive(false);
-        GameManager.Instance.minimap.gameObject.SetActive(true);
 
         SetupObjects<MapResource>("MapResource");
         SetupObjects<NPC>("NPC");
@@ -64,7 +63,7 @@ public abstract class GameState : State
     private void PrepareTransition()
     {
         WindowManager.Instance.CloseAllWindows();
-        GameManager.Instance.minimap.gameObject.SetActive(false);
+        GameManager.Instance.HUD.SetActive(false);
     }
 
     private void SetupObjects<T>(string tagName)
@@ -146,6 +145,8 @@ public class PlayState : GameState
         Player.Instance.GetComponentInChildren<Camera>(true).gameObject.SetActive(true);
         GameManager.Instance.screenCanvas.worldCamera = Camera.main;
         LevelManager.Instance.worldCanvas.worldCamera = Camera.main;
+
+        GameManager.Instance.HUD.SetActive(true);
     }
 
     public override void OnExit()

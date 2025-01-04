@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.AI;
 using System.Data;
 using Newtonsoft.Json;
+using System.Collections;
 
 /// <summary>
 ///     Handles all player & input processing.
@@ -131,6 +132,27 @@ public class Player : Actor, IInputHandler
                 controller.movementMachine.Reset();
             }
         }
+
+        if (actorHP.Value != actorHP.Maximum && !actorHPIsRegening)
+        {
+            StartCoroutine(Regenerate());
+        }
+    }
+
+    private IEnumerator Regenerate()
+    {
+        actorHPIsRegening = true;
+
+        while (actorHP.Value < actorHP.Maximum)
+        {
+            yield return new WaitForSeconds(actorHPRegenInterval);
+            actorHP.Value = Math.Min(
+                actorHP.Maximum,
+                actorHP.Value + actorHPRegenPerInterval
+            );
+        }
+
+        actorHPIsRegening = false;
     }
 
     /// <summary>
@@ -247,17 +269,17 @@ public class Player : Actor, IInputHandler
 
         foreach ((string statName, StatManager stat) in primaryStats)
         {
-            stat.Value = 0;
+            stat.Maximum = 0;
         }
 
         foreach ((string statName, float value) in cultivationStat)
         {
-            primaryStats[statName].Value += value;
+            primaryStats[statName].Maximum += value;
         }
 
         foreach ((string statName, float value) in skillStat)
         {
-            primaryStats[statName].Value += value;
+            primaryStats[statName].Maximum += value;
         }
     }
 

@@ -56,13 +56,13 @@ public class GameManager : MonoBehaviour
     public Scene levelScene;
 
     [NonSerialized]
-    public Minimap minimap;
-    [NonSerialized]
     public GameObject mainMenu;
     [NonSerialized]
     public GameObject loadingArt;
     [NonSerialized]
     public GameStateMachine gameStateMachine;
+    [NonSerialized]
+    public GameObject HUD;
 
     /// <summary>
     ///     Initializes the object.
@@ -89,9 +89,9 @@ public class GameManager : MonoBehaviour
 
         baseCamera = Camera.main.gameObject;
         raycaster = screenCanvas.GetComponent<GraphicRaycaster>();
-        minimap = screenCanvas.GetComponentInChildren<Minimap>(true);
         mainMenu = screenCanvas.GetComponentInChildren<MainMenu>(true).gameObject;
         loadingArt = screenCanvas.GetComponentInChildren<LoadingScreen>(true).gameObject;
+        HUD = screenCanvas.GetComponentInChildren<HUD>(true).gameObject;
 
         Database = new DatabaseManager(databaseName);
     }

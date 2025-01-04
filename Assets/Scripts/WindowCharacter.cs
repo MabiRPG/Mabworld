@@ -102,14 +102,6 @@ public class WindowCharacter : Window
     }
 
     /// <summary>
-    ///     Called after all Awakes.
-    /// </summary>
-    private void Start()
-    {
-        Draw();
-    }
-
-    /// <summary>
     ///     Called when the object becomes enabled and active.
     /// </summary>
     private void OnEnable()

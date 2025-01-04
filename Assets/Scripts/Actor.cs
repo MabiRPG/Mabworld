@@ -31,6 +31,10 @@ public class Actor : MonoBehaviour
     // Health and mana
     [JsonProperty]
     public StatManager actorHP = new StatManager(100, 100, 100);
+    protected bool actorHPIsRegening;
+    protected int actorHPRegenPerInterval = 5;
+    protected int actorHPRegenInterval = 3;
+
     [JsonProperty]
     public StatManager actorMP = new StatManager(100, 100, 100);
 
