@@ -14,6 +14,13 @@ public class UI_ProgressBar : MonoBehaviour
 
     [SerializeField]
     private bool renderTextValue;
+    [SerializeField]
+    private string currentValueFormatKey = "{current}";
+    [SerializeField]
+    private string maximumValueFormatKey = "{maximum}";
+    [SerializeField]
+    private string renderTextFormat = "{current} / {maximum}";
+
     private TMP_Text barText;
 
     /// <summary>
@@ -64,7 +71,9 @@ public class UI_ProgressBar : MonoBehaviour
         if (renderTextValue)
         {
             barText.gameObject.SetActive(true);
-            barText.text = $"{current} / {maximum}";
+            barText.text = renderTextFormat
+                .Replace(currentValueFormatKey, current.ToString())
+                .Replace(maximumValueFormatKey, maximum.ToString());
         }
         else
         {

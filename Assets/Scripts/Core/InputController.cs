@@ -324,6 +324,10 @@ public class InputController : MonoBehaviour
             KeyCode.J,
             new InputSettings("Open Quest Log", OpenWindow<WindowQuest>, false)
         );
+        AddButtonBind(
+            KeyCode.F1,
+            new InputSettings("Debug", () => Player.Instance.AddXP(10), false)
+        );
     }
 
     public void OpenWindow<T>() where T : Window

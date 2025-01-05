@@ -45,6 +45,8 @@ public class AudioController : MonoBehaviour
     public void SetPlayer(Player player)
     {
         playerAudio = player.gameObject.GetComponent<AudioSource>();
+        player.actorStage.OnChange += PlayLevelUpSFX;
+        player.actorSubstage.OnChange += PlayLevelUpSFX;
     }
 
     public void PlayLevelUpSFX()

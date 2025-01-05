@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using TypeExtension;
 
 /// <summary>
 ///     Handles processing the character window for the player.
@@ -167,11 +168,12 @@ public class WindowCharacter : Window
         // Basic Details
         actorNameText.text = Player.Instance.actorName.Value.ToString();
 
-        CultivationStageModel stage = CultivationStageModel.stages
-            [((int)Player.Instance.actorStage.Value, (int)Player.Instance.actorSubstage.Value)];
+        int stageRank = (int)Player.Instance.actorStage.Value;
+        int subStageRank = (int)Player.Instance.actorSubstage.Value;
+        CultivationStageModel stage = CultivationStageModel.stages[(stageRank, subStageRank)];
 
-        actorStageText.text = stage.name;
-        actorSubstageText.text = stage.substageName;
+        actorStageText.text = $"{stage.name} ({stageRank.DisplayWithSuffix()})";
+        actorSubstageText.text = $"{stage.substageName} ({subStageRank.DisplayWithSuffix()})";
 
         // HP and MP
         actorHPBar.SetCurrent(Player.Instance.actorHP.Value);

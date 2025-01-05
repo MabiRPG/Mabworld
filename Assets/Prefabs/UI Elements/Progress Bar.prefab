@@ -168,6 +168,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   filledBar: {fileID: 2607285672664635758}
   renderTextValue: 0
+  currentValueFormatKey: '{current}'
+  maximumValueFormatKey: '{maximum}'
+  renderTextFormat: '{current} / {maximum}'
 --- !u!1 &3411823250462845367
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,7 +338,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13.4
+  m_fontSize: 17.9
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

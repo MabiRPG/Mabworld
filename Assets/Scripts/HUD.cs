@@ -8,6 +8,8 @@ public class HUD : MonoBehaviour
     [SerializeField]
     private GameObject hpBarObject;
     [SerializeField]
+    private GameObject xpBarObject;
+    [SerializeField]
     private GameObject windowCharacterButtonObject;
     [SerializeField]
     private GameObject windowSkillButtonObject;
@@ -17,22 +19,30 @@ public class HUD : MonoBehaviour
     private GameObject windowQuestButtonObject;
     [SerializeField]
     private GameObject windowMapButtonObject;
+    [SerializeField]
+    private GameObject windowOptionsButtonObject;
 
     private UI_ProgressBar hpBar;
+    private UI_ProgressBar xpBar;
     private Button windowCharacterButton;
     private Button windowSkillButton;
     private Button windowInventoryButton;
     private Button windowQuestButton;
     private Button windowMapButton;
+    private Button windowOptionsButton;
 
     private void Awake()
     {
         hpBar = hpBarObject.GetComponent<UI_ProgressBar>();
+        xpBar = xpBarObject.GetComponent<UI_ProgressBar>();
         windowCharacterButton = windowCharacterButtonObject.GetComponent<Button>();
         windowSkillButton = windowSkillButtonObject.GetComponent<Button>();
         windowInventoryButton = windowInventoryButtonObject.GetComponent<Button>();
         windowQuestButton = windowQuestButtonObject.GetComponent<Button>();
         windowMapButton = windowMapButtonObject.GetComponent<Button>();
+        windowOptionsButton = windowOptionsButtonObject.GetComponent<Button>();
+
+        xpBar.SetMaximum(100);
     }
 
     private void OnEnable()
@@ -41,6 +51,8 @@ public class HUD : MonoBehaviour
 
         Player.Instance.actorHP.OnChange += Draw;
         Player.Instance.actorHP.OnMaximumValueChange += Draw;
+
+        Player.Instance.actorXP.OnChange += Draw;
 
         windowCharacterButton.onClick.AddListener(
             InputController.Instance.OpenWindow<WindowCharacter>
@@ -54,6 +66,9 @@ public class HUD : MonoBehaviour
         windowQuestButton.onClick.AddListener(
             InputController.Instance.OpenWindow<WindowQuest>
         );
+        windowOptionsButton.onClick.AddListener(
+            InputController.Instance.OpenWindow<WindowOptions>
+        );
 
         Draw();
     }
@@ -65,15 +80,20 @@ public class HUD : MonoBehaviour
         Player.Instance.actorHP.OnChange -= Draw;
         Player.Instance.actorHP.OnMaximumValueChange -= Draw;
 
+        Player.Instance.actorXP.OnChange -= Draw;
+
         windowCharacterButton.onClick.RemoveAllListeners();
         windowSkillButton.onClick.RemoveAllListeners();
         windowInventoryButton.onClick.RemoveAllListeners();
         windowQuestButton.onClick.RemoveAllListeners();
+        windowOptionsButton.onClick.RemoveAllListeners();
     }
 
     private void Draw()
     {
         hpBar.SetCurrent(Player.Instance.actorHP.Value);
         hpBar.SetMaximum(Player.Instance.actorHP.Maximum);
+
+        xpBar.SetCurrent(Player.Instance.actorXP.Value);
     }
 }
