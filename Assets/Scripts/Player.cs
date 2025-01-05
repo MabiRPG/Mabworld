@@ -133,9 +133,40 @@ public class Player : Actor, IInputHandler
             }
         }
 
-        if (actorHP.Value != actorHP.Maximum && !actorHPIsRegening)
+        if (actorHP.Value < actorHP.Maximum && !actorHPIsRegening)
         {
             StartCoroutine(Regenerate());
+        }
+
+        // Buff/regen system placeholder
+        if (actorStr.Value != actorStr.Maximum)
+        {
+            actorStr.Value = actorStr.Maximum;
+        }
+
+        if (actorDex.Value != actorDex.Maximum)
+        {
+            actorDex.Value = actorDex.Maximum;
+        }
+
+        if (actorInt.Value != actorInt.Maximum)
+        {
+            actorInt.Value = actorInt.Maximum;
+        }
+
+        if (actorLuck.Value != actorLuck.Maximum)
+        {
+            actorLuck.Value = actorLuck.Maximum;
+        }
+
+        if (actorAttack.Value != actorAttack.Maximum)
+        {
+            actorAttack.Value = actorAttack.Maximum;
+        }
+
+        if (actorDefense.Value != actorDefense.Maximum)
+        {
+            actorDefense.Value = actorDefense.Maximum;
         }
     }
 
@@ -173,13 +204,9 @@ public class Player : Actor, IInputHandler
     /// <param name="skill">Skill instance</param>
     public void RankUpSkill(Skill skill)
     {
-        // int apCost = (int)skill.GetStatForwardDiff("ap_cost");
-
-        if (skillManager.IsLearned(skill) && skill.CanRankUp())// && actorAP.Value >= apCost)
+        if (skillManager.IsLearned(skill) && skill.CanRankUp())
         {
-            // actorAP.Value -= apCost;
             skill.RankUp();
-            // actorLevel.Value += apCost;
 
             foreach (KeyValuePair<string, StatManager> stat in primaryStats)
             {
@@ -210,6 +237,8 @@ public class Player : Actor, IInputHandler
             {
                 actorSubstage.Value++;
             }
+
+            AudioController.Instance.PlayLevelUpSFX();
         }
     }
 
@@ -272,6 +301,11 @@ public class Player : Actor, IInputHandler
             stat.Maximum = 0;
         }
 
+        foreach ((string statName, StatManager stat) in secondaryStats)
+        {
+            stat.Maximum = 0;
+        }
+
         foreach ((string statName, float value) in cultivationStat)
         {
             primaryStats[statName].Maximum += value;
@@ -280,6 +314,18 @@ public class Player : Actor, IInputHandler
         foreach ((string statName, float value) in skillStat)
         {
             primaryStats[statName].Maximum += value;
+        }
+
+        foreach ((string statName, float value) in WindowCharacterEquipmentSlot.statAccumulator)
+        {
+            if (primaryStats.ContainsKey(statName))
+            {
+                primaryStats[statName].Maximum += value;
+            }
+            else if (secondaryStats.ContainsKey(statName))
+            {
+                secondaryStats[statName].Maximum += value;
+            }
         }
     }
 
@@ -356,27 +402,27 @@ public class Player : Actor, IInputHandler
         // ActionItemController actionItem = new ActionItemController(this, this, 1, 50);
         // actionItem.Handle();
 
-        // ActionItemController actionItem = new ActionItemController(this, this, 17, 1);
-        // actionItem.Handle();
-        // actionItem = new ActionItemController(this, this, 18, 1);
-        // actionItem.Handle();
-        // actionItem = new ActionItemController(this, this, 19, 1);
-        // actionItem.Handle();
-        // actionItem = new ActionItemController(this, this, 20, 1);
-        // actionItem.Handle();
-        // actionItem = new ActionItemController(this, this, 21, 1);
-        // actionItem.Handle();
-        // actionItem = new ActionItemController(this, this, 22, 1);
-        // actionItem.Handle();
-        // actionItem = new ActionItemController(this, this, 38, 1);
-        // actionItem.Handle();
-        // actionItem = new ActionItemController(this, this, 39, 1);
-        // actionItem.Handle();
-        // actionItem = new ActionItemController(this, this, 40, 1);
-        // actionItem.Handle();
-        // actionItem = new ActionItemController(this, this, 41, 1);
-        // actionItem.Handle();
-        // actionItem = new ActionItemController(this, this, 31, 1);
-        // actionItem.Handle();
+        ActionItemController actionItem = new ActionItemController(this, this, 17, 1);
+        actionItem.Handle();
+        actionItem = new ActionItemController(this, this, 18, 1);
+        actionItem.Handle();
+        actionItem = new ActionItemController(this, this, 19, 1);
+        actionItem.Handle();
+        actionItem = new ActionItemController(this, this, 20, 1);
+        actionItem.Handle();
+        actionItem = new ActionItemController(this, this, 21, 1);
+        actionItem.Handle();
+        actionItem = new ActionItemController(this, this, 22, 1);
+        actionItem.Handle();
+        actionItem = new ActionItemController(this, this, 38, 1);
+        actionItem.Handle();
+        actionItem = new ActionItemController(this, this, 39, 1);
+        actionItem.Handle();
+        actionItem = new ActionItemController(this, this, 40, 1);
+        actionItem.Handle();
+        actionItem = new ActionItemController(this, this, 41, 1);
+        actionItem.Handle();
+        actionItem = new ActionItemController(this, this, 31, 1);
+        actionItem.Handle();
     }
 }

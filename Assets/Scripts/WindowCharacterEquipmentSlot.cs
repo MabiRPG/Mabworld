@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -23,6 +24,17 @@ public class WindowCharacterEquipmentSlot : MonoBehaviour, IItemPickupHandler, I
     private Slot slot;
 
     private UI_Item uiItem;
+    public static Dictionary<string, float> statAccumulator = new Dictionary<string, float>
+    {
+        {"HP", 0f },
+        {"MP", 0f },
+        {"STR", 0f },
+        {"INT", 0f },
+        {"DEX", 0f },
+        {"Luck", 0f },
+        {"Attack", 0f },
+        {"Defense", 0f }
+    };
 
     public void HandleItemPickup(List<RaycastResult> graphicHits, RaycastHit2D sceneHits, UI_Item item)
     {
@@ -30,17 +42,13 @@ public class WindowCharacterEquipmentSlot : MonoBehaviour, IItemPickupHandler, I
         {
             string statName = ItemStatTypeModel.FindByID(statID);
 
-            if (Player.Instance.primaryStats.ContainsKey(statName))
+            if (statAccumulator.ContainsKey(statName))
             {
-                Player.Instance.primaryStats[statName].Value -= roll;
-                Player.Instance.primaryStats[statName].BaseMaximum -= roll;
-            }
-            else if (Player.Instance.secondaryStats.ContainsKey(statName))
-            {
-                Player.Instance.secondaryStats[statName].Value -= roll;
-                Player.Instance.secondaryStats[statName].BaseMaximum -= roll;
+                statAccumulator[statName] -= roll;
             }
         }
+
+        Player.Instance.UpdateStats();
 
         uiItem.StartPickup();
     }
@@ -64,17 +72,15 @@ public class WindowCharacterEquipmentSlot : MonoBehaviour, IItemPickupHandler, I
             {
                 string statName = ItemStatTypeModel.FindByID(statID);
 
-                if (Player.Instance.primaryStats.ContainsKey(statName))
+                if (statAccumulator.ContainsKey(statName))
                 {
-                    Player.Instance.primaryStats[statName].Value += roll;
-                    Player.Instance.primaryStats[statName].BaseMaximum += roll;
+                    statAccumulator[statName] += roll;
                 }
-                else if (Player.Instance.secondaryStats.ContainsKey(statName))
-                {
-                    Player.Instance.secondaryStats[statName].Value += roll;
-                    Player.Instance.secondaryStats[statName].BaseMaximum += roll;
-                }
+
+                Debug.Log($"{statName} {roll}");
             }
+
+            Player.Instance.UpdateStats();
         }
     }
 }

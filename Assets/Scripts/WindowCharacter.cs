@@ -34,9 +34,10 @@ public class WindowCharacter : Window
     // private TMP_Text actorMagicDefenseText;
     // private TMP_Text actorMagicProtectionText;
 
+    private TMP_Text actorAttackText;
+
     private GameObject basicInfoLeft;
     private GameObject equipmentSlots;
-    private GameObject basicInfoRight;
 
     /// <summary>
     ///     Initializes the object.
@@ -66,6 +67,7 @@ public class WindowCharacter : Window
         actorDexText = dict["dex"];
         actorLuckText = dict["luck"];
         actorDefenseText = dict["defense"];
+        actorAttackText = dict["attack"];
 
         // HP and MP
         actorHPBar = body.transform.Find("Basic Info (L)/Bars Parent/HP Bar Parent/HP Bar").GetComponent<UI_ProgressBar>();
@@ -114,7 +116,8 @@ public class WindowCharacter : Window
 
         // HP and MP
         Player.Instance.actorHP.OnChange += Draw;
-        Player.Instance.actorMP.OnChange += Draw;
+        Player.Instance.actorHP.OnMaximumValueChange += Draw;
+        // Player.Instance.actorMP.OnChange += Draw;
         Player.Instance.actorXP.OnChange += Draw;
 
         // Regular Stats
@@ -125,9 +128,11 @@ public class WindowCharacter : Window
 
         // Defensive Stats
         Player.Instance.actorDefense.OnChange += Draw;
-        Player.Instance.actorProt.OnChange += Draw;
-        Player.Instance.actorMDefense.OnChange += Draw;
-        Player.Instance.actorMProt.OnChange += Draw;
+        // Player.Instance.actorProt.OnChange += Draw;
+        // Player.Instance.actorMDefense.OnChange += Draw;
+        // Player.Instance.actorMProt.OnChange += Draw;
+
+        Player.Instance.actorAttack.OnChange += Draw;
 
         Draw();
     }
@@ -144,7 +149,7 @@ public class WindowCharacter : Window
 
         // HP and MP
         Player.Instance.actorHP.OnChange -= Draw;
-        Player.Instance.actorMP.OnChange -= Draw;
+        // Player.Instance.actorMP.OnChange -= Draw;
         Player.Instance.actorXP.OnChange -= Draw;
 
         // Regular Stats
@@ -155,9 +160,11 @@ public class WindowCharacter : Window
 
         // Defensive Stats
         Player.Instance.actorDefense.OnChange -= Draw;
-        Player.Instance.actorProt.OnChange -= Draw;
-        Player.Instance.actorMDefense.OnChange -= Draw;
-        Player.Instance.actorMProt.OnChange -= Draw;
+        // Player.Instance.actorProt.OnChange -= Draw;
+        // Player.Instance.actorMDefense.OnChange -= Draw;
+        // Player.Instance.actorMProt.OnChange -= Draw;
+
+        Player.Instance.actorAttack.OnChange -= Draw;
     }
 
     /// <summary>
@@ -178,8 +185,8 @@ public class WindowCharacter : Window
         // HP and MP
         actorHPBar.SetCurrent(Player.Instance.actorHP.Value);
         actorHPBar.SetMaximum(Player.Instance.actorHP.Maximum);
-        actorMPBar.SetCurrent(Player.Instance.actorMP.Value);
-        actorMPBar.SetMaximum(Player.Instance.actorMP.Maximum);
+        // actorMPBar.SetCurrent(Player.Instance.actorMP.Value);
+        // actorMPBar.SetMaximum(Player.Instance.actorMP.Maximum);
         actorXPBar.SetCurrent(Player.Instance.actorXP.Value);
         actorXPBar.SetMaximum(Player.Instance.actorXP.Maximum);
 
@@ -194,6 +201,8 @@ public class WindowCharacter : Window
         // actorProtectionText.text = Player.Instance.actorProt.Value.ToString();
         // actorMagicDefenseText.text = Player.Instance.actorMDefense.Value.ToString();
         // actorMagicProtectionText.text = Player.Instance.actorMProt.Value.ToString();
+
+        actorAttackText.text = Player.Instance.actorAttack.Value.ToString();
 
         // Resets the content size fitter.
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)gameObject.transform);

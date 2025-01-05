@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using TypeExtension;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -48,15 +47,18 @@ public class Actor : MonoBehaviour
     [JsonProperty]
     public StatManager actorLuck = new StatManager(0, 0, 0);
 
+    [JsonProperty]
+    public StatManager actorAttack = new StatManager();
+
     // Defense, Protection, Magic Defense, and Magic Protection
     [JsonProperty]
     public StatManager actorDefense = new StatManager();
-    [JsonProperty]
-    public StatManager actorProt = new StatManager();
-    [JsonProperty]
-    public StatManager actorMDefense = new StatManager();
-    [JsonProperty]
-    public StatManager actorMProt = new StatManager();
+    // [JsonProperty]
+    // public StatManager actorProt = new StatManager();
+    // [JsonProperty]
+    // public StatManager actorMDefense = new StatManager();
+    // [JsonProperty]
+    // public StatManager actorMProt = new StatManager();
 
     // Dict of primary and secondary (calculated) stats for easier reference
     [JsonIgnore]
@@ -67,12 +69,12 @@ public class Actor : MonoBehaviour
     [JsonProperty]
     // How much defense scales with strength
     protected int defenseStrFactor = 10;
-    [JsonProperty]
-    // Magic defense scale with str
-    protected int mDefenseStrFactor = 10;
-    [JsonProperty]
-    // Magic Protection scale with int
-    protected int mProtIntFactor = 20;
+    // [JsonProperty]
+    // // Magic defense scale with str
+    // protected int mDefenseStrFactor = 10;
+    // [JsonProperty]
+    // // Magic Protection scale with int
+    // protected int mProtIntFactor = 20;
 
     [JsonProperty]
     public SkillManager skillManager;
@@ -97,10 +99,11 @@ public class Actor : MonoBehaviour
         primaryStats.Add("DEX", actorDex);
         primaryStats.Add("Luck", actorLuck);
 
+        secondaryStats.Add("Attack", actorAttack);
         secondaryStats.Add("Defense", actorDefense);
-        secondaryStats.Add("Protection", actorProt);
-        secondaryStats.Add("Magic Defense", actorMDefense);
-        secondaryStats.Add("Magic Protection", actorMProt);
+        // secondaryStats.Add("Protection", actorProt);
+        // secondaryStats.Add("Magic Defense", actorMDefense);
+        // secondaryStats.Add("Magic Protection", actorMProt);
 
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         // Adjust skill bubble so it is slightly above the actor head.
@@ -124,9 +127,9 @@ public class Actor : MonoBehaviour
     protected virtual void OnEnable()
     {
 
-        actorStr.OnBaseMaximumValueChange += CalculateDefense;
-        actorStr.OnBaseMaximumValueChange += CalculateMDefense;
-        actorInt.OnBaseMaximumValueChange += CalculateMProt;
+        // actorStr.OnBaseMaximumValueChange += CalculateDefense;
+        // actorStr.OnBaseMaximumValueChange += CalculateMDefense;
+        // actorInt.OnBaseMaximumValueChange += CalculateMProt;
     }
 
     /// <summary>
@@ -134,9 +137,9 @@ public class Actor : MonoBehaviour
     /// </summary>
     protected virtual void OnDisable()
     {
-        actorStr.OnBaseMaximumValueChange -= CalculateDefense;
-        actorStr.OnBaseMaximumValueChange -= CalculateMDefense;
-        actorInt.OnBaseMaximumValueChange -= CalculateMProt;
+        // actorStr.OnBaseMaximumValueChange -= CalculateDefense;
+        // actorStr.OnBaseMaximumValueChange -= CalculateMDefense;
+        // actorInt.OnBaseMaximumValueChange -= CalculateMProt;
     }
 
     /// <summary>
@@ -147,21 +150,21 @@ public class Actor : MonoBehaviour
         actorDefense.BaseMaximum = actorStr.BaseMaximum / defenseStrFactor;
     }
 
-    /// <summary>
-    ///     Calculates the magic defense
-    /// </summary>
-    private void CalculateMDefense()
-    {
-        actorMDefense.BaseMaximum = actorStr.BaseMaximum / mDefenseStrFactor;
-    }
+    // /// <summary>
+    // ///     Calculates the magic defense
+    // /// </summary>
+    // private void CalculateMDefense()
+    // {
+    //     actorMDefense.BaseMaximum = actorStr.BaseMaximum / mDefenseStrFactor;
+    // }
 
-    /// <summary>
-    ///     Calculates the magic protection
-    /// </summary>
-    private void CalculateMProt()
-    {
-        actorMProt.BaseMaximum = actorInt.BaseMaximum / mProtIntFactor;
-    }
+    // /// <summary>
+    // ///     Calculates the magic protection
+    // /// </summary>
+    // private void CalculateMProt()
+    // {
+    //     actorMProt.BaseMaximum = actorInt.BaseMaximum / mProtIntFactor;
+    // }
 
     [OnSerializing]
     internal void OnSerializing(StreamingContext context)
