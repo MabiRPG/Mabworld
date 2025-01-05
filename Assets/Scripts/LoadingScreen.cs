@@ -7,11 +7,13 @@ public class LoadingScreen : MonoBehaviour
     private UI_ProgressBar progressBar;
     private TMP_Text percentageText;
 
+    [SerializeField]
+    private GameObject percentageTextObject;
 
     private void Awake()
     {
         progressBar = GetComponentInChildren<UI_ProgressBar>();
-        percentageText = GetComponentInChildren<TMP_Text>();
+        percentageText = percentageTextObject.GetComponent<TMP_Text>();
 
         progressBar.SetMaximum(100);
     }
@@ -19,6 +21,6 @@ public class LoadingScreen : MonoBehaviour
     public void SetProgress(float value)
     {
         progressBar.SetCurrent(value * 100);
-        percentageText.text = $"Loading... {Math.Round(value * 100, 2)}%"; 
+        percentageText.text = $"Loading... {Math.Round(value * 100, 2)}%";
     }
 }

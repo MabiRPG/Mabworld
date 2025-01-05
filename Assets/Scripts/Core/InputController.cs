@@ -326,7 +326,7 @@ public class InputController : MonoBehaviour
         );
     }
 
-    private void OpenWindow<T>() where T : Window
+    public void OpenWindow<T>() where T : Window
     {
         if (typeof(T).GetField("Instance").GetValue(null) == null)
         {
