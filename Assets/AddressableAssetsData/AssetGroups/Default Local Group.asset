@@ -67,13 +67,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7eda2f1abe22d0f4ea2f9debccf0f49c
-    m_Address: Nao
+  - m_GUID: 7397de30c73cae24dbba79c73d571a6e
+    m_Address: Assets/Addressables/Sprites/NPC Portraits/Apothecary.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 607832cef9970804a9e8e52cfc67d4af
-    m_Address: Sion
+  - m_GUID: d65f9b2355953e049b6cb8e4d42ed9dc
+    m_Address: Assets/Addressables/Sprites/NPC Portraits/Seamstress.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -434,6 +434,41 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 97db7f1d26b7c074b9a3812c27a347a0
     m_Address: Assets/Addressables/Sprites/Skill Icons/Meditation.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b35a080fded89144863b851349ac58d
+    m_Address: Assets/Addressables/Sprites/NPC Portraits/Carpenter.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 607832cef9970804a9e8e52cfc67d4af
+    m_Address: Assets/Addressables/Sprites/NPC Portraits/Blacksmith.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7eda2f1abe22d0f4ea2f9debccf0f49c
+    m_Address: Assets/Addressables/Sprites/NPC Portraits/Nao.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a52397dc137c05a4a8017100f30840e7
+    m_Address: Assets/Addressables/Sprites/NPC Portraits/Fei_Shen.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79025ad8a310a6848adfeb8504b0af25
+    m_Address: Assets/Addressables/Sprites/NPC Portraits/Town_Ranger.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b305be451b30903479f5445dbafa2e4e
+    m_Address: Assets/Addressables/Sprites/NPC Portraits/Fan_He.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7428146fddb15cb4e95d791ce42facc3
+    m_Address: Assets/Addressables/Sprites/NPC Portraits/Yang_Shen.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

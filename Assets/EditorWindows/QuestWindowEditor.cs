@@ -742,7 +742,8 @@ public class QuestWindowEditor : EditorWindow
                     (stepView.itemsSource[index - 1] as QuestConditionModel).stepID++;
 
                     conditions = conditions.OrderBy(v => v.stepID).ToList();
-                    stepView.itemsSource = conditions;
+                    selectedQuest.steps = conditions;
+                    stepView.itemsSource = selectedQuest.steps;
                     stepView.RefreshItems();
                 }
             };
@@ -760,7 +761,8 @@ public class QuestWindowEditor : EditorWindow
                     (stepView.itemsSource[index + 1] as QuestConditionModel).stepID--;
 
                     conditions = conditions.OrderBy(v => v.stepID).ToList();
-                    stepView.itemsSource = conditions;
+                    selectedQuest.steps = conditions;
+                    stepView.itemsSource = selectedQuest.steps;
                     stepView.RefreshItems();
                 }
             };
@@ -886,7 +888,7 @@ public class QuestWindowEditor : EditorWindow
                 condition.Upsert();
             }
 
-            foreach (QuestConditionModel condition in quest.steps)
+            foreach (QuestConditionModel condition in quest.steps.OrderBy(v => v.stepID))
             {
                 condition.Upsert();
             }

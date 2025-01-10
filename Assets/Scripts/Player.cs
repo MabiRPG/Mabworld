@@ -381,6 +381,7 @@ public class Player : Actor, IInputHandler
         Quest quest = new Quest(1);
         quests.Add(1, quest);
         quests.Add(2, new Quest(2));
+        quests.Add(3, new Quest(3));
 
         DataTable dt = GameManager.Instance.Database.Read(@"SELECT id FROM skill
             WHERE is_starting_with = 1");

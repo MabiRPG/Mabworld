@@ -117,7 +117,16 @@ public class DatabaseManager
 
         // Creates a new datatable.
         DataTable dt = new DataTable();
-        dt.Load(reader);
+
+        try
+        {
+            dt.Load(reader);
+        }
+        catch (Exception e)
+        {
+            Debug.Log(dt.GetErrors());
+            throw e;
+        }
 
         reader.Close();
         dbConnection.Close();

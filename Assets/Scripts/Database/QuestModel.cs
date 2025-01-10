@@ -73,7 +73,7 @@ public class QuestModel : Model
 
     private void ReadDialogue()
     {
-        string query = @$"SELECT id, conversation_id
+        string query = @$"SELECT quest_id, conversation_id, id 
             FROM {dialogueTableName}
             WHERE quest_id = @id;";
 
