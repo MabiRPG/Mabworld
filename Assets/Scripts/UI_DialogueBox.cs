@@ -15,10 +15,13 @@ public class UI_DialogueBox : MonoBehaviour, IOverlay, IInputHandler
     public int nextID;
     public Sprite icon;
 
+    [SerializeField]
     private Image npc1Image;
-    // private Image npc2Image;
+    [SerializeField]
     private TMP_Text npc1Name;
-    // private TMP_Text npc2Name;
+    [SerializeField]
+    private TMP_Text npc1Cultivation;
+    [SerializeField]
     private TMP_Text mainText;
 
     private string overflowText;
@@ -30,12 +33,6 @@ public class UI_DialogueBox : MonoBehaviour, IOverlay, IInputHandler
 
     private void Awake()
     {
-        npc1Image = transform.Find("NPC 1 Image").GetComponent<Image>();
-        // npc2Image = transform.Find("NPC 2 Image").GetComponent<Image>();
-        npc1Name = transform.Find("NPC 1 Image/Image").GetComponentInChildren<TMP_Text>();
-        // npc2Name = transform.Find("NPC 2 Image/Image").GetComponentInChildren<TMP_Text>();
-        mainText = transform.Find("Text Box").GetComponent<TMP_Text>();
-
         isFullscreenFocus = true;
         AddOverlayCaller();
         InputController.Instance.SetActiveDialogueBox(this);
@@ -61,8 +58,11 @@ public class UI_DialogueBox : MonoBehaviour, IOverlay, IInputHandler
 
         QuestDialogueModel dialogue = dialogues[index];
         NPCModel npc = new NPCModel(GameManager.Instance.Database, dialogue.npcID);
+        CultivationStageModel stage = CultivationStageModel.stages
+            [(npc.cultivationStageID, npc.cultivationSubstageID)];
 
         npc1Name.text = npc.name;
+        npc1Cultivation.text = $"{stage.name} Stage ({stage.substageName})";
         npc1Image.sprite = npc.icon;
         mainText.text = dialogue.text;
         mainText.ForceMeshUpdate();

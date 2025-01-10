@@ -9,7 +9,7 @@ public interface IOverlay
     public void RemoveOverlayCaller();
 }
 
-public class Overlay : MonoBehaviour 
+public class Overlay : MonoBehaviour
 {
     private HashSet<GameObject> overlayCallers = new HashSet<GameObject>();
 
@@ -28,5 +28,6 @@ public class Overlay : MonoBehaviour
     private void Draw()
     {
         gameObject.SetActive(overlayCallers.Count > 0);
+        GameManager.Instance.HUD.SetActive(overlayCallers.Count == 0);
     }
 }
