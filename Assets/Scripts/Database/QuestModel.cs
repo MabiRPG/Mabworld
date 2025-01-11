@@ -8,7 +8,7 @@ public class QuestModel : Model
 {
     public int ID;
     public string name;
-    public int typeID;
+    public int typeID = 1;
 
     public List<QuestConditionModel> prerequisites;
     public List<QuestConditionModel> steps;

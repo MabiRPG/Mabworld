@@ -378,13 +378,8 @@ public class Player : Actor, IInputHandler
         // Debug purposes...
         actorName.Value = "Test";
 
-        Quest quest = new Quest(1);
-        quests.Add(1, quest);
-        quests.Add(2, new Quest(2));
-        quests.Add(3, new Quest(3));
-
         DataTable dt = GameManager.Instance.Database.Read(@"SELECT id FROM skill
-            WHERE is_starting_with = 1");
+            WHERE is_starting_with = 1;");
 
         foreach (DataRow row in dt.Rows)
         {
@@ -393,37 +388,45 @@ public class Player : Actor, IInputHandler
             action.Handle();
         }
 
-        skillManager.Skills[1].AddXP(100);
-        skillManager.Skills[2].AddXP(150);
-        skillManager.Skills[3].AddXP(150);
-        skillManager.Skills[4].AddXP(150);
+        dt = GameManager.Instance.Database.Read(@"SELECT id FROM quest;");
+
+        foreach (DataRow row in dt.Rows)
+        {
+            int ID = int.Parse(row["id"].ToString());
+            quests.Add(ID, new Quest(ID));
+        }
+
+        // skillManager.Skills[1].AddXP(100);
+        // skillManager.Skills[2].AddXP(150);
+        // skillManager.Skills[3].AddXP(150);
+        // skillManager.Skills[4].AddXP(150);
 
         inventoryManager.AddBag(1);
 
         // ActionItemController actionItem = new ActionItemController(this, this, 1, 50);
         // actionItem.Handle();
 
-        ActionItemController actionItem = new ActionItemController(this, this, 17, 1);
-        actionItem.Handle();
-        actionItem = new ActionItemController(this, this, 18, 1);
-        actionItem.Handle();
-        actionItem = new ActionItemController(this, this, 19, 1);
-        actionItem.Handle();
-        actionItem = new ActionItemController(this, this, 20, 1);
-        actionItem.Handle();
-        actionItem = new ActionItemController(this, this, 21, 1);
-        actionItem.Handle();
-        actionItem = new ActionItemController(this, this, 22, 1);
-        actionItem.Handle();
-        actionItem = new ActionItemController(this, this, 38, 1);
-        actionItem.Handle();
-        actionItem = new ActionItemController(this, this, 39, 1);
-        actionItem.Handle();
-        actionItem = new ActionItemController(this, this, 40, 1);
-        actionItem.Handle();
-        actionItem = new ActionItemController(this, this, 41, 1);
-        actionItem.Handle();
-        actionItem = new ActionItemController(this, this, 31, 1);
-        actionItem.Handle();
+        // ActionItemController actionItem = new ActionItemController(this, this, 17, 1);
+        // actionItem.Handle();
+        // actionItem = new ActionItemController(this, this, 18, 1);
+        // actionItem.Handle();
+        // actionItem = new ActionItemController(this, this, 19, 1);
+        // actionItem.Handle();
+        // actionItem = new ActionItemController(this, this, 20, 1);
+        // actionItem.Handle();
+        // actionItem = new ActionItemController(this, this, 21, 1);
+        // actionItem.Handle();
+        // actionItem = new ActionItemController(this, this, 22, 1);
+        // actionItem.Handle();
+        // actionItem = new ActionItemController(this, this, 38, 1);
+        // actionItem.Handle();
+        // actionItem = new ActionItemController(this, this, 39, 1);
+        // actionItem.Handle();
+        // actionItem = new ActionItemController(this, this, 40, 1);
+        // actionItem.Handle();
+        // actionItem = new ActionItemController(this, this, 41, 1);
+        // actionItem.Handle();
+        // actionItem = new ActionItemController(this, this, 31, 1);
+        // actionItem.Handle();
     }
 }
