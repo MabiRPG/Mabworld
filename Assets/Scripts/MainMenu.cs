@@ -52,7 +52,7 @@ public class MainMenu : MonoBehaviour
 
     private void StartGame()
     {
-        GameManager.Instance.ChangeScene("Test Map", 0, false);
+        GameManager.Instance.ChangeScene("Homestead", 0, false);
     }
 
     private void SaveGame()
@@ -62,7 +62,7 @@ public class MainMenu : MonoBehaviour
 
     private void LoadGame()
     {
-        GameManager.Instance.ChangeScene("Test Map", 0, true);
+        GameManager.Instance.ChangeScene("Homestead", 0, true);
     }
 
     private void OpenCredits()

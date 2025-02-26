@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Base.unity
     guid: 72c92114626989840a462176913f0908
   - enabled: 1
-    path: Assets/Scenes/Test Map.unity
+    path: Assets/Scenes/Homestead.unity
     guid: a07c9fa2ea066d64880a64b8ebe27adf
   - enabled: 1
     path: Assets/Scenes/Fuyang Town Outskirts.unity
