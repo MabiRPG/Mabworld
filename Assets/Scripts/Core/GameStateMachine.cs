@@ -131,15 +131,10 @@ public class PlayState : GameState
         {
             GameManager.Instance.CreatePlayer();
 
-            if (loadGame)
-            {
-                GameManager.Instance.Load();
-            }
-            else
+            if (!loadGame)
             {
                 Player.Instance.Init();
             }
-
         }
 
         Player.Instance.GetComponentInChildren<Camera>(true).gameObject.SetActive(true);

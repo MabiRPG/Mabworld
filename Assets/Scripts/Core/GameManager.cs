@@ -8,61 +8,87 @@ using System.IO;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 /// <summary>
 ///     This class handles all game-wide processing. Refer to Game.instance for the 
 ///     specific instance.
 /// </summary>
+[JsonObject(MemberSerialization.OptIn)]
 public class GameManager : MonoBehaviour
 {
     // Global instance of GameManager
     public static GameManager Instance { get; private set; }
 
     [NonSerialized]
+    [JsonIgnore]
     public InputController inputController;
     [NonSerialized]
+    [JsonIgnore]
     public LightController lightController;
     [NonSerialized]
+    [JsonIgnore]
     public AudioController audioController;
     [NonSerialized]
+    [JsonIgnore]
     public WindowManager windowManager;
+    [JsonIgnore]
     public GameObject overlay;
 
     [Header("Global Variables")]
     // Name of the game database in Assets/Database folder.
     [SerializeField]
+    [JsonIgnore]
     private string databaseName;
+    [JsonIgnore]
     public DatabaseManager Database;
     // Base success rate of life skills
+    [JsonIgnore]
     public float lifeSkillBaseSuccessRate;
 
     [Header("Universal Prefabs")]
+    [JsonIgnore]
     public GameObject playerPrefab;
+    [JsonIgnore]
     public GameObject skillBubblePrefab;
+    [JsonIgnore]
     public GameObject dialogueBoxPrefab;
 
     // [Header("Window Prefabs")]
+    [JsonIgnore]
     public Canvas screenCanvas;
+    [JsonIgnore]
     public Canvas worldCanvas;
 
-    // Loot system
-    // public LootGenerator lootGenerator = new LootGenerator();
-
+    [JsonIgnore]
     public GraphicRaycaster raycaster;
 
+    [JsonIgnore]
     public Scene baseScene;
     [NonSerialized]
+    [JsonIgnore]
     public GameObject baseCamera;
+    [JsonIgnore]
     public Scene levelScene;
 
     [NonSerialized]
+    [JsonIgnore]
     public GameObject mainMenu;
     [NonSerialized]
+    [JsonIgnore]
     public GameObject loadingArt;
     [NonSerialized]
+    [JsonIgnore]
     public GameStateMachine gameStateMachine;
     [NonSerialized]
+    [JsonIgnore]
     public GameObject HUD;
+
+    [JsonIgnore]
+    private readonly string savePath = "./Saves";
+
+    [JsonProperty]
+    private string _targetSceneName;
 
     /// <summary>
     ///     Initializes the object.
@@ -111,6 +137,7 @@ public class GameManager : MonoBehaviour
     public void ChangeScene(string targetSceneName, int targetPointID, bool loadGame = false)
     {
         PlayState state = new PlayState(gameStateMachine, targetSceneName, loadGame);
+        _targetSceneName = targetSceneName;
 
         if (!loadGame)
         {
@@ -129,29 +156,81 @@ public class GameManager : MonoBehaviour
                 }
             };
         }
+        else
+        {
+            state.exitAction += () =>
+            {
+                using StreamReader sr = new StreamReader(savePath + "/player.json");
+                string playerJson = sr.ReadToEnd();
+
+                JsonConvert.PopulateObject(
+                    playerJson,
+                    Player.Instance,
+                    new JsonSerializerSettings
+                    {
+                        PreserveReferencesHandling = PreserveReferencesHandling.Objects
+                    }
+                );
+            };
+        }
 
         gameStateMachine.SetState(state);
     }
 
-    public void Save()
+    public void StartGame()
     {
-        string json = JsonConvert.SerializeObject(Player.Instance, new JsonSerializerSettings
-        {
-            PreserveReferencesHandling = PreserveReferencesHandling.Objects
-        });
-        Debug.Log(json);
-        using StreamWriter sw = new StreamWriter("./Saves/saveTest.json");
-        sw.Write(json);
+        ChangeScene("Homestead", 0);
     }
 
-    public void Load()
+    public void SaveGame()
     {
-        using StreamReader sr = new StreamReader("./Saves/saveTest.json");
-        string json = sr.ReadToEnd();
-        JsonConvert.PopulateObject(json, Player.Instance, new JsonSerializerSettings
+        if (!Directory.Exists(savePath))
+        {
+            Directory.CreateDirectory(savePath);
+        }
+
+        string playerJson = JsonConvert.SerializeObject(Player.Instance, new JsonSerializerSettings
         {
             PreserveReferencesHandling = PreserveReferencesHandling.Objects
         });
+
+        Debug.Log(playerJson);
+
+        using (StreamWriter sw = new StreamWriter(savePath + "/player.json"))
+        {
+            sw.Write(playerJson);
+        }
+
+        string gameManagerJson = JsonConvert.SerializeObject(this);
+
+        Debug.Log(gameManagerJson);
+
+        using (StreamWriter sw = new StreamWriter(savePath + "/gameManager.json"))
+        {
+            sw.Write(gameManagerJson);
+        }
+
+        Debug.Log("Saved successfully!");
+    }
+
+    public void LoadGame()
+    {
+        if (!Directory.Exists(savePath))
+        {
+            throw new ArgumentNullException("Directory does not exist!");
+        }
+
+        using StreamReader sr = new StreamReader(savePath + "/gameManager.json");
+        string gameManagerJson = sr.ReadToEnd();
+        JObject jObj = JObject.Parse(gameManagerJson);
+        string targetSceneName = (string)jObj["_targetSceneName"];
+
+        if (targetSceneName == "")
+        {
+            throw new ArgumentNullException("Target scene does not exist!");
+        }
+
+        ChangeScene(targetSceneName, 0, true);
     }
 
     public DataTable QueryDatabase(string query, params (string Key, object Value)[] args)

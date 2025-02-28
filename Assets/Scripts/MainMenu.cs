@@ -52,17 +52,17 @@ public class MainMenu : MonoBehaviour
 
     private void StartGame()
     {
-        GameManager.Instance.ChangeScene("Homestead", 0, false);
+        GameManager.Instance.StartGame();
     }
 
     private void SaveGame()
     {
-        GameManager.Instance.Save();
+        GameManager.Instance.SaveGame();
     }
 
     private void LoadGame()
     {
-        GameManager.Instance.ChangeScene("Homestead", 0, true);
+        GameManager.Instance.LoadGame();
     }
 
     private void OpenCredits()
