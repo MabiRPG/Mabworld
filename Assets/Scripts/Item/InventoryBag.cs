@@ -91,10 +91,10 @@ public class InventoryBag
         foreach (InventoryItem inventoryItem in items.Values)
         {
             if (item == inventoryItem.item
-                && inventoryItem.quantity < item.model.stackSizeLimit)
+                && inventoryItem.quantity < item.model.StackSizeLimit)
             {
                 int diff = Math.Min(inventoryItem.quantity + remainingQuantity,
-                    item.model.stackSizeLimit);
+                    item.model.StackSizeLimit);
                 diff -= inventoryItem.quantity;
 
                 inventoryItem.quantity += diff;
@@ -109,17 +109,17 @@ public class InventoryBag
         }
 
         // Iterate over space, and create a new item if possible.
-        for (int i = 0; i < height - item.model.heightInGrid + 1; i++)
+        for (int i = 0; i < height - item.model.HeightInGrid + 1; i++)
         {
-            for (int j = 0; j < width - item.model.widthInGrid + 1; j++)
+            for (int j = 0; j < width - item.model.WidthInGrid + 1; j++)
             {
-                if (IsEmpty(i, j, item.model.widthInGrid, item.model.heightInGrid))
+                if (IsEmpty(i, j, item.model.WidthInGrid, item.model.HeightInGrid))
                 {
                     InventoryItem inventoryItem = new InventoryItem(item,
-                        Math.Min(remainingQuantity, item.model.stackSizeLimit), i, j);
+                        Math.Min(remainingQuantity, item.model.StackSizeLimit), i, j);
 
                     InsertItemAt(inventoryItem, i, j);
-                    remainingQuantity -= Math.Min(remainingQuantity, item.model.stackSizeLimit);
+                    remainingQuantity -= Math.Min(remainingQuantity, item.model.StackSizeLimit);
 
                     if (remainingQuantity == 0)
                     {

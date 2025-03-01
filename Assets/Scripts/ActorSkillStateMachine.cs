@@ -74,7 +74,7 @@ public class SkillLoadState : State
     /// <returns>Coroutine to be run.</returns>
     public override IEnumerator Main()
     {
-        yield return machine.bubble.Pulse(skill.model.icon, skill.GetLoadTime());
+        yield return machine.bubble.Pulse(skill.model.Icon, skill.GetLoadTime());
     }
 
     /// <summary>

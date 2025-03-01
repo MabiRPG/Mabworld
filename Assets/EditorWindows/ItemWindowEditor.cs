@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -87,7 +89,7 @@ public class ItemWindowEditor : EditorWindow
         nameSearch.RegisterValueChangedCallback(e =>
         {
             itemView.itemsSource = items
-                .Where(v => v.name.Contains(e.newValue, StringComparison.OrdinalIgnoreCase))
+                .Where(v => v.Name.Contains(e.newValue, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
             itemView.RefreshItems();
@@ -99,40 +101,40 @@ public class ItemWindowEditor : EditorWindow
         selectedName = rootVisualElement.Q<TextField>("selectedName");
         selectedName.RegisterValueChangedCallback(e =>
         {
-            selectedItem.name = e.newValue;
+            selectedItem.Name = e.newValue;
             itemView.RefreshItems();
         });
         selectedCategory = rootVisualElement.Q<DropdownField>("selectedCategory");
         selectedCategory.RegisterValueChangedCallback(e =>
         {
-            selectedItem.categoryID = ItemTypeModel.FindByName(e.newValue);
+            selectedItem.CategoryID = ItemTypeModel.FindByName(e.newValue);
         });
         selectedDescription = rootVisualElement.Q<TextField>("selectedDescription");
         selectedDescription.RegisterValueChangedCallback(e =>
         {
-            selectedItem.description = e.newValue;
+            selectedItem.Description = e.newValue;
         });
         selectedIcon = rootVisualElement.Q<ObjectField>("selectedIcon");
         selectedIcon.RegisterValueChangedCallback(e =>
         {
-            selectedItem.icon = (Sprite)e.newValue;
-            selectedIconPreview.style.backgroundImage = selectedItem.icon.texture;
+            selectedItem.Icon = (Sprite)e.newValue;
+            selectedIconPreview.style.backgroundImage = selectedItem.Icon.texture;
         });
         selectedStackSizeLimit = rootVisualElement.Q<IntegerField>("selectedStackSizeLimit");
         selectedStackSizeLimit.RegisterValueChangedCallback(e =>
         {
-            selectedItem.stackSizeLimit = e.newValue;
+            selectedItem.StackSizeLimit = e.newValue;
         });
         selectedWidthInGrid = rootVisualElement.Q<IntegerField>("selectedWidthInGrid");
         selectedWidthInGrid.RegisterValueChangedCallback(e =>
         {
-            selectedItem.widthInGrid = e.newValue;
+            selectedItem.WidthInGrid = e.newValue;
             selectedIconPreview.style.width = slotWidth * e.newValue;
         });
         selectedHeightInGrid = rootVisualElement.Q<IntegerField>("selectedHeightInGrid");
         selectedHeightInGrid.RegisterValueChangedCallback(e =>
         {
-            selectedItem.heightInGrid = e.newValue;
+            selectedItem.HeightInGrid = e.newValue;
             selectedIconPreview.style.height = slotHeight * e.newValue;
         });
 
@@ -147,13 +149,13 @@ public class ItemWindowEditor : EditorWindow
         itemView.columns["name"].makeCell = () => new Label();
         itemView.columns["name"].bindCell = (item, index) =>
         {
-            (item as Label).text = (itemView.itemsSource[index] as ItemModel).name;
+            (item as Label).text = (itemView.itemsSource[index] as ItemModel).Name;
         };
 
         itemView.columns["category"].makeCell = () => new Label();
         itemView.columns["category"].bindCell = (item, index) =>
         {
-            int categoryID = (itemView.itemsSource[index] as ItemModel).categoryID;
+            int categoryID = (itemView.itemsSource[index] as ItemModel).CategoryID;
             (item as Label).text = ItemTypeModel.FindByID(categoryID);
         };
 
@@ -162,7 +164,7 @@ public class ItemWindowEditor : EditorWindow
         {
             itemCounter += 1;
             ItemModel newItem = new ItemModel(database, itemCounter);
-            newItem.name = $"Placeholder ID {itemCounter}";
+            newItem.Name = $"Placeholder ID {itemCounter}";
             items.Add(newItem);
             itemView.selectedIndex = itemView.itemsSource.Count - 1;
             itemView.RefreshItems();
@@ -185,11 +187,11 @@ public class ItemWindowEditor : EditorWindow
                 case "name":
                     if (column.direction == SortDirection.Ascending)
                     {
-                        itemList = itemList.OrderBy(v => v.name).ToList();
+                        itemList = itemList.OrderBy(v => v.Name).ToList();
                     }
                     else
                     {
-                        itemList = itemList.OrderByDescending(v => v.name).ToList();
+                        itemList = itemList.OrderByDescending(v => v.Name).ToList();
                     }
 
                     break;
@@ -197,13 +199,13 @@ public class ItemWindowEditor : EditorWindow
                     if (column.direction == SortDirection.Ascending)
                     {
                         itemList = itemList
-                            .OrderBy(v => ItemTypeModel.FindByID(v.categoryID))
+                            .OrderBy(v => ItemTypeModel.FindByID(v.CategoryID))
                             .ToList();
                     }
                     else
                     {
                         itemList = itemList
-                            .OrderByDescending(v => ItemTypeModel.FindByID(v.categoryID))
+                            .OrderByDescending(v => ItemTypeModel.FindByID(v.CategoryID))
                             .ToList();
                     }
 
@@ -268,7 +270,7 @@ public class ItemWindowEditor : EditorWindow
                 else
                 {
                     stat.min = e.newValue;
-                    stat.max = e.newValue;    
+                    stat.max = e.newValue;
                 }
 
                 statView.RefreshItems();
@@ -374,7 +376,7 @@ public class ItemWindowEditor : EditorWindow
                         stats = stats.OrderByDescending(v => v.min).ToList();
                     }
 
-                    break;         
+                    break;
                 case "max":
                     if (column.direction == SortDirection.Ascending)
                     {
@@ -385,7 +387,7 @@ public class ItemWindowEditor : EditorWindow
                         stats = stats.OrderByDescending(v => v.max).ToList();
                     }
 
-                    break;           
+                    break;
                 default:
                     break;
             }
@@ -438,7 +440,7 @@ public class ItemWindowEditor : EditorWindow
         usedStatIDs.Remove(oldID);
 
         statView.itemsSource = selectedItem.stats.Values.ToList();
-        statView.RefreshItems();   
+        statView.RefreshItems();
     }
 
     private void OnItemSelectionChange(IEnumerable<int> selectedIndex)
@@ -459,22 +461,22 @@ public class ItemWindowEditor : EditorWindow
         selectedItem = (ItemModel)itemView.itemsSource[index];
         usedStatIDs = new List<int>(selectedItem.stats.Keys);
 
-        selectedName.SetValueWithoutNotify(selectedItem.name);
+        selectedName.SetValueWithoutNotify(selectedItem.Name);
 
         List<string> names = new List<string>(ItemTypeModel.types.Values);
-        string name = ItemTypeModel.FindByID(selectedItem.categoryID);
+        string name = ItemTypeModel.FindByID(selectedItem.CategoryID);
         selectedCategory.SetValueWithoutNotify(name);
         selectedCategory.choices = names;
 
-        selectedDescription.SetValueWithoutNotify(selectedItem.description);
-        selectedIcon.SetValueWithoutNotify(selectedItem.icon);
-        selectedStackSizeLimit.SetValueWithoutNotify(selectedItem.stackSizeLimit);
-        selectedWidthInGrid.SetValueWithoutNotify(selectedItem.widthInGrid);
-        selectedHeightInGrid.SetValueWithoutNotify(selectedItem.heightInGrid);
+        selectedDescription.SetValueWithoutNotify(selectedItem.Description);
+        selectedIcon.SetValueWithoutNotify(selectedItem.Icon);
+        selectedStackSizeLimit.SetValueWithoutNotify(selectedItem.StackSizeLimit);
+        selectedWidthInGrid.SetValueWithoutNotify(selectedItem.WidthInGrid);
+        selectedHeightInGrid.SetValueWithoutNotify(selectedItem.HeightInGrid);
 
-        if (selectedItem.icon != default)
+        if (selectedItem.Icon != default)
         {
-            selectedIconPreview.style.backgroundImage = selectedItem.icon.texture;
+            selectedIconPreview.style.backgroundImage = selectedItem.Icon.texture;
         }
         else
         {
@@ -483,16 +485,16 @@ public class ItemWindowEditor : EditorWindow
 
         // Width and height are buggy currently (it shows at full resolution no matter
         // what setting is put here...)
-        selectedIconPreview.style.width = slotWidth * selectedItem.widthInGrid;
-        selectedIconPreview.style.height = slotHeight * selectedItem.heightInGrid;
-    
+        selectedIconPreview.style.width = slotWidth * selectedItem.WidthInGrid;
+        selectedIconPreview.style.height = slotHeight * selectedItem.HeightInGrid;
+
         statView.itemsSource = selectedItem.stats.Values.ToList();
         statView.RefreshItems();
     }
 
     private void SaveItems()
     {
-        database.Write("DELETE FROM item; DELETE FROM item_stat;", 
+        database.Write("DELETE FROM item; DELETE FROM item_stat;",
             new Dictionary<string, ModelFieldReference>());
 
         foreach (ItemModel item in items)
@@ -506,3 +508,5 @@ public class ItemWindowEditor : EditorWindow
         }
     }
 }
+
+#endif

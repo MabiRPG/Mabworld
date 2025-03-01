@@ -75,7 +75,7 @@ public class WindowCraftingDetailForm : MonoBehaviour
         //     builder.Append($"{product.item.name} ");
         // }
 
-        builder.Append($"Requires Rank {recipe.rankRequired} {skill.model.name}\n");
+        builder.Append($"Requires Rank {recipe.rankRequired} {skill.model.Name}\n");
         builder.Append($"Success Rate:{skill.GetSuccessRate()}%");
         string details = builder.ToString();
         detailsText.text = details;

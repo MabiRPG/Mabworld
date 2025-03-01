@@ -52,7 +52,7 @@ public class WindowCrafting : Window
 
         foreach (Skill skill in skills)
         {
-            names.Add(skill.model.name);
+            names.Add(skill.model.Name);
         }
 
         dropdown.PopulateOptions(names, (option) => UpdateRecipeList(option));
@@ -85,7 +85,7 @@ public class WindowCrafting : Window
             // }
             foreach ((int ID, CraftingRecipeProductModel product) in recipe.products)
             {
-                if (product.item.name.StartsWith(recipeName))
+                if (product.item.Name.StartsWith(recipeName))
                 {
                     newRecipeList.Add(recipe);
                     break;
@@ -113,7 +113,7 @@ public class WindowCrafting : Window
     {
         foreach (Skill skill in skills)
         {
-            if (skill.model.name == name)
+            if (skill.model.Name == name)
             {
                 return skill;
             }

@@ -34,9 +34,9 @@ public class UI_ItemTooltip : MonoBehaviour
     /// <param name="item"></param>
     public void SetItem(Item item)
     {
-        itemName.text = item.model.name;
-        description.text = item.model.description;
-        itemStackSize.text = $"* Max Stack Size: {item.model.stackSizeLimit}";
+        itemName.text = item.model.Name;
+        description.text = item.model.Description;
+        itemStackSize.text = $"* Max Stack Size: {item.model.StackSizeLimit}";
         stats.text = "";
 
         foreach ((int statID, float roll) in item.stats)

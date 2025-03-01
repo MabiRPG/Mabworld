@@ -6,11 +6,16 @@ using System.Globalization;
 using System.Reflection;
 using System.Text;
 using Mono.Data.Sqlite;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+
+#if UNITY_EDITOR
+
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
+
+#endif
 
 public class DatabaseManager
 {
@@ -197,6 +202,7 @@ public class DatabaseManager
         return dt;
     }
 
+#if UNITY_EDITOR
     public int Write(string query, Dictionary<string, ModelFieldReference> fieldMap)
     {
         // Creates the database uri location
@@ -239,6 +245,7 @@ public class DatabaseManager
         dbConnection.Open();
         return dbCommand.ExecuteNonQuery();
     }
+#endif
 
     public void ParseRow(DataRow row, Dictionary<string, ModelFieldReference> fieldMap)
     {
@@ -494,6 +501,7 @@ public class DatabaseManager
         return camelCase.ToString();
     }
 
+#if UNITY_EDITOR
     public string AddToAddressables(UnityEngine.Object asset)
     {
         if (asset == default)
@@ -508,4 +516,5 @@ public class DatabaseManager
 
         return settings.FindAssetEntry(assetGUID).address;
     }
+#endif
 }

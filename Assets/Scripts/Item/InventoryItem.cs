@@ -37,8 +37,8 @@ public class InventoryItem
         this.item = item;
         this.quantity = quantity;
 
-        width = item.model.widthInGrid;
-        height = item.model.heightInGrid;
+        width = item.model.WidthInGrid;
+        height = item.model.HeightInGrid;
         origin = (row, column);
     }
 

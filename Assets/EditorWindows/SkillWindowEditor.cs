@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -121,7 +123,7 @@ public class SkillEditorWindow : EditorWindow
         nameSearch.RegisterValueChangedCallback(e =>
         {
             skillView.itemsSource = skills
-                .Where(v => v.name.Contains(e.newValue, StringComparison.OrdinalIgnoreCase))
+                .Where(v => v.Name.Contains(e.newValue, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
             skillView.RefreshItems();
@@ -133,11 +135,11 @@ public class SkillEditorWindow : EditorWindow
 
         skillView.columns["icon"].makeCell = () => new Image();
         skillView.columns["icon"].bindCell =
-            (item, index) => { (item as Image).sprite = skills[index].icon; };
+            (item, index) => { (item as Image).sprite = skills[index].Icon; };
 
         skillView.columns["name"].makeCell = () => new Label();
         skillView.columns["name"].bindCell =
-            (item, index) => { (item as Label).text = skills[index].name; };
+            (item, index) => { (item as Label).text = skills[index].Name; };
 
         skillView.selectedIndicesChanged += OnSkillSelectionChange;
 
@@ -147,7 +149,7 @@ public class SkillEditorWindow : EditorWindow
             skillCounter += 1;
 
             SkillModel newSkill = new SkillModel(database, skillCounter);
-            newSkill.name = $"Placeholder ID {skillCounter}";
+            newSkill.Name = $"Placeholder ID {skillCounter}";
             skills.Add(newSkill);
 
             skillView.RefreshItems();
@@ -156,24 +158,24 @@ public class SkillEditorWindow : EditorWindow
         selectedName = rootVisualElement.Q<TextField>("selectedName");
         selectedName.RegisterValueChangedCallback(e =>
         {
-            selectedSkill.name = e.newValue;
+            selectedSkill.Name = e.newValue;
             skillView.RefreshItems();
         });
         selectedIcon = rootVisualElement.Q<ObjectField>("selectedIcon");
         selectedIcon.RegisterValueChangedCallback(e =>
         {
-            selectedSkill.icon = (Sprite)e.newValue;
+            selectedSkill.Icon = (Sprite)e.newValue;
             skillView.RefreshItems();
         });
         selectedSFX = rootVisualElement.Q<ObjectField>("selectedSFX");
         selectedSFX.RegisterValueChangedCallback(e =>
         {
-            selectedSkill.sfx = (AudioClip)e.newValue;
+            selectedSkill.Sfx = (AudioClip)e.newValue;
         });
         selectedCultivationStage = rootVisualElement.Q<DropdownField>("selectedCultivationStage");
         selectedCultivationStage.RegisterValueChangedCallback(e =>
         {
-            selectedSkill.cultivationStageID = CultivationStageModel.stages
+            selectedSkill.CultivationStageID = CultivationStageModel.stages
                 .Where(v => v.Value.name == e.newValue)
                 .Select(v => v.Value.ID)
                 .First();
@@ -181,57 +183,57 @@ public class SkillEditorWindow : EditorWindow
         selectedDescription = rootVisualElement.Q<TextField>("selectedDescription");
         selectedDescription.RegisterValueChangedCallback(e =>
         {
-            selectedSkill.description = e.newValue;
+            selectedSkill.Description = e.newValue;
         });
         selectedDetails = rootVisualElement.Q<TextField>("selectedDetails");
         selectedDetails.RegisterValueChangedCallback(e =>
         {
-            selectedSkill.details = e.newValue;
+            selectedSkill.Details = e.newValue;
         });
         selectedFirstRank = rootVisualElement.Q<DropdownField>("selectedFirstRank");
         selectedFirstRank.RegisterValueChangedCallback(e =>
         {
-            selectedSkill.firstAvailableRank = e.newValue;
+            selectedSkill.FirstAvailableRank = e.newValue;
         });
         selectedStartRank = rootVisualElement.Q<DropdownField>("selectedStartRank");
         selectedStartRank.RegisterValueChangedCallback(e =>
         {
-            selectedSkill.startingRank = e.newValue;
+            selectedSkill.StartingRank = e.newValue;
         });
         selectedLastRank = rootVisualElement.Q<DropdownField>("selectedLastRank");
         selectedLastRank.RegisterValueChangedCallback(e =>
         {
-            selectedSkill.lastAvailableRank = e.newValue;
+            selectedSkill.LastAvailableRank = e.newValue;
         });
         selectedBaseLoadTime = rootVisualElement.Q<FloatField>("selectedBaseLoadTime");
         selectedBaseLoadTime.RegisterValueChangedCallback(e =>
         {
-            selectedSkill.baseLoadTime = e.newValue;
+            selectedSkill.BaseLoadTime = e.newValue;
         });
         selectedBaseUseTime = rootVisualElement.Q<FloatField>("selectedBaseUseTime");
         selectedBaseUseTime.RegisterValueChangedCallback(e =>
         {
-            selectedSkill.baseUseTime = e.newValue;
+            selectedSkill.BaseUseTime = e.newValue;
         });
         selectedBaseCooldownTime = rootVisualElement.Q<FloatField>("selectedBaseCooldownTime");
         selectedBaseCooldownTime.RegisterValueChangedCallback(e =>
         {
-            selectedSkill.baseCooldown = e.newValue;
+            selectedSkill.BaseCooldown = e.newValue;
         });
         selectedIsStartingWith = rootVisualElement.Q<Toggle>("selectedIsStartingWith");
         selectedIsStartingWith.RegisterValueChangedCallback(e =>
         {
-            selectedSkill.isStartingWith = e.newValue;
+            selectedSkill.IsStartingWith = e.newValue;
         });
         selectedIsLearnable = rootVisualElement.Q<Toggle>("selectedIsLearnable");
         selectedIsLearnable.RegisterValueChangedCallback(e =>
         {
-            selectedSkill.isLearnable = e.newValue;
+            selectedSkill.IsLearnable = e.newValue;
         });
         selectedIsPassive = rootVisualElement.Q<Toggle>("selectedIsPassive");
         selectedIsPassive.RegisterValueChangedCallback(e =>
         {
-            selectedSkill.isPassive = e.newValue;
+            selectedSkill.IsPassive = e.newValue;
         });
 
         statView = rootVisualElement.Q<MultiColumnListView>("selectedStats");
@@ -250,11 +252,11 @@ public class SkillEditorWindow : EditorWindow
                 case "name":
                     if (column.direction == SortDirection.Ascending)
                     {
-                        skills = skills.OrderBy(v => v.name).ToList();
+                        skills = skills.OrderBy(v => v.Name).ToList();
                     }
                     else
                     {
-                        skills = skills.OrderByDescending(v => v.name).ToList();
+                        skills = skills.OrderByDescending(v => v.Name).ToList();
                     }
 
                     break;
@@ -607,16 +609,16 @@ public class SkillEditorWindow : EditorWindow
 
                         dropdown.SetValueWithoutNotify(items
                             .Where(v => v.ID == int.Parse(method.param1))
-                            .Select(v => v.name)
+                            .Select(v => v.Name)
                             .First());
                         dropdown.choices = items
-                            .Select(v => v.name)
+                            .Select(v => v.Name)
                             .OrderBy(v => v)
                             .ToList();
                         dropdown.RegisterValueChangedCallback(e =>
                         {
                             string value = items
-                                .Where(v => v.name == e.newValue)
+                                .Where(v => v.Name == e.newValue)
                                 .Select(v => v.ID)
                                 .First()
                                 .ToString();
@@ -653,16 +655,16 @@ public class SkillEditorWindow : EditorWindow
 
                         dropdown.SetValueWithoutNotify(items
                             .Where(v => v.ID == int.Parse(method.param2))
-                            .Select(v => v.name)
+                            .Select(v => v.Name)
                             .First());
                         dropdown.choices = items
-                            .Select(v => v.name)
+                            .Select(v => v.Name)
                             .OrderBy(v => v)
                             .ToList();
                         dropdown.RegisterValueChangedCallback(e =>
                         {
                             string value = items
-                                .Where(v => v.name == e.newValue)
+                                .Where(v => v.Name == e.newValue)
                                 .Select(v => v.ID)
                                 .First()
                                 .ToString();
@@ -681,16 +683,16 @@ public class SkillEditorWindow : EditorWindow
 
                         dropdown.SetValueWithoutNotify(items
                             .Where(v => v.ID == int.Parse(method.param2))
-                            .Select(v => v.name)
+                            .Select(v => v.Name)
                             .First());
                         dropdown.choices = items
-                            .Select(v => v.name)
+                            .Select(v => v.Name)
                             .OrderBy(v => v)
                             .ToList();
                         dropdown.RegisterValueChangedCallback(e =>
                         {
                             string value = items
-                                .Where(v => v.name == e.newValue)
+                                .Where(v => v.Name == e.newValue)
                                 .Select(v => v.ID)
                                 .First()
                                 .ToString();
@@ -939,10 +941,10 @@ public class SkillEditorWindow : EditorWindow
 
     private void DisplaySkillInfo()
     {
-        selectedName.value = selectedSkill.name;
+        selectedName.value = selectedSkill.Name;
 
         selectedCultivationStage.value = CultivationStageModel.stages
-            .Where(v => v.Value.ID == selectedSkill.cultivationStageID)
+            .Where(v => v.Value.ID == selectedSkill.CultivationStageID)
             .Select(v => v.Value.name)
             .First();
 
@@ -951,29 +953,29 @@ public class SkillEditorWindow : EditorWindow
             .Distinct()
             .ToList();
 
-        selectedIcon.value = selectedSkill.icon;
-        selectedSFX.value = selectedSkill.sfx;
-        selectedDescription.value = selectedSkill.description;
-        selectedDetails.value = selectedSkill.details;
+        selectedIcon.value = selectedSkill.Icon;
+        selectedSFX.value = selectedSkill.Sfx;
+        selectedDescription.value = selectedSkill.Description;
+        selectedDetails.value = selectedSkill.Details;
 
-        selectedFirstRank.value = selectedSkill.firstAvailableRank;
-        firstAvailableRank = selectedSkill.firstAvailableRank;
+        selectedFirstRank.value = selectedSkill.FirstAvailableRank;
+        firstAvailableRank = selectedSkill.FirstAvailableRank;
         selectedFirstRank.choices = SkillModel.ranks;
 
-        selectedStartRank.value = selectedSkill.startingRank;
+        selectedStartRank.value = selectedSkill.StartingRank;
         selectedStartRank.choices = SkillModel.ranks;
 
-        selectedLastRank.value = selectedSkill.lastAvailableRank;
-        lastAvailableRank = selectedSkill.lastAvailableRank;
+        selectedLastRank.value = selectedSkill.LastAvailableRank;
+        lastAvailableRank = selectedSkill.LastAvailableRank;
         selectedLastRank.choices = SkillModel.ranks;
 
-        selectedBaseLoadTime.value = selectedSkill.baseLoadTime;
-        selectedBaseUseTime.value = selectedSkill.baseUseTime;
-        selectedBaseCooldownTime.value = selectedSkill.baseCooldown;
+        selectedBaseLoadTime.value = selectedSkill.BaseLoadTime;
+        selectedBaseUseTime.value = selectedSkill.BaseUseTime;
+        selectedBaseCooldownTime.value = selectedSkill.BaseCooldown;
 
-        selectedIsStartingWith.value = selectedSkill.isStartingWith;
-        selectedIsLearnable.value = selectedSkill.isLearnable;
-        selectedIsPassive.value = selectedSkill.isPassive;
+        selectedIsStartingWith.value = selectedSkill.IsStartingWith;
+        selectedIsLearnable.value = selectedSkill.IsLearnable;
+        selectedIsPassive.value = selectedSkill.IsPassive;
 
         statView.itemsSource = selectedSkill.stats.Values.ToList();
         statView.RefreshItems();
@@ -1017,3 +1019,5 @@ public class SkillEditorWindow : EditorWindow
         }
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -56,7 +58,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
         {
             int ID = int.Parse(row["id"].ToString());
             CraftingRecipeModel recipe = new CraftingRecipeModel(database, ID);
-            recipes.Add(recipe);     
+            recipes.Add(recipe);
         }
 
         recipeCounter = recipes.Max(v => v.ID);
@@ -71,7 +73,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
             skills.Add(skill);
         }
 
-        skills = skills.OrderBy(v => v.name).ToList();
+        skills = skills.OrderBy(v => v.Name).ToList();
 
         dt = database.Read("SELECT id FROM item;");
         items = new List<ItemModel>();
@@ -83,7 +85,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
             items.Add(item);
         }
 
-        items = items.OrderBy(v => v.name).ToList();
+        items = items.OrderBy(v => v.Name).ToList();
     }
 
     public void CreateGUI()
@@ -93,8 +95,8 @@ public class CraftingRecipeWindowEditor : EditorWindow
         m_VisualTreeAsset.CloneTree(rootVisualElement);
 
         refreshButton = rootVisualElement.Q<Button>("refreshButton");
-        refreshButton.RegisterCallback<ClickEvent>(e => 
-        { 
+        refreshButton.RegisterCallback<ClickEvent>(e =>
+        {
             Initialize();
             recipeView.itemsSource = recipes;
             DisplayRecipeInfo(index);
@@ -128,10 +130,10 @@ public class CraftingRecipeWindowEditor : EditorWindow
         selectedCraftingSkill = rootVisualElement.Q<DropdownField>("selectedCraftingSkill");
         selectedCraftingSkill.RegisterValueChangedCallback(e =>
         {
-            selectedRecipe.skillID = skills.Where(v => v.name == e.newValue)
+            selectedRecipe.skillID = skills.Where(v => v.Name == e.newValue)
                 .Select(v => v.ID).First();
         });
-        selectedCraftingSkill.choices = new List<string>(skills.Select(v => v.name));
+        selectedCraftingSkill.choices = new List<string>(skills.Select(v => v.Name));
 
         selectedCraftingRank = rootVisualElement.Q<DropdownField>("selectedCraftingRank");
         selectedCraftingRank.RegisterValueChangedCallback(e =>
@@ -177,7 +179,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
 
         foreach ((int ID, CraftingRecipeProductModel product) in recipe.products)
         {
-            label += $"{product.item.name}, ";
+            label += $"{product.item.Name}, ";
         }
 
         label = label[..^2];
@@ -223,7 +225,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
             DropdownField dropdown = new DropdownField();
             dropdown.RegisterValueChangedCallback(e =>
             {
-                CraftingRecipeIngredientModel ingredient = 
+                CraftingRecipeIngredientModel ingredient =
                     (CraftingRecipeIngredientModel)ingredientView.itemsSource[(int)dropdown.userData];
 
                 if (usedIngredientIDs.Contains(ingredient.itemID))
@@ -236,11 +238,11 @@ public class CraftingRecipeWindowEditor : EditorWindow
                     selectedRecipe.ingredients.Remove(ingredient.itemID);
                 }
 
-                ingredient.ChangeItem(items.Where(v => v.name == e.newValue).Select(v => v.ID).First());
-                
+                ingredient.ChangeItem(items.Where(v => v.Name == e.newValue).Select(v => v.ID).First());
+
                 usedIngredientIDs.Add(ingredient.itemID);
                 selectedRecipe.ingredients.Add(ingredient.itemID, ingredient);
-                
+
                 ingredientView.RefreshItems();
             });
 
@@ -249,12 +251,12 @@ public class CraftingRecipeWindowEditor : EditorWindow
         ingredientView.columns["ingredient"].bindCell = (item, index) =>
         {
             List<string> choices = new List<string>(items
-                .Where(v => !usedIngredientIDs.Contains(v.ID)).Select(v => v.name));
+                .Where(v => !usedIngredientIDs.Contains(v.ID)).Select(v => v.Name));
             (item as DropdownField).choices = choices;
 
-            CraftingRecipeIngredientModel ingredient = 
+            CraftingRecipeIngredientModel ingredient =
                 (CraftingRecipeIngredientModel)ingredientView.itemsSource[index];
-            (item as DropdownField).SetValueWithoutNotify(ingredient.item.name);
+            (item as DropdownField).SetValueWithoutNotify(ingredient.item.Name);
             (item as DropdownField).userData = index;
         };
 
@@ -271,7 +273,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
         };
         ingredientView.columns["quantity"].bindCell = (item, index) =>
         {
-            CraftingRecipeIngredientModel ingredient = 
+            CraftingRecipeIngredientModel ingredient =
                 (CraftingRecipeIngredientModel)ingredientView.itemsSource[index];
             (item as IntegerField).SetValueWithoutNotify(ingredient.quantity);
             (item as IntegerField).userData = index;
@@ -282,7 +284,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
             Button button = new Button();
             button.RegisterCallback<ClickEvent>(e =>
             {
-                CraftingRecipeIngredientModel ingredient = 
+                CraftingRecipeIngredientModel ingredient =
                     (CraftingRecipeIngredientModel)ingredientView.itemsSource[(int)button.userData];
 
                 if (usedIngredientIDs.Contains(ingredient.itemID))
@@ -320,7 +322,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
 
     private void SortIngredientColumns()
     {
-        List<CraftingRecipeIngredientModel> ingredients = 
+        List<CraftingRecipeIngredientModel> ingredients =
             (List<CraftingRecipeIngredientModel>)ingredientView.itemsSource;
 
         foreach (var column in ingredientView.sortedColumns)
@@ -330,11 +332,11 @@ public class CraftingRecipeWindowEditor : EditorWindow
                 case "ingredient":
                     if (column.direction == SortDirection.Ascending)
                     {
-                        ingredients = ingredients.OrderBy(v => v.item.name).ToList();
+                        ingredients = ingredients.OrderBy(v => v.item.Name).ToList();
                     }
                     else
                     {
-                        ingredients = ingredients.OrderByDescending(v => v.item.name).ToList();
+                        ingredients = ingredients.OrderByDescending(v => v.item.Name).ToList();
                     }
 
                     break;
@@ -365,7 +367,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
         productView.columns["product"].makeCell = () =>
         {
             DropdownField dropdown = new DropdownField();
-            dropdown.choices = items.Select(v => v.name).ToList();
+            dropdown.choices = items.Select(v => v.Name).ToList();
             dropdown.RegisterValueChangedCallback(e =>
             {
                 CraftingRecipeProductModel product =
@@ -382,8 +384,8 @@ public class CraftingRecipeWindowEditor : EditorWindow
                 }
 
                 (productView.itemsSource[(int)dropdown.userData] as CraftingRecipeProductModel)
-                    .ChangeItem(items.Where(v => v.name == e.newValue).Select(v => v.ID).First());
-                
+                    .ChangeItem(items.Where(v => v.Name == e.newValue).Select(v => v.ID).First());
+
                 usedProductIDs.Add(product.itemID);
                 selectedRecipe.products.Add(product.itemID, product);
 
@@ -396,12 +398,12 @@ public class CraftingRecipeWindowEditor : EditorWindow
         productView.columns["product"].bindCell = (item, index) =>
         {
             List<string> choices = new List<string>(items
-                .Where(v => !usedProductIDs.Contains(v.ID)).Select(v => v.name));
+                .Where(v => !usedProductIDs.Contains(v.ID)).Select(v => v.Name));
             (item as DropdownField).choices = choices;
 
-            CraftingRecipeProductModel product = 
+            CraftingRecipeProductModel product =
                 (CraftingRecipeProductModel)productView.itemsSource[index];
-            (item as DropdownField).SetValueWithoutNotify(product.item.name);
+            (item as DropdownField).SetValueWithoutNotify(product.item.Name);
             (item as DropdownField).userData = index;
         };
 
@@ -418,7 +420,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
         };
         productView.columns["quantity"].bindCell = (item, index) =>
         {
-            CraftingRecipeProductModel product = 
+            CraftingRecipeProductModel product =
                 (CraftingRecipeProductModel)productView.itemsSource[index];
             (item as IntegerField).SetValueWithoutNotify(product.quantity);
             (item as IntegerField).userData = index;
@@ -429,7 +431,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
             Button button = new Button();
             button.RegisterCallback<ClickEvent>(e =>
             {
-                CraftingRecipeProductModel product = 
+                CraftingRecipeProductModel product =
                     (CraftingRecipeProductModel)productView.itemsSource[(int)button.userData];
 
                 if (usedProductIDs.Contains(product.itemID))
@@ -458,7 +460,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
         productAddButton = rootVisualElement.Q<Button>("productAddButton");
         productAddButton.clicked += () =>
         {
-            CraftingRecipeProductModel product = 
+            CraftingRecipeProductModel product =
                 new CraftingRecipeProductModel(database, selectedRecipe.ID);
             product.quantity = 1;
             productView.itemsSource.Add(product);
@@ -468,7 +470,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
 
     private void SortProductColumns()
     {
-        List<CraftingRecipeProductModel> products = 
+        List<CraftingRecipeProductModel> products =
             (List<CraftingRecipeProductModel>)productView.itemsSource;
 
         foreach (var column in productView.sortedColumns)
@@ -478,11 +480,11 @@ public class CraftingRecipeWindowEditor : EditorWindow
                 case "product":
                     if (column.direction == SortDirection.Ascending)
                     {
-                        products = products.OrderBy(v => v.item.name).ToList();
+                        products = products.OrderBy(v => v.item.Name).ToList();
                     }
                     else
                     {
-                        products = products.OrderByDescending(v => v.item.name).ToList();
+                        products = products.OrderByDescending(v => v.item.Name).ToList();
                     }
 
                     break;
@@ -517,7 +519,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
         }
 
         index = enumerator.Current;
-        DisplayRecipeInfo(index);        
+        DisplayRecipeInfo(index);
     }
 
     private void DisplayRecipeInfo(int index)
@@ -536,7 +538,7 @@ public class CraftingRecipeWindowEditor : EditorWindow
             CraftingStationModel.FindByID(selectedRecipe.craftingStationID));
 
         selectedCraftingSkill.SetValueWithoutNotify(
-            skills.Where(v => v.ID == selectedRecipe.skillID).Select(v => v.name).FirstOrDefault());
+            skills.Where(v => v.ID == selectedRecipe.skillID).Select(v => v.Name).FirstOrDefault());
 
         selectedCraftingRank.SetValueWithoutNotify(selectedRecipe.rankRequired);
     }
@@ -562,3 +564,5 @@ public class CraftingRecipeWindowEditor : EditorWindow
         }
     }
 }
+
+#endif

@@ -46,6 +46,7 @@ public abstract class Model
         return row;
     }
 
+#if UNITY_EDITOR
     public virtual bool Upsert()
     {
         if (writeString == default || database == null)
@@ -56,6 +57,7 @@ public abstract class Model
         database.Write(writeString, fieldMap);
         return true;
     }
+#endif
 
     protected virtual void CreateReadQuery()
     {

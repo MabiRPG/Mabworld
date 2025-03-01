@@ -50,7 +50,7 @@ public class WindowSkillRow : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         // If object selected was icon, change cursor and allow dragging
         if (pointerData.pointerEnter == iconObj)
         {
-            Cursor.SetCursor(skill.model.icon.texture, Vector2.zero, CursorMode.Auto);
+            Cursor.SetCursor(skill.model.Icon.texture, Vector2.zero, CursorMode.Auto);
             isDragging = true;
         }
     }

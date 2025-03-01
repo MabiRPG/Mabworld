@@ -18,7 +18,7 @@ public class WindowSkillRowNameButton : MonoBehaviour
     {
         button.onClick.RemoveAllListeners();
         this.skill = skill;
-        tName.text = skill.model.name;
+        tName.text = skill.model.Name;
         button.onClick.AddListener(delegate { WindowSkill.Instance.CreateDetailedWindow(skill); });
     }
 }

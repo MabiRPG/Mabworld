@@ -22,7 +22,7 @@ public class WindowSkillRowIcon : MonoBehaviour
         }
 
         this.skill = skill;
-        icon.sprite = skill.model.icon;
+        icon.sprite = skill.model.Icon;
         skill.cooldown.OnChange += Draw;
         Draw();
     }

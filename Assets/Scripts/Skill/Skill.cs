@@ -53,7 +53,7 @@ public class Skill
     public bool CanRankUp()
     {
         return index.Value + 1 < SkillModel.ranks.Count
-            && index.Value + 1 <= SkillModel.ranks.IndexOf(model.lastAvailableRank);
+            && index.Value + 1 <= SkillModel.ranks.IndexOf(model.LastAvailableRank);
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ public class Skill
     /// </summary>
     public void RankDown()
     {
-        if (index.Value - 1 >= SkillModel.ranks.IndexOf(model.firstAvailableRank))
+        if (index.Value - 1 >= SkillModel.ranks.IndexOf(model.FirstAvailableRank))
         {
             index.Value--;
         }
@@ -194,7 +194,7 @@ public class Skill
     /// <returns></returns>
     public float GetLoadTime()
     {
-        return model.baseLoadTime + GetStat("Load Time");
+        return model.BaseLoadTime + GetStat("Load Time");
     }
 
     /// <summary>
@@ -203,7 +203,7 @@ public class Skill
     /// <returns></returns>
     public float GetUseTime()
     {
-        return model.baseUseTime + GetStat("Use Time");
+        return model.BaseUseTime + GetStat("Use Time");
     }
 
     /// <summary>
@@ -212,7 +212,7 @@ public class Skill
     /// <returns></returns>
     public float GetCooldownTime()
     {
-        return model.baseCooldown + GetStat("Cooldown Time");
+        return model.BaseCooldown + GetStat("Cooldown Time");
     }
 
     public float GetSuccessRate()
@@ -286,9 +286,9 @@ public class Skill
             yield return new WaitForSecondsRealtime(interval);
 
             // Play a sound if audio interval is reached
-            if (interval % audioInterval == 0 && model.sfx != default)
+            if (interval % audioInterval == 0 && model.Sfx != default)
             {
-                audio.PlayOneShot(model.sfx);
+                audio.PlayOneShot(model.Sfx);
             }
 
             currTime += interval;

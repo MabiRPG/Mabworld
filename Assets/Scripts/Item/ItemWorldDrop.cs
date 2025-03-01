@@ -23,7 +23,7 @@ public class ItemWorldDrop : MonoBehaviour, IMouseInputHandler
     {
         this.uiItem = uiItem;
         button.image.color = Color.yellow;
-        text.text = uiItem.item.model.name;
+        text.text = uiItem.item.model.Name;
         rectTransform.localPosition = localPosition;
 
         // Resets the content size fitter.

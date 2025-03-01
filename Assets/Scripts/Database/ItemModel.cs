@@ -1,32 +1,50 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using UnityEngine;
 
-[JsonObject]
+[JsonObject(MemberSerialization.OptIn)]
 public class ItemModel : Model
 {
     // Internal ID number
-    public int ID;
-    public string name;
-    public int categoryID;
-    public string description;
-    [JsonIgnore]
-    public Sprite icon;
+    [JsonProperty]
+    private int id;
+    [JsonProperty]
+    private string name;
+    [JsonProperty]
+    private int categoryID;
+    [JsonProperty]
+    private string description;
+    [JsonProperty]
+    private string icon;
     // Stack size limits inside an inventory
-    public int stackSizeLimit;
-    public int widthInGrid;
-    public int heightInGrid;
+    [JsonProperty]
+    private int stackSizeLimit;
+    [JsonProperty]
+    private int widthInGrid;
+    [JsonProperty]
+    private int heightInGrid;
 
     private string statTableName;
 
+    [JsonProperty]
     public Dictionary<int, ItemStatModel> stats = new Dictionary<int, ItemStatModel>();
 
-    // Serialization
-    [JsonProperty]
-    private string _iconName;
+    public int ID { get => id; set => id = value; }
+    public string Name { get => name; set => name = value; }
+    public int CategoryID { get => categoryID; set => categoryID = value; }
+    public string Description { get => description; set => description = value; }
+    public Sprite Icon
+    {
+        get => GameManager.Instance.LoadAsset<Sprite>(icon);
+#if UNITY_EDITOR
+        set => icon = GameManager.Instance.Database.AddToAddressables(value);
+#endif
+    }
+    public int StackSizeLimit { get => stackSizeLimit; set => stackSizeLimit = value; }
+    public int WidthInGrid { get => widthInGrid; set => widthInGrid = value; }
+    public int HeightInGrid { get => heightInGrid; set => heightInGrid = value; }
 
     [JsonConstructor]
     public ItemModel() : base(null) { }
@@ -38,7 +56,7 @@ public class ItemModel : Model
 
         primaryKeys.Add("id");
 
-        fieldMap.Add("id", new ModelFieldReference(this, nameof(this.ID)));
+        fieldMap.Add("id", new ModelFieldReference(this, nameof(id)));
         fieldMap.Add("name", new ModelFieldReference(this, nameof(name)));
         fieldMap.Add("category_id", new ModelFieldReference(this, nameof(categoryID)));
         fieldMap.Add("description", new ModelFieldReference(this, nameof(description)));
@@ -50,13 +68,13 @@ public class ItemModel : Model
 
     public ItemModel(DatabaseManager database, int ID) : base(database)
     {
-        this.ID = ID;
+        id = ID;
         tableName = "item";
         statTableName = "item_stat";
 
         primaryKeys.Add("id");
 
-        fieldMap.Add("id", new ModelFieldReference(this, nameof(this.ID)));
+        fieldMap.Add("id", new ModelFieldReference(this, nameof(id)));
         fieldMap.Add("name", new ModelFieldReference(this, nameof(name)));
         fieldMap.Add("category_id", new ModelFieldReference(this, nameof(categoryID)));
         fieldMap.Add("description", new ModelFieldReference(this, nameof(description)));
@@ -86,18 +104,5 @@ public class ItemModel : Model
             ItemStatModel stat = new ItemStatModel(database, ID, statID);
             stats.Add(statID, stat);
         }
-    }
-
-    [OnSerializing]
-    internal void OnSerializing(StreamingContext context)
-    {
-        // Get the addressable names for save. Does not actually add to addressable
-        _iconName = GameManager.Instance.Database.AddToAddressables(icon);
-    }
-
-    [OnDeserialized]
-    internal void OnDeserialized(StreamingContext context)
-    {
-        icon = GameManager.Instance.Database.LoadAsset<Sprite>(_iconName);
     }
 }

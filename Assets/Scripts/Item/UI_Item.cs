@@ -83,7 +83,7 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
         this.inventoryItem = inventoryItem;
         item = inventoryItem.item;
         this.quantity = quantity;
-        icon.sprite = item.model.icon;
+        icon.sprite = item.model.Icon;
         quantityText.text = quantity.ToString();
     }
 
@@ -91,7 +91,7 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
     {
         this.inventoryItem = inventoryItem;
         item = inventoryItem.item;
-        icon.sprite = item.model.icon;
+        icon.sprite = item.model.Icon;
         quantityText.text = text;
     }
 
@@ -99,14 +99,14 @@ public class UI_Item : MonoBehaviour, IMouseInputHandler, IMouseExitHandler
     {
         this.item = item;
         this.quantity = quantity;
-        icon.sprite = item.model.icon;
+        icon.sprite = item.model.Icon;
         quantityText.text = quantity.ToString();
     }
 
     public void SetItem(Item item, string text)
     {
         this.item = item;
-        icon.sprite = item.model.icon;
+        icon.sprite = item.model.Icon;
         quantityText.text = text;
     }
 

@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -243,16 +245,16 @@ public class QuestWindowEditor : EditorWindow
 
                         dropdown.SetValueWithoutNotify(skills
                                 .Where(v => v.ID == int.Parse(condition.param1))
-                                .Select(v => v.name)
+                                .Select(v => v.Name)
                                 .First());
                         dropdown.choices = skills
-                            .Select(v => v.name)
+                            .Select(v => v.Name)
                             .OrderBy(v => v)
                             .ToList();
                         dropdown.RegisterValueChangedCallback(e =>
                         {
                             condition.param1 = skills
-                                .Where(v => v.name == e.newValue)
+                                .Where(v => v.Name == e.newValue)
                                 .Select(v => v.ID)
                                 .First()
                                 .ToString();
@@ -320,16 +322,16 @@ public class QuestWindowEditor : EditorWindow
 
                         dropdown.SetValueWithoutNotify(items
                             .Where(v => v.ID == int.Parse(condition.param1))
-                            .Select(v => v.name)
+                            .Select(v => v.Name)
                             .First());
                         dropdown.choices = items
-                            .Select(v => v.name)
+                            .Select(v => v.Name)
                             .OrderBy(v => v)
                             .ToList();
                         dropdown.RegisterValueChangedCallback(e =>
                         {
                             condition.param1 = items
-                                .Where(v => v.name == e.newValue)
+                                .Where(v => v.Name == e.newValue)
                                 .Select(v => v.ID)
                                 .First()
                                 .ToString();
@@ -905,3 +907,5 @@ public class QuestWindowEditor : EditorWindow
         }
     }
 }
+
+#endif

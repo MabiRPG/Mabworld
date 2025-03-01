@@ -55,7 +55,7 @@ public class WindowCharacterEquipmentSlot : MonoBehaviour, IItemPickupHandler, I
 
     public void HandleItemDrop(List<RaycastResult> graphicHits, RaycastHit2D sceneHits, UI_Item uiItem)
     {
-        string itemCategory = ItemTypeModel.FindByID(uiItem.item.model.categoryID);
+        string itemCategory = ItemTypeModel.FindByID(uiItem.item.model.CategoryID);
 
         if (itemCategory == slot.ToString() ||
             (itemCategory.Contains("Weapon") && slot == Slot.Weapon))

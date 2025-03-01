@@ -22,6 +22,6 @@ public class WindowCraftingRecipeItem : MonoBehaviour
         CraftingRecipeProductModel firstProduct = recipe.products.Values.First();
 
         product.SetItem(new Item(firstProduct.itemID), firstProduct.quantity);
-        productName.text = firstProduct.item.name;
+        productName.text = firstProduct.item.Name;
     }
 }

@@ -86,7 +86,7 @@ public class SkillManager
         }
 
         Skills.Add(ID, new Skill(ID));
-        learnedCategoryIDs.Add(Skills[ID].model.cultivationStageID);
+        learnedCategoryIDs.Add(Skills[ID].model.CultivationStageID);
         learnEvent.RaiseOnChange();
     }
 
@@ -125,7 +125,7 @@ public class SkillManager
 
         foreach (Skill skill in Skills.Values)
         {
-            if (skill.model.cultivationStageID == categoryID)
+            if (skill.model.CultivationStageID == categoryID)
             {
                 skills.Add(skill);
             }
@@ -143,7 +143,7 @@ public class SkillManager
     {
         if (IsLearned(skill) && bubble != null)
         {
-            return bubble.Pulse(skill.model.icon, skill.GetLoadTime());
+            return bubble.Pulse(skill.model.Icon, skill.GetLoadTime());
         }
 
         return null;

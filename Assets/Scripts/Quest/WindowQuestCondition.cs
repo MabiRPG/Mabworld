@@ -45,7 +45,7 @@ public class WindowQuestCondition : MonoBehaviour
                     int.Parse(condition.model.param1)
                 );
 
-                string skillName = skill.name;
+                string skillName = skill.Name;
                 string rank = condition.model.param2;
 
                 // nameBuilder.Replace(" skill", "");
@@ -60,7 +60,7 @@ public class WindowQuestCondition : MonoBehaviour
                     int.Parse(condition.model.param1)
                 );
 
-                string itemName = item.name;
+                string itemName = item.Name;
                 int quantity = int.Parse(condition.model.param2);
 
                 nameBuilder.Replace(" item", "");

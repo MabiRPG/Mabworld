@@ -92,7 +92,7 @@ public class WindowSkillDetailed : Window
         this.skill = skill;
 
         // Finds the skill icon sprite and reassigns it.
-        icon.sprite = this.skill.model.icon;
+        icon.sprite = this.skill.model.Icon;
         UpdateRank();
         UpdateXp();
 
@@ -129,7 +129,7 @@ public class WindowSkillDetailed : Window
     private void UpdateRank()
     {
         // Finds the skill name and reassigns it.
-        skillName.text = "Rank " + SkillModel.ranks[skill.index.Value] + " " + skill.model.name;
+        skillName.text = "Rank " + SkillModel.ranks[skill.index.Value] + " " + skill.model.Name;
 
         int index = skill.index.Value;
 

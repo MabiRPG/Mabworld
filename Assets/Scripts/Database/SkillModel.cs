@@ -5,57 +5,64 @@ using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using UnityEngine;
 
-[JsonObject]
+[JsonObject(MemberSerialization.OptIn)]
 public class SkillModel : Model
 {
     // Primary key of skill
-    public int ID;
+    [JsonProperty]
+    private int id;
     // Name of skill and category
-    public string name;
-    public int cultivationStageID;
+    [JsonProperty]
+    private string name;
+    [JsonProperty]
+    private int cultivationStageID;
     // Skill description, details, skill icon, and sound effect when using
-    public string description;
-    public string details;
-    [JsonIgnore]
-    public Sprite icon;
-    [JsonIgnore]
-    public AudioClip sfx;
-    [JsonIgnore]
-    public AnimationClip animationClip;
+    [JsonProperty]
+    private string description;
+    [JsonProperty]
+    private string details;
+    [JsonProperty]
+    private string icon;
+    [JsonProperty]
+    private string sfx;
+    [JsonProperty]
+    private string animationClip;
     // Starting, first and last ranks that can be reached
-    public string startingRank;
-    public string firstAvailableRank;
-    public string lastAvailableRank;
+    [JsonProperty]
+    private string startingRank;
+    [JsonProperty]
+    private string firstAvailableRank;
+    [JsonProperty]
+    private string lastAvailableRank;
     // Base loading time, use time, and cooldown
-    public float baseLoadTime;
-    public float baseUseTime;
-    public float baseCooldown;
+    [JsonProperty]
+    private float baseLoadTime;
+    [JsonProperty]
+    private float baseUseTime;
+    [JsonProperty]
+    private float baseCooldown;
     // Does player start with skill?
-    public bool isStartingWith;
+    [JsonProperty]
+    private bool isStartingWith;
     // Learnable? and learn condition
-    public bool isLearnable;
-    public int learnConditionID;
+    [JsonProperty]
+    private bool isLearnable;
+    [JsonProperty]
+    private int learnConditionID;
     // Passive or active
-    public bool isPassive;
-
-    // Serialization info
     [JsonProperty]
-    private string _iconName;
-    [JsonProperty]
-    private string _sfxName;
-    [JsonProperty]
-    private string _animationClipName;
+    private bool isPassive;
 
     // All ranks in string format
-    [JsonIgnore]
     public static List<string> ranks = new List<string>
         {"F", "E", "D", "C", "B", "A", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
 
     private string statTableName;
     private string trainingMethodTableName;
 
+    [JsonProperty]
     public Dictionary<int, SkillStatModel> stats = new Dictionary<int, SkillStatModel>();
-    [JsonIgnore]
+
     public Dictionary<(int, string, string, string), TrainingMethodModel> trainingMethods =
         new Dictionary<(int, string, string, string), TrainingMethodModel>();
 
@@ -70,19 +77,56 @@ public class SkillModel : Model
     [JsonProperty]
     private List<TrainingMethodModel> _methods;
 
+    public int ID { get => id; set => id = value; }
+    public string Name { get => name; set => name = value; }
+    public int CultivationStageID { get => cultivationStageID; set => cultivationStageID = value; }
+    public string Description { get => description; set => description = value; }
+    public string Details { get => details; set => details = value; }
+    public Sprite Icon
+    {
+        get => GameManager.Instance.LoadAsset<Sprite>(icon);
+#if UNITY_EDITOR
+        set => icon = GameManager.Instance.Database.AddToAddressables(value);
+#endif
+    }
+    public AudioClip Sfx
+    {
+        get => GameManager.Instance.LoadAsset<AudioClip>(sfx);
+#if UNITY_EDITOR
+        set => sfx = GameManager.Instance.Database.AddToAddressables(value);
+#endif
+    }
+    public AnimationClip AnimationClip
+    {
+        get => GameManager.Instance.LoadAsset<AnimationClip>(animationClip);
+#if UNITY_EDITOR
+        set => animationClip = GameManager.Instance.Database.AddToAddressables(value);
+#endif
+    }
+    public string StartingRank { get => startingRank; set => startingRank = value; }
+    public string FirstAvailableRank { get => firstAvailableRank; set => firstAvailableRank = value; }
+    public string LastAvailableRank { get => lastAvailableRank; set => lastAvailableRank = value; }
+    public float BaseLoadTime { get => baseLoadTime; set => baseLoadTime = value; }
+    public float BaseUseTime { get => baseUseTime; set => baseUseTime = value; }
+    public float BaseCooldown { get => baseCooldown; set => baseCooldown = value; }
+    public bool IsStartingWith { get => isStartingWith; set => isStartingWith = value; }
+    public bool IsLearnable { get => isLearnable; set => isLearnable = value; }
+    public int LearnConditionID { get => learnConditionID; set => learnConditionID = value; }
+    public bool IsPassive { get => isPassive; set => isPassive = value; }
+
     [JsonConstructor]
     public SkillModel() : base(null) { }
 
     public SkillModel(DatabaseManager database, int ID) : base(database)
     {
-        this.ID = ID;
+        id = ID;
         tableName = "skill";
         statTableName = "skill_stat";
         trainingMethodTableName = "training_method";
 
         primaryKeys.Add("id");
 
-        fieldMap.Add("id", new ModelFieldReference(this, nameof(this.ID)));
+        fieldMap.Add("id", new ModelFieldReference(this, nameof(id)));
         fieldMap.Add("name", new ModelFieldReference(this, nameof(name)));
         fieldMap.Add("cultivation_stage_id", new ModelFieldReference(this, nameof(cultivationStageID)));
         fieldMap.Add("description", new ModelFieldReference(this, nameof(description)));
@@ -148,11 +192,6 @@ public class SkillModel : Model
     [OnSerializing]
     internal void OnSerializing(StreamingContext context)
     {
-        // Get the addressable names for save. Does not actually add to addressable
-        _iconName = GameManager.Instance.Database.AddToAddressables(icon);
-        _sfxName = GameManager.Instance.Database.AddToAddressables(sfx);
-        _animationClipName = GameManager.Instance.Database.AddToAddressables(animationClip);
-
         _methodID = new List<int>();
         _rank = new List<string>();
         _param1 = new List<string>();
@@ -172,10 +211,6 @@ public class SkillModel : Model
     [OnDeserialized]
     internal void OnDeserialized(StreamingContext context)
     {
-        icon = GameManager.Instance.Database.LoadAsset<Sprite>(_iconName);
-        sfx = GameManager.Instance.Database.LoadAsset<AudioClip>(_sfxName);
-        animationClip = GameManager.Instance.Database.LoadAsset<AnimationClip>(_animationClipName);
-
         for (int i = 0; i < _methodID.Count; i++)
         {
             int methodID = _methodID[i];

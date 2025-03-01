@@ -149,7 +149,7 @@ public class WindowInventory : Window, IItemPickupHandler, IItemDropHandler, IIt
 
         // Reinserting into an empty bag slot.
         if (bag.IsEmpty(row, column,
-                uiItem.item.model.widthInGrid, uiItem.item.model.heightInGrid))
+                uiItem.item.model.WidthInGrid, uiItem.item.model.HeightInGrid))
         {
             uiItem.SetParent(body.transform.Find("Item Canvas"));
             uiItem.SetPosition(new Vector2(column * slotWidth, -row * slotHeight));
@@ -162,18 +162,18 @@ public class WindowInventory : Window, IItemPickupHandler, IItemDropHandler, IIt
         }
         // If there is exactly one item in space, handle.
         else if (bag.CountItemsAt(row, column,
-            uiItem.item.model.widthInGrid, uiItem.item.model.heightInGrid) == 1)
+            uiItem.item.model.WidthInGrid, uiItem.item.model.HeightInGrid) == 1)
         {
             List<InventoryItem> itemsFound = bag.FindItemsAt(row, column,
-                row + uiItem.item.model.heightInGrid, column + uiItem.item.model.widthInGrid);
+                row + uiItem.item.model.HeightInGrid, column + uiItem.item.model.WidthInGrid);
             InventoryItem itemFound = itemsFound[0];
 
             // Merging the same items.
             if (itemFound.item == uiItem.item &&
-                itemFound.quantity < itemFound.item.model.stackSizeLimit)
+                itemFound.quantity < itemFound.item.model.StackSizeLimit)
             {
                 int diff = Math.Min(itemFound.quantity + uiItem.quantity,
-                    itemFound.item.model.stackSizeLimit);
+                    itemFound.item.model.StackSizeLimit);
                 diff -= itemFound.quantity;
 
                 itemFound.quantity += diff;
@@ -243,9 +243,9 @@ public class WindowInventory : Window, IItemPickupHandler, IItemDropHandler, IIt
 
         // Iterate over the area given by the starting pos vector2, moving over slot dimensions
         // and raycasting
-        for (int i = 0; i < uiItem.item.model.heightInGrid; i++)
+        for (int i = 0; i < uiItem.item.model.HeightInGrid; i++)
         {
-            for (int j = 0; j < uiItem.item.model.widthInGrid; j++)
+            for (int j = 0; j < uiItem.item.model.WidthInGrid; j++)
             {
                 float nx = Input.mousePosition.x + j * slotWidth;
                 float ny = Input.mousePosition.y - i * slotHeight;
@@ -265,10 +265,10 @@ public class WindowInventory : Window, IItemPickupHandler, IItemDropHandler, IIt
         // Count the number of items under our cursor
         (int row, int column) = ConvertScreenPointToBagPoint();
         int itemsHit = bag.CountItemsAt(row, column,
-            uiItem.item.model.widthInGrid, uiItem.item.model.heightInGrid);
+            uiItem.item.model.WidthInGrid, uiItem.item.model.HeightInGrid);
 
         // Enforcing dimensional requirements here
-        if (slots.Count != uiItem.item.model.widthInGrid * uiItem.item.model.heightInGrid)
+        if (slots.Count != uiItem.item.model.WidthInGrid * uiItem.item.model.HeightInGrid)
         {
             return;
         }
