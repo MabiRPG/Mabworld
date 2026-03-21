@@ -289,7 +289,7 @@ public class InventoryBag
         {
             for (int j = column1; j < column2; j++)
             {
-                if (items.ContainsKey((i, j)))
+                if (items.ContainsKey((i, j)) && !itemsFound.Contains(items[(i, j)]))
                 {
                     itemsFound.Add(items[(i, j)]);
                 }
