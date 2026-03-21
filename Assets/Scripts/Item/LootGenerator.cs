@@ -75,7 +75,7 @@ public class LootGenerator
                 break;
             }
             
-            i += probability;
+            i = probability;
         }
 
         // Multiply the resource gain by the player's lucky multiplier.
